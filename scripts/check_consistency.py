@@ -110,9 +110,30 @@ def main() -> int:
     for fp in all_files:
         all_findings.extend(scan_file(fp, rules))
 
+    # 图谱连通性与零孤岛强校验
+    graph_json = repo_root / "graphify-out" / "graph.json"
+    if graph_json.exists():
+        import json
+        import networkx as nx
+        try:
+            g_data = json.loads(graph_json.read_text(encoding="utf-8"))
+            G = nx.Graph()
+            for n in g_data.get("nodes", []):
+                G.add_node(n["id"])
+            for e in g_data.get("links", []) or g_data.get("edges", []):
+                G.add_edge(e["source"], e["target"])
+            comps = nx.number_connected_components(G)
+            isolates = len(list(nx.isolates(G)))
+            if comps > 1 or isolates > 0:
+                print(f"发现图谱孤岛违规：连通分量={comps} (铁律恒为1)，孤立节点={isolates} (铁律恒为0)", file=sys.stderr)
+                return 3
+        except Exception as e:
+            print(f"图谱解析异常: {e}", file=sys.stderr)
+            return 3
+
     if not all_findings:
         if args.print_ok:
-            print("OK: 未发现口径回退（skills/docs/scripts）")
+            print("OK: 未发现口径回退且图谱0孤岛100%连通（skills/docs/scripts/graphify）")
         return 0
 
     # 以 path + line_no 排序，方便定位
@@ -131,4 +152,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 
