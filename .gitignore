@@ -51,3 +51,8 @@ data/
 analysis/
 report/
 memory/
+
+# Graphify AST cache & query memory & daily backups
+graphify-out/cache/
+graphify-out/memory/
+graphify-out/2026-*/
