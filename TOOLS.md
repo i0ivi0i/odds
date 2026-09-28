@@ -61,6 +61,21 @@ npm run analyze -- https://zq.titan007.com/analysis/2990354cn.htm --history-wind
 - `context` 是给 agent 阅读和分析的 Markdown 上下文
 - `detail` / `markets` 是结构化原始数据，供写 memory、推荐和复盘使用
 
+### 赛后复盘数据抓取
+
+按比赛 ID 抓取完场赛果及复盘上下文：
+
+```bash
+cd scripts/sporttery-sniper
+npm run review -- 2990354 --format openclaw-json
+```
+
+输出要求：
+
+- JSON 顶层 `kind` 必须为 `openclaw.review`
+- `context` 包含已完场全场比分、半场比分及比赛事件
+- `detail` 包含主客队与完场比分结构化数据
+
 ### 数据范围
 
 sporttery-sniper 会抓取并输出：
@@ -77,7 +92,7 @@ sporttery-sniper 会抓取并输出：
 - **赔率必须实时抓取**：每次分析都重新运行 sporttery-sniper，不复用 memory 中旧赔率。
 - **只用赛前赔率**：sporttery-sniper 会过滤状态为“滚”的记录，并按开赛时间截断赛前变化历史。
 - **缺失不臆造**：如果某家公司或某类市场缺失，报告中必须标注数据缺口，并降低对应维度权重。
-- **平博用途**：平博可用于 CLV 存档和复盘，不作为 deep-analysis 的推荐依据。
+- **平博用途**：平博可作为主流公司交叉验证参考，不单独用于决策依据。
 
 ### 验证脚本
 
@@ -110,12 +125,12 @@ npm test
 ```
 # 赛程同步（单个 subagent）
 sessions_spawn:
-  task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，使用 scripts/sporttery-sniper 抓取今日全量赛程，通过 messaging 推送赛程列表给龙王，写入 memory/{今天日期}.md。"
+  task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，使用 scripts/sporttery-sniper 抓取今日全量赛程，通过 messaging 推送赛程列表给主人，写入 memory/{今天日期}.md。"
   label: "match-sync"
 
 # 深度分析（编排 subagent 内部 spawn worker）
 sessions_spawn:
-  task: "深度分析 [英超] 阿森纳 vs 曼城（ID: 2950977）。读取 skills/deep-analysis/SKILL.md。严格按照模板，先使用 scripts/sporttery-sniper 抓取上下文，再完成全部 10 步分析；超 4000 字须分段。通过 messaging 推送分析报告给龙王。返回结构化综合评估结果（JSON 格式）。"
+  task: "深度分析 [英超] 阿森纳 vs 曼城（ID: 2950977）。读取 skills/deep-analysis/SKILL.md。严格按照模板，先使用 scripts/sporttery-sniper 抓取上下文，再完成全部 10 步分析；超 4000 字须分段。通过 messaging 推送分析报告给主人。返回结构化综合评估结果（JSON 格式）。"
   label: "deep-analysis-2950977"
   runTimeoutSeconds: 900
 ```

@@ -17,7 +17,7 @@ metadata: { "openclaw": { "emoji": "📋" } }
 
 ### 步骤 1：读取推荐记录
 
-从每日记忆中获取需要复盘的推荐。**若 `memory/{复盘日期}.md` 不存在**，视为无推荐记录，直接执行下方「如果没有找到推荐记录」的后续逻辑（告知龙王、写入 ## 赛后复盘、结束）。
+从每日记忆中获取需要复盘的推荐。**若 `memory/{复盘日期}.md` 不存在**，视为无推荐记录，直接执行下方「如果没有找到推荐记录」的后续逻辑（告知主人、写入 ## 赛后复盘、结束）。
 
 ```
 memory_get memory/{复盘日期}.md
@@ -35,7 +35,7 @@ memory_get memory/{复盘日期}.md
 - 精选场次：提取联赛、主队、客队、推荐内容、信心度、比赛ID
 - 候补场次：同样提取，但标记为「候补」
 
-**复盘主体 = 精选场次**（龙王实际投注的场次）。候补场次也做结果核对，但单独展示作为参考（"如果选了会怎样"），不计入主要命中率统计。
+**复盘主体 = 精选场次**（主人实际投注的场次）。候补场次也做结果核对，但单独展示作为参考（"如果选了会怎样"），不计入主要命中率统计。
 
 **补追待复盘场次**：检查前 3 天（{复盘日期-1} 到 {复盘日期-3}）的 memory 文件，如果其中有标记为「待复盘」的场次，一并纳入本次复盘。这些场次：
 
@@ -45,7 +45,7 @@ memory_get memory/{复盘日期}.md
 
 如果没有找到推荐记录（当日 + 待复盘均无）：
 
-- 告知龙王「{日期}没有推荐记录，无需复盘」
+- 告知主人「{日期}没有推荐记录，无需复盘」
 - **仍须在 `memory/{复盘日期}.md` 中追加写入**（若文件不存在则创建）：
   ```
   ## 赛后复盘
@@ -56,25 +56,24 @@ memory_get memory/{复盘日期}.md
 
 ### 步骤 2：获取比赛结果
 
-从推荐记录中取出每场比赛的比赛 ID，逐场打开分析页获取最终比分：
+从推荐记录中取出每场比赛的比赛 ID，使用 `scripts/sporttery-sniper` 逐场获取复盘数据和最终赛果：
 
-```
-agent-browser tab new https://zq.titan007.com/analysis/{matchId}cn.htm
-agent-browser wait --load networkidle
-agent-browser snapshot
-→ 提取页面顶部的最终比分（完场后页面会显示比分）
-agent-browser tab close
+```bash
+cd scripts/sporttery-sniper
+npm run review -- {matchId} --format openclaw-json
 ```
 
-逐场获取，每场间隔 1-2 秒。
+从返回的 JSON 中读取赛果信息：
+- `context`：包含全场比分、半场比分、进球数与完场状态
+- `detail`：包含主队、客队、完场比分等结构化数据
 
-如果推荐记录中比赛 ID 丢失，退化到列表页方案：
+逐场获取，如遇偶发网络超时重试一次。
 
-```
-agent-browser open https://jc.titan007.com/index.aspx
-agent-browser wait --load networkidle
-→ 如需查看昨日赛程，切换日期选择器
-→ agent-browser snapshot 或 eval 提取已完场比赛的比分
+若推荐记录中比赛 ID 丢失或需要查看整日开售赛果，可指定销售日同步赛程赛果：
+
+```bash
+cd scripts/sporttery-sniper
+npm run schedule -- --date {昨日销售日} --format openclaw-json
 ```
 
 ### 步骤 3：逐场核对
@@ -393,7 +392,7 @@ memory_get MEMORY.md
 
 ### 步骤 9：推送
 
-通过 messaging 工具将复盘报告推送给龙王。
+通过 messaging 工具将复盘报告推送给主人。
 
 ## 特殊场景
 

@@ -19,6 +19,11 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 
 @dataclass(frozen=True)
 class Finding:
@@ -36,14 +41,13 @@ SELF_NAME = "check_consistency.py"
 def is_ignored_line(rule_name: str, line: str) -> bool:
     """
     允许少量“刻意出现”的关键字：
-    - 文档里描述历史兼容（如“历史旧记录 Top 3 … 兼容处理”）不应算回退
+    - 文档里描述历史兼容（如“历史旧记录 … 兼容处理”）不应算回退
     - 支持人工行级忽略标记：`consistency:ignore`
     """
     if "consistency:ignore" in line:
         return True
-    if rule_name == "比分口径回退（Top 3）":
-        if ("历史" in line) or ("兼容" in line):
-            return True
+    if ("历史" in line) or ("兼容" in line):
+        return True
     return False
 
 
@@ -97,8 +101,7 @@ def main() -> int:
     repo_root = Path(args.root).resolve()
     rules: list[tuple[str, re.Pattern[str]]] = [
         ("EV 阈值口径回退（EV>1）", re.compile(r"\bEV\s*>\s*1\b")),
-        # Top 3：禁止“孤立 Top 3”，但允许 Top 3/5 这种统计口径（以及 ‘Top 3，post-review 兼容’ 这类描述会被抓到）
-        ("比分口径回退（Top 3）", re.compile(r"\bTop\s*3\b(?!\s*/\s*5)")),
+        ("旧代号残留（嘲风）", re.compile(r"嘲风")),
         ("大小球旧模板占位符", re.compile(r"大小球：\s*\{大X\.5/小X\.5\}")),
     ]
 

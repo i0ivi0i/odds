@@ -5,7 +5,11 @@
 注意：核心参数已集中在 config/poisson_params.json，避免 SKILL/脚本口径漂移。
 """
 
+import sys
 from pathlib import Path
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from poisson_lib import anchor_lambda_tot, load_params, poisson_pmf, score_probs
 
