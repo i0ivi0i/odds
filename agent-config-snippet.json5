@@ -1,0 +1,73 @@
+/**
+ * 通用 AI Agent 任务调度与环境配置参考 (Universal Agent Config Snippet)
+ * 原生适配：爱马仕 (Hermes Agent)、反重力 (Google Antigravity)、OpenClaw、Claude Code、Cursor 等
+ */
+
+// ==============================================================================
+// 1. 爱马仕 (Hermes Agent) 调度配置参考
+// ==============================================================================
+// 爱马仕常驻运行时，可通过 cronjob 工具或 config.yaml 注册每日定时自动化：
+/*
+cronjobs:
+  - schedule: "10 11 * * *"
+    name: "每日赛程同步"
+    prompt: "执行赛程同步：delegate_task 后台执行——读取 skills/match-scraper/SKILL.md 抓取今日全量赛程，推送赛程列表给主人，写入当日 memory。主会话回复「⚡ 已启动赛程同步」后保持可用。"
+
+  - schedule: "0 17 * * *"
+    name: "每日赛前全流程分析"
+    prompt: "先检查 memory/{今天日期}.md 中是否有 '## 跳过分析'，若有则跳过。否则执行赛前分析：delegate_task 后台执行全流程——1) match-scraper 抓取赛程；2) match-screening 初筛；3) 对初筛通过比赛并行分发 worker 执行 deep-analysis；4) 收齐后用 recommendation 汇总精选并推送，写入今日 memory。主会话回复「⚡ 已启动赛前分析」后保持可用。"
+
+  - schedule: "30 9 * * *"
+    name: "每日赛后复盘"
+    prompt: "执行赛后复盘：delegate_task 后台执行——读取 skills/post-review/SKILL.md 获取昨日赛果，对比推荐记录，计算命中率，分析失误，更新 MEMORY.md，推送复盘报告给主人。主会话回复「⚡ 已启动赛后复盘」后保持可用。"
+*/
+
+// ==============================================================================
+// 2. 反重力 (Google Antigravity) 环境参考
+// ==============================================================================
+// 直接将本项目目录挂载为 Workspace，系统自动加载 AGENTS.md 与 skills。
+// 调度指令通过日常对话触发，并行子任务自动通过 `invoke_subagent` 隔离执行。
+
+// ==============================================================================
+// 3. OpenClaw 网关配置片段 (可合并至 ~/.openclaw/openclaw.json)
+// ==============================================================================
+{
+  agents: {
+    defaults: {
+      subagents: {
+        maxSpawnDepth: 2,       // 编排器模式：主 → 编排 subagent → 分析 worker
+        maxChildrenPerAgent: 3, // 最多 3 个 worker 并行（大模型 API 并发限制）
+        maxConcurrent: 3,       // 全局并发上限
+        runTimeoutSeconds: 3600,// 1 小时超时
+        archiveAfterMinutes: 30,// 完成 30 分钟后归档
+      },
+    },
+    pansuan: {
+      workspace: "./", // 工作区目录
+      cron: [
+        {
+          // 赛程同步 11:10
+          schedule: "10 11 * * *",
+          prompt: "执行赛程同步：spawn 一个 subagent 后台执行——用 match-scraper 抓取今日全量赛程，推送赛程列表给主人，完成后写入今日 memory。主会话回复主人「⚡ 已启动赛程同步」后保持可用。",
+        },
+        {
+          // 赛前分析 17:00
+          schedule: "0 17 * * *",
+          prompt: "先检查 memory/{今天日期}.md 中是否有 '## 跳过分析'，如果有则跳过。否则执行赛前分析：spawn 一个编排 subagent 后台执行全流程——1) match-scraper 抓取赛程；2) match-screening 初筛；3) 对每场初筛通过的比赛 spawn worker 执行 deep-analysis；4) 收齐所有分析结果后用 recommendation 精选并推送。每步都写入今日 memory。主会话回复主人「⚡ 已启动赛前分析」后保持可用。",
+        },
+        {
+          // 赛后复盘 09:30
+          schedule: "30 9 * * *",
+          prompt: "执行赛后复盘：spawn 一个 subagent 后台执行——用 post-review 获取昨日比赛结果，对比推荐记录，计算命中率，分析失误，更新长期统计，生成复盘报告并推送给主人。主会话回复主人「⚡ 已启动赛后复盘」后保持可用。",
+        },
+      ],
+      heartbeat: {
+        every: "30m",
+        activeHours: {
+          start: "06:00",
+          end: "02:00",
+        },
+      },
+    },
+  },
+}

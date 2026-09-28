@@ -18,23 +18,23 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 ### 赛程同步
 
-同步当前销售日赛程：
+同步当前销售日赛程（推荐 `--format agent-json`，亦兼容 `--format openclaw-json`）：
 
 ```bash
 cd scripts/sporttery-sniper
-npm run schedule -- --format openclaw-json
+npm run schedule -- --format agent-json
 ```
 
 同步指定销售日：
 
 ```bash
 cd scripts/sporttery-sniper
-npm run schedule -- --date 2026-06-11 --format openclaw-json
+npm run schedule -- --date 2026-06-11 --format agent-json
 ```
 
 输出要求：
 
-- JSON 顶层 `kind` 必须为 `openclaw.schedule`
+- JSON 顶层 `kind` 为通用规范 `agent.schedule`（兼容 `openclaw.schedule`）
 - `matches` 必须为数组
 - 每场至少读取 `no`、`matchId`、`league`、`leagueLevel`、`kickoffTime`、`status`、`homeTeam`、`awayTeam`、`analysisUrl`
 
@@ -44,19 +44,19 @@ npm run schedule -- --date 2026-06-11 --format openclaw-json
 
 ```bash
 cd scripts/sporttery-sniper
-npm run analyze -- 2990354 --history-window all --format openclaw-json
+npm run analyze -- 2990354 --history-window all --format agent-json
 ```
 
 按 titan007 分析页 URL 抓取：
 
 ```bash
 cd scripts/sporttery-sniper
-npm run analyze -- https://zq.titan007.com/analysis/2990354cn.htm --history-window all --format openclaw-json
+npm run analyze -- https://zq.titan007.com/analysis/2990354cn.htm --history-window all --format agent-json
 ```
 
 输出要求：
 
-- JSON 顶层 `kind` 必须为 `openclaw.analysis`
+- JSON 顶层 `kind` 为通用规范 `agent.analysis`（兼容 `openclaw.analysis`）
 - `match` 必须包含 `matchId`、`league`、`kickoffTime`、`homeTeam`、`awayTeam`、`analysisUrl`
 - `context` 是给 agent 阅读和分析的 Markdown 上下文
 - `detail` / `markets` 是结构化原始数据，供写 memory、推荐和复盘使用
@@ -67,12 +67,12 @@ npm run analyze -- https://zq.titan007.com/analysis/2990354cn.htm --history-wind
 
 ```bash
 cd scripts/sporttery-sniper
-npm run review -- 2990354 --format openclaw-json
+npm run review -- 2990354 --format agent-json
 ```
 
 输出要求：
 
-- JSON 顶层 `kind` 必须为 `openclaw.review`
+- JSON 顶层 `kind` 为通用规范 `agent.review`（兼容 `openclaw.review`）
 - `context` 包含已完场全场比分、半场比分及比赛事件
 - `detail` 包含主客队与完场比分结构化数据
 

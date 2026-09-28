@@ -1,7 +1,7 @@
 ---
 name: match-scraper
 description: "从球探体育(titan007)抓取竞彩足球赛程数据。在用户说「抓取赛程」「获取今日比赛」「今天有什么比赛」或赛前分析流程启动时使用。"
-metadata: { "openclaw": { "emoji": "📆" } }
+metadata: { "emoji": "📆", "openclaw": { "emoji": "📆" } }
 ---
 
 # 赛程抓取（match-scraper）
@@ -133,8 +133,8 @@ npm run schedule -- --date {YYYY-MM-DD} --format openclaw-json
 
 如果需要查看非当天的赛程（如主人说「看看昨天的比赛」，或复盘需要查历史赛程）：
 
-1. 运行脚本：`cd scripts/sporttery-sniper && npm run schedule -- --date {目标日期} --format openclaw-json`
-2. 解析 `openclaw.schedule` JSON 并按步骤 3～4 输出。
+1. 运行脚本：`cd scripts/sporttery-sniper && npm run schedule -- --date {目标日期} --format agent-json`
+2. 解析 `agent.schedule`（亦兼容 `openclaw.schedule`）JSON 并按步骤 3～4 输出。
 
 ## 异常处理
 

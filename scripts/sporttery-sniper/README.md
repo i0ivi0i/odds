@@ -4,7 +4,7 @@
 
 ## 部署
 
-这是一个独立 Node.js 项目，不依赖 OpenClaw 工作区，也不依赖浏览器自动化。
+这是一个独立 Node.js 项目，作为底层数据引擎，不绑定任何特定 AI 框架或工作区，也不依赖浏览器自动化。
 
 复制到其他电脑后：
 
@@ -82,13 +82,14 @@ npm run review -- 2990354 --history-window 15
 
 可选值：`all`（默认），或任意正整数小时数（如 `3`、`15`）。按小时截取时，会额外保留最早一条初盘参考。
 
-工具会从 live 详情页抓取比赛信息和技术统计，从 analysis 分析页抓取联赛积分排名、对赛往绩、各公司盘口与变化历史、欧赔、竞足和 Crown 全指数，并输出一段可直接交给 Codex 分析的 Markdown 上下文。当前版本不需要 OpenAI API Key，完整报告由 Codex 当前线程基于输出内容生成。
+工具会从 live 详情页抓取比赛信息和技术统计，从 analysis 分析页抓取联赛积分排名、对赛往绩、各公司盘口与变化历史、欧赔、竞足和 Crown 全指数，并输出一段可直接交给 AI Agent 推演的 Markdown 上下文。
 
-`--format openclaw-json` 会额外输出：
+`--format agent-json`（亦兼容 `--format openclaw-json`）会额外输出：
 
-- `kind: openclaw.schedule`：赛程同步结构化数据
-- `kind: openclaw.analysis`：单场分析结构化数据
-- `context`：保留可直接交给 Codex 分析的 Markdown 上下文
+- `kind: agent.schedule`：赛程同步结构化数据（兼容 `openclaw.schedule`）
+- `kind: agent.analysis`：单场分析结构化数据（兼容 `openclaw.analysis`）
+- `kind: agent.review`：复盘分析结构化数据（兼容 `openclaw.review`）
+- `context`：保留可直接交给 Agent 推演的 Markdown 上下文
 - `detail` / `markets`：保留比赛基本面、赔率、竞足和 Crown 全指数等结构化原始数据
 
 输出上下文开头包含 `# 角色设定`（分析师角色、分析原则与诱盘识别要求），以及 `## 分析指引`，约定各盘口的公司权重与分析顺序：

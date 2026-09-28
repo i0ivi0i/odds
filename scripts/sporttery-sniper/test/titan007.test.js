@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 
 import {
   buildAnalysisContext,
+  buildAgentAnalysisPayload,
+  buildAgentSchedulePayload,
   buildReviewContext,
   buildJcScheduleContext,
   buildOpenClawAnalysisPayload,
@@ -395,6 +397,12 @@ test("生成 OpenClaw 赛程同步结构化数据", () => {
   assert.equal(payload.saleDate, "2026-06-09");
   assert.equal(payload.generatedAt, "2026-06-09 11:10");
   assert.equal(payload.matches.length, 2);
+
+  const agentPayload = buildAgentSchedulePayload(schedule, {
+    generatedAt: "2026-06-09 11:10",
+  });
+  assert.equal(agentPayload.kind, "agent.schedule");
+  assert.equal(agentPayload.matches.length, 2);
   assert.deepEqual(payload.summary, {
     total: 2,
     notStarted: 2,
@@ -1159,6 +1167,13 @@ test("生成 OpenClaw 单场分析结构化数据", () => {
   assert.equal(payload.kind, "openclaw.analysis");
   assert.equal(payload.generatedAt, "2026-06-09 17:00");
   assert.equal(payload.historyWindow, 15);
+
+  const agentPayload = buildAgentAnalysisPayload(data, {
+    historyWindow: 15,
+    generatedAt: "2026-06-09 17:00",
+  });
+  assert.equal(agentPayload.kind, "agent.analysis");
+  assert.equal(agentPayload.match.matchId, "2990354");
   assert.deepEqual(payload.match, {
     matchId: "2990354",
     league: "日职联",

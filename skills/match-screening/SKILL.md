@@ -1,7 +1,7 @@
 ---
 name: match-screening
 description: "从抓取的赛程中筛选出有分析价值的场次，为深度分析做准备。在用户说「初筛」「筛选比赛」「哪些比赛值得分析」或赛前分析流程中抓取赛程之后使用。"
-metadata: { "openclaw": { "emoji": "🔍" } }
+metadata: { "emoji": "🔍", "openclaw": { "emoji": "🔍" } }
 ---
 
 # 赛事初筛（match-screening）

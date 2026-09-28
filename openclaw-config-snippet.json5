@@ -1,4 +1,5 @@
-// Agent Agent 配置片段
+// 通用配置请参见：agent-config-snippet.json5
+// 本文件保留作为 OpenClaw 网关旧配置兼容参考
 // 将以下内容合并到 ~/.openclaw/openclaw.json 中
 {
   // 浏览器配置（已迁移到 agent-browser CLI，禁用内置 browser）

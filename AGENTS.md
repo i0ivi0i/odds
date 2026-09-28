@@ -207,17 +207,25 @@ MEMORY.md 维护规则：
 
 ```
 主会话（始终空闲，响应主人）
-├── spawn 编排 subagent（depth 1）—— 赛前全流程
+├── 分发 编排 subagent（depth 1）—— 赛前全流程
 │   ├── 自己执行：赛程抓取 + 初筛
-│   ├── spawn worker（depth 2）：深度分析场次 1
-│   ├── spawn worker（depth 2）：深度分析场次 2
-│   ├── spawn worker（depth 2）：深度分析场次 3
-│   ├── 收齐 announce → 汇总推荐 → 写入 memory
-│   └── announce 最终结果回主会话
-├── spawn subagent（depth 1）—— 赛程同步
-├── spawn subagent（depth 1）—— 赛后复盘
+│   ├── 分发 worker（depth 2）：深度分析场次 1
+│   ├── 分发 worker（depth 2）：深度分析场次 2
+│   ├── 分发 worker（depth 2）：深度分析场次 3
+│   ├── 收齐结果回传 → 汇总推荐 → 写入 memory
+│   └── 回传最终结果至主会话
+├── 分发 subagent（depth 1）—— 赛程同步
+├── 分发 subagent（depth 1）—— 赛后复盘
 └── （主人随时可以聊天、查询、调整参数…）
 ```
+
+### 跨智能体平台适配机制
+
+不同 Agent 平台执行后台子任务的工具接口各异，本系统逻辑保持完全统一：
+- **爱马仕 (Hermes Agent)**：调用 `delegate_task(tasks=[{"goal": ...}])` 分发子任务，通过 `delegate_task(action='list'/'stop')` 进行状态查询与控制；
+- **反重力 (Google Antigravity)**：调用 `invoke_subagent` 分发子任务；
+- **OpenClaw**：调用 `sessions_spawn` 分发子任务；
+- **Claude Code / Cursor / 通用平台**：调用平台内建的 subagent 工具或后台隔离任务。
 
 ### 各场景的 Subagent 用法
 
@@ -228,32 +236,31 @@ MEMORY.md 维护规则：
 **主会话**：
 
 1. 推送「⚡ 已启动赛前分析，后台干活中，你随时找我聊」
-2. `sessions_spawn` 一个编排 subagent，task 包含完整流程指令
-3. 保持空闲，等待 announce 回来后推送「✅ 赛前分析完成」
+2. 分发一个编排 subagent（爱马仕环境调用 `delegate_task`，反重力调用 `invoke_subagent`，OpenClaw 调用 `sessions_spawn`），task 包含完整流程指令
+3. 保持空闲，等待子任务结果回传后推送「✅ 赛前分析完成」
 
 **编排 subagent（depth 1）**：
 
 1. 读取 `skills/match-scraper/SKILL.md`，执行赛程抓取，写入 memory
 2. 读取 `skills/match-screening/SKILL.md`，执行初筛，写入 memory
-3. 推送候选列表给主人（通过 messaging）
-4. 对每场初筛通过的比赛，`sessions_spawn` 一个 worker sub-subagent。**task 中必须写明**：「本批共 N 场（N = 本场初筛通过的总场次数），你不要写入 memory，只通过 announce 返回包含 memory 摘要的结构化结果」，避免多 worker 并发写同一文件导致只保留部分场次。示例：
+3. 推送候选列表给主人（通过平台消息通道）
+4. 对每场初筛通过的比赛，分发一个 worker subagent（爱马仕 `delegate_task` / 反重力 `invoke_subagent` / OpenClaw `sessions_spawn`）。**task 中必须写明**：「本批共 N 场（N = 本场初筛通过的总场次数），你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果」，避免多 worker 并发写同一文件导致只保留部分场次。示例：
+   ```yaml
+   task:
+     goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。读取 skills/deep-analysis/SKILL.md。严格按照模板，执行完整 10 步分析；先完成全部 10 步再推送，超 4000 字须分段。通过消息通道推送分析报告给主人。返回结构化综合评估结果（含 memory 摘要）。"
    ```
-   sessions_spawn:
-     task: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过 announce 返回包含 memory 摘要的结构化结果。读取 skills/deep-analysis/SKILL.md。严格按照模板，执行完整 10 步分析；先完成全部 10 步再推送，超 4000 字须分段。通过 messaging 推送分析报告给主人。返回结构化综合评估结果（含 memory 摘要）。"
-     label: "deep-analysis-{matchId}"
-   ```
-5. 等待所有 worker 的 announce 回来，收集分析结果（含各场 memory 摘要）。**若某条 announce 为「比赛已开始」等跳过状态**（无 memory 摘要），该场不计入分析结果，不写入 `## 深度分析`，汇总推荐时也不含该场；只合并含完整 memory 摘要的 announce。
+5. 等待所有 worker 的结果回传，收集分析结果（含各场 memory 摘要）。**若某场回传为「比赛已开始」等跳过状态**（无 memory 摘要），该场不计入分析结果，不写入 `## 深度分析`，汇总推荐时也不含该场；只合并含完整 memory 摘要的结果。
 6. 读取 `skills/recommendation/SKILL.md`，基于收集到的结果执行精选 + 串关（**初筛通过 0 场时**也执行 recommendation，输入 0 场，生成标准格式的 `## 推荐`「今日无候选场次」）
-7. 推送汇总消息给主人（通过 messaging）
+7. 推送汇总消息给主人（通过平台消息通道）
 8. 写入 memory：**深度分析摘要** — 先读取当日 memory 中已有 `## 深度分析`，将本批各场摘要按「新场次追加、同场用 matchId 替换」合并后写回，不覆盖已有场次；**推荐** — 由 recommendation 步骤 5 写入
-9. announce 最终结果回主会话
+9. 回传最终结果给主会话
 
 **worker sub-subagent（depth 2）**：
 
 1. 读取 `skills/deep-analysis/SKILL.md`
 2. 对单场比赛执行完整 10 步深度分析
-3. 通过 messaging 推送该场完整分析报告给主人（**先完成全部 10 步再推送**；总长超 4000 字须在「分析过程」与「结论」间分段发送，详见 SKILL）
-4. announce 结构化评估结果（综合评估 + 泊松概率表 + memory 摘要内容）回编排 subagent
+3. 推送该场完整分析报告给主人（**先完成全部 10 步再推送**；总长超 4000 字须在「分析过程」与「结论」间分段发送，详见 SKILL）
+4. 回传结构化评估结果（综合评估 + 泊松概率表 + memory 摘要内容）给编排 subagent
 
 **并行约束**：
 
@@ -277,25 +284,24 @@ MEMORY.md 维护规则：
 **共同步骤**（上述校验通过后或输入为 ID/URL 时）：
 
 1. 推送「⚡ 正在分析 N 场比赛…」
-2. 对每场比赛 `sessions_spawn` 一个 depth-1 worker subagent（并行），不得在主会话中执行深度分析。**若本批场次 > 1**，在 spawn 的 **task 中必须写明**：「本批共 N 场，你不要写入 memory，只通过 announce 返回包含 memory 摘要的结构化结果」，避免多 worker 并发写同一文件导致只保留部分场次。
-3. 保持空闲，收齐所有 announce 后：**仅对含 memory 摘要的 announce**（排除因「比赛已开始」等跳过的简要回传）按 deep-analysis 输出 2 的规则合并写入 `## 深度分析`；再执行 recommendation。若本批只有 1 场则直接执行 recommendation。
+2. 对每场比赛分发一个 depth-1 worker subagent（并行），不得在主会话中执行深度分析。**若本批场次 > 1**，在分发的 **task 中必须写明**：「本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果」，避免多 worker 并发写同一文件导致只保留部分场次。
+3. 保持空闲，收齐所有结果后：**仅对含 memory 摘要的回传结果**（排除因「比赛已开始」等跳过的简要回传）按 deep-analysis 输出 2 的规则合并写入 `## 深度分析`；再执行 recommendation。若本批只有 1 场则直接执行 recommendation。
 
-**⚠️ 强制规则**：只要有待分析的场次（≥1 场），深度分析**一律在 subagent 中执行**。主会话**禁止**读取 skills/deep-analysis/SKILL.md 并在主会话跑 10 步分析或脚本抓取——否则会阻塞主会话数分钟，且与「所有耗时流程在 subagent」的设计冲突。主会话只做：解析编号/ID、spawn worker、收齐 announce、**执行 recommendation（含写 memory）**。
+**⚠️ 强制规则**：只要有待分析的场次（≥1 场），深度分析**一律在 subagent 中执行**。主会话**禁止**读取 skills/deep-analysis/SKILL.md 并在主会话跑 10 步分析或脚本抓取——否则会阻塞主会话数分钟，且与「所有耗时流程在 subagent」的设计冲突。主会话只做：解析编号/ID、分发 worker、收齐回传结果、**执行 recommendation（含写 memory）**。
 
-**worker subagent（depth 1）**：同赛前全流程中的 worker，但作为 depth-1 直接由主会话 spawn。
+**worker subagent（depth 1）**：同赛前全流程中的 worker，但作为 depth-1 直接由主会话分发。
 
-**单场也 spawn**：即使只有 1 场（如「分析 001」），也必须 spawn 一个 worker；深度分析需要运行脚本抓取上下文并完成 10 步分析，足以阻塞主会话。
+**单场也分发**：即使只有 1 场（如「分析 001」），也必须分发一个 worker；深度分析需要运行脚本抓取上下文并完成 10 步分析，足以阻塞主会话。
 
 #### 场景 3：赛程同步（cron 11:10 / 手动）
 
 **主会话**：
 
 1. 推送「⚡ 已启动赛程同步」
-2. `sessions_spawn` 单个 subagent：
-   ```
-   sessions_spawn:
-     task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，抓取今日全量赛程，通过 messaging 推送赛程列表给主人，写入 memory/{今天日期}.md。"
-     label: "match-sync"
+2. 分发单个 subagent：
+   ```yaml
+   task:
+     goal: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，抓取今日全量赛程，推送赛程列表给主人，写入 memory/{今天日期}.md。"
    ```
 3. 保持空闲
 
@@ -304,11 +310,10 @@ MEMORY.md 维护规则：
 **主会话**：
 
 1. 推送「⚡ 已启动赛后复盘」
-2. `sessions_spawn` 单个 subagent：
-   ```
-   sessions_spawn:
-     task: "执行赛后复盘。读取 skills/post-review/SKILL.md。严格按照模板，获取昨日赛果，对比推荐记录，计算命中率，分析失误，更新 MEMORY.md，通过 messaging 推送复盘报告给主人。"
-     label: "post-review"
+2. 分发单个 subagent：
+   ```yaml
+   task:
+     goal: "执行赛后复盘。读取 skills/post-review/SKILL.md。严格按照模板，获取昨日赛果，对比推荐记录，计算命中率，分析失误，更新 MEMORY.md，推送复盘报告给主人。"
    ```
 3. 保持空闲
 
@@ -317,8 +322,8 @@ MEMORY.md 维护规则：
 **主会话**：
 
 1. 推送「⚡ 正在筛选比赛…」
-2. `sessions_spawn` 单个 subagent 执行初筛（含赛程抓取 + 6 阶段筛选）
-3. 保持空闲，收到 announce 后推送候选列表给主人
+2. 分发单个 subagent 执行初筛（含赛程抓取 + 6 阶段筛选）
+3. 保持空闲，收到回传结果后推送候选列表给主人
 4. **等主人确认**后，再按场景 6 执行精选
 
 #### 场景 6：精选（「精选比赛」「精选1,3,5场」）
@@ -327,8 +332,8 @@ MEMORY.md 维护规则：
 
 1. 从当日 memory **最后一个以 `## 初筛结果` 开头的 section** 得到当前候选列表；主人说的「1,3,5」指**该列表中的序号**（第 1 场、第 3 场、第 5 场），不是竞彩编号；若主人说「精选 001 003 005」则按编号在列表中定位对应场次。
 2. 推送「⚡ 正在精选分析…」
-3. 对上述场次，每场 `sessions_spawn` 一个 depth-1 worker subagent 执行深度分析。**若场次 > 1**，在 spawn 的 **task 中必须写明**：「本批共 N 场，你不要写入 memory，只通过 announce 返回包含 memory 摘要的结构化结果」。
-4. 保持空闲，收齐 announce 后：**仅对含 memory 摘要的 announce**（排除因「比赛已开始」等跳过的简要回传）按 deep-analysis 输出 2 的规则合并写入 `## 深度分析`，再执行 recommendation（精选 + 汇总推送 + 步骤 5 写入 memory）。
+3. 对上述场次，每场分发一个 depth-1 worker subagent 执行深度分析。**若场次 > 1**，在分发的 **task 中必须写明**：「本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果」。
+4. 保持空闲，收齐回传后：**仅对含 memory 摘要的回传**（排除因「比赛已开始」等跳过的简要回传）按 deep-analysis 输出 2 的规则合并写入 `## 深度分析`，再执行 recommendation（精选 + 汇总推送 + 步骤 5 写入 memory）。
 
 #### 不使用 Subagent 的情况
 
@@ -343,10 +348,10 @@ MEMORY.md 维护规则：
 
 ### Subagent 注意事项
 
-- **Subagent 只注入 AGENTS.md + TOOLS.md**：不含 SOUL.md、IDENTITY.md、USER.md。分析型任务不受影响，但推送消息时语气可能偏工具化
+- **Subagent 隔离上下文**：分析型任务不受影响，只关注所分配的具体推演任务
 - **Memory 写入竞争**：多个 worker 并行写 memory 时，编排 subagent 统一收集结果后一次性写入，避免并发冲突
 - **脚本数据源**：所有赛程抓取和深度分析数据抓取都通过 `scripts/sporttery-sniper` 完成。不得在正式流程中改用其它抓取方式。
-- **Announce 回传内容**：worker 的 announce 必须包含结构化数据（JSON 格式的综合评估 + 泊松比分简表 + memory 摘要），编排 subagent 才能正确汇总。泊松比分简表最多 6 个比分，不回传完整 0:0～7:7 概率表。
+- **回传内容**：worker 的结果回传必须包含结构化数据（JSON 格式的综合评估 + 泊松比分简表 + memory 摘要），编排 subagent 才能正确汇总。泊松比分简表最多 6 个比分，不回传完整 0:0～7:7 概率表。
 
 ### 主人中途干预
 
@@ -354,8 +359,8 @@ MEMORY.md 维护规则：
 
 | 主人说                 | 主会话做什么                                      |
 | ---------------------- | ------------------------------------------------- |
-| 「进展怎么样」         | `/subagents list` 查看运行状态，推送进度          |
-| 「停下来」「别分析了」 | `/subagents kill all` 终止所有 subagent           |
+| 「进展怎么样」         | 查看当前各子任务运行状态（爱马仕 `delegate_task(action='list')`、通用 `/subagents list`），推送进度 |
+| 「停下来」「别分析了」 | 终止所有子任务（爱马仕 `delegate_task(action='stop')`、通用 `/subagents kill all`） |
 | 「第3场不要了」        | 无法撤回正在运行的 worker，但可以在汇总时跳过该场 |
 | 随便聊天               | 正常回复，不影响后台 subagent                     |
 

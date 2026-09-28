@@ -3,6 +3,8 @@ import { pathToFileURL } from "node:url";
 
 import {
   buildAnalysisContext,
+  buildAgentAnalysisPayload,
+  buildAgentSchedulePayload,
   buildJcScheduleContext,
   buildOpenClawAnalysisPayload,
   buildOpenClawSchedulePayload,
@@ -27,6 +29,10 @@ async function main() {
     const data = await fetchJcSchedule(globalThis.fetch, {
       saleDate: targetDate,
     });
+    if (format === "agent-json") {
+      console.log(JSON.stringify(buildAgentSchedulePayload(data), null, 2));
+      return;
+    }
     if (format === "openclaw-json") {
       console.log(JSON.stringify(buildOpenClawSchedulePayload(data), null, 2));
       return;
@@ -40,6 +46,20 @@ async function main() {
 
   const data = await fetchMatchData(input);
   if (command === "review") {
+    if (format === "agent-json") {
+      console.log(
+        JSON.stringify(
+          {
+            ...buildAgentAnalysisPayload(data, { historyWindow }),
+            kind: "agent.review",
+            context: buildReviewContext({ ...data, historyWindow }),
+          },
+          null,
+          2,
+        ),
+      );
+      return;
+    }
     if (format === "openclaw-json") {
       console.log(
         JSON.stringify(
@@ -59,11 +79,21 @@ async function main() {
     console.log("");
     console.log("---");
     console.log(
-      `已抓取比赛 ID：${parseMatchId(input)} 的最新复盘数据，变化历史窗口：${formatHistoryWindow(historyWindow)}。你可以把以上内容作为本次 Codex 复盘上下文。`,
+      `已抓取比赛 ID：${parseMatchId(input)} 的最新复盘数据，变化历史窗口：${formatHistoryWindow(historyWindow)}。你可以把以上内容作为本次复盘上下文。`,
     );
     return;
   }
 
+  if (format === "agent-json") {
+    console.log(
+      JSON.stringify(
+        buildAgentAnalysisPayload(data, { historyWindow }),
+        null,
+        2,
+      ),
+    );
+    return;
+  }
   if (format === "openclaw-json") {
     console.log(
       JSON.stringify(
@@ -79,7 +109,7 @@ async function main() {
   console.log("");
   console.log("---");
   console.log(
-    `已抓取比赛 ID：${parseMatchId(input)}，变化历史窗口：${formatHistoryWindow(historyWindow)}。你可以把以上内容作为本次 Codex 分析上下文。`,
+    `已抓取比赛 ID：${parseMatchId(input)}，变化历史窗口：${formatHistoryWindow(historyWindow)}。你可以把以上内容作为本次分析上下文。`,
   );
 }
 
@@ -146,10 +176,13 @@ export function parseCliArgs(argv) {
 function parseFormat(input) {
   const format = String(input ?? "").trim().toLowerCase();
   if (!format || format === "markdown" || format === "md") return "markdown";
-  if (format === "openclaw-json" || format === "json") {
+  if (format === "agent-json" || format === "json") {
+    return "agent-json";
+  }
+  if (format === "openclaw-json") {
     return "openclaw-json";
   }
-  throw new Error(`输出格式无效：${input}。请使用 markdown 或 openclaw-json。`);
+  throw new Error(`输出格式无效：${input}。请使用 markdown、agent-json 或 json。`);
 }
 
 function tryParseFormat(input) {
@@ -173,16 +206,16 @@ function printHelp() {
 参数：
   --history-window, -w   变化历史输出范围，可选 all 或正整数小时数（如 3、15），默认 all
   --date, -d             同步指定销售日，格式 YYYY-MM-DD；默认今天
-  --format, -f           输出格式：markdown 或 openclaw-json，默认 markdown
+  --format, -f           输出格式：markdown、agent-json 或 json（兼容 openclaw-json），默认 markdown
 
 示例：
   npm run analyze -- 2990354
   npm run review -- 2990354
-  npm run analyze -- 2990354 --format openclaw-json
+  npm run analyze -- 2990354 --format agent-json
   npm run analyze -- 2990354 --history-window 15
   npm run analyze -- https://zq.titan007.com/analysis/2990354cn.htm -w 5
   npm run schedule
-  npm run schedule -- --format openclaw-json
+  npm run schedule -- --format agent-json
   npm run schedule -- 2026-06-11
   npm run schedule -- --date 2026-06-11`);
 }

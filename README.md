@@ -1,6 +1,15 @@
-# Agent（pansuan）— OpenClaw 足彩分析师 Agent
+# 通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)
 
-Agent是一个运行在 OpenClaw 上的专业足彩分析师 AI Agent，能够自动抓取竞彩足球赛程、筛选高价值场次、深度分析、生成推荐，并在赛后自动复盘。
+本项目是一套立足**庄家精算第一性原理（少赔多赚 / 净赔付最小化 / 双盘联动）**的通用足彩分析与量化推演系统。架构彻底解耦，原生支持**爱马仕 (Hermes Agent)**、**反重力 (Google Antigravity)**、**Claude Code**、**Cursor** 及 **OpenClaw** 等任何现代 AI Agent 平台，实现全自动赛程抓取、盘赔初筛、10步深度推演与赛后自愈复盘。
+
+## 多平台 AI Agent 原生适配
+
+| 运行环境 | 接入方式 | 智能体交互机制 | 适用场景 |
+| -------- | -------- | -------------- | -------- |
+| **爱马仕 (Hermes Agent)** | 本地工作区原生交互 / CLI 挂载 | `delegate_task` 并发调度、Cronjob 定时、桌面/通道推送 | 桌面常驻、自主循环、渠道推送 |
+| **反重力 (Google Antigravity)** | 工作区直接打开 | `invoke_subagent` 任务隔离、图谱实时检索 | 深度交互、多智能体协同、知识图谱推演 |
+| **Claude Code / Cursor** | 终端命令行 / 工作区直接打开 | 终端交互、代码审查与实时脚本推演 | 终端沉浸式交互、本地极速推演 |
+| **OpenClaw** | OpenClaw 网关挂载 | Workspace 配置、Cron 自动化调度、消息网关集成 | 网关部署、多通道集成 |
 
 ## 功能概览
 
@@ -12,85 +21,25 @@ Agent是一个运行在 OpenClaw 上的专业足彩分析师 AI Agent，能够�
 | 推荐输出 | 逐场推送 → 精选 2-3 场 → 汇总（含串关建议）                                    | 自动(Cron) / 手动 |
 | 赛后复盘 | 核对结果、计算命中率、分析失误、更新统计                                       | 自动(Cron) / 手动 |
 
-## 安装步骤
+## 快速上手与运行环境
 
-### 1. 确保 OpenClaw 已安装且 pansuan agent 已创建
-
-```bash
-# 确认 OpenClaw 已安装
-openclaw --version
-
-# 确认 pansuan agent 存在
-openclaw agents list
-```
-
-如果 pansuan agent 尚未创建，参考 OpenClaw 多 Agent 文档创建。
-
-### 2. 复制 Workspace 文件
+### 1. 通用环境准备
+- **Node.js**: v20+（用于运行数据抓取引擎 `scripts/sporttery-sniper`）
+- **Python**: v3.11+（用于验证泊松比分与运行图谱工具）
 
 ```bash
-# 确定 pansuan 的 workspace 路径
-PANSUAN_WS=~/.openclaw/agents/pansuan/workspace
-
-# 复制核心文件
-cp IDENTITY.md SOUL.md AGENTS.md USER.md TOOLS.md HEARTBEAT.md MEMORY.md "$PANSUAN_WS/"
-
-# 复制 Skills
-cp -r skills/ "$PANSUAN_WS/skills/"
-
-# 复制工具脚本
-cp -r scripts/ "$PANSUAN_WS/scripts/"
-
-# 创建 memory 目录
-mkdir -p "$PANSUAN_WS/memory/"
+# 安装数据引擎依赖并验证
+cd scripts/sporttery-sniper
+npm install
+npm test
+npm run schedule -- --format agent-json
 ```
 
-### 3. 合并配置
-
-将 `openclaw-config-snippet.json5` 中的配置合并到 `~/.openclaw/openclaw.json`。
-
-关键配置项：
-
-- `browser.enabled: false` — 禁用内置浏览器（已迁移到 agent-browser CLI）
-- `agents.pansuan.cron` — 定时任务（11:10 赛程同步，17:00 赛前分析，09:30 赛后复盘）
-- `agents.pansuan.workspace` — workspace 路径
-
-### 4. 安装 agent-browser
-
-浏览器自动化使用 [agent-browser](https://github.com/vercel-labs/agent-browser) CLI：
-
-```bash
-# 安装 agent-browser
-npm install -g agent-browser
-
-# 下载 Chromium
-agent-browser install
-
-# 测试能否访问 titan007
-agent-browser open https://jc.titan007.com/index.aspx
-agent-browser wait --load networkidle
-agent-browser screenshot
-agent-browser close
-```
-
-### 5. 刷新 Skills
-
-```bash
-# 让 OpenClaw 发现新的 Skills
-# 方法1: 在对话中告诉 agent "刷新 skills"
-# 方法2: 重启 Gateway
-openclaw gateway restart
-```
-
-### 6. 测试
-
-```bash
-# 手动触发一次赛前分析
-openclaw agent --agent pansuan --message "执行今日赛前全流程"
-
-# 手动触发一次复盘
-openclaw agent --agent pansuan --message "复盘昨天的推荐"
-```
+### 2. 各平台运行方式
+- **爱马仕 (Hermes Agent)**：直接在当前工作区对话交互；每日自动化可参考 `agent-config-snippet.json5`。
+- **反重力 (Google Antigravity)**：将本工程目录作为工作区打开，直接对话即可自动读取 `AGENTS.md` 与 Skills。
+- **OpenClaw**：将本工作区复制至 `~/.openclaw/agents/pansuan/workspace`，并将 `openclaw-config-snippet.json5` 合并入 `~/.openclaw/openclaw.json`。
+- **Claude Code / Cursor**：在当前目录下打开终端，直接调用相关指令与分析推演。
 
 ## 使用方式
 
@@ -146,7 +95,7 @@ workspace/
 ├── SOUL.md              # 灵魂：性格、风格、原则、边界
 ├── AGENTS.md            # 操作手册：完整方法论和规则
 ├── USER.md              # 用户偏好
-├── TOOLS.md             # 工具指南：titan007 浏览器操作
+├── TOOLS.md             # 工具指南：sporttery-sniper 抓取接口与命令规范
 ├── HEARTBEAT.md         # 定时检查清单
 ├── MEMORY.md            # 长期记忆：累计统计、策略结论
 ├── memory/              # 每日记忆
@@ -166,33 +115,20 @@ workspace/
 
 | 渠道     | 状态     | 说明                               |
 | -------- | -------- | ---------------------------------- |
-| Telegram | 原生支持 | OpenClaw 内置 Telegram channel     |
+| Telegram | 原生支持 | 各 Agent 原生通道 / Telegram Bot   |
 | 飞书     | 需适配   | 通过飞书机器人 Webhook + bash/curl |
 | 企业微信 | 需适配   | 通过企业微信 Webhook + bash/curl   |
 
-建议先用 Telegram 跑通全流程，再通过 Webhook 扩展到飞书/企业微信。
+建议先用桌面聊天或 Telegram 跑通全流程，再通过 Webhook 扩展到飞书/企业微信。
 
-## 深度分析与浏览器限制（重要）
+## 深度分析与并发数据抓取说明（重要）
 
-### 问题
+### 问题背景
+在多场深度分析执行时（例如主人要求「分析 002 和 005」，或赛前初筛通过多场并发处理），如果直接使用浏览器 CLI 并发抓取，由于浏览器实例属于共享单例，容易发生标签页互踩与数据串号。
 
-当**多场深度分析并行**执行时（例如主人同时说「分析 004」「分析 005」，或赛前全流程中多个 worker 同时跑），会出现**数据串号**：某场的 worker 抓到的赔率页面实际是另一场的，导致 matchId 不符、分析中断或结果错乱。
-
-### 原因
-
-`agent-browser` 是**共享单例**——所有 subagent 通过 Shell 调用时，操作的是**同一个**浏览器进程、**同一组** tab。多个 worker 的 `tab new` / `tab switch` / `snapshot` 会交叉执行，tab 编号互踩，某一 worker 的 snapshot 可能拿到的是其他 worker 刚打开的页面。
-
-因此「每个 worker 有独立浏览器标签页、互不干扰」的假设**不成立**，并行多场深度分析存在数据串号风险。
-
-### 当前策略
-
-采用**一场场分析（串行）**：
-
-- 每次只跑**一场**深度分析，该场完成后再进行下一场。
-- 赛前全流程：初筛通过多场时，对每场**串行** spawn worker（等上一场 announce 后再 spawn 下一场），不并行。
-- 手动多场（如「分析 002 和 005」）：同样串行，先分析完第一场再分析第二场。
-
-这样同一时刻只有一个深度分析在使用浏览器，从根源上避免串号。未来若需要提速，可考虑「先集中抓取数据、再并行分析」的两阶段方案（待实施），详见 `docs/FLOW-AUDIT-2026-03.md`。
+### 架构应对策略
+1. **数据抓取层原生解耦**：核心抓取引擎 `scripts/sporttery-sniper` 采用纯异步 Node.js HTTP/XML/JSON 协议直读，天然支持多进程安全调用与零串号。
+2. **子智能体分析策略**：通过各 Agent 的子任务机制（爱马仕 `delegate_task`、反重力 `invoke_subagent`）隔离推演上下文，数据由脚本独立产出，从根源杜绝数据污染。
 
 ---
 

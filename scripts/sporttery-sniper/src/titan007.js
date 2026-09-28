@@ -877,10 +877,10 @@ export function buildJcScheduleContext(schedule) {
   return lines.join("\n");
 }
 
-export function buildOpenClawSchedulePayload(schedule, options = {}) {
+export function buildAgentSchedulePayload(schedule, options = {}) {
   const matches = schedule?.matches ?? [];
   return {
-    kind: "openclaw.schedule",
+    kind: options.kind ?? "agent.schedule",
     generatedAt: options.generatedAt ?? localDateTimeString(),
     sourceUrl: schedule?.sourceUrl || `${TITAN_JC_BASE}/index.aspx`,
     oddsUrl: schedule?.oddsUrl || `${TITAN_JC_BASE}/xml/odds_jc.txt`,
@@ -903,10 +903,17 @@ export function buildOpenClawSchedulePayload(schedule, options = {}) {
   };
 }
 
-export function buildOpenClawAnalysisPayload(data, options = {}) {
+export function buildOpenClawSchedulePayload(schedule, options = {}) {
+  return buildAgentSchedulePayload(schedule, {
+    kind: "openclaw.schedule",
+    ...options,
+  });
+}
+
+export function buildAgentAnalysisPayload(data, options = {}) {
   const basic = data?.detail?.basic ?? {};
   return {
-    kind: "openclaw.analysis",
+    kind: options.kind ?? "agent.analysis",
     generatedAt: options.generatedAt ?? localDateTimeString(),
     historyWindow: options.historyWindow ?? "all",
     match: {
@@ -930,6 +937,13 @@ export function buildOpenClawAnalysisPayload(data, options = {}) {
       historyWindow: options.historyWindow ?? "all",
     }),
   };
+}
+
+export function buildOpenClawAnalysisPayload(data, options = {}) {
+  return buildAgentAnalysisPayload(data, {
+    kind: "openclaw.analysis",
+    ...options,
+  });
 }
 
 function buildCorrectScoreOdds(markets = {}) {

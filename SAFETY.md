@@ -44,13 +44,13 @@
 
 | 操作类型                               | 具体示例                                                                      |
 | -------------------------------------- | ----------------------------------------------------------------------------- |
-| 修改任何配置文件                       | `openclaw.json`、`.env`、`*.yaml`、`*.toml` 等                                |
-| 安装 / 卸载 / 更新 Skill               | `clawhub install`、`clawhub uninstall`、`clawhub update`                      |
-| 重启或关闭服务                         | `openclaw gateway restart`、`systemctl restart`、`docker restart`             |
-| 使用 openclaw 命令创建、修改、删除操作 | `openclaw cron rm "每日比赛列表推送"`、`openclaw cron run "每日比赛列表推送"` |
+| 修改任何配置文件                       | `config.yaml`、`agent.json`、`.env`、`openclaw.json`、`*.toml` 等             |
+| 安装 / 卸载 / 更新 Skill               | 技能包安装/卸载/更新等操作                                                    |
+| 重启或关闭服务                         | `hermes restart`、`systemctl restart`、`docker restart`                       |
+| 创建、修改、删除后台常驻或定时任务     | 修改 Cron 定时、删除任务计划等                                                |
 | 删除文件或目录                         | `rm`、`rmdir` 及等效操作                                                      |
 | 创建 / 修改 / 删除定时任务             | cron、systemd timer 等                                                        |
-| 修改环境变量或密钥配置                 | `.env` 中任意字段、`openclaw.json` 中的 API Key                               |
+| 修改环境变量或密钥配置                 | `.env` 中任意字段、配置文件中的 API Key                                       |
 | 批量覆写操作                           | 任何含 `--force`、`-f`、`--overwrite` 参数的命令                              |
 
 ---
@@ -111,7 +111,7 @@
 
 | 文件 / 模式                                   | 备份要求                         |
 | --------------------------------------------- | -------------------------------- |
-| `openclaw.json`                               | **必须备份**                     |
+| 核心配置文件（`config.yaml` / `.env` / `*.json` 等） | **必须备份**                     |
 | 任何 `.md` 文件                               | **必须备份**                     |
 | 任何源码文件（`.py`、`.js`、`.ts`、`.sh` 等） | **必须备份**                     |
 | `.env` 或含密钥的配置文件                     | **必须备份**，内容脱敏后记录日志 |
@@ -128,14 +128,14 @@
 
 | 字段       | 说明                                     |
 | ---------- | ---------------------------------------- |
-| `原文件名` | 含扩展名的完整文件名，如 `openclaw.json` |
+| `原文件名` | 含扩展名的完整文件名，如 `config.yaml` |
 | `YYYYMMDD` | 备份日期，如 `20260310`                  |
 | `NNN`      | 当日序号，从 `001` 开始递增              |
 
 **示例：**
 
 ```
-openclaw.json.20260310.001.bak
+config.yaml.20260310.001.bak
 SOUL.md.20260310.002.bak
 main.py.20260310.003.bak
 ```

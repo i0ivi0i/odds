@@ -24,6 +24,14 @@ test("schedule 命令仍支持显式日期和格式参数", () => {
   assert.equal(args.format, "openclaw-json");
 });
 
+test("schedule 与 analyze 支持通用 agent-json 与 json 格式", () => {
+  const args1 = parseCliArgs(["schedule", "--format", "agent-json"]);
+  assert.equal(args1.format, "agent-json");
+
+  const args2 = parseCliArgs(["analyze", "2990354", "--format", "json"]);
+  assert.equal(args2.format, "agent-json");
+});
+
 test("review 命令识别比赛输入并保留历史窗口", () => {
   const args = parseCliArgs(["review", "2990354", "--history-window", "15"]);
 
