@@ -1,37 +1,45 @@
 {
   "communities": {
     "0": [
-      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_1_编排写入深度分析时可能覆盖当日已有场次_中",
-      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_2_去掉第3场_后精选用的列表未持久化_中",
-      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_3_初筛_0_场时编排写入的_推荐格式未统一_低",
-      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_4_复盘时_memory_文件不存在未明确_低",
-      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_5_深度分析_此场已分析_时的行为未定义_低",
-      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_6_浏览器共享导致并行_worker_数据串号_高_待解决",
-      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_一_发现的_bug_漏洞",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_readme_openclaw_示例_agents_md_skills_结构模板",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_readme_如何使用",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_readme_目录结构",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_readme_相关文档",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_md",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_何时使用",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_前提条件",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_每日检查_daily_check",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_输出",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_执行步骤",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_步骤_1_确认数据源与范围",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_步骤_2_执行抓取",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_步骤_3_解析与校验",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_步骤_4_输出与落盘_可选",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_执行步骤",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_步骤_1_确定报告类型与输入来源",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_步骤_2_收集与筛选内容",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_步骤_3_按模板组织报告",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_步骤_4_输出与留痕",
-      "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_testdata_oguan_snapshot_md",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_4_家一致的_操盘手法一致_识别_亚盘专用",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_md",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_变动历史分析示例_欧指_必须像这样写",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_6_步_亚盘赔率分析"
+      "scripts_sporttery_sniper_src_titan007",
+      "scripts_sporttery_sniper_src_titan007_applylatesteuropehistorytocompanies",
+      "scripts_sporttery_sniper_src_titan007_applylatesthistorytocompanies",
+      "scripts_sporttery_sniper_src_titan007_clearmarketcurrent",
+      "scripts_sporttery_sniper_src_titan007_default_request_delay_range_ms",
+      "scripts_sporttery_sniper_src_titan007_extractarrayfunctionstrings",
+      "scripts_sporttery_sniper_src_titan007_extractarrayliteral",
+      "scripts_sporttery_sniper_src_titan007_handicap_names",
+      "scripts_sporttery_sniper_src_titan007_handicapname",
+      "scripts_sporttery_sniper_src_titan007_isafterkickoff",
+      "scripts_sporttery_sniper_src_titan007_iskickoffinpast",
+      "scripts_sporttery_sniper_src_titan007_isprematchphase",
+      "scripts_sporttery_sniper_src_titan007_jc_state_names",
+      "scripts_sporttery_sniper_src_titan007_leaguekey",
+      "scripts_sporttery_sniper_src_titan007_matchstatusname",
+      "scripts_sporttery_sniper_src_titan007_pad2",
+      "scripts_sporttery_sniper_src_titan007_parsearrayliteral",
+      "scripts_sporttery_sniper_src_titan007_parsecompanyodds",
+      "scripts_sporttery_sniper_src_titan007_parsecorrectscoreodds",
+      "scripts_sporttery_sniper_src_titan007_parseeuropeoddsscript",
+      "scripts_sporttery_sniper_src_titan007_parsejcdate",
+      "scripts_sporttery_sniper_src_titan007_parsejcdateparts",
+      "scripts_sporttery_sniper_src_titan007_parsejcdatetime",
+      "scripts_sporttery_sniper_src_titan007_parsejcleaguerecord",
+      "scripts_sporttery_sniper_src_titan007_parsejcoddsdata",
+      "scripts_sporttery_sniper_src_titan007_parsejcschedulerecord",
+      "scripts_sporttery_sniper_src_titan007_parsejcscheduletext",
+      "scripts_sporttery_sniper_src_titan007_parsekickoffdatetime",
+      "scripts_sporttery_sniper_src_titan007_parselatesteventscore",
+      "scripts_sporttery_sniper_src_titan007_parseoddsscript",
+      "scripts_sporttery_sniper_src_titan007_parserecorddatetime",
+      "scripts_sporttery_sniper_src_titan007_parsescriptarrayliteral",
+      "scripts_sporttery_sniper_src_titan007_parsetotalgoalodds",
+      "scripts_sporttery_sniper_src_titan007_parsewindrawlose",
+      "scripts_sporttery_sniper_src_titan007_selected_asian_total_companies",
+      "scripts_sporttery_sniper_src_titan007_selected_europe_companies",
+      "scripts_sporttery_sniper_src_titan007_sleep",
+      "scripts_sporttery_sniper_src_titan007_unescapejsstring",
+      "scripts_sporttery_sniper_src_titan007_value"
     ],
     "1": [
       "d_100_工作_200_交易_倍率分析推演_docs_盘口与走势阅读手册_4_1_看初盘_谁是庄家心里的_正路上盘",
@@ -130,66 +138,6 @@
       "d_100_工作_200_交易_倍率分析推演_docs_泊松概率计算手册_泊松概率计算手册_足彩用"
     ],
     "4": [
-      "concept_post_review_audit",
-      "concept_recommendation_and_parlay",
-      "concept_sporttery_sniper_engine",
-      "concept_ten_step_deep_analysis",
-      "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_testdata_oguan_cup_html_txt",
-      "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_testdata_oguan_network_txt",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_4_家一致的_操盘手法一致_识别_大小球专用",
-      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_md",
-      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_比赛取消_推迟",
-      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_比赛未全部完场",
-      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_特殊场景",
-      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_赛后复盘_post_review",
-      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_输入",
-      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_输出",
-      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_首次复盘_无历史数据",
-      "d_100_工作_200_交易_倍率分析推演_tools_md",
-      "d_100_工作_200_交易_倍率分析推演_tools_sessions_spawn_启动后台_subagent",
-      "d_100_工作_200_交易_倍率分析推演_tools_subagent_工具",
-      "d_100_工作_200_交易_倍率分析推演_tools_tools_md_工具使用指南",
-      "d_100_工作_200_交易_倍率分析推演_tools_数据安全规则",
-      "d_100_工作_200_交易_倍率分析推演_tools_数据范围",
-      "d_100_工作_200_交易_倍率分析推演_tools_核心工具_sporttery_sniper",
-      "d_100_工作_200_交易_倍率分析推演_tools_赛后复盘数据抓取",
-      "d_100_工作_200_交易_倍率分析推演_tools_赛程同步",
-      "d_100_工作_200_交易_倍率分析推演_tools_运行环境",
-      "d_100_工作_200_交易_倍率分析推演_tools_验证脚本",
-      "scripts_sporttery_sniper_src_titan007_absolutizevipurl",
-      "scripts_sporttery_sniper_src_titan007_applylatesteuropehistorytocompanies"
-    ],
-    "5": [
-      "scripts_sporttery_sniper_src_titan007",
-      "scripts_sporttery_sniper_src_titan007_applylatesthistorytocompanies",
-      "scripts_sporttery_sniper_src_titan007_buildrequestheaders",
-      "scripts_sporttery_sniper_src_titan007_clearmarketcurrent",
-      "scripts_sporttery_sniper_src_titan007_default_request_delay_range_ms",
-      "scripts_sporttery_sniper_src_titan007_detecthistoryrowformat",
-      "scripts_sporttery_sniper_src_titan007_extractarrayfunctionstrings",
-      "scripts_sporttery_sniper_src_titan007_handicap_names",
-      "scripts_sporttery_sniper_src_titan007_isafterkickoff",
-      "scripts_sporttery_sniper_src_titan007_ishistorychangetime",
-      "scripts_sporttery_sniper_src_titan007_ishistoryheaderrow",
-      "scripts_sporttery_sniper_src_titan007_ishistorystatus",
-      "scripts_sporttery_sniper_src_titan007_iskickoffinpast",
-      "scripts_sporttery_sniper_src_titan007_isrollingstatus",
-      "scripts_sporttery_sniper_src_titan007_jc_state_names",
-      "scripts_sporttery_sniper_src_titan007_matchidfromurl",
-      "scripts_sporttery_sniper_src_titan007_normalizehistoryrow",
-      "scripts_sporttery_sniper_src_titan007_parsearrayliteral",
-      "scripts_sporttery_sniper_src_titan007_parseeuropeoddsscript",
-      "scripts_sporttery_sniper_src_titan007_parsekickoffdatetime",
-      "scripts_sporttery_sniper_src_titan007_parseoddschangehistory",
-      "scripts_sporttery_sniper_src_titan007_parserecorddatetime",
-      "scripts_sporttery_sniper_src_titan007_parsescriptarrayliteral",
-      "scripts_sporttery_sniper_src_titan007_refererfor",
-      "scripts_sporttery_sniper_src_titan007_selected_asian_total_companies",
-      "scripts_sporttery_sniper_src_titan007_selected_europe_companies",
-      "scripts_sporttery_sniper_src_titan007_sleep",
-      "scripts_sporttery_sniper_src_titan007_unescapejsstring"
-    ],
-    "6": [
       "d_100_工作_200_交易_倍率分析推演_data_004_布伦特福德_vs_狼队_泊松分析_md",
       "d_100_工作_200_交易_倍率分析推演_data_004_布伦特福德_vs_狼队_泊松分析_λ_与预期总进球",
       "d_100_工作_200_交易_倍率分析推演_data_004_布伦特福德_vs_狼队_泊松分析_一_原始数据整理",
@@ -218,7 +166,7 @@
       "d_100_工作_200_交易_倍率分析推演_data_004_布伦特福德_vs_狼队_泊松分析_胜平负",
       "d_100_工作_200_交易_倍率分析推演_data_004_布伦特福德_vs_狼队_泊松分析_赔率_隐含概率"
     ],
-    "7": [
+    "5": [
       "odds_analysis_master_deduction",
       "odds_deduction_1__不变量一_初赔骨架定位律_bone_invariant_初盘定能量场",
       "odds_deduction_2__不变量二_让球盘成本刚性门禁_gate_invariant_让球查真敞口",
@@ -247,9 +195,7 @@
       "odds_deduction_案例_9_均势跷跷板杀平局__胜负颠倒引流杀中路_胜_2_23__2_58_vs",
       "odds_deduction_赔率分析推演_庄家操盘逻辑与双盘联动推演心法"
     ],
-    "8": [
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_五_与_skills_tools_的关系",
-      "d_100_工作_200_交易_倍率分析推演_tools_单场深度分析数据抓取",
+    "6": [
       "ref_node_url",
       "scripts_sporttery_sniper_src_cli",
       "scripts_sporttery_sniper_src_cli_formathistorywindow",
@@ -271,11 +217,13 @@
       "scripts_sporttery_sniper_src_titan007_formatjcstandardodds",
       "scripts_sporttery_sniper_src_titan007_formatmatchscore",
       "scripts_sporttery_sniper_src_titan007_localdatetimestring",
+      "scripts_sporttery_sniper_src_titan007_matchidfromurl",
       "scripts_sporttery_sniper_src_titan007_parsehistorywindow",
       "scripts_sporttery_sniper_src_titan007_parsematchid",
+      "scripts_sporttery_sniper_src_titan007_refererfor",
       "scripts_sporttery_sniper_src_titan007_summarizejcmatches"
     ],
-    "9": [
+    "7": [
       "d_100_工作_200_交易_倍率分析推演_safety_1_1_操作分级定义",
       "d_100_工作_200_交易_倍率分析推演_safety_1_2_高危操作清单",
       "d_100_工作_200_交易_倍率分析推演_safety_1_3_中危操作清单",
@@ -302,7 +250,33 @@
       "d_100_工作_200_交易_倍率分析推演_safety_回滚_soul_md",
       "d_100_工作_200_交易_倍率分析推演_safety_目录"
     ],
-    "10": [
+    "8": [
+      "scripts_sporttery_sniper_src_titan007_absolutizevipurl",
+      "scripts_sporttery_sniper_src_titan007_attroffirst",
+      "scripts_sporttery_sniper_src_titan007_cleantext",
+      "scripts_sporttery_sniper_src_titan007_detecthistoryrowformat",
+      "scripts_sporttery_sniper_src_titan007_extractcells",
+      "scripts_sporttery_sniper_src_titan007_extractformation",
+      "scripts_sporttery_sniper_src_titan007_findfirstpositiveindex",
+      "scripts_sporttery_sniper_src_titan007_firstmatch",
+      "scripts_sporttery_sniper_src_titan007_ishistorychangetime",
+      "scripts_sporttery_sniper_src_titan007_ishistoryheaderrow",
+      "scripts_sporttery_sniper_src_titan007_ishistorystatus",
+      "scripts_sporttery_sniper_src_titan007_isrollingstatus",
+      "scripts_sporttery_sniper_src_titan007_normalizecompany",
+      "scripts_sporttery_sniper_src_titan007_normalizehistoryrow",
+      "scripts_sporttery_sniper_src_titan007_parsedetailhtml",
+      "scripts_sporttery_sniper_src_titan007_parseinjuryplayers",
+      "scripts_sporttery_sniper_src_titan007_parselineupinjuries",
+      "scripts_sporttery_sniper_src_titan007_parsematchscorefromdetail",
+      "scripts_sporttery_sniper_src_titan007_parseoddschangehistory",
+      "scripts_sporttery_sniper_src_titan007_parseoddscompanylist",
+      "scripts_sporttery_sniper_src_titan007_parseteamstats",
+      "scripts_sporttery_sniper_src_titan007_pickscriptvar",
+      "scripts_sporttery_sniper_src_titan007_splitscore",
+      "scripts_sporttery_sniper_src_titan007_textoffirst"
+    ],
+    "9": [
       "d_100_工作_200_交易_倍率分析推演_data_001_赫尔蒙德_vs_坎布尔_泊松分析_md",
       "d_100_工作_200_交易_倍率分析推演_data_001_赫尔蒙德_vs_坎布尔_泊松分析_λ_与预期总进球",
       "d_100_工作_200_交易_倍率分析推演_data_001_赫尔蒙德_vs_坎布尔_泊松分析_一_原始数据整理",
@@ -326,53 +300,77 @@
       "d_100_工作_200_交易_倍率分析推演_data_001_赫尔蒙德_vs_坎布尔_泊松分析_用合成攻防再算_λ",
       "d_100_工作_200_交易_倍率分析推演_data_001_赫尔蒙德_vs_坎布尔_泊松分析_胜平负"
     ],
+    "10": [
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_md",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_λ_与预期总进球",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_一_原始数据整理",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_七_总进球数概率",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_三_掺入近六场_0_7_主客场_0_3_近六场",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_主队",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_主队_λ1_1_12",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_主队_克雷莫纳",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_主队_客队进球数",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_九_最终结果汇总",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_二_基础_λ_主队主场_客队客场",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_五_比分概率_p_i_j_p_主_i_p_客_j",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_八_比分概率_按概率从高到低_前_15",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_六_胜平负",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_四_泊松_p_x_k_λ_k_e_λ_k",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_客队",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_客队_λ2_1_18",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_客队_佛罗伦萨",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_总进球数",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_泊松概率分析_克雷莫纳_vs_佛罗伦萨",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_用合成攻防再算_λ",
+      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_胜平负"
+    ],
     "11": [
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_md",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_λ_与预期总进球",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_一_原始数据整理",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_七_总进球数概率",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_三_掺入近六场_0_7_主客场_0_3_近六场",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_主队",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_主队_λ1_1_27",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_主队_客队进球数",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_主队_朴茨茅斯",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_九_最终结果汇总",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_二_基础_λ_主队主场_客队客场",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_五_比分概率_p_i_j_p_主_i_p_客_j",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_八_比分概率_按概率从高到低_前_15",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_六_胜平负",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_四_泊松_p_x_k_λ_k_e_λ_k",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_客队",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_客队_λ2_1_34",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_客队_德比郡",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_总进球数",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_泊松概率分析_朴茨茅斯_vs_德比郡",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_用合成攻防再算_λ",
-      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_胜平负"
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_md",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_λ_与预期总进球",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_一_原始数据整理",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_七_总进球数概率",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_三_掺入近六场_0_7_主客场_0_3_近六场",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_主队",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_主队_λ1_1_22",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_主队_客队进球数",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_主队_阿纳西",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_九_最终结果汇总",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_二_基础_λ_主队主场_客队客场",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_五_比分概率_p_i_j_p_主_i_p_客_j",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_八_比分概率_按概率从高到低_前_15",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_六_胜平负",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_四_泊松_p_x_k_λ_k_e_λ_k",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_客队",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_客队_λ2_1_07",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_客队_特鲁瓦",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_总进球数",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_泊松概率分析_阿纳西_vs_特鲁瓦",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_用合成攻防再算_λ",
+      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_胜平负"
     ],
     "12": [
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_md",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_λ_与预期总进球",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_一_原始数据整理",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_七_总进球数概率",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_三_掺入近六场_0_7_主客场_0_3_近六场",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_主队",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_主队_λ1_1_49",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_主队_客队进球数",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_主队_巴列卡诺",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_九_最终结果汇总",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_二_基础_λ_主队主场_客队客场",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_五_比分概率_p_i_j_p_主_i_p_客_j",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_八_比分概率_按概率从高到低_前_15",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_六_胜平负",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_四_泊松_p_x_k_λ_k_e_λ_k",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_客队",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_客队_λ2_0_92",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_客队_莱万特",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_总进球数",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_泊松概率分析_巴列卡诺_vs_莱万特",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_用合成攻防再算_λ",
-      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_胜平负"
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_readme_openclaw_示例_agents_md_skills_结构模板",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_readme_如何使用",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_readme_目录结构",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_readme_相关文档",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_md",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_何时使用",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_前提条件",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_每日检查_daily_check",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_输出",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_执行步骤",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_步骤_1_确认数据源与范围",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_步骤_2_执行抓取",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_步骤_3_解析与校验",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_步骤_4_输出与落盘_可选",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_执行步骤",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_步骤_1_确定报告类型与输入来源",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_步骤_2_收集与筛选内容",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_步骤_3_按模板组织报告",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_步骤_4_输出与留痕",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_4_家一致的_操盘手法一致_识别_亚盘专用",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_变动历史分析示例_欧指_必须像这样写",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_6_步_亚盘赔率分析"
     ],
     "13": [
       "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_1_目标与范围",
@@ -423,6 +421,28 @@
       "d_100_工作_200_交易_倍率分析推演_readme_问题"
     ],
     "15": [
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_md",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_memory_摘要",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_深度分析报告_马洛卡_vs_西班牙人",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_10_步_泊松比分建模",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_1_步_基本面分析",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_1_段_基本面_伤停_自开盘",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_2_步_伤停分析",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_2_段_欧指分析",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_3_步_欧洲指数_胜平负_赔率分析",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_3_段_亚盘分析",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_4_步_亚盘赔率分析",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_4_段_大小球_第_6_10_步摘要",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_5_步_进球数赔率分析",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_5_段_综合评估与推荐",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_6_步_赔率合理性评估",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_7_步_赔率变动解读",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_8_步_关键点_疑点_矛盾",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_9_步_风险提示",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_综合评估",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_自开盘_合理区间"
+    ],
+    "16": [
       "d_100_工作_200_交易_倍率分析推演_docs_模型扩展与组合手册_1_1_双泊松模型_bivariate_poisson",
       "d_100_工作_200_交易_倍率分析推演_docs_模型扩展与组合手册_1_2_dixon_coles_修正",
       "d_100_工作_200_交易_倍率分析推演_docs_模型扩展与组合手册_2_1_poisson_回归_负二项回归",
@@ -443,62 +463,43 @@
       "d_100_工作_200_交易_倍率分析推演_docs_模型扩展与组合手册_四_基于赔率的市场模型",
       "d_100_工作_200_交易_倍率分析推演_docs_模型扩展与组合手册_模型扩展与组合手册_除泊松之外"
     ],
-    "16": [
-      "agents",
-      "agents_agents_md_足彩分析工作流操作手册",
-      "agents_七_红线与安全",
-      "agents_九_群聊规则",
-      "agents_二_数据来源",
-      "agents_六_可配置参数",
-      "agents_零_会话启动",
-      "concept_football_bookmaker_actuary",
-      "concept_odds_iron_rule",
-      "concept_user_master",
-      "d_100_工作_200_交易_倍率分析推演_idea_md",
-      "d_100_工作_200_交易_倍率分析推演_learnings_feature_requests_feature_requests",
-      "d_100_工作_200_交易_倍率分析推演_learnings_feature_requests_md",
-      "d_100_工作_200_交易_倍率分析推演_learnings_learnings_md",
-      "doc_2026_09_29",
-      "doc_claude",
-      "scripts_check_consistency_py_path"
-    ],
     "17": [
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_md",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_一_原始数据整理",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_七_总进球数概率",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_三_掺入近六场_0_7_主客场_0_3_近六场",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_主队",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_主队_λ1_1_12",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_主队_克雷莫纳",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_二_基础_λ_主队主场_客队客场",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_五_比分概率_p_i_j_p_主_i_p_客_j",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_八_比分概率_按概率从高到低_前_15",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_六_胜平负",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_四_泊松_p_x_k_λ_k_e_λ_k",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_客队",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_客队_λ2_1_18",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_客队_佛罗伦萨",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_泊松概率分析_克雷莫纳_vs_佛罗伦萨",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_用合成攻防再算_λ"
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_md",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_一_原始数据整理",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_七_总进球数概率",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_三_掺入近六场_0_7_主客场_0_3_近六场",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_主队",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_主队_λ1_1_27",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_主队_朴茨茅斯",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_二_基础_λ_主队主场_客队客场",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_五_比分概率_p_i_j_p_主_i_p_客_j",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_八_比分概率_按概率从高到低_前_15",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_六_胜平负",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_四_泊松_p_x_k_λ_k_e_λ_k",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_客队",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_客队_λ2_1_34",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_客队_德比郡",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_泊松概率分析_朴茨茅斯_vs_德比郡",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_用合成攻防再算_λ"
     ],
     "18": [
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_md",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_一_原始数据整理",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_七_总进球数概率",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_三_掺入近六场_0_7_主客场_0_3_近六场",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_主队",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_主队_λ1_1_22",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_主队_阿纳西",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_二_基础_λ_主队主场_客队客场",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_五_比分概率_p_i_j_p_主_i_p_客_j",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_八_比分概率_按概率从高到低_前_15",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_六_胜平负",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_四_泊松_p_x_k_λ_k_e_λ_k",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_客队",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_客队_λ2_1_07",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_客队_特鲁瓦",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_泊松概率分析_阿纳西_vs_特鲁瓦",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_用合成攻防再算_λ"
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_md",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_一_原始数据整理",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_七_总进球数概率",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_三_掺入近六场_0_7_主客场_0_3_近六场",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_主队",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_主队_λ1_1_49",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_主队_巴列卡诺",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_二_基础_λ_主队主场_客队客场",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_五_比分概率_p_i_j_p_主_i_p_客_j",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_八_比分概率_按概率从高到低_前_15",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_六_胜平负",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_四_泊松_p_x_k_λ_k_e_λ_k",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_客队",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_客队_λ2_0_92",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_客队_莱万特",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_泊松概率分析_巴列卡诺_vs_莱万特",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_用合成攻防再算_λ"
     ],
     "19": [
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_agents与skills说明_1_是什么",
@@ -523,39 +524,39 @@
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_10_1_串关_用_ev_和相关性约束",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_10_2_特殊盘口的期望拆分",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_1_1_必须直接跳过的场次_乱局",
-      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_2_1_用泊松算出基础概率",
-      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_2_2_欧指平均_胜平负_ev",
-      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_2_3_欧指平均_大小球_ev_可选",
+      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_4_1_真实赢盘概率_用比分表聚合",
+      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_4_2_水位_赔率_算_ev",
+      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_4_3_盘感只做辅助_不做自动信号",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_9_1_明知有_ev_也要放弃的场景",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_9_2_在整轮赛程中挑出_必须下_的少数场次",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_md",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_一_先判定_这场_要不要碰",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_下注决策手册_版本_1",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_九_择机与放弃_有_ev_也可以_不下注",
-      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_二_价值扫描_泊松_欧指平均",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_五_比分玩法_若要参与",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_六_终极硬规则_必须同时满足",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_十_进阶盘口与串关细节_展望",
-      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_十一_模型实战调参套路_概览"
+      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_十一_模型实战调参套路_概览",
+      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_四_让球盘_买上盘还是下盘"
     ],
     "21": [
-      "memory",
-      "memory_8_维度清单_每次分析必须逐项填写",
-      "memory_memory_md_长期记忆",
-      "memory_串关统计",
-      "memory_为什么必须完整",
-      "memory_关键教训",
-      "memory_各玩法命中率",
-      "memory_各联赛命中率",
-      "memory_基本面分析强制规则_2026_03_18_主人强调",
-      "memory_安全边界",
-      "memory_案例_001_场完整分析",
-      "memory_比分预测统计",
-      "memory_策略调优记录",
-      "memory_累计战绩",
-      "memory_综合评估方法",
-      "memory_重要说明_盘口分类体系针对亚盘_2026_03_18_补充",
-      "memory_项目工程与知识图谱规范"
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_变动历史分析示例_大小球_必须像这样写",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_执行流程",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_1_运行_sporttery_sniper_获取上下文数据",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_2_历史记忆召回",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_3_10_步分析过程_固定顺序",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_3_续_第_4_步_泊松建模_比分概率",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_10_步_关键点_疑点_矛盾分析",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_11_步_风险提示",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_1_步_基本面分析",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_2_步_伤情分析",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_5_步_欧洲指数_胜平负_赔率分析",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_8_步_赔率合理性评估",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_9_步_赔率变动解读",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_脚本抓取命令",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_计算方法",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_输出_1_综合评估与推荐",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_输出_2_写入记忆"
     ],
     "22": [
       "scripts_sporttery_sniper_src_titan007_appendcompanylist",
@@ -577,25 +578,40 @@
       "scripts_sporttery_sniper_src_titan007_selecthistoryrecords"
     ],
     "23": [
-      "scripts_sporttery_sniper_src_titan007_attroffirst",
-      "scripts_sporttery_sniper_src_titan007_cleanteamlabel",
-      "scripts_sporttery_sniper_src_titan007_cleantext",
-      "scripts_sporttery_sniper_src_titan007_extractformation",
-      "scripts_sporttery_sniper_src_titan007_findfirstpositiveindex",
-      "scripts_sporttery_sniper_src_titan007_firstmatch",
-      "scripts_sporttery_sniper_src_titan007_normalizecompany",
-      "scripts_sporttery_sniper_src_titan007_parsedetailhtml",
-      "scripts_sporttery_sniper_src_titan007_parseinjuryplayers",
-      "scripts_sporttery_sniper_src_titan007_parseleaguestandingstable",
-      "scripts_sporttery_sniper_src_titan007_parselineupinjuries",
-      "scripts_sporttery_sniper_src_titan007_parsematchscorefromdetail",
-      "scripts_sporttery_sniper_src_titan007_parseoddscompanylist",
-      "scripts_sporttery_sniper_src_titan007_parseteamstats",
-      "scripts_sporttery_sniper_src_titan007_pickscriptvar",
-      "scripts_sporttery_sniper_src_titan007_splitscore",
-      "scripts_sporttery_sniper_src_titan007_textoffirst"
+      "agents",
+      "agents_agents_md_足彩分析工作流操作手册",
+      "agents_七_红线与安全",
+      "agents_九_群聊规则",
+      "agents_二_数据来源",
+      "agents_六_可配置参数",
+      "agents_零_会话启动",
+      "concept_football_bookmaker_actuary",
+      "concept_odds_iron_rule",
+      "concept_user_master",
+      "d_100_工作_200_交易_倍率分析推演_idea_md",
+      "d_100_工作_200_交易_倍率分析推演_learnings_learnings_md",
+      "doc_2026_09_29",
+      "doc_claude",
+      "scripts_check_consistency_py_path"
     ],
     "24": [
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_2_1_判定总进球倾向",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_2_2_进攻_防守强弱",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_2_3_主客场_近况修正",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_3_1_长期大小球盘",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_3_2_让球盘表现",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_5_1_大小球方向",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_5_2_比分权重_用在_w_i_j_上",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_md",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_一_你到底需要什么级别的_风格",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_三_借助盘口反推风格",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_二_从硬数据判定球队风格",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_五_风格对比分和大小球的具体影响",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_六_最低可执行版本_给自己一个懒人流程",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_四_把风格归类为_a_b_c",
+      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_球队风格判定手册_简版"
+    ],
+    "25": [
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_docs_titan007_champions_league_cupmatch_c103_arrcup_赛事基础信息",
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_docs_titan007_champions_league_cupmatch_c103_arrcupkind_阶段与轮次定义",
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_docs_titan007_champions_league_cupmatch_c103_arrteam_球队字典",
@@ -612,7 +628,23 @@
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_docs_titan007_champions_league_cupmatch_c103_注意事项",
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_docs_titan007_champions_league_cupmatch_c103_页面与数据源"
     ],
-    "25": [
+    "26": [
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_交锋往绩",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_伤停",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_基本面_分析页",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_积分排名",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_近期战绩_葡萄牙体育近_10_场",
+      "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_testdata_oguan_snapshot_md",
+      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_md",
+      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_比赛取消_推迟",
+      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_比赛未全部完场",
+      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_特殊场景",
+      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_赛后复盘_post_review",
+      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_输入",
+      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_输出",
+      "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_首次复盘_无历史数据"
+    ],
+    "27": [
       "d_100_工作_200_交易_倍率分析推演_docs_比分建模与投注手册_1_1_单场比分概率_p_i_j",
       "d_100_工作_200_交易_倍率分析推演_docs_比分建模与投注手册_1_2_胜平负与比分的关系",
       "d_100_工作_200_交易_倍率分析推演_docs_比分建模与投注手册_2_1_基本思路",
@@ -628,23 +660,7 @@
       "d_100_工作_200_交易_倍率分析推演_docs_比分建模与投注手册_四_如何把比分和胜平负_让球盘结合",
       "d_100_工作_200_交易_倍率分析推演_docs_比分建模与投注手册_比分建模与投注手册_泊松版"
     ],
-    "26": [
-      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_四_模拟示例_周日_018_巴萨_vs_塞维利亚",
-      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_1_段_共_5_段",
-      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_2_段_共_5_段",
-      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_3_段_共_5_段",
-      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_4_段_共_5_段",
-      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_5_段_共_5_段",
-      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_md",
-      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_推荐输出_recommendation",
-      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_输入",
-      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_输出",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_3_1_水位数据",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_3_2_水位变化历史_关键时点",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_3_3_综合判断_不机械",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第三步_水位变化分析"
-    ],
-    "27": [
+    "28": [
       "d_100_工作_200_交易_倍率分析推演_identity_identity_md_who_am_i",
       "d_100_工作_200_交易_倍率分析推演_identity_md",
       "d_100_工作_200_交易_倍率分析推演_soul_md",
@@ -660,7 +676,7 @@
       "d_100_工作_200_交易_倍率分析推演_user_投注偏好",
       "d_100_工作_200_交易_倍率分析推演_user_输出偏好"
     ],
-    "28": [
+    "29": [
       "memory_001_场案例分析",
       "memory_判断速查表",
       "memory_升盘_升水的双重性_难点",
@@ -676,7 +692,7 @@
       "memory_造热形态_吸引资金_多数人买错",
       "memory_降热形态_阻挡资金_少数人买对"
     ],
-    "29": [
+    "30": [
       "agents_subagent_注意事项",
       "agents_不使用_subagent_的情况",
       "agents_主人中途干预",
@@ -691,7 +707,7 @@
       "agents_编排架构",
       "agents_设计目标"
     ],
-    "30": [
+    "31": [
       "argparse",
       "concept_poisson_distribution_model",
       "pathlib",
@@ -706,22 +722,22 @@
       "scripts_verify_poisson_main",
       "scripts_verify_poisson_rationale_2"
     ],
-    "31": [
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_md",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_memory_摘要",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_深度分析报告_马洛卡_vs_西班牙人",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_1_步_基本面分析",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_1_段_基本面_伤停_自开盘",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_2_步_伤停分析",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_2_段_欧指分析",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_3_步_欧洲指数_胜平负_赔率分析",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_3_段_亚盘分析",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_4_步_亚盘赔率分析",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_5_段_综合评估与推荐",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_综合评估",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_自开盘_合理区间"
-    ],
     "32": [
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_3_1_水位数据",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_3_2_水位变化历史_关键时点",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_3_3_综合判断_不机械",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_4_1_欧指数据_威廉_365_交叉认证",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_4_2_欧指_vs_亚盘一致性",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_推荐汇总",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第一步_基本面_8_维度分析_必须逐项填写_缺一不可",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第一部分_赛前分析模板",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第三步_水位变化分析",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第五步_综合判断",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第六步_风险评估",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第四步_欧指交叉验证",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_综合判断"
+    ],
+    "33": [
       "dataclasses",
       "path",
       "pattern",
@@ -736,7 +752,7 @@
       "scripts_check_consistency_scan_file",
       "sys"
     ],
-    "33": [
+    "34": [
       "math",
       "scripts_poisson_lib",
       "scripts_poisson_lib_clamp_lambda",
@@ -751,7 +767,7 @@
       "scripts_poisson_lib_rationale_125",
       "typing"
     ],
-    "34": [
+    "35": [
       "scripts_sporttery_sniper_package",
       "scripts_sporttery_sniper_package_engines",
       "scripts_sporttery_sniper_package_engines_node",
@@ -766,7 +782,22 @@
       "scripts_sporttery_sniper_package_type",
       "scripts_sporttery_sniper_package_version"
     ],
-    "35": [
+    "36": [
+      "scripts_sporttery_sniper_src_titan007_buildoddshistoryurls",
+      "scripts_sporttery_sniper_src_titan007_buildrequestheaders",
+      "scripts_sporttery_sniper_src_titan007_createhumanlikefetch",
+      "scripts_sporttery_sniper_src_titan007_createhumanlikefetch_launchloop",
+      "scripts_sporttery_sniper_src_titan007_createhumanlikefetch_launchpendingrequests",
+      "scripts_sporttery_sniper_src_titan007_createhumanlikefetch_runrequest",
+      "scripts_sporttery_sniper_src_titan007_fetchmatchdata",
+      "scripts_sporttery_sniper_src_titan007_fetchoddshistories",
+      "scripts_sporttery_sniper_src_titan007_fetchoptionaltext",
+      "scripts_sporttery_sniper_src_titan007_fetchtext",
+      "scripts_sporttery_sniper_src_titan007_fetchtextwithencoding",
+      "scripts_sporttery_sniper_src_titan007_normalizeconcurrency",
+      "scripts_sporttery_sniper_src_titan007_randomdelayms"
+    ],
+    "37": [
       "concept_match_screening_workflow",
       "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_变动历史分析示例_亚盘_必须像这样写",
       "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_7_步_进球数赔率分析",
@@ -780,7 +811,7 @@
       "d_100_工作_200_交易_倍率分析推演_skills_match_screening_skill_输出",
       "d_100_工作_200_交易_倍率分析推演_skills_match_screening_skill_输出格式"
     ],
-    "36": [
+    "38": [
       "d_100_工作_200_交易_倍率分析推演_docs_联赛配置手册_3_1_在_λ_与风格判定中的使用",
       "d_100_工作_200_交易_倍率分析推演_docs_联赛配置手册_3_2_在比分权重与大小球中的使用",
       "d_100_工作_200_交易_倍率分析推演_docs_联赛配置手册_3_3_在盘深_盘浅判断中的使用",
@@ -794,7 +825,7 @@
       "d_100_工作_200_交易_倍率分析推演_docs_联赛配置手册_四_简单示例_同样总进球_2_6_在不同联赛的含义",
       "d_100_工作_200_交易_倍率分析推演_docs_联赛配置手册_联赛配置手册_泊松_盘口"
     ],
-    "37": [
+    "39": [
       "d_100_工作_200_交易_倍率分析推演_docs_赔率与泊松比较案例_md",
       "d_100_工作_200_交易_倍率分析推演_docs_赔率与泊松比较案例_总结_怎么比较才叫_值得下注",
       "d_100_工作_200_交易_倍率分析推演_docs_赔率与泊松比较案例_案例一_布伦特福德_vs_狼队_真实赔率",
@@ -808,21 +839,21 @@
       "d_100_工作_200_交易_倍率分析推演_docs_赔率与泊松比较案例_结论_是否值得下注",
       "d_100_工作_200_交易_倍率分析推演_docs_赔率与泊松比较案例_赔率与泊松比较_何时值得下注_案例详解"
     ],
-    "38": [
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_执行流程",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_1_运行_sporttery_sniper_获取上下文数据",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_2_历史记忆召回",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_3_10_步分析过程_固定顺序",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_3_续_第_4_步_泊松建模_比分概率",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_1_步_基本面分析",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_2_步_伤情分析",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_5_步_欧洲指数_胜平负_赔率分析",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_脚本抓取命令",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_计算方法",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_输出_1_综合评估与推荐",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_输出_2_写入记忆"
+    "40": [
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_异常处理",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_执行步骤",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_查看其他日期赛程",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_1_检查脚本目录",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_2_运行脚本同步赛程",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_3_解析脚本输出",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_4_格式化输出并写入_memory",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_5_结构化输出",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_6_写入每日记忆",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_赛程抓取_match_scraper",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_输出",
+      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_销售窗口检查_定时任务触发时必须执行"
     ],
-    "39": [
+    "41": [
       "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_执行步骤",
       "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_步骤_1_读取推荐记录",
       "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_步骤_2_获取比赛结果",
@@ -836,7 +867,7 @@
       "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_步骤_8_写入记忆",
       "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_步骤_9_推送"
     ],
-    "40": [
+    "42": [
       "odds_deduction_案例_27_超低平全周期锁死_3_00杀主胜案__平赔全流程处于_3_00禁区_",
       "odds_deduction_案例_28_均势弱让诱平蜜罐掩护高水穿盘案__平赔暴跌至3_18做蜜罐_终盘让胜",
       "odds_deduction_案例_29_平半倒挂诱客杀平局案__客负易主引流追热_平赔砸入2_80超低水真防",
@@ -850,35 +881,35 @@
       "odds_deduction_案例_37_深v洗盘诱空与1_40毒诱饵杀局案__主胜2_45暴砍2_20深v破",
       "odds_deduction_案例_38_初盘让平3_72天堑与让胜单调下砸穿盘案__胜赔1_42连砸1_34"
     ],
-    "41": [
-      "scripts_sporttery_sniper_src_titan007_buildoddshistoryurls",
-      "scripts_sporttery_sniper_src_titan007_createhumanlikefetch",
-      "scripts_sporttery_sniper_src_titan007_createhumanlikefetch_launchloop",
-      "scripts_sporttery_sniper_src_titan007_createhumanlikefetch_launchpendingrequests",
-      "scripts_sporttery_sniper_src_titan007_createhumanlikefetch_runrequest",
-      "scripts_sporttery_sniper_src_titan007_fetchmatchdata",
-      "scripts_sporttery_sniper_src_titan007_fetchoddshistories",
-      "scripts_sporttery_sniper_src_titan007_fetchoptionaltext",
-      "scripts_sporttery_sniper_src_titan007_fetchtext",
-      "scripts_sporttery_sniper_src_titan007_fetchtextwithencoding",
-      "scripts_sporttery_sniper_src_titan007_normalizeconcurrency",
-      "scripts_sporttery_sniper_src_titan007_randomdelayms"
-    ],
-    "42": [
-      "scripts_sporttery_sniper_src_titan007_extractarrayliteral",
-      "scripts_sporttery_sniper_src_titan007_handicapname",
-      "scripts_sporttery_sniper_src_titan007_isprematchphase",
-      "scripts_sporttery_sniper_src_titan007_matchstatusname",
-      "scripts_sporttery_sniper_src_titan007_parsecompanyodds",
-      "scripts_sporttery_sniper_src_titan007_parsecorrectscoreodds",
-      "scripts_sporttery_sniper_src_titan007_parsejcoddsdata",
-      "scripts_sporttery_sniper_src_titan007_parselatesteventscore",
-      "scripts_sporttery_sniper_src_titan007_parseoddsscript",
-      "scripts_sporttery_sniper_src_titan007_parsetotalgoalodds",
-      "scripts_sporttery_sniper_src_titan007_parsewindrawlose",
-      "scripts_sporttery_sniper_src_titan007_value"
-    ],
     "43": [
+      "ref_node_assert",
+      "ref_node_test",
+      "scripts_sporttery_sniper_src_titan007_cleanteamlabel",
+      "scripts_sporttery_sniper_src_titan007_fetchjcschedule",
+      "scripts_sporttery_sniper_src_titan007_normalizejcsaledate",
+      "scripts_sporttery_sniper_src_titan007_parseanalysishtml",
+      "scripts_sporttery_sniper_src_titan007_parseheadtoheadrecords",
+      "scripts_sporttery_sniper_src_titan007_parsejcscheduleoddstext",
+      "scripts_sporttery_sniper_src_titan007_parseleaguestandings",
+      "scripts_sporttery_sniper_src_titan007_parseleaguestandingstable",
+      "scripts_sporttery_sniper_test_cli_test",
+      "scripts_sporttery_sniper_test_titan007_test"
+    ],
+    "44": [
+      "tools",
+      "tools_sessions_spawn_启动后台_subagent",
+      "tools_subagent_工具",
+      "tools_tools_md_工具使用指南",
+      "tools_单场深度分析数据抓取",
+      "tools_数据安全规则",
+      "tools_数据范围",
+      "tools_核心工具_sporttery_sniper",
+      "tools_赛后复盘数据抓取",
+      "tools_赛程同步",
+      "tools_运行环境",
+      "tools_验证脚本"
+    ],
+    "45": [
       "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_盘口与赔率综合分析_2_1_初盘_ev_计算",
       "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_盘口与赔率综合分析_2_2_即时盘_ev_计算",
       "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_盘口与赔率综合分析_3_1_泊松对_2_5_球线的看法",
@@ -891,46 +922,33 @@
       "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_盘口与赔率综合分析_四_如果只看这一场_赛前我的下注倾向",
       "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_盘口与赔率综合分析_巴列卡诺_vs_莱万特_泊松_盘口综合实战案例"
     ],
-    "44": [
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_md",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_下一步",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_交锋往绩",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_伤停",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_基本面_分析页",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_已获取数据",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_待抓取",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_深度分析进度_2950955_里斯本_vs_博德闪耀",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_状态",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_积分排名",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_近期战绩_葡萄牙体育近_10_场"
-    ],
-    "45": [
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_1_memory_md_中_clv_用词与_各玩法_不统一",
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_2_主会话_无赛程时_行为略模糊",
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_3_两套比分时_比分首选_未约定",
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_4_已分析过再分析_询问_vs_跳过",
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_二_建议修补的漏洞_不一致",
-      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_1_skills_match_scraper_skill_md_赛程抓取",
-      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_2_skills_match_screening_skill_md_初筛",
-      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_3_skills_deep_analysis_skill_md_深度分析",
-      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_4_skills_recommendation_skill_md_推荐输出",
-      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_5_skills_post_review_skill_md_赛后复盘",
-      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_对现有_skills_skill_md_的改造点"
-    ],
     "46": [
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_3_1_长期大小球盘",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_3_2_让球盘表现",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_5_1_大小球方向",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_5_2_比分权重_用在_w_i_j_上",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_md",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_一_你到底需要什么级别的_风格",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_三_借助盘口反推风格",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_五_风格对比分和大小球的具体影响",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_六_最低可执行版本_给自己一个懒人流程",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_四_把风格归类为_a_b_c",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_球队风格判定手册_简版"
+      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_四_模拟示例_周日_018_巴萨_vs_塞维利亚",
+      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_1_段_共_5_段",
+      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_2_段_共_5_段",
+      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_3_段_共_5_段",
+      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_4_段_共_5_段",
+      "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析_周日_018_第_5_段_共_5_段",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_2_1_盘口数据",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_2_2_判断实盘_or_错盘",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_2_3_错盘分类_如为错盘",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_2_4_浅盘形态细分_如为浅盘",
+      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第二步_亚盘盘口类型判断_主人亲授体系"
     ],
     "47": [
+      "d_100_工作_200_交易_倍率分析推演_learnings_feature_requests_feature_requests",
+      "d_100_工作_200_交易_倍率分析推演_learnings_feature_requests_md",
+      "memory_串关统计",
+      "memory_关键教训",
+      "memory_各玩法命中率",
+      "memory_各联赛命中率",
+      "memory_比分预测统计",
+      "memory_策略调优记录",
+      "memory_累计战绩",
+      "memory_重要说明_盘口分类体系针对亚盘_2026_03_18_补充",
+      "memory_项目工程与知识图谱规范"
+    ],
+    "48": [
       "graphify_analyze",
       "graphify_cluster",
       "graphify_export",
@@ -943,7 +961,7 @@
       "scripts_generate_deep_graph_run_deep_graphify_add_inferred",
       "scripts_generate_deep_graph_run_deep_graphify_resolve_hub"
     ],
-    "48": [
+    "49": [
       "odds_deduction_五__彻底杜绝推演反复犯错的三大定量物理门禁_根治二元钟摆与阴谋论妄想症",
       "odds_deduction_公理_10_让盘双弃与平半毒诱饵分水岭_深盘双弃抹杀主胜_vs_平半毒诱饵杀让负",
       "odds_deduction_公理_9_低赔易主与真崩盘定律_真崩盘客胜_vs_假易主诱客杀平局",
@@ -956,7 +974,31 @@
       "odds_deduction_门禁六_三维绝对仲裁树_彻底终结_升降水双向辩护_的逻辑死穴",
       "odds_deduction_门禁四_均势微让反超门禁_严禁把未反超的微调脑补为反客为主全胜"
     ],
-    "49": [
+    "50": [
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_1_memory_md_中_clv_用词与_各玩法_不统一",
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_2_主会话_无赛程时_行为略模糊",
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_3_两套比分时_比分首选_未约定",
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_4_已分析过再分析_询问_vs_跳过",
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_md",
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_一_已确认一致的部分",
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_三_可选优化_非漏洞",
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_二_建议修补的漏洞_不一致",
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_四_小结",
+      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_流程与文档一致性检查_漏洞与建议"
+    ],
+    "51": [
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_agents_md_工作区操作手册_提纲模板",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_md",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_一_工作流程总览",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_七_可配置参数_可选",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_三_红线与安全",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_二_记忆与写入规则",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_五_与_skills_tools_的关系",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_六_群聊与心跳_可选",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_四_内外边界",
+      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_零_会话启动"
+    ],
+    "52": [
       "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_准确信号",
       "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_失误信号",
       "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_学习要点",
@@ -968,7 +1010,7 @@
       "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第五步_更新追踪表",
       "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第四步_核心教训"
     ],
-    "50": [
+    "53": [
       "odds_deduction_三__赔率分析推演十大公理_胜平负___让球联动",
       "odds_deduction_公理_1_超低平___3_00_防御一致性检验_全周期低平真闷平_vs_诱平蜜罐",
       "odds_deduction_公理_2_极低赔___1_30_四轨分流与反弹回踩鉴别标尺_真穿盘___杀冷平_",
@@ -980,7 +1022,7 @@
       "odds_deduction_公理_8_均势互换跷跷板与高平通杀定律_两头引流杀中路",
       "odds_deduction_案例_73_双盘前台假稳胆与后台双弃杀闷平案__主胜1_39假造稳胆_让球终盘让"
     ],
-    "51": [
+    "54": [
       "odds_deduction_案例_56_客让盘砸让平诱小胜与让负升水阻上穿盘案__客负1_81锁定_让平暴跌",
       "odds_deduction_案例_57_平赔单边狂砸至2_55成全盘第一低赔案__平赔暴跌8档至2_55反超",
       "odds_deduction_案例_58_客胜回踩造死胆与终盘胜平并列杀局案__客胜1_69回踩1_72拒降_",
@@ -992,31 +1034,7 @@
       "odds_deduction_案例_65_让球双升清退唯一下砸穿盘大捷案__客负1_27微升1_31洗盘_平赔",
       "odds_deduction_案例_66_让平独跌3_25与主胜微升诱下杀局案__主胜1_39升1_45虚晃赶"
     ],
-    "52": [
-      "ref_node_assert",
-      "ref_node_test",
-      "scripts_sporttery_sniper_src_titan007_fetchjcschedule",
-      "scripts_sporttery_sniper_src_titan007_normalizejcsaledate",
-      "scripts_sporttery_sniper_src_titan007_parseanalysishtml",
-      "scripts_sporttery_sniper_src_titan007_parseheadtoheadrecords",
-      "scripts_sporttery_sniper_src_titan007_parsejcscheduleoddstext",
-      "scripts_sporttery_sniper_src_titan007_parseleaguestandings",
-      "scripts_sporttery_sniper_test_cli_test",
-      "scripts_sporttery_sniper_test_titan007_test"
-    ],
-    "53": [
-      "scripts_sporttery_sniper_src_titan007_alignedoddsrow",
-      "scripts_sporttery_sniper_src_titan007_extractcells",
-      "scripts_sporttery_sniper_src_titan007_findtablebylabel",
-      "scripts_sporttery_sniper_src_titan007_parsecrowcorrectscores",
-      "scripts_sporttery_sniper_src_titan007_parsecrowfullindexdata",
-      "scripts_sporttery_sniper_src_titan007_parsecrowgoalbands",
-      "scripts_sporttery_sniper_src_titan007_parsecrowteamtotals",
-      "scripts_sporttery_sniper_src_titan007_reversescore",
-      "scripts_sporttery_sniper_src_titan007_tablerows",
-      "scripts_sporttery_sniper_src_titan007_zipodds"
-    ],
-    "54": [
+    "55": [
       "d_100_工作_200_交易_倍率分析推演_data_初盘赔率与泊松价值分析_001至006_md",
       "d_100_工作_200_交易_倍率分析推演_data_初盘赔率与泊松价值分析_001至006_一_统一流程_学习用",
       "d_100_工作_200_交易_倍率分析推演_data_初盘赔率与泊松价值分析_001至006_二_六场初盘与泊松数据",
@@ -1027,27 +1045,16 @@
       "d_100_工作_200_交易_倍率分析推演_data_初盘赔率与泊松价值分析_001至006_步骤_3_逐项比较_算期望值",
       "d_100_工作_200_交易_倍率分析推演_data_初盘赔率与泊松价值分析_001至006_步骤_4_下结论_哪个值得买"
     ],
-    "55": [
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_agents_md_工作区操作手册_提纲模板",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_md",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_一_工作流程总览",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_七_可配置参数_可选",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_三_红线与安全",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_二_记忆与写入规则",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_六_群聊与心跳_可选",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_四_内外边界",
-      "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_agents_零_会话启动"
-    ],
     "56": [
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_4_1_欧指数据_威廉_365_交叉认证",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_4_2_欧指_vs_亚盘一致性",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_推荐汇总",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第一步_基本面_8_维度分析_必须逐项填写_缺一不可",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第一部分_赛前分析模板",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第五步_综合判断",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第六步_风险评估",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第四步_欧指交叉验证",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_综合判断"
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_md",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_异常处理",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_数据抓取方式_强制",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_数据源限流_网络异常",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_深度分析_deep_analysis",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_脚本抓取异常",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_输出",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_部分完成场景",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_频率控制"
     ],
     "57": [
       "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_md",
@@ -1083,6 +1090,17 @@
       "odds_deduction_案例_55_初盘_1_35与让胜单调破2_00真穿盘案__胜1_33砸至1_31"
     ],
     "60": [
+      "scripts_sporttery_sniper_src_titan007_alignedoddsrow",
+      "scripts_sporttery_sniper_src_titan007_findtablebylabel",
+      "scripts_sporttery_sniper_src_titan007_parsecrowcorrectscores",
+      "scripts_sporttery_sniper_src_titan007_parsecrowfullindexdata",
+      "scripts_sporttery_sniper_src_titan007_parsecrowgoalbands",
+      "scripts_sporttery_sniper_src_titan007_parsecrowteamtotals",
+      "scripts_sporttery_sniper_src_titan007_reversescore",
+      "scripts_sporttery_sniper_src_titan007_tablerows",
+      "scripts_sporttery_sniper_src_titan007_zipodds"
+    ],
+    "61": [
       "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_1_标题与场次信息_首段开头",
       "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_2_分析过程_第_1_3_段_可多段",
       "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_3_结论_最后一段_必须含以下全部",
@@ -1091,16 +1109,6 @@
       "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_三_检查清单_主人_复盘用",
       "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_二_必含块与顺序",
       "d_100_工作_200_交易_倍率分析推演_docs_深度分析推送通知模板_深度分析推送通知模板"
-    ],
-    "61": [
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_异常处理",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_数据抓取方式_强制",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_数据源限流_网络异常",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_深度分析_deep_analysis",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_脚本抓取异常",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_输出",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_部分完成场景",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_频率控制"
     ],
     "62": [
       "d_100_工作_200_交易_倍率分析推演_skills_match_screening_skill_执行流程",
@@ -1113,6 +1121,16 @@
       "d_100_工作_200_交易_倍率分析推演_skills_match_screening_skill_阶段_6_综合排序与数量控制"
     ],
     "63": [
+      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_md",
+      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_推荐输出_recommendation",
+      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_无推荐场景",
+      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_特殊场景处理",
+      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_用户要求调整",
+      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_用户追问单场",
+      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_输入",
+      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_输出"
+    ],
+    "64": [
       "memory_003_场完整分析案例_2026_03_18_反思",
       "memory_8_维度完整分析",
       "memory_关键信号识别",
@@ -1122,7 +1140,7 @@
       "memory_盘赔分析",
       "memory_综合判断"
     ],
-    "64": [
+    "65": [
       "memory_2784765_场_意甲_拉齐奥_1_0_ac_米兰_复盘总结",
       "memory_主人点评",
       "memory_亚盘数据",
@@ -1132,7 +1150,7 @@
       "memory_盘口类型判断",
       "memory_赛果验证"
     ],
-    "65": [
+    "66": [
       "odds_deduction_案例_19_极低赔拉让平阻客实杀让平案__主胜1_10诱穿盘暗杀让平_主胜1_1",
       "odds_deduction_案例_20_拉马努金注意到与相对斜率双降穿盘案__初盘胜平同值3_30_让负狂砍",
       "odds_deduction_案例_21_破2_00诱穿盘与拉让平至4_00赶客双杀案__客胜1_20砸破2_",
@@ -1142,7 +1160,7 @@
       "odds_deduction_案例_25_客让转主让攻守易势案__受让胜1_52锁死不败_主胜狂砍0_24反客",
       "odds_deduction_案例_26_极端低平2_75真防守与让盘双弃案__平赔暴跌至2_75真闷平_让球"
     ],
-    "66": [
+    "67": [
       "odds_deduction_案例_39_均势微让僵局与平赔领跌杀两头案__主胜微降未易主_2_51_vs_2",
       "odds_deduction_案例_40_平手均势诱客造热与临场拉高平赔杀两头案__初盘2_42对开_客负连降",
       "odds_deduction_案例_41_极低赔拒破2_00造胆杀天价冷平案__客负1_32狂降造死胆_让负2",
@@ -1151,16 +1169,6 @@
       "odds_deduction_案例_44_半球生死盘诱主杀闷平案__主胜1_90半球热胆_让胜3_95否定穿盘",
       "odds_deduction_案例_45_初盘让负最小与主崩平降通杀案____1_让负1_65初盘最小定性主不",
       "odds_deduction_案例_46_初让胜最小阻上杀平案____1_让胜2_10初盘最小锁死客不胜_升水"
-    ],
-    "67": [
-      "scripts_sporttery_sniper_src_titan007_leaguekey",
-      "scripts_sporttery_sniper_src_titan007_pad2",
-      "scripts_sporttery_sniper_src_titan007_parsejcdate",
-      "scripts_sporttery_sniper_src_titan007_parsejcdateparts",
-      "scripts_sporttery_sniper_src_titan007_parsejcdatetime",
-      "scripts_sporttery_sniper_src_titan007_parsejcleaguerecord",
-      "scripts_sporttery_sniper_src_titan007_parsejcschedulerecord",
-      "scripts_sporttery_sniper_src_titan007_parsejcscheduletext"
     ],
     "68": [
       "agents_一_工作流程总览",
@@ -1172,13 +1180,13 @@
       "agents_跳过当日分析"
     ],
     "69": [
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_10_步_泊松比分建模",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_4_段_大小球_第_6_10_步摘要",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_5_步_进球数赔率分析",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_6_步_赔率合理性评估",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_7_步_赔率变动解读",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_8_步_关键点_疑点_矛盾",
-      "d_100_工作_200_交易_倍率分析推演_data_2026_03_15_2804569_analysis_report_第_9_步_风险提示"
+      "concept_post_review_audit",
+      "concept_recommendation_and_parlay",
+      "concept_sporttery_sniper_engine",
+      "concept_ten_step_deep_analysis",
+      "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_testdata_oguan_cup_html_txt",
+      "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_testdata_oguan_network_txt",
+      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_4_家一致的_操盘手法一致_识别_大小球专用"
     ],
     "70": [
       "d_100_工作_200_交易_倍率分析推演_data_初盘赔率与泊松价值分析_001至006_001_赫尔蒙德_vs_坎布尔",
@@ -1190,6 +1198,15 @@
       "d_100_工作_200_交易_倍率分析推演_data_初盘赔率与泊松价值分析_001至006_三_逐场分析_按流程执行"
     ],
     "71": [
+      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_1_编排写入深度分析时可能覆盖当日已有场次_中",
+      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_2_去掉第3场_后精选用的列表未持久化_中",
+      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_3_初筛_0_场时编排写入的_推荐格式未统一_低",
+      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_4_复盘时_memory_文件不存在未明确_低",
+      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_5_深度分析_此场已分析_时的行为未定义_低",
+      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_6_浏览器共享导致并行_worker_数据串号_高_待解决",
+      "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_一_发现的_bug_漏洞"
+    ],
+    "72": [
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_readme_md",
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_readme_sporttery_sniper",
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_readme_使用方式",
@@ -1198,16 +1215,23 @@
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_readme_部署",
       "d_100_工作_200_交易_倍率分析推演_scripts_sporttery_sniper_readme_验证"
     ],
-    "72": [
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_执行步骤",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_1_检查脚本目录",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_2_运行脚本同步赛程",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_3_解析脚本输出",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_4_格式化输出并写入_memory",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_5_结构化输出",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_步骤_6_写入每日记忆"
-    ],
     "73": [
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_md",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_下一步",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_已获取数据",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_待抓取",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_深度分析进度_2950955_里斯本_vs_博德闪耀",
+      "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_progress_状态"
+    ],
+    "74": [
+      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_1_skills_match_scraper_skill_md_赛程抓取",
+      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_2_skills_match_screening_skill_md_初筛",
+      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_3_skills_deep_analysis_skill_md_深度分析",
+      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_4_skills_recommendation_skill_md_推荐输出",
+      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_5_skills_post_review_skill_md_赛后复盘",
+      "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_对现有_skills_skill_md_的改造点"
+    ],
+    "75": [
       "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_执行步骤",
       "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_步骤_1_逐场推送分析报告_内容格式规范",
       "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_步骤_2_精选_全部分析完成后执行",
@@ -1215,7 +1239,7 @@
       "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_步骤_4_推送汇总",
       "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_步骤_5_写入记忆"
     ],
-    "74": [
+    "76": [
       "odds_deduction_案例_67_拉马努金客负断崖与让胜蜜罐杀大冷案__胜1_26突升1_29_客负暴",
       "odds_deduction_案例_68_双盘条件集合交集与客负虚热杀主胜案__初让胜1_62锁主不败_平赔3",
       "odds_deduction_案例_69_高平大球让平独降杀让负蜜罐案__平赔4_05天堑排除闷平_胜回落2_",
@@ -1223,75 +1247,61 @@
       "odds_deduction_案例_71_超深盘初让平3_83天堑与让胜单边唯一下砸穿盘案__主胜1_28断层",
       "odds_deduction_案例_72_极限初低平2_75天堑与主胜假突破反弹杀局案__平初盘2_75锁闷平"
     ],
-    "75": [
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_λ_与预期总进球",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_主队_客队进球数",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_九_最终结果汇总",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_总进球数",
-      "d_100_工作_200_交易_倍率分析推演_data_002_克雷莫纳_vs_佛罗伦萨_泊松分析_胜平负"
-    ],
-    "76": [
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_λ_与预期总进球",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_主队_客队进球数",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_九_最终结果汇总",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_总进球数",
-      "d_100_工作_200_交易_倍率分析推演_data_003_阿纳西_vs_特鲁瓦_泊松分析_胜平负"
-    ],
     "77": [
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_md",
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_一_已确认一致的部分",
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_三_可选优化_非漏洞",
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_四_小结",
-      "d_100_工作_200_交易_倍率分析推演_docs_check_漏洞与一致性问题_流程与文档一致性检查_漏洞与建议"
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_λ_与预期总进球",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_主队_客队进球数",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_九_最终结果汇总",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_总进球数",
+      "d_100_工作_200_交易_倍率分析推演_data_005_朴茨茅斯_vs_德比郡_泊松分析_胜平负"
     ],
     "78": [
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_λ_与预期总进球",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_主队_客队进球数",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_九_最终结果汇总",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_总进球数",
+      "d_100_工作_200_交易_倍率分析推演_data_006_巴列卡诺_vs_莱万特_泊松分析_胜平负"
+    ],
+    "79": [
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_执行步骤",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_步骤_1_获取今日日期与时间范围",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_步骤_2_拉取日历_待办_通知",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_步骤_3_汇总并格式化",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_daily_check_skill_步骤_4_可选_写入_memory"
     ],
-    "79": [
+    "80": [
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_md",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_何时使用",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_前提条件",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_数据抓取_data_fetch",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_data_fetch_skill_输出"
     ],
-    "80": [
+    "81": [
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_md",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_何时使用",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_前提条件",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_报告生成_report_generate",
       "d_100_工作_200_交易_倍率分析推演_docs_openclaw_example_skills_report_generate_skill_输出"
     ],
-    "81": [
+    "82": [
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_3_1_平博_尖锐参考盘_胜平负_亚盘_大小球",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_3_2_亚盘四家_澳彩_皇冠_bet365_易胜博",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_3_3_欧指客群盘_威廉_interwetten_马会_中国竞彩网",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_3_4_过滤规则",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_三_盘口与走势过滤危险热门"
     ],
-    "82": [
+    "83": [
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_7_1_下注频率_宁少不多",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_7_2_单场下注比例_三档_上限",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_7_3_相关性控制_避免同逻辑赌太多场",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_7_4_确定下注前的最后自检",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_七_下注频率与资金管理_建议版"
     ],
-    "83": [
+    "84": [
       "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_1_确认分析依据公司列表",
       "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_2_赔率数据归属与整理",
       "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_3_赔率数据整理规则",
       "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_8_存档原始赔率数据",
       "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_1_5_校验脚本赔率与数据完整性"
-    ],
-    "84": [
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_变动历史分析示例_大小球_必须像这样写",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_10_步_关键点_疑点_矛盾分析",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_11_步_风险提示",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_8_步_赔率合理性评估",
-      "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_第_9_步_赔率变动解读"
     ],
     "85": [
       "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_方式_1_来自初筛流程_默认",
@@ -1301,162 +1311,148 @@
       "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_输入"
     ],
     "86": [
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_异常处理",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_查看其他日期赛程",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_赛程抓取_match_scraper",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_输出",
-      "d_100_工作_200_交易_倍率分析推演_skills_match_scraper_skill_销售窗口检查_定时任务触发时必须执行"
+      "memory_8_维度清单_每次分析必须逐项填写",
+      "memory_为什么必须完整",
+      "memory_基本面分析强制规则_2026_03_18_主人强调",
+      "memory_案例_001_场完整分析",
+      "memory_综合评估方法"
     ],
     "87": [
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_2_1_盘口数据",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_2_2_判断实盘_or_错盘",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_2_3_错盘分类_如为错盘",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_2_4_浅盘形态细分_如为浅盘",
-      "d_100_工作_200_交易_倍率分析推演_赛前赛后分析模板_第二步_亚盘盘口类型判断_主人亲授体系"
-    ],
-    "88": [
       "agents_1_庄家运作的底层逻辑_庄家第一性原理",
       "agents_2_站在庄家视角精准预测_胜平负_的核心方法",
       "agents_三_技能流程指引",
       "agents_核心心法_足球庄家精算视角与净赔付最小化破译_第一性原理"
     ],
-    "89": [
+    "88": [
       "agents_写下来_不要_心里记着",
       "agents_四_memory_写入规则",
       "agents_每日记忆_memory_yyyy_mm_dd_md",
       "agents_长期记忆_memory_md"
     ],
-    "90": [
+    "89": [
       "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_md",
       "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_三_建议修改优先级",
       "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_二_已确认无问题的衔接",
       "d_100_工作_200_交易_倍率分析推演_docs_flow_audit_2026_03_流程与衔接检查_2026_03"
     ],
-    "91": [
-      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_4_1_真实赢盘概率_用比分表聚合",
-      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_4_2_水位_赔率_算_ev",
-      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_4_3_盘感只做辅助_不做自动信号",
-      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_四_让球盘_买上盘还是下盘"
+    "90": [
+      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_2_1_用泊松算出基础概率",
+      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_2_2_欧指平均_胜平负_ev",
+      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_2_3_欧指平均_大小球_ev_可选",
+      "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_二_价值扫描_泊松_欧指平均"
     ],
-    "92": [
+    "91": [
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_8_1_每一注需要记录什么",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_8_2_如何按月_按联赛看战绩",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_8_3_区分运气波动和模型问题",
       "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_八_战绩记录与复盘_下一步必须补齐的环节"
     ],
-    "93": [
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_2_1_判定总进球倾向",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_2_2_进攻_防守强弱",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_2_3_主客场_近况修正",
-      "d_100_工作_200_交易_倍率分析推演_docs_球队风格判定手册_二_从硬数据判定球队风格"
-    ],
-    "94": [
+    "92": [
       "d_100_工作_200_交易_倍率分析推演_heartbeat_heartbeat_检查清单",
       "d_100_工作_200_交易_倍率分析推演_heartbeat_md",
       "d_100_工作_200_交易_倍率分析推演_heartbeat_赛前分析补漏",
       "d_100_工作_200_交易_倍率分析推演_heartbeat_赛后复盘补漏"
     ],
-    "95": [
-      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_无推荐场景",
-      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_特殊场景处理",
-      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_用户要求调整",
-      "d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_用户追问单场"
-    ],
-    "96": [
+    "93": [
       "scripts_poisson_lib_poisson_cdf_leq",
       "scripts_poisson_lib_rationale_112",
       "scripts_poisson_lib_rationale_145",
       "scripts_poisson_lib_solve_lambda_for_over_prob"
     ],
-    "97": [
+    "94": [
       "agents_八_心跳机制",
       "agents_心跳_vs_cron_何时使用哪一个",
       "agents_心跳期间的行为"
     ],
-    "98": [
+    "95": [
       "d_100_工作_200_交易_倍率分析推演_learnings_errors_2026_03_11_高危操作未等待确认",
       "d_100_工作_200_交易_倍率分析推演_learnings_errors_errors_log",
       "d_100_工作_200_交易_倍率分析推演_learnings_errors_md"
+    ],
+    "96": [
+      "memory",
+      "memory_memory_md_长期记忆",
+      "memory_安全边界"
     ]
   },
   "cohesion": {
-    "0": 0.08602150537634409,
+    "0": 0.10526315789473684,
     "1": 0.06451612903225806,
     "2": 0.06666666666666667,
     "3": 0.06896551724137931,
-    "4": 0.07936507936507936,
-    "5": 0.12433862433862433,
-    "6": 0.07407407407407407,
-    "7": 0.1452991452991453,
-    "8": 0.13538461538461538,
-    "9": 0.08,
+    "4": 0.07407407407407407,
+    "5": 0.1452991452991453,
+    "6": 0.13538461538461538,
+    "7": 0.08,
+    "8": 0.15217391304347827,
+    "9": 0.09090909090909091,
     "10": 0.09090909090909091,
     "11": 0.09090909090909091,
-    "12": 0.09090909090909091,
+    "12": 0.1038961038961039,
     "13": 0.09090909090909091,
     "14": 0.09090909090909091,
-    "15": 0.10526315789473684,
-    "16": 0.1323529411764706,
+    "15": 0.1,
+    "16": 0.10526315789473684,
     "17": 0.11764705882352941,
     "18": 0.11764705882352941,
     "19": 0.125,
     "20": 0.11764705882352941,
     "21": 0.11764705882352941,
     "22": 0.22058823529411764,
-    "23": 0.22058823529411764,
+    "23": 0.1523809523809524,
     "24": 0.13333333333333333,
-    "25": 0.14285714285714285,
-    "26": 0.15384615384615385,
-    "27": 0.16483516483516483,
-    "28": 0.14285714285714285,
-    "29": 0.15384615384615385,
-    "30": 0.28205128205128205,
-    "31": 0.15384615384615385,
-    "32": 0.21794871794871795,
-    "33": 0.23076923076923078,
-    "34": 0.15384615384615385,
-    "35": 0.18181818181818182,
-    "36": 0.16666666666666666,
-    "37": 0.21212121212121213,
+    "25": 0.13333333333333333,
+    "26": 0.14285714285714285,
+    "27": 0.14285714285714285,
+    "28": 0.16483516483516483,
+    "29": 0.14285714285714285,
+    "30": 0.15384615384615385,
+    "31": 0.28205128205128205,
+    "32": 0.15384615384615385,
+    "33": 0.21794871794871795,
+    "34": 0.23076923076923078,
+    "35": 0.15384615384615385,
+    "36": 0.21794871794871795,
+    "37": 0.18181818181818182,
     "38": 0.16666666666666666,
-    "39": 0.16666666666666666,
+    "39": 0.21212121212121213,
     "40": 0.16666666666666666,
-    "41": 0.24242424242424243,
-    "42": 0.24242424242424243,
-    "43": 0.18181818181818182,
-    "44": 0.18181818181818182,
-    "45": 0.2545454545454545,
+    "41": 0.16666666666666666,
+    "42": 0.16666666666666666,
+    "43": 0.22727272727272727,
+    "44": 0.16666666666666666,
+    "45": 0.18181818181818182,
     "46": 0.18181818181818182,
     "47": 0.18181818181818182,
     "48": 0.18181818181818182,
-    "49": 0.2,
+    "49": 0.18181818181818182,
     "50": 0.2,
     "51": 0.2,
-    "52": 0.28888888888888886,
-    "53": 0.28888888888888886,
-    "54": 0.2222222222222222,
+    "52": 0.2,
+    "53": 0.2,
+    "54": 0.2,
     "55": 0.2222222222222222,
     "56": 0.2222222222222222,
     "57": 0.2222222222222222,
     "58": 0.2222222222222222,
     "59": 0.2222222222222222,
-    "60": 0.25,
+    "60": 0.3333333333333333,
     "61": 0.25,
     "62": 0.25,
     "63": 0.25,
     "64": 0.25,
     "65": 0.25,
     "66": 0.25,
-    "67": 0.35714285714285715,
+    "67": 0.25,
     "68": 0.2857142857142857,
-    "69": 0.2857142857142857,
+    "69": 0.3333333333333333,
     "70": 0.2857142857142857,
     "71": 0.2857142857142857,
     "72": 0.2857142857142857,
     "73": 0.3333333333333333,
-    "74": 0.3333333333333333,
-    "75": 0.4,
-    "76": 0.4,
+    "74": 0.5333333333333333,
+    "75": 0.3333333333333333,
+    "76": 0.3333333333333333,
     "77": 0.4,
     "78": 0.4,
     "79": 0.4,
@@ -1467,18 +1463,16 @@
     "84": 0.4,
     "85": 0.4,
     "86": 0.4,
-    "87": 0.4,
+    "87": 0.5,
     "88": 0.5,
     "89": 0.5,
     "90": 0.5,
     "91": 0.5,
     "92": 0.5,
     "93": 0.5,
-    "94": 0.5,
-    "95": 0.5,
-    "96": 0.5,
-    "97": 0.6666666666666666,
-    "98": 0.6666666666666666
+    "94": 0.6666666666666666,
+    "95": 0.6666666666666666,
+    "96": 0.6666666666666666
   },
   "gods": [
     {
@@ -1489,7 +1483,7 @@
     {
       "id": "agents_agents_md_足彩分析工作流操作手册",
       "label": "AGENTS.md - 足彩分析工作流操作手册",
-      "degree": 45
+      "degree": 49
     },
     {
       "id": "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_4_家一致的_操盘手法一致_识别_亚盘专用",
@@ -1499,12 +1493,12 @@
     {
       "id": "memory_累计战绩",
       "label": "累计战绩",
-      "degree": 38
+      "degree": 40
     },
     {
       "id": "d_100_工作_200_交易_倍率分析推演_docs_plans_2026_03_16_titan007_api_design_7_3_skills_deep_analysis_skill_md_深度分析",
       "label": "7.3 `skills/deep-analysis/SKILL.md`（深度分析）",
-      "degree": 37
+      "degree": 38
     },
     {
       "id": "d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_变动历史分析示例_欧指_必须像这样写",
@@ -1524,15 +1518,37 @@
     {
       "id": "d_100_工作_200_交易_倍率分析推演_data_2026_03_17_2950955_analysis_report_欧冠杯_葡萄牙体育_vs_博德闪耀_深度分析报告",
       "label": "[欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告",
-      "degree": 19
+      "degree": 20
     },
     {
-      "id": "d_100_工作_200_交易_倍率分析推演_docs_下注决策手册_下注决策手册_版本_1",
-      "label": "下注决策手册（版本 1）",
-      "degree": 19
+      "id": "d_100_工作_200_交易_倍率分析推演_data_004_布伦特福德_vs_狼队_泊松分析_泊松概率分析_布伦特福德_vs_狼队",
+      "label": "泊松概率分析：布伦特福德 vs 狼队",
+      "degree": 20
     }
   ],
   "surprises": [
+    {
+      "source": "buildAnalysisUrl()",
+      "target": "五、与 Skills / TOOLS 的关系",
+      "source_files": [
+        "scripts/sporttery-sniper/src/titan007.js",
+        "docs/openclaw-example/AGENTS.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "documents_cli_tooling",
+      "why": "inferred connection - not explicitly stated in source; crosses file types (code ↔ doc); connects across different repos/directories; bridges separate communities; peripheral node `五、与 Skills / TOOLS 的关系` unexpectedly reaches hub `buildAnalysisUrl()`"
+    },
+    {
+      "source": "LambdaBounds",
+      "target": "7.3 `skills/deep-analysis/SKILL.md`（深度分析）",
+      "source_files": [
+        "scripts/poisson_lib.py",
+        "docs/plans/2026-03-16-titan007-api-design.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calculates_scoreline_lambda",
+      "why": "inferred connection - not explicitly stated in source; crosses file types (code ↔ doc); connects across different repos/directories; bridges separate communities"
+    },
     {
       "source": "LambdaBounds",
       "target": "4 家一致的“操盘手法一致”识别（亚盘专用）",
@@ -1565,45 +1581,23 @@
       "confidence": "INFERRED",
       "relation": "calculates_scoreline_lambda",
       "why": "inferred connection - not explicitly stated in source; crosses file types (code ↔ doc); connects across different repos/directories; bridges separate communities"
-    },
-    {
-      "source": "LambdaBounds",
-      "target": "比分建模与投注手册（泊松版）",
-      "source_files": [
-        "scripts/poisson_lib.py",
-        "docs/比分建模与投注手册.md"
-      ],
-      "confidence": "INFERRED",
-      "relation": "provides_mathematical_scoreline_formulas",
-      "why": "inferred connection - not explicitly stated in source; crosses file types (code ↔ doc); connects across different repos/directories; bridges separate communities"
-    },
-    {
-      "source": "LambdaBounds",
-      "target": "泊松概率计算手册（足彩用）",
-      "source_files": [
-        "scripts/poisson_lib.py",
-        "docs/泊松概率计算手册.md"
-      ],
-      "confidence": "INFERRED",
-      "relation": "provides_mathematical_scoreline_formulas",
-      "why": "inferred connection - not explicitly stated in source; crosses file types (code ↔ doc); connects across different repos/directories; bridges separate communities"
     }
   ],
   "questions": [
     {
       "type": "bridge_node",
-      "question": "Why does `赔率分析推演：庄家操盘逻辑与双盘联动推演心法` connect `赔率分析推演：庄家操盘逻辑与双盘联动推演心法` to `4 家一致的“操盘手法一致”识别（亚盘专用）`, `盘口与走势阅读手册（简版）`, `[欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告`, `泊松概率计算手册（足彩用）`, `核心工具：sporttery-sniper`, `泊松概率分析：布伦特福德 vs 狼队`, `SAFETY.md`, `泊松概率分析：赫尔蒙德 vs 坎布尔`, `泊松概率分析：朴茨茅斯 vs 德比郡`, `泊松概率分析：巴列卡诺 vs 莱万特`, `titan007 抓取 → 缓存层 → 内部 API 化设计方案`, `Agent（pansuan）— OpenClaw 足彩分析师 Agent`, `模型扩展与组合手册（除泊松之外）`, `AGENTS.md - 足彩分析工作流操作手册`, `泊松概率分析：克雷莫纳 vs 佛罗伦萨`, `泊松概率分析：阿纳西 vs 特鲁瓦`, `OpenClaw：AGENTS.md 与 Skills 说明`, `下注决策手册（版本 1）`, `累计战绩`, `titan007 欧冠杯 CupMatch c103.js 数据结构分析`, `比分建模与投注手册（泊松版）`, `四、模拟示例（周日 018 巴萨 vs 塞维利亚）`, `SOUL.md - 你是谁`, `深度分析报告：马洛卡 VS 西班牙人`, `写入记忆`, `联赛配置手册（泊松 + 盘口）`, `赔率与泊松比较：何时值得下注（案例详解）`, `执行流程`, `执行步骤`, `案例 27（超低平全周期锁死<3.00杀主胜案）：平赔全流程处于<3.00禁区，破2.00虚诱主胜暗杀平局【平局2.95与让负1.59通杀案】`, `巴列卡诺 vs 莱万特：泊松 + 盘口综合实战案例`, `基本面（分析页）`, `7.3 `skills/deep-analysis/SKILL.md`（深度分析）`, `球队风格判定手册（简版）`, `五、 彻底杜绝推演反复犯错的三大定量物理门禁（根治二元钟摆与阴谋论妄想症）`, `三、 赔率分析推演十大公理（胜平负 + 让球联动）`, `案例 56（客让盘砸让平诱小胜与让负升水阻上穿盘案）：客负1.81锁定，让平暴跌-0.25做蜜罐，让负3.47升水阻上大胜【客负1.81与让负3.47穿盘通杀案】`, `AGENTS.md — 工作区操作手册（提纲模板）`, `第一部分：赛前分析模板`, `案例 47（初让负最小均势杀平案）：(-1)让负1.44初盘最小锁死主不胜，均势两头分流杀平局【平3.34与让负1.44双红案】`, `执行流程`, `案例 19（极低赔拉让平阻客实杀让平案）：主胜1.10诱穿盘暗杀让平【主胜1.10与天价让平3.80案】`, `案例 39（均势微让僵局与平赔领跌杀两头案）：主胜微降未易主（2.51 vs 2.30），平赔降幅超胜赔真防平【平3.38与让胜1.48通杀案】`, `三、逐场分析（按流程执行）`, `sporttery-sniper`, `执行步骤`, `执行步骤`, `案例 67（拉马努金客负断崖与让胜蜜罐杀大冷案）：胜1.26突升1.29，客负暴跌-0.45内幕抢筹，让负2.96通杀全盘【客负6.75与让负2.96惊天大冷案】`, `赛程抓取（match-scraper）`, `2.1 盘口数据`, `Heartbeat 检查清单`, `Errors Log`?",
-      "why": "High betweenness centrality (0.391) - this node is a cross-community bridge."
+      "question": "Why does `赔率分析推演：庄家操盘逻辑与双盘联动推演心法` connect `赔率分析推演：庄家操盘逻辑与双盘联动推演心法` to `盘口与走势阅读手册（简版）`, `[欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告`, `泊松概率计算手册（足彩用）`, `泊松概率分析：布伦特福德 vs 狼队`, `SAFETY.md`, `泊松概率分析：赫尔蒙德 vs 坎布尔`, `泊松概率分析：克雷莫纳 vs 佛罗伦萨`, `泊松概率分析：阿纳西 vs 特鲁瓦`, `4 家一致的“操盘手法一致”识别（亚盘专用）`, `titan007 抓取 → 缓存层 → 内部 API 化设计方案`, `Agent（pansuan）— OpenClaw 足彩分析师 Agent`, `深度分析报告：马洛卡 VS 西班牙人`, `模型扩展与组合手册（除泊松之外）`, `泊松概率分析：朴茨茅斯 vs 德比郡`, `泊松概率分析：巴列卡诺 vs 莱万特`, `OpenClaw：AGENTS.md 与 Skills 说明`, `下注决策手册（版本 1）`, `执行流程`, `AGENTS.md - 足彩分析工作流操作手册`, `球队风格判定手册（简版）`, `titan007 欧冠杯 CupMatch c103.js 数据结构分析`, `post-review/SKILL.md`, `比分建模与投注手册（泊松版）`, `SOUL.md - 你是谁`, `第一部分：赛前分析模板`, `match-screening/SKILL.md`, `联赛配置手册（泊松 + 盘口）`, `赔率与泊松比较：何时值得下注（案例详解）`, `执行步骤`, `执行步骤`, `案例 27（超低平全周期锁死<3.00杀主胜案）：平赔全流程处于<3.00禁区，破2.00虚诱主胜暗杀平局【平局2.95与让负1.59通杀案】`, `核心工具：sporttery-sniper`, `巴列卡诺 vs 莱万特：泊松 + 盘口综合实战案例`, `四、模拟示例（周日 018 巴萨 vs 塞维利亚）`, `累计战绩`, `五、 彻底杜绝推演反复犯错的三大定量物理门禁（根治二元钟摆与阴谋论妄想症）`, `二、建议修补的漏洞 / 不一致`, `AGENTS.md — 工作区操作手册（提纲模板）`, `三、 赔率分析推演十大公理（胜平负 + 让球联动）`, `案例 56（客让盘砸让平诱小胜与让负升水阻上穿盘案）：客负1.81锁定，让平暴跌-0.25做蜜罐，让负3.47升水阻上大胜【客负1.81与让负3.47穿盘通杀案】`, `deep-analysis/SKILL.md`, `案例 47（初让负最小均势杀平案）：(-1)让负1.44初盘最小锁死主不胜，均势两头分流杀平局【平3.34与让负1.44双红案】`, `执行流程`, `recommendation/SKILL.md`, `案例 19（极低赔拉让平阻客实杀让平案）：主胜1.10诱穿盘暗杀让平【主胜1.10与天价让平3.80案】`, `案例 39（均势微让僵局与平赔领跌杀两头案）：主胜微降未易主（2.51 vs 2.30），平赔降幅超胜赔真防平【平3.38与让胜1.48通杀案】`, `精选推荐与串关决策 (Recommendation & Parlay Strategy)`, `三、逐场分析（按流程执行）`, `一、发现的 BUG / 漏洞`, `sporttery-sniper`, `7.3 `skills/deep-analysis/SKILL.md`（深度分析）`, `执行步骤`, `案例 67（拉马努金客负断崖与让胜蜜罐杀大冷案）：胜1.26突升1.29，客负暴跌-0.45内幕抢筹，让负2.96通杀全盘【客负6.75与让负2.96惊天大冷案】`, `Heartbeat 检查清单`, `Errors Log`?",
+      "why": "High betweenness centrality (0.447) - this node is a cross-community bridge."
     },
     {
       "type": "bridge_node",
-      "question": "Why does `累计战绩` connect `累计战绩` to `4 家一致的“操盘手法一致”识别（亚盘专用）`, `[欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告`, `泊松概率分析：布伦特福德 vs 狼队`, `赔率分析推演：庄家操盘逻辑与双盘联动推演心法`, `泊松概率分析：赫尔蒙德 vs 坎布尔`, `泊松概率分析：朴茨茅斯 vs 德比郡`, `泊松概率分析：巴列卡诺 vs 莱万特`, `AGENTS.md - 足彩分析工作流操作手册`, `泊松概率分析：克雷莫纳 vs 佛罗伦萨`, `泊松概率分析：阿纳西 vs 特鲁瓦`, `盘赔分析系统化框架（2026-03-17 整理 · 主人亲授）`, `深度分析报告：马洛卡 VS 西班牙人`, `写入记忆`, `联赛配置手册（泊松 + 盘口）`, `执行步骤`, `巴列卡诺 vs 莱万特：泊松 + 盘口综合实战案例`, `基本面（分析页）`, `7.3 `skills/deep-analysis/SKILL.md`（深度分析）`, `盘口分类体系（主人亲授 · 2026-03-18）`, `执行流程`, `003 场完整分析案例（2026-03-18 反思）`, `2784765 场（意甲 拉齐奥 1-0 AC 米兰）复盘总结`, `三、逐场分析（按流程执行）`, `Errors Log`?",
-      "why": "High betweenness centrality (0.136) - this node is a cross-community bridge."
+      "question": "Why does `执行流程` connect `执行流程` to `titan007.js`, `[欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告`, `poisson_lib.py`, `match-screening/SKILL.md`, `精选推荐与串关决策 (Recommendation & Parlay Strategy)`, `一、发现的 BUG / 漏洞`, `赔率分析推演：庄家操盘逻辑与双盘联动推演心法`, `执行步骤`, `4 家一致的“操盘手法一致”识别（亚盘专用）`, `titan007 抓取 → 缓存层 → 内部 API 化设计方案`, `四、模拟示例（周日 018 巴萨 vs 塞维利亚）`, `深度分析报告：马洛卡 VS 西班牙人`, `二、建议修补的漏洞 / 不一致`, `步骤 1.5：校验脚本赔率与数据完整性`, `deep-analysis/SKILL.md`, `球队风格判定手册（简版）`, `post-review/SKILL.md`, `执行流程`?",
+      "why": "High betweenness centrality (0.107) - this node is a cross-community bridge."
     },
     {
       "type": "bridge_node",
-      "question": "Why does `AGENTS.md - 足彩分析工作流操作手册` connect `AGENTS.md - 足彩分析工作流操作手册` to `4 家一致的“操盘手法一致”识别（亚盘专用）`, `核心工具：sporttery-sniper`, `赔率分析推演：庄家操盘逻辑与双盘联动推演心法`, `SAFETY.md`, `Agent（pansuan）— OpenClaw 足彩分析师 Agent`, `累计战绩`, `四、模拟示例（周日 018 巴萨 vs 塞维利亚）`, `SOUL.md - 你是谁`, `各场景的 Subagent 用法`, `执行步骤`, `7.3 `skills/deep-analysis/SKILL.md`（深度分析）`, `第一部分：赛前分析模板`, `执行流程`, `一、工作流程总览`, `sporttery-sniper`, `执行步骤`, `核心心法：足球庄家精算视角与净赔付最小化破译（第一性原理）`, `四、Memory 写入规则`, `Heartbeat 检查清单`, `八、心跳机制`, `Errors Log`?",
-      "why": "High betweenness centrality (0.129) - this node is a cross-community bridge."
+      "question": "Why does `执行步骤` connect `执行步骤` to `titan007.js`, `[欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告`, `泊松概率分析：布伦特福德 vs 狼队`, `赔率分析推演：庄家操盘逻辑与双盘联动推演心法`, `cli.js`, `cleanText`, `泊松概率分析：赫尔蒙德 vs 坎布尔`, `泊松概率分析：克雷莫纳 vs 佛罗伦萨`, `泊松概率分析：阿纳西 vs 特鲁瓦`, `深度分析报告：马洛卡 VS 西班牙人`, `泊松概率分析：朴茨茅斯 vs 德比郡`, `泊松概率分析：巴列卡诺 vs 莱万特`, `buildAnalysisContext`, `AGENTS.md - 足彩分析工作流操作手册`, `post-review/SKILL.md`, `巴列卡诺 vs 莱万特：泊松 + 盘口综合实战案例`, `累计战绩`, `recommendation/SKILL.md`, `三、逐场分析（按流程执行）`, `7.3 `skills/deep-analysis/SKILL.md`（深度分析）`, `执行步骤`?",
+      "why": "High betweenness centrality (0.106) - this node is a cross-community bridge."
     },
     {
       "type": "verify_inferred",
@@ -1612,8 +1606,8 @@
     },
     {
       "type": "verify_inferred",
-      "question": "Are the 33 inferred relationships involving `AGENTS.md - 足彩分析工作流操作手册` (e.g. with `Path` and `Heartbeat 检查清单`) actually correct?",
-      "why": "`AGENTS.md - 足彩分析工作流操作手册` has 33 INFERRED edges - model-reasoned connections that need verification."
+      "question": "Are the 37 inferred relationships involving `AGENTS.md - 足彩分析工作流操作手册` (e.g. with `Path` and `Heartbeat 检查清单`) actually correct?",
+      "why": "`AGENTS.md - 足彩分析工作流操作手册` has 37 INFERRED edges - model-reasoned connections that need verification."
     },
     {
       "type": "verify_inferred",
@@ -1622,8 +1616,8 @@
     },
     {
       "type": "verify_inferred",
-      "question": "Are the 24 inferred relationships involving `累计战绩` (e.g. with `Errors Log` and `FEATURE_REQUESTS.md`) actually correct?",
-      "why": "`累计战绩` has 24 INFERRED edges - model-reasoned connections that need verification."
+      "question": "Are the 26 inferred relationships involving `累计战绩` (e.g. with `Errors Log` and `FEATURE_REQUESTS.md`) actually correct?",
+      "why": "`累计战绩` has 26 INFERRED edges - model-reasoned connections that need verification."
     }
   ]
 }
