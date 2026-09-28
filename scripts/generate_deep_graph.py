@@ -167,6 +167,68 @@ def run_deep_graphify():
     add_inferred(hub_map['post_review'], hub_map['sniper'], "fetches_verified_match_results", 0.95)
     add_inferred(hub_map['tools'], hub_map['sniper'], "documents_cli_tooling", 0.95)
 
+    # 4b. Thoroughly cross-link EVERY single markdown file in the workspace
+    all_md_files = list(root.glob('**/*.md'))
+    print(f"Deep semantic cross-linking for all {len(all_md_files)} markdown files...")
+    for md_path in all_md_files:
+        if 'graphify-out' in str(md_path):
+            continue
+        rel_str = str(md_path.relative_to(root)).replace('\\', '/')
+        file_nodes = [n for n, d in G.nodes(data=True) if d.get('source_file') and Path(d['source_file']).resolve() == md_path.resolve()]
+        if not file_nodes:
+            slug = re.sub(r'[^\w\u4e00-\u9fff]', '_', md_path.stem).strip('_').lower()
+            doc_id = f"doc_{slug[:40]}"
+            if not G.has_node(doc_id):
+                G.add_node(doc_id, label=md_path.name, file_type="document", source_file=str(md_path.resolve()))
+            file_nodes = [doc_id]
+        
+        main_doc_node = max(file_nodes, key=lambda x: G.degree(x))
+        # Jobsian Organic Ecosystem Semantic Mapping:
+        name_lower = md_path.name.lower()
+        if 'docs' in rel_str:
+            if '盘口' in name_lower or '走势' in name_lower or '初盘' in name_lower:
+                add_inferred(hub_map['analysis'], main_doc_node, "executes_step_4_asian_handicap_analysis", 0.95)
+                add_inferred(hub_map['odds_master'], main_doc_node, "grounds_handicap_theory_in_tactics", 0.95)
+            elif '水位' in name_lower or '盘赔' in name_lower or '比较' in name_lower:
+                add_inferred(hub_map['analysis'], main_doc_node, "executes_step_6_water_level_risk_pricing", 0.95)
+                add_inferred(hub_map['odds_master'], main_doc_node, "quantifies_bookmaker_payout_exposure", 0.95)
+            elif '比分' in name_lower or '泊松' in name_lower:
+                add_inferred(hub_map['analysis'], main_doc_node, "executes_step_10_poisson_scoreline_modeling", 0.95)
+                if hub_map['poisson']:
+                    add_inferred(hub_map['poisson'], main_doc_node, "provides_mathematical_scoreline_formulas", 0.95)
+            elif '陷阱' in name_lower or '漏洞' in name_lower:
+                add_inferred(hub_map['analysis'], main_doc_node, "executes_step_8_identifies_bookmaker_traps", 0.95)
+                add_inferred(hub_map['screening'], main_doc_node, "filters_out_false_favorites_and_dead_matches", 0.95)
+            elif '风格' in name_lower or '球队' in name_lower:
+                add_inferred(hub_map['analysis'], main_doc_node, "executes_step_1_team_style_clash_evaluation", 0.95)
+                add_inferred(hub_map['screening'], main_doc_node, "screens_playstyle_dynamism", 0.90)
+            elif '联赛' in name_lower:
+                add_inferred(hub_map['screening'], main_doc_node, "guides_league_tier_and_rest_intervals", 0.95)
+                add_inferred(hub_map['memory'], main_doc_node, "maintains_league_specific_hit_rates", 0.95)
+            elif '下注' in name_lower or '决策' in name_lower or '通知' in name_lower or '模板' in name_lower:
+                add_inferred(hub_map['recommendation'], main_doc_node, "dictates_six_column_table_and_parlay_composition", 0.95)
+                add_inferred(hub_map['template'], main_doc_node, "standardizes_pre_post_match_output", 0.95)
+            else:
+                add_inferred(hub_map['odds_master'], main_doc_node, "tactical_rule_handbook", 0.92)
+                add_inferred(hub_map['analysis'], main_doc_node, "references_handbook", 0.92)
+        elif 'data' in rel_str:
+            add_inferred(hub_map['odds_master'], main_doc_node, "empirical_evidence_for_axioms", 0.95)
+            if hub_map['post_review']:
+                add_inferred(hub_map['post_review'], main_doc_node, "validates_post_match_prediction", 0.95)
+            add_inferred(hub_map['analysis'], main_doc_node, "calibrates_against_historical_case", 0.95)
+            add_inferred(hub_map['memory'], main_doc_node, "feeds_historical_calibration_into_long_term_memory", 0.95)
+        elif 'skills' in rel_str:
+            add_inferred(hub_map['odds_master'], main_doc_node, "governs_skill_execution", 0.95)
+            add_inferred(hub_map['agents'], main_doc_node, "orchestrates_skill", 0.95)
+        else:
+            add_inferred(hub_map['odds_master'], main_doc_node, "aligns_system_axiom", 0.90)
+            add_inferred(hub_map['agents'], main_doc_node, "system_governance_doc", 0.90)
+
+    # 4c. Neural feedback loops (Self-Healing feedback)
+    add_inferred(hub_map['memory'], hub_map['screening'], "feeds_back_league_hit_rates_to_prioritize_matches", 0.95)
+    add_inferred(hub_map['memory'], hub_map['analysis'], "calibrates_poisson_lambda_deviation_direction", 0.95)
+    add_inferred(hub_map['template'], hub_map['recommendation'], "enforces_standard_six_column_presentation", 0.95)
+
     # Connect all disconnected components to their semantic parents
     comps = list(nx.connected_components(G))
     print(f"Connecting remaining {len(comps)} components...")
