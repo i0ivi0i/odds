@@ -1,0 +1,38 @@
+{
+  "generated_at": "2026-09-29T02:29:13.553864+00:00",
+  "nodes": {
+    "odds_deduction_门禁一_三维强制全景扫描门禁_彻底消灭_非胜即平_二元死穴": {
+      "code_fingerprint": "2dbedf2353cc61b3bc86745d665ec66a1af4e47d3f9e00a10fd5d633c9a66146",
+      "label": "门禁一：三维强制全景扫描门禁（彻底消灭“非胜即平”二元死穴）",
+      "last": "2026-09-29T02:21:59.249678+00:00",
+      "provenance": [
+        {
+          "date": "2026-09-29T02:21:59.249678+00:00",
+          "outcome": "useful",
+          "q": "为什么会被教条或规则困住导致推演死板，是因为赔率分析推演.md吗"
+        }
+      ],
+      "score": 0.999883866,
+      "source_file": "赔率分析推演.md",
+      "status": "tentative",
+      "uses": 1
+    },
+    "odds_deduction_门禁三_诱平蜜罐_vs_真防平定量标尺门禁_彻底根治_只认破3_00_教条主义": {
+      "code_fingerprint": "2dbedf2353cc61b3bc86745d665ec66a1af4e47d3f9e00a10fd5d633c9a66146",
+      "label": "门禁三：诱平蜜罐 vs 真防平定量标尺门禁（彻底根治“只认破3.00”教条主义）",
+      "last": "2026-09-29T02:21:59.249678+00:00",
+      "provenance": [
+        {
+          "date": "2026-09-29T02:21:59.249678+00:00",
+          "outcome": "useful",
+          "q": "为什么会被教条或规则困住导致推演死板，是因为赔率分析推演.md吗"
+        }
+      ],
+      "score": 0.999883866,
+      "source_file": "赔率分析推演.md",
+      "status": "tentative",
+      "uses": 1
+    }
+  },
+  "version": 1
+}
