@@ -1,6 +1,6 @@
 # 通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)
 
-本项目是一套立足**庄家精算第一性原理（少赔多赚 / 净赔付最小化 / 双盘联动）**的通用足彩分析与量化推演系统。架构彻底解耦，原生支持**爱马仕 (Hermes Agent)**、**反重力 (Google Antigravity)**、**Claude Code**、**Cursor** 及 **OpenClaw** 等任何现代 AI Agent 平台，实现全自动赛程抓取、盘赔初筛、10步深度推演与赛后自愈复盘。
+本项目是一套立足**庄家精算第一性原理（少赔多赚 / 净赔付最小化 / 双盘联动）**的通用足彩分析与量化推演系统。不绑单一助手平台，任意能读工作区的 AI 助手都能用。实现全自动赛程抓取、盘赔初筛、10步深度推演与赛后自愈复盘。本仓库由主人维护。
 
 ## 多平台 AI Agent 原生适配
 
@@ -9,7 +9,6 @@
 | **爱马仕 (Hermes Agent)** | 本地工作区原生交互 / CLI 挂载 | `delegate_task` 并发调度、Cronjob 定时、桌面/通道推送 | 桌面常驻、自主循环、渠道推送 |
 | **反重力 (Google Antigravity)** | 工作区直接打开 | `invoke_subagent` 任务隔离、图谱实时检索 | 深度交互、多智能体协同、知识图谱推演 |
 | **Claude Code / Cursor** | 终端命令行 / 工作区直接打开 | 终端交互、代码审查与实时脚本推演 | 终端沉浸式交互、本地极速推演 |
-| **OpenClaw** | OpenClaw 网关挂载 | Workspace 配置、Cron 自动化调度、消息网关集成 | 网关部署、多通道集成 |
 
 ## 功能概览
 
@@ -38,7 +37,6 @@ npm run schedule -- --format agent-json
 ### 2. 各平台运行方式
 - **爱马仕 (Hermes Agent)**：直接在当前工作区对话交互；每日自动化可参考 `agent-config-snippet.json5`。
 - **反重力 (Google Antigravity)**：将本工程目录作为工作区打开，直接对话即可自动读取 `AGENTS.md` 与 Skills。
-- **OpenClaw**：将本工作区复制至 `~/.openclaw/agents/pansuan/workspace`，并将 `openclaw-config-snippet.json5` 合并入 `~/.openclaw/openclaw.json`。
 - **Claude Code / Cursor**：在当前目录下打开终端，直接调用相关指令与分析推演。
 
 ## 使用方式
