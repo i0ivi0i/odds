@@ -1,6 +1,38 @@
 {
-  "generated_at": "2026-09-29T02:29:13.553864+00:00",
+  "generated_at": "2026-09-29T03:04:05.365311+00:00",
   "nodes": {
+    "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_md": {
+      "code_fingerprint": "112f0f9c870a130b04ba8be70c6579828c596b4a3fdd3aef0964f2e447d213f4",
+      "label": "post-review/SKILL.md",
+      "last": "2026-09-29T02:58:42.126346+00:00",
+      "provenance": [
+        {
+          "date": "2026-09-29T02:58:42.126346+00:00",
+          "outcome": "useful",
+          "q": "复盘如何与九篇论文打通且不把每句话变成门禁"
+        }
+      ],
+      "score": 0.999913564,
+      "source_file": "skills/post-review/SKILL.md",
+      "status": "tentative",
+      "uses": 1
+    },
+    "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_赛后复盘_post_review": {
+      "code_fingerprint": "112f0f9c870a130b04ba8be70c6579828c596b4a3fdd3aef0964f2e447d213f4",
+      "label": "赛后复盘（post-review）",
+      "last": "2026-09-29T02:58:42.126346+00:00",
+      "provenance": [
+        {
+          "date": "2026-09-29T02:58:42.126346+00:00",
+          "outcome": "useful",
+          "q": "复盘如何与九篇论文打通且不把每句话变成门禁"
+        }
+      ],
+      "score": 0.999913564,
+      "source_file": "skills/post-review/SKILL.md",
+      "status": "tentative",
+      "uses": 1
+    },
     "odds_deduction_门禁一_三维强制全景扫描门禁_彻底消灭_非胜即平_二元死穴": {
       "code_fingerprint": "2dbedf2353cc61b3bc86745d665ec66a1af4e47d3f9e00a10fd5d633c9a66146",
       "label": "门禁一：三维强制全景扫描门禁（彻底消灭“非胜即平”二元死穴）",
@@ -12,7 +44,7 @@
           "q": "为什么会被教条或规则困住导致推演死板，是因为赔率分析推演.md吗"
         }
       ],
-      "score": 0.999883866,
+      "score": 0.9993247,
       "source_file": "赔率分析推演.md",
       "status": "tentative",
       "uses": 1
@@ -28,7 +60,7 @@
           "q": "为什么会被教条或规则困住导致推演死板，是因为赔率分析推演.md吗"
         }
       ],
-      "score": 0.999883866,
+      "score": 0.9993247,
       "source_file": "赔率分析推演.md",
       "status": "tentative",
       "uses": 1

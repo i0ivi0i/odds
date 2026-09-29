@@ -56,3 +56,6 @@ memory/
 graphify-out/cache/
 graphify-out/memory/
 graphify-out/2026-*/
+
+# 论文按页转写的中间截图，不纳入版本管理
+.ky-md-work/

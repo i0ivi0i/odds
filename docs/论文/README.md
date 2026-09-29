@@ -18,6 +18,8 @@
 
 Shin（1993）期刊原文需订阅，未放入。隔壁 `足球预测/温故而知新学习资料` 另有笔记，此处不重复拷贝。
 
+同目录 `*.calibrated.md` 是按页对齐的文字层转写（工具检查已通过）。引用论文时优先打开对应 calibrated 文件的 `## Page NN`，不要用本表「一句话」代替原文。公式若在文字层里已经乱，以 PDF 原页为准，不许猜。
+
 ## 与复盘技能打通
 
 `skills/post-review/SKILL.md` 逐步对照上表原文。图谱检索用 `graphify query`，引用必须带 `source_location`。索引里的「一句话」只为找文件，**不能代替 PDF 原文**。把论文每句话都抄成门禁，本身违反 Wilkens / Hewamalage。
