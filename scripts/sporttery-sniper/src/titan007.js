@@ -1,3 +1,6 @@
+import https from "node:https";
+import http from "node:http";
+
 const TITAN_DETAIL_BASE = "https://live.titan007.com/detail";
 const TITAN_STATIC_BASE = "https://livestatic.titan007.com";
 const TITAN_ZQ_BASE = "https://zq.titan007.com";
@@ -197,16 +200,57 @@ export function createHumanLikeFetch(fetchImpl, options = {}) {
   }
 }
 
+export function defaultFetch(url, options = {}, redirectCount = 0) {
+  return new Promise((resolve, reject) => {
+    if (redirectCount > 5) {
+      return reject(new Error("Too many redirects: " + url));
+    }
+    const parsed = new URL(url);
+    const mod = parsed.protocol === "https:" ? https : http;
+    const req = mod.request(
+      url,
+      {
+        method: options.method || "GET",
+        headers: options.headers || {},
+        agent: new https.Agent({ keepAlive: true, ciphers: "DEFAULT@SECLEVEL=1" }),
+      },
+      (res) => {
+        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+          const nextUrl = new URL(res.headers.location, url).href;
+          return resolve(defaultFetch(nextUrl, options, redirectCount + 1));
+        }
+        const chunks = [];
+        res.on("data", (chunk) => chunks.push(chunk));
+        res.on("end", () => {
+          const buffer = Buffer.concat(chunks);
+          resolve({
+            ok: res.statusCode >= 200 && res.statusCode < 300,
+            status: res.statusCode,
+            statusText: res.statusMessage,
+            headers: new Headers(res.headers),
+            text: async () => buffer.toString("utf-8"),
+            arrayBuffer: async () =>
+              buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength),
+          });
+        });
+      },
+    );
+    req.on("error", reject);
+    req.end();
+  });
+}
+
 export async function fetchMatchData(
   input,
-  fetchImpl = globalThis.fetch,
+  fetchImpl = defaultFetch,
   fetchOptions = {},
 ) {
-  if (typeof fetchImpl !== "function") {
+  const actualFetch = (fetchImpl === globalThis.fetch || !fetchImpl) ? defaultFetch : fetchImpl;
+  if (typeof actualFetch !== "function") {
     throw new Error("当前 Node 环境不支持 fetch，请使用 Node 20 或更新版本。");
   }
 
-  const humanFetch = createHumanLikeFetch(fetchImpl, fetchOptions);
+  const humanFetch = createHumanLikeFetch(actualFetch, fetchOptions);
   const id = parseMatchId(input);
   const urls = buildMarketUrls(id);
   const asianHistoryUrls = buildOddsHistoryUrls(id, "asian");
@@ -290,19 +334,20 @@ export async function fetchMatchData(
   };
 }
 
-export async function fetchJcSchedule(fetchImpl = globalThis.fetch, options = {}) {
-  if (typeof fetchImpl !== "function") {
+export async function fetchJcSchedule(fetchImpl = defaultFetch, options = {}) {
+  const actualFetch = (fetchImpl === globalThis.fetch || !fetchImpl) ? defaultFetch : fetchImpl;
+  if (typeof actualFetch !== "function") {
     throw new Error("当前 Node 环境不支持 fetch，请使用 Node 20 或更新版本。");
   }
 
   const saleDate = normalizeJcSaleDate(options.saleDate);
   const scheduleText = await fetchText(
     `${TITAN_JC_BASE}/xml/bf_jc.txt`,
-    fetchImpl,
+    actualFetch,
   );
   const oddsText = await fetchOptionalText(
     `${TITAN_JC_BASE}/xml/odds_jc.txt`,
-    fetchImpl,
+    actualFetch,
   );
   const schedule = parseJcScheduleText(scheduleText);
   const odds = parseJcScheduleOddsText(oddsText.text);
