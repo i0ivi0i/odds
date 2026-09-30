@@ -36,11 +36,11 @@ npm run schedule -- --date 2026-06-11
 
 该命令会抓取 `https://jc.titan007.com/xml/bf_jc.txt` 和 `https://jc.titan007.com/xml/odds_jc.txt`，输出指定销售日开售池中的比赛 ID、竞彩编号、开球时间、赛事、对阵、让球和即时胜平负指数。开售池按竞足销售窗口组织，可能包含当天、次日或后续已开售比赛。
 
-给 OpenClaw agent 使用时，输出结构化 JSON：
+给 Agent 使用时，输出结构化 JSON：
 
 ```bash
-npm run schedule -- --format openclaw-json
-npm run schedule -- --date 2026-06-11 --format openclaw-json
+npm run schedule -- --format agent-json
+npm run schedule -- --date 2026-06-11 --format agent-json
 ```
 
 在 Codex app 的集成终端中运行：
@@ -64,12 +64,12 @@ npm run review -- https://zq.titan007.com/analysis/2990354cn.htm
 
 复盘命令会输出一段可直接交给 Codex 的 Markdown 上下文；如果比赛已结束，会展示状态、全场比分和半场比分，用于判断赛前分析是否兑现、亚让/大小球/欧赔信号是否与结果一致，以及后续模型应如何修正。
 
-给 OpenClaw agent 使用时，输出结构化 JSON：
+给 Agent 使用时，输出结构化 JSON：
 
 ```bash
-npm run analyze -- 2990354 --format openclaw-json
-npm run analyze -- 2990354 --history-window 15 --format openclaw-json
-npm run review -- 2990354 --format openclaw-json
+npm run analyze -- 2990354 --format agent-json
+npm run analyze -- 2990354 --history-window 15 --format agent-json
+npm run review -- 2990354 --format agent-json
 ```
 
 可用 `--history-window`（或 `-w`）控制变化历史输出范围：

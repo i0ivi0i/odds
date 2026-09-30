@@ -1,7 +1,7 @@
 ---
 name: match-scraper
 description: "从球探体育(titan007)抓取竞彩足球赛程数据。在用户说「抓取赛程」「获取今日比赛」「今天有什么比赛」或赛前分析流程启动时使用。"
-metadata: { "emoji": "📆", "openclaw": { "emoji": "📆" } }
+metadata: { "emoji": "📆" }
 ---
 
 # 赛程抓取（match-scraper）
@@ -38,14 +38,14 @@ metadata: { "emoji": "📆", "openclaw": { "emoji": "📆" } }
 
 ```bash
 cd scripts/sporttery-sniper
-npm run schedule -- --date {YYYY-MM-DD} --format openclaw-json
+npm run schedule -- --date {YYYY-MM-DD} --format agent-json
 ```
 
-脚本输出必须是 JSON，且 `kind` 必须为 `openclaw.schedule`。若脚本失败、JSON 无法解析、`kind` 不匹配，或 `matches` 字段缺失，直接报告失败原因，结束流程，不写 memory。
+脚本输出必须是 JSON，且 `kind` 必须为 `agent.schedule`。若脚本失败、JSON 无法解析、`kind` 不匹配，或 `matches` 字段缺失，直接报告失败原因，结束流程，不写 memory。
 
 ### 步骤 3：解析脚本输出
 
-从 `openclaw.schedule` JSON 中读取：
+从 `agent.schedule` JSON 中读取：
 
 | JSON 字段 | 写入 memory 字段 |
 | --- | --- |
@@ -134,7 +134,7 @@ npm run schedule -- --date {YYYY-MM-DD} --format openclaw-json
 如果需要查看非当天的赛程（如主人说「看看昨天的比赛」，或复盘需要查历史赛程）：
 
 1. 运行脚本：`cd scripts/sporttery-sniper && npm run schedule -- --date {目标日期} --format agent-json`
-2. 解析 `agent.schedule`（亦兼容 `openclaw.schedule`）JSON 并按步骤 3～4 输出。
+2. 解析 `agent.schedule` JSON 并按步骤 3～4 输出。
 
 ## 异常处理
 

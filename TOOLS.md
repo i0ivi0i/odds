@@ -18,7 +18,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 ### 赛程同步
 
-同步当前销售日赛程（推荐 `--format agent-json`，亦兼容 `--format openclaw-json`）：
+同步当前销售日赛程（标准格式 `--format agent-json`）：
 
 ```bash
 cd scripts/sporttery-sniper
@@ -34,7 +34,7 @@ npm run schedule -- --date 2026-06-11 --format agent-json
 
 输出要求：
 
-- JSON 顶层 `kind` 为通用规范 `agent.schedule`（兼容 `openclaw.schedule`）
+- JSON 顶层 `kind` 为通用规范 `agent.schedule`
 - `matches` 必须为数组
 - 每场至少读取 `no`、`matchId`、`league`、`leagueLevel`、`kickoffTime`、`status`、`homeTeam`、`awayTeam`、`analysisUrl`
 
@@ -56,7 +56,7 @@ npm run analyze -- https://zq.titan007.com/analysis/2990354cn.htm --history-wind
 
 输出要求：
 
-- JSON 顶层 `kind` 为通用规范 `agent.analysis`（兼容 `openclaw.analysis`）
+- JSON 顶层 `kind` 为通用规范 `agent.analysis`
 - `match` 必须包含 `matchId`、`league`、`kickoffTime`、`homeTeam`、`awayTeam`、`analysisUrl`
 - `context` 是给 agent 阅读和分析的 Markdown 上下文
 - `detail` / `markets` 是结构化原始数据，供写 memory、推荐和复盘使用
@@ -72,7 +72,7 @@ npm run review -- 2990354 --format agent-json
 
 输出要求：
 
-- JSON 顶层 `kind` 为通用规范 `agent.review`（兼容 `openclaw.review`）
+- JSON 顶层 `kind` 为通用规范 `agent.review`
 - `context` 包含已完场全场比分、半场比分及比赛事件
 - `detail` 包含主客队与完场比分结构化数据
 

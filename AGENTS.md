@@ -99,7 +99,7 @@ subagent：获取赛果 → 对比推荐 → 计算命中率 → 分析失误 �
 
 唯一数据抓取入口：仓库内 `scripts/sporttery-sniper`。
 
-该脚本直接读取 titan007 的 XML、HTML、JS 和接口数据源，输出 OpenClaw 可消费的结构化 JSON。正式流程只使用该脚本，详细命令见 TOOLS.md。
+该脚本直接读取 titan007 的 XML、HTML、JS 和接口数据源，输出结构化 Agent JSON（原生适配爱马仕 Hermes 及通用 Agent 消费）。正式流程只使用该脚本，详细命令见 TOOLS.md。
 
 ## 三、技能流程指引
 
@@ -237,8 +237,8 @@ MEMORY.md 维护规则：
 不同 Agent 平台执行后台子任务的工具接口各异，本系统逻辑保持完全统一：
 - **爱马仕 (Hermes Agent)**：调用 `delegate_task(tasks=[{"goal": ...}])` 分发子任务，通过 `delegate_task(action='list'/'stop')` 进行状态查询与控制；
 - **反重力 (Google Antigravity)**：调用 `invoke_subagent` 分发子任务；
-- **OpenClaw**：调用 `sessions_spawn` 分发子任务；
-- **Claude Code / Cursor / 通用平台**：调用平台内建的 subagent 工具或后台隔离任务。
+- **Claude Code / Cursor / 通用平台**：调用平台内建的 subagent 工具或后台隔离任务；
+- **OpenClaw (历史参考)**：调用 `sessions_spawn` 分发子任务。
 
 ### 各场景的 Subagent 用法
 
@@ -249,7 +249,7 @@ MEMORY.md 维护规则：
 **主会话**：
 
 1. 推送「⚡ 已启动赛前分析，后台干活中，你随时找我聊」
-2. 分发一个编排 subagent（爱马仕环境调用 `delegate_task`，反重力调用 `invoke_subagent`，OpenClaw 调用 `sessions_spawn`），task 包含完整流程指令
+2. 分发一个编排 subagent（爱马仕环境调用 `delegate_task`，反重力调用 `invoke_subagent`），task 包含完整流程指令
 3. 保持空闲，等待子任务结果回传后推送「✅ 赛前分析完成」
 
 **编排 subagent（depth 1）**：
@@ -257,7 +257,7 @@ MEMORY.md 维护规则：
 1. 读取 `skills/match-scraper/SKILL.md`，执行赛程抓取，写入 memory
 2. 读取 `skills/match-screening/SKILL.md`，执行初筛，写入 memory
 3. 推送候选列表给主人（通过平台消息通道）
-4. 对每场初筛通过的比赛，分发一个 worker subagent（爱马仕 `delegate_task` / 反重力 `invoke_subagent` / OpenClaw `sessions_spawn`）。**task 中必须写明**：「本批共 N 场（N = 本场初筛通过的总场次数），你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果」，避免多 worker 并发写同一文件导致只保留部分场次。示例：
+4. 对每场初筛通过的比赛，分发一个 worker subagent（爱马仕 `delegate_task` / 反重力 `invoke_subagent`）。**task 中必须写明**：「本批共 N 场（N = 本场初筛通过的总场次数），你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果」，避免多 worker 并发写同一文件导致只保留部分场次。示例：
    ```yaml
    task:
      goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。读取 skills/deep-analysis/SKILL.md。严格按照模板，执行完整 10 步分析；先完成全部 10 步再推送，超 4000 字须分段。通过消息通道推送分析报告给主人。返回结构化综合评估结果（含 memory 摘要）。"

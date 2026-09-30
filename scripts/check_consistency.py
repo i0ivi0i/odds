@@ -85,7 +85,7 @@ def scan_file(path: Path, rules: list[tuple[str, re.Pattern[str]]]) -> list[Find
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="OpenClaw pansuan 一致性自检（口径防回归）")
+    parser = argparse.ArgumentParser(description="pansuan 一致性自检（口径防回归）")
     parser.add_argument(
         "--root",
         default=".",

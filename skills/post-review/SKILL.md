@@ -1,7 +1,7 @@
 ---
 name: post-review
 description: "赛后复盘：获取比赛结果，对比推荐记录，计算命中率，分析失误原因，更新长期统计。在用户说「复盘」「昨天结果怎么样」「战绩」或每日09:30定时触发时使用。"
-metadata: { "emoji": "📋", "openclaw": { "emoji": "📋" } }
+metadata: { "emoji": "📋" }
 ---
 
 # 赛后复盘（post-review）

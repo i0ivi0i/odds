@@ -140,8 +140,7 @@ python3 scripts/check_consistency.py --print-ok
 
 ## 注意事项
 
-- titan007 是 JS 动态渲染页面，必须使用 agent-browser CLI，不能用普通 HTTP
-- 浏览器操作每步之间需等待页面渲染（`agent-browser wait --load networkidle`）
+- 数据抓取统一通过 `scripts/sporttery-sniper` 直接读取接口与数据源，无需启动实体浏览器
 - 每日初筛最多 8 场（建议 3-5 场），精选 2-3 场核心推荐（最多 4 场）
 - MEMORY.md 策略调优和关键教训不允许重复，主题相同时合并更新原条目
 - 所有分析基于数据，不保证胜率，仅供参考

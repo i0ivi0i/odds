@@ -1,7 +1,7 @@
 ---
 name: recommendation
 description: "汇总深度分析结果，逐场推送分析报告，最后发送汇总（含串关建议）。在用户说「给推荐」「今天买什么」「推荐」或赛前流程中深度分析之后使用。"
-metadata: { "emoji": "🎯", "openclaw": { "emoji": "🎯" } }
+metadata: { "emoji": "🎯" }
 ---
 
 # 推荐输出（recommendation）

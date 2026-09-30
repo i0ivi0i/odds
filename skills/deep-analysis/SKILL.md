@@ -1,7 +1,7 @@
 ---
 name: deep-analysis
 description: "对初筛通过的比赛进行深度分析：sporttery-sniper 脚本抓取上下文（基本面+赔率变化）→ 10 步分析（基本面→伤停→泊松→欧指→亚盘→大小球→合理性→关键点/疑点/矛盾→风险→综合评估+推荐）→ 写入记忆。**分析依据仅限公司数据**：胜平负非亚洲联赛威廉、365 必抓（欧洲两家交叉认证，德国为威廉+365+Interwetten 三家），亚洲联赛以澳彩+皇冠+365+易胜博+马会五家交叉认证；亚盘/大小球以澳彩、皇冠、365、易胜博四家（亚洲联赛加马会共五家）交叉认证。平博不参与分析依据。自开盘不参与分析依据。在用户说「深度分析」「分析这场比赛」「详细看看」或赛前流程中初筛之后使用。"
-metadata: { "emoji": "📊", "openclaw": { "emoji": "📊" } }
+metadata: { "emoji": "📊" }
 ---
 
 # 深度分析（deep-analysis）
@@ -17,7 +17,7 @@ metadata: { "emoji": "📊", "openclaw": { "emoji": "📊" } }
   cd scripts/sporttery-sniper
   npm run analyze -- {matchId或分析页URL} --history-window all --format agent-json
   ```
-- 脚本输出必须是 JSON，且 `kind` 为 `agent.analysis`（亦兼容 `openclaw.analysis`）。若 JSON 无法解析、`kind` 不匹配，或缺少 `match/detail/markets/context`，本场标记为「数据抓取失败」，不得编造数据。
+- 脚本输出必须是 JSON，且 `kind` 为 `agent.analysis`。若 JSON 无法解析、`kind` 不匹配，或缺少 `match/detail/markets/context`，本场标记为「数据抓取失败」，不得编造数据。
 - `payload.context` 是给 agent 阅读和分析的完整 Markdown 上下文；`payload.match/detail/markets` 是结构化原始数据，供写 memory、推荐和复盘使用。
 - sporttery-sniper 已过滤滚球和开赛后赔率；分析时仍须复核开球时间，避免对已开赛比赛做赛前分析。
 
@@ -89,12 +89,12 @@ metadata: { "emoji": "📊", "openclaw": { "emoji": "📊" } }
 
 ```bash
 cd scripts/sporttery-sniper
-npm run analyze -- {matchId或analysis URL} --history-window all --format openclaw-json
+npm run analyze -- {matchId或analysis URL} --history-window all --format agent-json
 ```
 
 解析输出 JSON：
 
-- `kind` 必须为 `openclaw.analysis`
+- `kind` 必须为 `agent.analysis`
 - `match.matchId/league/kickoffTime/homeTeam/awayTeam/analysisUrl` 必须存在
 - `context` 必须包含完整 Markdown 分析上下文
 - `markets` 必须包含赔率、竞足和 Crown 全指数相关数据；若部分公司缺失，记录缺口，不得推断为市场共识
@@ -1576,7 +1576,7 @@ RLM 检测清单：
 
 - **脚本目录不存在**：告知主人 `scripts/sporttery-sniper` 不存在，结束该场分析，不写入 memory，不进入推荐。
 - **脚本执行失败**：记录命令错误信息，重试 1 次；仍失败则告知主人「sporttery-sniper 抓取失败」，结束该场分析，不写入 memory。
-- **JSON 无法解析或 `kind` 不是 `agent.analysis` / `openclaw.analysis`**：视为抓取失败，结束该场分析，不写入 memory。
+- **JSON 无法解析或 `kind` 不是 `agent.analysis`**：视为抓取失败，结束该场分析，不写入 memory。
 - **关键字段缺失**（`matchId/league/kickoffTime/homeTeam/awayTeam/context` 任一缺失）：本场不进入推荐，告知主人「关键字段缺失，无法完成赛前分析」。
 - **某类数据为空**：标注「本步骤无数据，跳过」，用剩余步骤综合判断；若赔率数据基本全空，该场降级为「仅基本面分析」，信心度自动设为「低」，串关适合度设为「⚠️慎串」。
 - **方式 2/3（主人直接给比赛 ID 或 URL）时脚本确认无效**：告知主人「该比赛 ID / URL 无效或无法访问，请检查后重试」，结束该场分析，不写入 memory，不进入后续步骤。

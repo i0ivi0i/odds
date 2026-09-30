@@ -1,6 +1,6 @@
 /**
  * 通用 AI Agent 任务调度与环境配置参考 (Universal Agent Config Snippet)
- * 原生适配：爱马仕 (Hermes Agent)、反重力 (Google Antigravity)、OpenClaw、Claude Code、Cursor 等
+ * 原生适配：爱马仕 (Hermes Agent)、反重力 (Google Antigravity)、Claude Code、Cursor 等
  */
 
 // ==============================================================================
@@ -29,7 +29,7 @@ cronjobs:
 // 调度指令通过日常对话触发，并行子任务自动通过 `invoke_subagent` 隔离执行。
 
 // ==============================================================================
-// 3. OpenClaw 网关配置片段 (可合并至 ~/.openclaw/openclaw.json)
+// 3. 其它网关备用配置片段 (可选参考)
 // ==============================================================================
 {
   agents: {
