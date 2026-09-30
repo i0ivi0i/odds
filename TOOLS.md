@@ -103,6 +103,10 @@ npm test
 
 测试不需要真实网络请求，主要验证解析器、JSON 输出和本地样例。
 
+## Polymarket 下单链接
+
+6 列表最后一格的查找步骤见 `docs/Polymarket链接查找教程.md`。读盘不改图上数字；找链接用体彩现价对场次，再用接口核实体，禁止瞎拼地址。
+
 ## Subagent 工具
 
 ### sessions_spawn — 启动后台 subagent
