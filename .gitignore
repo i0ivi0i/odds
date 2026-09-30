@@ -52,10 +52,8 @@ analysis/
 report/
 memory/
 
-# Graphify AST cache & query memory & daily backups
-graphify-out/cache/
-graphify-out/memory/
-graphify-out/2026-*/
+# Graphify 图谱产出，本地生成，不纳入版本管理
+graphify-out/
 
 # 论文按页转写的中间截图，不纳入版本管理
 .ky-md-work/

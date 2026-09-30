@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-29T06:38:59.050361+00:00",
+  "generated_at": "2026-09-30T03:51:22.831818+00:00",
   "nodes": {
     "d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_md": {
       "code_fingerprint": "fdf46135ce5a3d51bebb4f9dc90dd3a303aeef2de50ad088640d388d773ca68d",
@@ -12,7 +12,7 @@
           "q": "复盘如何与九篇论文打通且不把每句话变成门禁"
         }
       ],
-      "score": 0.996471797,
+      "score": 0.976334393,
       "source_file": "skills/post-review/SKILL.md",
       "status": "tentative",
       "uses": 1
@@ -28,13 +28,13 @@
           "q": "复盘如何与九篇论文打通且不把每句话变成门禁"
         }
       ],
-      "score": 0.996471797,
+      "score": 0.976334393,
       "source_file": "skills/post-review/SKILL.md",
       "status": "tentative",
       "uses": 1
     },
     "odds_deduction_门禁一_三维强制全景扫描门禁_彻底消灭_非胜即平_二元死穴": {
-      "code_fingerprint": "00096466f249b40b714f98e50b5fb6fe86ca6804fa02e71164d8b1a7906bbec8",
+      "code_fingerprint": "c280c330f4237b281ece77da89d7275ebdbbab229143d1e238965d731a3d434e",
       "label": "门禁一：三维强制全景扫描门禁（彻底消灭“非胜即平”二元死穴）",
       "last": "2026-09-29T02:21:59.249678+00:00",
       "provenance": [
@@ -44,13 +44,13 @@
           "q": "为什么会被教条或规则困住导致推演死板，是因为赔率分析推演.md吗"
         }
       ],
-      "score": 0.995884959,
+      "score": 0.975759415,
       "source_file": "赔率分析推演.md",
       "status": "tentative",
       "uses": 1
     },
     "odds_deduction_门禁三_诱平蜜罐_vs_真防平定量标尺门禁_彻底根治_只认破3_00_教条主义": {
-      "code_fingerprint": "00096466f249b40b714f98e50b5fb6fe86ca6804fa02e71164d8b1a7906bbec8",
+      "code_fingerprint": "c280c330f4237b281ece77da89d7275ebdbbab229143d1e238965d731a3d434e",
       "label": "门禁三：诱平蜜罐 vs 真防平定量标尺门禁（彻底根治“只认破3.00”教条主义）",
       "last": "2026-09-29T02:21:59.249678+00:00",
       "provenance": [
@@ -60,7 +60,7 @@
           "q": "为什么会被教条或规则困住导致推演死板，是因为赔率分析推演.md吗"
         }
       ],
-      "score": 0.995884959,
+      "score": 0.975759415,
       "source_file": "赔率分析推演.md",
       "status": "tentative",
       "uses": 1
