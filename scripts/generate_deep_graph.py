@@ -36,52 +36,6 @@ def run_deep_graphify():
         
     print(f"Loaded existing graph: {len(G.nodes)} nodes, {len(G.edges)} edges, {nx.number_connected_components(G)} components")
     
-    # 2. Extract nodes from 赔率分析推演.md if not present
-    odds_file = Path('赔率分析推演.md')
-    if odds_file.exists():
-        content = odds_file.read_text(encoding='utf-8')
-        headings = re.findall(r'^(#{1,4})\s+(.+)$', content, re.MULTILINE)
-        odds_root_id = "odds_analysis_master_deduction"
-        if not G.has_node(odds_root_id):
-            G.add_node(
-                odds_root_id,
-                label="赔率分析推演：庄家操盘逻辑与双盘联动推演心法",
-                file_type="document",
-                source_file=str(odds_file.resolve())
-            )
-        
-        prev_id = odds_root_id
-        for level, title in headings:
-            clean_title = re.sub(r'[*_`#]', '', title).strip()
-            slug = re.sub(r'[^\w\u4e00-\u9fff]', '_', clean_title).strip('_').lower()
-            node_id = f"odds_deduction_{slug[:40]}"
-            if not G.has_node(node_id):
-                G.add_node(
-                    node_id,
-                    label=clean_title,
-                    file_type="concept",
-                    source_file=str(odds_file.resolve())
-                )
-            G.add_edge(
-                odds_root_id,
-                node_id,
-                relation="contains_section",
-                confidence="EXTRACTED",
-                confidence_score=1.0,
-                weight=1.0,
-                source_file=str(odds_file.resolve())
-            )
-            if prev_id != odds_root_id:
-                G.add_edge(
-                    prev_id,
-                    node_id,
-                    relation="subsequent_axiom",
-                    confidence="EXTRACTED",
-                    confidence_score=1.0,
-                    weight=0.8,
-                    source_file=str(odds_file.resolve())
-                )
-            prev_id = node_id
 
     # 3. Resolve Hub Nodes across subsystems
     def resolve_hub(fallback_keyword):
@@ -99,7 +53,7 @@ def run_deep_graphify():
         'heartbeat': resolve_hub('heartbeat'),
         'tools': resolve_hub('tools'),
         'memory': resolve_hub('memory_累计战绩') or resolve_hub('memory'),
-        'odds_master': "odds_analysis_master_deduction",
+
         'template': resolve_hub('赛前赛后分析模板') or resolve_hub('template'),
         'scraper': resolve_hub('match_scraper'),
         'screening': resolve_hub('match_screening'),
@@ -131,12 +85,6 @@ def run_deep_graphify():
                 semantic_edges.append((src, tgt, rel))
 
     # Core Backbone connections
-    add_inferred(hub_map['odds_master'], hub_map['agents'], "provides_foundational_logic", 0.95)
-    add_inferred(hub_map['odds_master'], hub_map['analysis'], "governs_deduction_steps", 0.95)
-    add_inferred(hub_map['odds_master'], hub_map['screening'], "guides_bait_detection", 0.90)
-    add_inferred(hub_map['odds_master'], hub_map['recommendation'], "dictates_six_column_table", 0.95)
-    add_inferred(hub_map['odds_master'], hub_map['template'], "standardizes_odds_typology", 0.95)
-    add_inferred(hub_map['odds_master'], hub_map['soul'], "aligns_game_philosophy", 0.95)
 
     add_inferred(hub_map['agents'], hub_map['scraper'], "orchestrates_schedule_sync", 0.95)
     add_inferred(hub_map['agents'], hub_map['screening'], "orchestrates_candidate_filtering", 0.95)
@@ -188,10 +136,10 @@ def run_deep_graphify():
         if 'docs' in rel_str:
             if '盘口' in name_lower or '走势' in name_lower or '初盘' in name_lower:
                 add_inferred(hub_map['analysis'], main_doc_node, "executes_step_4_asian_handicap_analysis", 0.95)
-                add_inferred(hub_map['odds_master'], main_doc_node, "grounds_handicap_theory_in_tactics", 0.95)
+
             elif '水位' in name_lower or '盘赔' in name_lower or '比较' in name_lower:
                 add_inferred(hub_map['analysis'], main_doc_node, "executes_step_6_water_level_risk_pricing", 0.95)
-                add_inferred(hub_map['odds_master'], main_doc_node, "quantifies_bookmaker_payout_exposure", 0.95)
+
             elif '比分' in name_lower or '泊松' in name_lower:
                 add_inferred(hub_map['analysis'], main_doc_node, "executes_step_10_poisson_scoreline_modeling", 0.95)
                 if hub_map['poisson']:
@@ -209,19 +157,19 @@ def run_deep_graphify():
                 add_inferred(hub_map['recommendation'], main_doc_node, "dictates_six_column_table_and_parlay_composition", 0.95)
                 add_inferred(hub_map['template'], main_doc_node, "standardizes_pre_post_match_output", 0.95)
             else:
-                add_inferred(hub_map['odds_master'], main_doc_node, "tactical_rule_handbook", 0.92)
+
                 add_inferred(hub_map['analysis'], main_doc_node, "references_handbook", 0.92)
         elif 'data' in rel_str:
-            add_inferred(hub_map['odds_master'], main_doc_node, "empirical_evidence_for_axioms", 0.95)
+
             if hub_map['post_review']:
                 add_inferred(hub_map['post_review'], main_doc_node, "validates_post_match_prediction", 0.95)
             add_inferred(hub_map['analysis'], main_doc_node, "calibrates_against_historical_case", 0.95)
             add_inferred(hub_map['memory'], main_doc_node, "feeds_historical_calibration_into_long_term_memory", 0.95)
         elif 'skills' in rel_str:
-            add_inferred(hub_map['odds_master'], main_doc_node, "governs_skill_execution", 0.95)
+
             add_inferred(hub_map['agents'], main_doc_node, "orchestrates_skill", 0.95)
         else:
-            add_inferred(hub_map['odds_master'], main_doc_node, "aligns_system_axiom", 0.90)
+
             add_inferred(hub_map['agents'], main_doc_node, "system_governance_doc", 0.90)
 
     # 4c. Neural feedback loops (Self-Healing feedback)
@@ -250,7 +198,7 @@ def run_deep_graphify():
             add_inferred(top_node, hub_map['analysis'], "historical_analysis_case_study", 0.85)
         elif 'docs_' in top_node or 'docs/' in src_file:
             if '盘口' in top_node or '下注' in top_node or '分级' in top_node:
-                add_inferred(top_node, hub_map['odds_master'], "tactical_reference_manual", 0.85)
+                add_inferred(top_node, hub_map['analysis'], "tactical_reference_manual", 0.85)
             elif 'openclaw' in top_node:
                 add_inferred(top_node, hub_map['agents'], "openclaw_runtime_reference", 0.85)
             else:
