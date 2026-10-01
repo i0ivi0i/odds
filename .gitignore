@@ -1,0 +1,60 @@
+# If you prefer the allow list template instead of the deny list, see community template:
+# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+#
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# agent
+.sisyphus
+.omc
+
+# beads
+.beads
+
+# env file
+.env
+
+#OS
+.DS_Store
+
+# IDEA
+.idea
+.vscode
+.claude
+.cursor
+*.iml
+
+# 工作空间/Agent 本地配置，不纳入版本管理
+.openclaw
+
+*.pyc
+__pycache__/
+
+data/
+analysis/
+report/
+memory/
+
+# Graphify 图谱产出，本地生成，不纳入版本管理
+graphify-out/
+.archify/
+
+# 论文按页转写的中间截图，不纳入版本管理
+.ky-md-work/

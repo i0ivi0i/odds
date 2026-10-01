@@ -1,0 +1,3909 @@
+# Comparing Sequential Forecasters
+
+> 重建说明：模式 transcribe；来源 `2023_Choe_序贯预测者比较_arXiv_v6.pdf`；共 61 页；原图逐页查看 1/61 页。
+>
+> 补充：正文按 PDF 文字层原样转写，未改写、未翻译、未凭看图补字。公式和上下标若在文字层里已经乱，保留原样，以 PDF 原页为准，不许猜。 已对原图：第1页（题名 Comparing Sequential Forecasters）。未列入的页只核对了文字层与页码，未打开原图。
+
+## Page 01: Comparing Sequential Forecasters
+
+源页：第 1 页
+
+Comparing Sequential Forecasters
+
+                                                        Yo Joong Choe*                                       Aaditya Ramdas
+                                                      Data Science Institute                      Department of Statistics and Data Science
+                                                      University of Chicago                           Machine Learning Department
+                                                    yjchoe@uchicago.edu                                 Carnegie Mellon University
+                                                                                                          aramdas@cmu.edu
+arXiv:2110.00115v6 [stat.ME] 9 Nov 2023
+
+
+
+
+                                                                                           November 10, 2023
+
+
+                                                                                                 Abstract
+
+                                                     Consider two forecasters, each making a single prediction for a sequence of events
+                                                 over time. We ask a relatively basic question: how might we compare these forecasters,
+                                                 either online or post-hoc, while avoiding unverifiable assumptions on how the forecasts
+                                                 and outcomes were generated? In this paper, we present a rigorous answer to this ques-
+                                                 tion by designing novel sequential inference procedures for estimating the time-varying
+                                                 difference in forecast scores. To do this, we employ confidence sequences (CS), which
+                                                 are sequences of confidence intervals that can be continuously monitored and are valid
+                                                 at arbitrary data-dependent stopping times (“anytime-valid”). The widths of our CSs are
+                                                 adaptive to the underlying variance of the score differences. Underlying their construc-
+                                                 tion is a game-theoretic statistical framework, in which we further identify e-processes
+                                                 and p-processes for sequentially testing a weak null hypothesis — whether one forecaster
+                                                 outperforms another on average (rather than always). Our methods do not make distribu-
+                                                 tional assumptions on the forecasts or outcomes; our main theorems apply to any bounded
+                                                 scores, and we later provide alternative methods for unbounded scores. We empirically
+                                                 validate our approaches by comparing real-world baseball and weather forecasters.
+
+
+                                          Contents
+                                          1    Introduction                                                                                      3
+
+                                          2    Related Work                                                                                      5
+
+                                          3    Preliminaries                                                                                     6
+                                               3.1 Test Supermartingales, Ville’s Inequality, and Confidence Sequences . . . . . . . . .         6
+                                               3.2 Forecast Evaluation via Scoring Rules . . . . . . . . . . . . . . . . . . . . . . . . .       8
+
+                                          4    Anytime-Valid Inference for Average Forecast Score Differentials                                9
+                                               4.1 A Game-Theoretic Formulation . . . . . . . . . . . . . . . . . . . . . . . . . . . .        9
+                                               4.2 The Measure-Theoretic Setup . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    10
+                                               4.3 Time-Uniform Confidence Sequences for Average Score Differentials . . . . . . . .          12
+                                              This manuscript is published in Operations Research; see https://doi.org/10.1287/opre.2021.0792.
+                                              * Work done while this author was at Carnegie Mellon University.
+
+
+
+
+                                                                                                      1
+
+## Page 02: 4.3.1 Time-Uniform Boundaries and Exponential Test Supermartingales . . . . . . 
+
+源页：第 2 页
+
+4.3.1 Time-Uniform Boundaries and Exponential Test Supermartingales . . . . . .           12
+          4.3.2 Warmup: Hoeffding-Style Confidence Sequences . . . . . . . . . . . . . . .          13
+          4.3.3 Main Result: Empirical Bernstein Confidence Sequences . . . . . . . . . . .         13
+          4.3.4 Choosing the Uniform Boundary via the Method of Mixtures . . . . . . . . .          14
+    4.4   Sequential Tests, e-Processes and p-Processes . . . . . . . . . . . . . . . . . . . . .   15
+
+5   Experiments                                                                                     18
+    5.1 Numerical Simulations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     18
+    5.2 Comparing Forecasters on Major League Baseball Games . . . . . . . . . . . . . . .          23
+    5.3 Comparing Statistical Postprocessing Methods for Weather Forecasts . . . . . . . . .        24
+
+6   Extensions and Discussion                                                                       26
+
+A Main Proofs                                                                                       32
+  A.1 Sub-exponential Test Supermartingales for Time-Varying Means . . . . . . . . . . .            32
+  A.2 Proof of Theorem 2 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      33
+  A.3 Proof of Theorem 3 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      33
+
+B Details on Time-Uniform Boundary Choices                                                          34
+  B.1 Computing the Gamma-Exponential Mixture . . . . . . . . . . . . . . . . . . . . .             34
+  B.2 The Polynomial Stitching Boundary . . . . . . . . . . . . . . . . . . . . . . . . . .         36
+
+C Asymptotic CSs for Sequential Forecast Comparison                                                 37
+
+D Comparing Relative Forecasting Skills Using the Winkler Score                                     38
+
+E Comparing Lagged Forecasts                                                                        41
+
+F Inference for Predictable Subsequences and Bounds                                                 46
+  F.1 Inference for Predictable Subsequences . . . . . . . . . . . . . . . . . . . . . . . .        46
+  F.2 Inference Under Predictable Bounds . . . . . . . . . . . . . . . . . . . . . . . . . .        48
+
+G Generalizations To Other Outcome and Forecast Types                                               51
+
+H Comparison with Other Forecast Comparison Methods                                                 52
+  H.1 Methodological Comparison with Henzi and Ziegel (2022) . . . . . . . . . . . . . .            52
+  H.2 Comparison with DM and GW Tests . . . . . . . . . . . . . . . . . . . . . . . . . .           53
+
+I   Additional Experiment Details and Results                                                       55
+    I.1 Additional Details & Results from Numerical Simulations . . . . . . . . . . . . . .         55
+         I.1.1 Data Generation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      55
+         I.1.2 All Pairwise Comparisons in Numerical Simulations . . . . . . . . . . . . .          55
+    I.2 Additional Details & Results from the MLB Experiment . . . . . . . . . . . . . . .          57
+         I.2.1 Details on the MLB Forecasters . . . . . . . . . . . . . . . . . . . . . . . .       57
+         I.2.2 All Pairwise Comparisons of MLB Forecasters . . . . . . . . . . . . . . . .          59
+    I.3 Additional Details & Results from the Weather Experiment . . . . . . . . . . . . . .        59
+    I.4 Fine-Tuning the CS Width Using Simulated IID Mean Differentials . . . . . . . . .           59
+
+
+
+
+                                                   2
+
+## Page 03: Forecasters 1 2 3 4 5 6 7
+
+源页：第 3 页
+
+Forecasters           1         2           3       4        5        6         7
+             FiveThirtyEight1      37.9%     41.0%       52.7%   58.7%    37.3%    40.5%     48.5%
+            Vegas-Odds.com2        34.9%     37.7%       41.0%   50.7%    33.7%    37.4%     43.1%
+         Adjusted Win Percentage   47.1%     47.4%       47.6%   47.4%    47.2%    47.0%     47.2%
+         K29 Defensive Forecast    50.0%     50.0%       50.9%   51.6%    50.7%    49.9%     49.1%
+            Constant Baseline      50.0%     50.0%       50.0%   50.0%    50.0%    50.0%     50.0%
+               Average Joe         40.0%     50.0%       60.0%   50.0%    30.0%    40.0%     50.0%
+               Nationals Fan       70.0%     70.0%       80.0%   70.0%    60.0%    60.0%     70.0%
+          Did the Nationals Win?    Yes       Yes         No      No       No       Yes       Yes
+
+Table 1: Probability forecasts (%) on whether a baseball team (Washington Nationals) would win
+each game of the 2019 World Series. The first two forecasters publish their forecasts online in the
+form of probabilities or betting odds. The next three forecasters are baselines computed using the 10-
+year win/loss records. The last two forecasters are imaginary (but not unrealistic) casual sports fans
+making their own forecasts using different heuristics. All forecasts are made prior to the beginning of
+each game. See Section 5.2 for more details.
+
+
+1        Introduction
+Forecasts of future outcomes are widely used across domains, including meteorology, economics,
+epidemiology, elections, and sports. Often, we encounter multiple forecasters making probability
+forecasts on a regularly occurring event, such as whether it will rain the next day and whether a sports
+team will win its next game. Yet, despite the ubiquity of forecasts, it is not obvious how we can
+formally compare different forecasters on their predictive ability, particularly in a sequential setting
+where they each make a prediction on a sequence of outcomes (once for each outcome).
+    As an illustrative example, consider the probability forecasts made on each game of the 2019
+World Series by real-world (and fictitious) forecasters in Table 1. It is not clear how we can effectively
+model the sequence of baseball game outcomes over time, and we also do not have full information
+on how each forecaster comes up with their predictions. As we observe these forecasts and outcomes
+game-by-game, we may see one forecaster appearing to be better than the other, according to some
+scoring rule. But how much of that difference can be attributed to chance or luck? How much evidence
+do we have that one forecaster has been “genuinely” better than another, even after accounting for
+chance, and can we quantify this evidence without having to make assumptions about reality or how
+the forecasts are made?
+    In this work, we derive statistically rigorous procedures for sequentially comparing forecasters via
+the powerful tool of confidence sequences (CS) (Darling and Robbins, 1967; Lai, 1976b; Howard et al.,
+2021). CSs are sequences of confidence intervals (CIs) that provide time-uniform coverage guarantees,
+which allow valid sequential inference under continuous monitoring and at data-dependent stopping
+times. The parameter of interest in this paper is the time-varying mean difference in forecast scores
+up to time t. Most CSs we develop in our paper are also nonasymptotically valid, meaning that their
+coverage guarantee holds at every time point t ≥ 1.
+    In addition, we derive e-processes and p-processes (Ramdas et al., 2022) for testing whether one
+forecaster outperforms the other on average, which is a composite null that we formally define in
+Section 4.4. An e-process Et is a nonnegative process such that under the null, its expectation at any
+    1
+        Source: https://projects.fivethirtyeight.com/2019-mlb-predictions/games/.
+    2
+        Source: https://sports-statistics.com/sports-data/mlb-historical-odds-scores-datasets/.
+
+
+                                                     3
+
+## Page 04: t(fivethirtyeight, vegas); S=BrierScore
+
+源页：第 4 页
+
+t(fivethirtyeight, vegas); S=BrierScore
+
+        0.010
+                           95% CS for t                     104
+                                                                         E-Process (log-scale)
+                                               EB CS
+        0.005                                               102
+
+        0.000                                               100
+
+        0.005                                               10 2       H0 : t 0, t
+                                                                       H0 : t 0, t
+        0.010                                               10 4
+                0   5000    10000 15000 20000 25000                0   5000     10000 15000 20000 25000
+                               Time                                                Time
+
+Figure 1: Left: A 95% CS (Theorem 2) for the average Brier score differentials (∆t )Tt=1 between
+FiveThirtyEight and Vegas, two real-world forecasters that made game-by-game probability forecasts
+on Major League Baseball (MLB) games from 2010 to 2019 (T = 25, 165). Positive values of ∆t
+indicate that the first forecaster is better than the second on average. Unlike a classical CI, a CS
+covers the time-varying parameter ∆t uniformly over all t with high probability. In this case, we
+find that, with 95% probability, the sequence ∆t trends negative for t ≥ 10, 000, indicating that
+Vegas outperformed FiveThirtyEight on average across most of the time horizon. Right: E-processes
+(Theorem 3) for the null hypotheses, H0 : ∆t ≤ 0, ∀t (brown, dashed) and H0 : ∆t ≥ 0, ∀t (purple,
+solid), respectively. An e-process quantifies the accumulated evidence against the null, and it has a
+direct correspondence to the CS. In this example, larger values in the e-process for H0 : ∆t ≥ 0, ∀t
+indicate evidence of Vegas outperforming FiveThirtyEight on average. The gray dashed line plots the
+value 2/α = 40, and the time at which an e-process upcrosses this line is also when the (1 − α)-CS
+moves entirely below or above zero. See Sections 4 and 5 for details.
+
+
+stopping time is at most one. It quantifies the amount of accumulated evidence against the null up
+to time t: a larger Et is more evidence against the null. Further, pt = 1/ supi≤t Ei is a p-process
+— its realization at any stopping time is a valid p-value, a property referred to as anytime-valid or
+always-valid (Johari et al., 2022; Howard et al., 2021). These are also formally defined in Section 4.4.
+Throughout the paper, we define safe, anytime-valid inference (SAVI) methods as ones that satisfy
+either the time-uniform coverage guarantee (CS) or the anytime-valid guarantee (e- or p-processes).
+     The setup in which we develop our methods is game-theoretic (Shafer and Vovk, 2019): we posit
+that two players participate in a forecasting game on a sequence of outcomes with an unknown distri-
+bution. This setup naturally leads to “distribution-free” inference procedures — other than requiring
+bounded scoring rules, we make no assumptions on the time-varying dynamics of the outcomes and
+forecasts, such as stationarity. We further discuss how to relax even the assumption of bounded scores
+using asymptotic CSs (Section C) and normalized scores (Section D).
+     In Figure 1, we show an example of a CS and its corresponding e-processes applied to a forecast-
+ing game between two real-world forecasters, FiveThirtyEight and Vegas, on the outcomes of Major
+League Baseball (MLB) games. The CS in the left plot continuously tracks the expected average score
+differential over time and effectively visualizes the time-varying trend along with the uncertainty on
+its estimation. The two e-processes in the right plot each measure the accumulated evidence favor-
+ing each forecaster over time. In this example, both the CS and the e-processes show that Vegas has
+outperformed FiveThirtyEight on average. We return to this example in Section 5.2.
+     The rest of the paper is organized as follows. After discussing related work (Section 2) and prelimi-
+
+                                                        4
+
+## Page 05: naries (Section 3), we derive CSs for the time-varying average forecast score di
+
+源页：第 5 页
+
+naries (Section 3), we derive CSs for the time-varying average forecast score differentials between two
+probabilistic forecasters in Sections 4.1-4.3, with the case of binary outcomes as a working example.
+In Section 4.4, we also derive e-processes and p-processes as duals to our CSs, providing alternative
+sequential inference procedures for forecast comparison. In Section 5.1, we empirically validate our
+CSs and compare them against fixed-time and asymptotic confidence intervals (CIs) on simulated data;
+in Sections 5.2 and 5.3, we apply our methods to real-world forecast comparison tasks, namely com-
+paring game-by-game predictions in Major League Baseball (MLB) and comparing statistical post-
+processing methods of ensemble weather forecasts. In addition, Section A contains omitted proofs;
+Section B contains technical details about the time-uniform boundary choices; Section C contains an
+alternative forecast comparison approach using an asymptotic CS; Sections D-F contain extensions to
+normalized scores (Winkler, 1994), lag-h forecasts, and predictable conditions/bounds, respectively;
+Section G contains extensions from binary outcomes to categorical and continuous outcomes; Sec-
+tion H contains detailed comparisons with the methods of Henzi and Ziegel (2022); Diebold and
+Mariano (1995); Giacomini and White (2006); and Section I contains additional details about our
+simulated, MLB, and weather experiments as well as details about experimentally fine-tuning the CS
+width.
+
+
+2    Related Work
+Evaluation and Comparison of Forecasts. Forecast evaluation is a well-studied subject in the lit-
+erature of statistics, economics, finance, and climatology, dating back to the works of Brier (1950);
+Good (1952); DeGroot and Fienberg (1983); Dawid (1984); Schervish (1989). The primary tool for
+evaluating forecasts is proper scoring rules, of which the literature is extensive. Many characteriza-
+tion theorems for proper scoring rules exist across different forecasting scenarios, notably including
+the case of probability forecasts for binary and categorical outcomes, point forecasts (e.g., mean,
+quantiles, and prediction intervals) for continuous outcomes, and fully probabilistic forecasts (e.g.,
+densities and CDFs) for continuous outcomes. See, e.g., McCarthy (1956); Savage (1971); Schervish
+(1989); Winkler et al. (1996); Grünwald and Dawid (2004); Gneiting and Raftery (2007); Gneiting
+(2011); Abernethy and Frongillo (2012); Dawid and Musio (2014); Ehm et al. (2016); Ovcharov
+(2018); Frongillo and Kash (2021); Waggoner (2021), for both classical and recent developments.
+     The problem of comparing forecasts while accounting for sampling uncertainty was first popular-
+ized in the case of probability forecasts by Diebold and Mariano (1995) (DM), who proposed tests of
+equal (historical) forecast accuracy using the differences in forecast errors. The DM test is based on
+the asymptotic normality of the average forecast score differentials, and it makes stationarity assump-
+tions about the outcomes. Giacomini and White (2006) (GW) developed tests of conditional predictive
+accuracy given past information, allowing for the comparison of “which forecaster is more accurate
+given the information available at the time of forecasting.” The GW test thus allows for nonstationar-
+ity, although it restricts the forecasters to a fixed window size m and its validity depends on mixing
+assumptions. Lai et al. (2011) presented a comprehensive overview of the aforementioned methods
+of forecast comparison and developed a martingale-based theory of scoring rules whose differentials
+are linear in the outcome, such as proper scoring rules. They proved the asymptotic normality of
+both forecast scores and score differentials, leading to an asymptotic and fixed-time CI that we use
+as a point of comparison in our work. More recent work by Ehm and Krüger (2018); Ziegel et al.
+(2020); Yen and Yen (2021) derive fixed-time tests of forecast dominance under all consistent scor-
+ing functions (Gneiting, 2011). In comparison with all of these previous methods that presuppose
+a fixed sample size, the key difference in our work is that we develop inference methods that are
+valid at arbitrary data-dependent stopping times, while making virtually no assumption on the time-
+
+                                                  5
+
+## Page 06: varying dynamics of the data generating process. The resulting graphical represe
+
+源页：第 6 页
+
+varying dynamics of the data generating process. The resulting graphical representations of CSs and
+e-processes also convey information about the entire time-varying trend of score differences, as in
+Figure 1, unlike classical tests and CIs that concern a single comparison at a fixed time point.
+    Recently, Henzi and Ziegel (2022) constructed sequential tests of conditional forecast dominance
+based on e-processes (Howard et al., 2020; Grünwald et al., 2023; Shafer, 2021; Ramdas et al., 2022;
+Vovk and Wang, 2021). These methods are also anytime-valid and nonasymptotic; yet, they test a
+“strong3 null,” which states that one forecaster is better than the other at every point in time, something
+we rarely believe a priori. Thus, rejecting the strong null only suggests that there exists some time point
+where the latter forecaster is better than the former, which may not come as much of a surprise. (One
+case where the strong null is appropriate is if we test two sets of forecasts produced by the same data
+scientist, with one forecaster using more features or more sophisticated models; but for two unrelated
+forecasters, we rarely expect the strong null to be true.) In contrast, our e-processes test whether one
+forecaster dominates the other on average over time (thus requiring consistent outperformance), and
+the CSs can even test such averaged nulls in a two-sided fashion (equivalently, it tests both one-sided
+nulls). We examine this distinction further in Sections 4.4 and 5.3; other methodological differences
+are summarized in Section H.1.
+    Table 2 summarizes the aforementioned methods of forecast comparison in terms of whether they
+have a stopping time (or equivalently, time-uniform; see Section 4.4 for further details) guarantee, a
+non-asymptotic guarantee, and a distribution-free guarantee.
+
+Time-Uniform Confidence Sequences. Confidence sequences were developed by Robbins and
+coauthors (Darling and Robbins, 1967; Robbins, 1970; Robbins and Siegmund, 1970; Lai, 1976a). Re-
+cent renewed interests on CSs are partly due to best-arm identification in multi-armed bandits (Jamieson
+et al., 2014; Jamieson and Jain, 2018), where CSs are sometimes referred to as always-valid or anytime
+confidence intervals. CSs are also duals to sequential hypothesis tests, analogously to CIs being dual
+to fixed-time hypothesis tests, and one can further derive a sequence of e-processes and p-processes
+given the CSs (more precisely, its underlying exponential process) (Ramdas et al., 2022). In Sec-
+tion 4.4, we make this connection explicit and discuss how our approach also leads to p-processes, or
+anytime-valid p-values (Johari et al., 2022), for weak nulls.
+     The recent work by Howard et al. (2021) is of particular importance in our paper, as it devel-
+ops tight CSs that are uniformly valid over time under nonparametric assumptions and has widths
+that shrink to zero. This work and its underlying technique of developing exponential test (su-
+per)martingales (Howard et al., 2020; Darling and Robbins, 1967; Ville, 1939) have led to several in-
+teresting results, including state-of-the-art concentration inequalities for IID mean estimation (Waudby-
+Smith and Ramdas, 2023) and sequential quantile estimation (Howard and Ramdas, 2022). Our work
+makes the connection between the empirical Bernstein (EB) CSs derived in Howard et al. (2021) and
+the martingale property of forecast score differentials (Lai et al., 2011), leading to a novel sequential
+inference procedure for forecaster comparison.
+
+
+3       Preliminaries
+3.1     Test Supermartingales, Ville’s Inequality, and Confidence Sequences
+The theory of martingales and their interpretation as a gambler’s wealth in a betting game are instru-
+mental in deriving SAVI methods. See Ramdas et al. (2023) for a comprehensive introduction. Let
+    3
+     This distinction of strong and weak nulls come from the discussion of randomized experiments in causal inference; see,
+e.g., Lehmann (1975); Rosenbaum (1995). Within the context of forecast comparison, Ehm and Krüger (2018) distinguish
+between tests of average and step-by-step conditional predictive ability, which mirrors that of weak and strong nulls.
+
+
+                                                            6
+
+## Page 07: Method & Key Result Null Hypothesis H0 Weak CI SAVI NA DF
+
+源页：第 7 页
+
+Method & Key Result                          Null Hypothesis H0              Weak   CI   SAVI   NA   DF
+    Diebold and Mariano (1995)                   δ=0                              ✗     ✓     ✗      ✗    ✗
+    √ ˆ
+      n(∆n − δ) ⇝ N (0, 2πfd (0))
+    Giacomini and White (2006)                   En−1 [δ̂m,n ] = 0, ∀n            ✗     ✗     ✗     ✗    ✗
+    Tm (∆ˆ n ) ⇝ χ2
+    (m: max. forecasting window)
+                                                  1
+                                                      Pt
+    Lai et al. (2011)                             n    i=1 Ei−1 [δ̂i ] = 0, ∀n    ✓     ✓     ✗     ✓    ✗
+    √ ˆ
+      n(∆n − ∆n )/sn ⇝ N (0, 1),
+           1
+               Pn                         2
+    sn ≤ 4n      i=1 [δi (1) − δi (0)]
+    Henzi and Ziegel     (2022)                  Et−1 [δ̂t ] ≤ 0, ∀t              ✗     ✗     ✓     ✓    ✓
+          Qt                 δi (yi )
+                                            
+    Et = i=1 1 + λ δi (1(p        i >q i ))
+    is an e-process, λ > 0
+                                                  1
+                                                      Pt
+    Ours                                          t    i=1 Ei−1 [δ̂i ] ≤ 0, ∀t    ✓     ✓     ✓     ✓    ✓
+    t(∆ˆ t − ∆t ) is sub-exponential,
+    which yields a CS & an e-process
+
+Table 2: Inference methods for comparing probability forecasts for binary outcomes. This table is
+meant to be a quick summary only; see each referenced paper for the precise definitions, condi-
+tions, and guarantees for the method. The last two methods are the only ones that are anytime-valid,
+nonasymptotic, and distribution-free — both of which develop e-processes. Among the two, only
+our method tests the weak null and provides a CS for estimating ∆t . Notations: for each t ∈ N,
+pt and qt are  two probability forecasts on the outcome yt ; δt (y) = S(pt , y) − S(qt , y); δ̂t = δt (yt );
+∆ˆ t = t−1 Pt δ̂i ; ∆t = t−1 Pt Ei−1 [δ̂i ]. We also use t to refer to a time index varying over time,
+              i=1                  i=1
+and n to denote a fixed sample size that must be determined before the experiment. Weak: whether
+the method tests a weak null involving a time-varying average. CI: whether the method provides a
+confidence interval for the score difference (as opposed to only deriving a test). SAVI: whether infer-
+ence is valid at arbitrary data-dependent stopping times (as opposed to only fixed times). NA: whether
+the method has a nonasymptotic guarantee. DF: whether the method has a distribution-free guarantee
+(as opposed to requiring distributional assumptions like stationarity/mixing/IID).
+
+
+(X , G) be a measurable space equipped with a filtration G := (Gt )∞     t=0 , where each Gt represents the
+accumulated information up to time t. Given any probability distribution P on (X , G), a sequence of
+random variables (Xt )∞  t=0 is called a process if it is adapted to G, meaning that Xt is Gt -measurable
+for all t. A process is also predictable w.r.t. G if Xt is Gt−1 -measurable for all t ≥ 1. A stopping time
+τ w.r.t. G is a nonnegative integer random variable that satisfies {τ ≤ t} ∈ Gt for all t ≥ 1.
+    Let Et−1 [·] = EP [· | Gt−1 ] denote the conditional expectation w.r.t. Gt−1 under P . A process
+(Lt )∞
+     t=0 is a supermartingale if EP [|Lt |] < ∞ and Et−1 [Lt ] ≤ Lt−1 for each t ≥ 1, and a martingale
+if “≤” is replaced with “=”. A nonnegative supermartingale (Lt )∞       t=0 that starts at one (L0 = 1) is
+called a test supermartingale (for P ) (Shafer et al., 2011). If (Lt )∞t=0 is a test supermartingale for P ,
+then Ville’s inequality (Ville, 1939) states that, for any α ∈ (0, 1),
+
+                                                P (∃t ≥ 1 : Lt ≥ 1/α) ≤ α.                                    (1)
+
+Ville’s inequality is the primary tool for constructing confidence sequences, as illustrated in, e.g.,
+Howard et al. (2021); in fact, it is the only admissible way to construct them (Ramdas et al., 2020).
+Given α ∈ (0, 1), a (1−α)-confidence sequence (CS) for a time-varying sequence of target parameters
+
+                                                                7
+
+## Page 08: (θt )∞ ∞
+
+源页：第 8 页
+
+(θt )∞                                                    ∞
+     t=1 is a sequence of confidence intervals (CIs) (Ct )t=1 such that
+
+             P (∃t ≥ 1 : θt ∈
+                            / Ct ) ≤ α,         or equivalently,     P (∀t ≥ 1 : θt ∈ Ct ) ≥ 1 − α.                (2)
+
+In particular, the guarantee remains valid at arbitrary stopping times and without a prespecified sample
+size, so that collecting additional data over time does not invalidate it (Howard et al., 2021, Lemma
+3):
+                   for all stopping times τ , possibly infinite, P (θτ ∈ Cτ ) ≥ 1 − α.               (3)
+This coverage guarantee at stopping times is sometimes referred to as being anytime-valid. This
+crucially differentiates a CS from a fixed-time CI, Cn , which only has the following weaker guarantee:
+
+            ∀n ≥ 1, P (θn ∈
+                          / Cn ) ≤ α,           or equivalently,     ∀n ≥ 1, P (θn ∈ Cn ) ≥ 1 − α.                 (4)
+
+In short, CSs, as opposed to CIs, are the appropriate tools for sequential inference.
+
+3.2    Forecast Evaluation via Scoring Rules
+Let Y be the space of all possible outcomes equipped with a σ-field G. Let ∆(Y) be the set of all
+probability distributions on (Y, G) and P ⊆ ∆(Y). To facilitate our discussion, the primary working
+example in this paper will be the space of binary outcomes Y = {0, 1} and probability forecasts
+parametrized by their means in P = [0, 1]. But our setup can be generalized to any finite sample
+space Y = {1, . . . , K} with K-dimensional probability forecasts P = ∆K−1 , for K ≥ 2, and d-
+dimensional sample space Y ⊆ Rd , for d ≥ 1, with point (e.g., mean and quantile) or probabilistic
+(e.g., CDF) forecasts. (We defer our discussion of these general cases to Section G.)
+    A scoring rule is any extended real-valued function4 S : P × Y → R and can be used to evaluate
+the performance of a (probabilistic) forecast p ∈ P given an observation y ∈ Y. Following Gneiting
+and Raftery (2007), we take scoring rules to be positively oriented, meaning that higher scores reflect
+better forecasts. A prominent example is the Brier score (Brier, 1950), which in the binary case can
+be expressed as S(p, y) = 1 − (p − y)2 for p ∈ [0, 1] and y ∈ {0, 1}.
+    Given a forecast p ∈ P and a probability distribution q ∈ ∆(Y), we can naturally extend the
+definition of a scoring rule S to its expected score w.r.t. y ∼ q (conditional on p):
+
+                                             S(p; q) = E [S(p, y)] .                                               (5)
+                                                         y∼q
+
+Here, we make the distinction between the scoring rule S on P × Y and its expected score S defined
+on P × ∆(Y) by the notations S(p, y) and S(p; q), respectively. We can recover the scoring rule from
+the expected score definition via S(p, y) = S(p; δy ), where δy is a point measure on y.
+    A scoring rule S is proper if any probability q ∈ ∆(Y) maximizes the expected score S(·; q):
+
+                                              q ∈ argmax S(p; q).                                                  (6)
+                                                       p∈P
+
+S is strictly proper if the argmax in (6) is unique. Intuitively, a proper scoring rule encourages
+forecasters to be honest, because if a forecaster believes that the outcome follows the distribution
+q ∈ P, then they are incentivized to honestly forecast q, instead of any other distribution p ̸= q, as
+q maximizes the expected score (uniquely, if S is strictly proper) according to their belief. Proper
+   4
+    More formally, the scoring rule S is required to be P-quasi-integrable
+                                                                   R       in its second argument, meaning that for ev-
+ery p ∈ P, S(p, ·) is measurable and, for all q ∈ P, the integral Y S(p, y)dq(y) exists as a possibly infinite but not
+indeterminate value (Bauer, 2001; Abernethy and Frongillo, 2012).
+
+
+                                                          8
+
+## Page 09: scoring rules are often considered as the primary means of evaluating probabilis
+
+源页：第 9 页
+
+scoring rules are often considered as the primary means of evaluating probabilistic forecasts, as they
+assess both calibration and sharpness (Winkler et al., 1996; Gneiting et al., 2007).
+    Classical examples of proper scoring rules for probability forecasts p ∈ P = [0, 1] on binary
+outcomes y ∈ Y = {0, 1} include the following:
+
+      • The Brier score or the quadratic score (Brier, 1950): S(p, y) = 1 − (p − y)2 .
+
+      • The spherical score (Good, 1971): S(p, y) = py+(1−p)(1−y)
+                                                     √2        2
+                                                                  .
+                                                         p +(1−p)
+
+      • The logarithmic score (Good, 1952): S(p, y) = y log(p) + (1 − y) log(1 − p).
+
+      • The zero-one score or the success rate: S(p, y) = y1 (p ≥ 0.5) + (1 − y)1 (p < 0.5).
+
+    The Brier, spherical, and logarithmic scores are examples of strictly proper scoring rules, while
+the zero-one score is an example of a proper but not strictly proper scoring rule. An example of an
+improper scoring rule for probability forecasts is the absolute score, S(p, y) = 1 − |p − y|. Also note
+that all of the examples except the logarithmic score are bounded for p ∈ [0, 1] and y ∈ {0, 1}.
+
+
+4      Anytime-Valid Inference for Average Forecast Score Differentials
+In this section, we derive CSs and e-processes, as well as their corresponding sequential tests and p-
+processes, for the time-varying average difference in the quality of forecasts, as measured by a scoring
+rule. Our intuition comes from the extensive literature on evaluating and comparing probability fore-
+casts via scoring rules (Winkler et al., 1996; Gneiting and Raftery, 2007; DeGroot and Fienberg, 1983;
+Schervish, 1989; Gneiting, 2011; Lai et al., 2011), combined with the powerful tool of time-uniform
+CSs (Darling and Robbins, 1967; Howard et al., 2021). For now, our working example in this section
+will be the case of comparing probability forecasts on binary outcomes; we further discuss extensions
+to categorical and certain continuous outcomes in Section G.
+
+4.1     A Game-Theoretic Formulation
+The intuition behind our SAVI methods for forecast score differentials comes from the game-theoretic
+statistical framework (Shafer, 2021; Ramdas et al., 2023). Consider a forecasting game where two
+players make probabilistic forecasts on an event that happens over time (e.g., whether it will rain on
+each day, whether a sports team will win its game each week, and more) and an unknown player
+named reality chooses a sequence of distributions that generates the outcomes that the forecasters are
+trying to predict. Let t = 1, 2, . . . denote each round of the game. Though not required, we can also
+optionally allow having any historical data y−(H−1) , . . . , y−1 , y0 for some H ≥ 0. The forecasting
+game can be formulated in general as follows — the case of probability forecasts on binary outcomes
+is obtained by setting P = ∆(Y) = [0, 1] (yt ∼ rt would refer to yt ∼ Bernoulli(rt )).
+
+Game 1 (Comparing Sequential Forecasters). For rounds t = 1, 2, . . . :
+
+    1. Forecasters 1 and 2 make their forecasts, pt , qt ∈ P, respectively. The order in which the
+       forecasters make their forecasts is not specified.
+    2. Reality chooses rt ∈ ∆(Y). rt is not revealed to the forecasters.
+    3. yt ∼ rt is sampled and revealed to the forecasters.
+
+      We now elaborate on the role of each player in Game 1.
+
+                                                    9
+
+## Page 10: Forecasters 1 & 2. At each round t, the two forecasters can make their forecasts
+
+源页：第 10 页
+
+Forecasters 1 & 2. At each round t, the two forecasters can make their forecasts using any informa-
+tion available to them. This includes historical and previous outcomes y−(H−1) , . . . , y0 , y1 , . . . , yt−1 ,
+any of the previous forecasts made, p1 , . . . , pt−1 , q1 , . . . , qt−1 , as well as any other side information
+available to either forecaster. They cannot, however, make their predictions using any of r1 , . . . , rt ’s
+(or information from the future). For example, when predicting the outcome of the next baseball game,
+the forecasters’ filtration may include not only all of previous games’ results but also any side infor-
+mation that either forecaster may have, such as which players are starting the game and whether there
+are injuries. The setup also allows for the case where two forecasters have different side information,
+as our results are completely agnostic to such details.
+     This game-theoretic framework for forecast comparison is prequential (Dawid, 1984), in the sense
+that we put no restrictions on how these forecasts are generated, and we only evaluate forecasters based
+on the forecasts they did make and the outcomes that did occur, as opposed to forecasts they would
+have made had the outcomes been different.
+
+Reality. In our game, Reality is the player that determines the unknown distribution rt of the even-
+tual outcome yt conditioned on its past, which notably includes the forecasters’ choices pt and qt .
+In the binary case, for example, Reality chooses the conditional mean sequence of the outcomes yt
+given everything it has seen. Reality can essentially choose rt “however they want,” and they can
+even choose rt after seeing pt or qt . Put differently, the framework is agnostic to what information
+Reality sees: Reality may only see its past choices r1 , . . . , rt−1 and (optionally) the past outcomes
+y1 , . . . , yt−1 , or it may act adversarially after seeing pt and qt . In particular, rt could also be a point
+distribution at yt .
+      We note that the distribution-free property of our methods corresponds to the fact that the game
+places no distributional assumptions on the time-varying dynamics of (rt )∞           t=1 , such as stationarity,
+Markovian or other conditional independence assumptions.
+
+The Statistician. The statistician, who stands outside of the game, has the goal of comparing the
+predictive performance of the two forecasters according to a chosen scoring rule and based only on
+the observed data (pt , qt , yt )∞
+                                 t=1 , without making any assumptions about the behavior of any player
+         5
+involved. The statistician may choose to update their inferential conclusions as the game progresses.
+How the statistician achieves such a goal will be the focus of the subsequent sections.
+
+4.2    The Measure-Theoretic Setup
+We now formalize Game 1 in the context of comparing the two probabilistic forecasters over time. Let
+(pt )∞            ∞                                                                         ∞
+     t=1 and (qt )t=1 be two sequences of forecasts in P, for a sequence of outcomes (yt )t=1 in Y. In
+the binary case, the forecasts will take values in P = [0, 1] and the outcomes in Y = {0, 1}. We can
+define Game 1 in a measure-theoretic sense by specifying the associated filtrations, i.e., a sequence of
+“information sets” with which we perform inference. Our formulation is closely related to the setup
+of Lai et al. (2011), although we make the game-theoretic intuitions explicit.
+
+The “Observable” Forecaster Filtration F. We first define the filtration with which the two fore-
+casters generate their forecasts, denoted as F := (Ft )∞
+                                                       t=0 . For each t ≥ 1, let Ft−1 represent any
+information available to the forecasters before making their predictions at time t, as described in the
+   5
+    Specifically, we do not explicitly consider strategic issues arising from (say) the choice of the scoring rule or the method
+of comparison. In other words, we consider the comparison problem separately from the elicitation problem (how to elicit
+honest forecasts). A separate line of work considers these important, but orthogonal, issues.
+
+
+                                                              10
+
+## Page 11: previous subsection. Mathematically, this means that (pt )∞ ∞ ∞
+
+源页：第 11 页
+
+previous subsection. Mathematically, this means that (pt )∞             ∞              ∞
+                                                             t=1 , (qt )t=1 , and (yt )t=1 are adapted w.r.t. F.
+Note that F also includes the information available to the statistician, making this the “observable” fil-
+tration that contrasts with the “oracle” filtration (defined below).
+
+The “Oracle” Game Filtration G. The game filtration, denoted as G := (Gt )∞                t=0 , represents all
+sets of information associated with Game 1. The parameter of interest (unknown to the statistician) is
+defined w.r.t. this “oracle” filtration. More precisely, for each t ≥ 1, Gt−1 includes not only everything
+in Ft−1 but also any information available to Reality before the outcome yt is realized, including
+Reality’s choice rt . Mathematically, this implies that (pt )∞             ∞              ∞
+                                                                t=1 , (qt )t=1 , and (rt )t=1 are predictable
+                     ∞
+w.r.t. G, while (yt )t=1 is adapted w.r.t. G. The setup allows for the flexible choices of Reality described
+in the previous subsection, as it does not preclude Reality’s actions in any way.
+    In the remainder of the paper, we use the notation Et−1 [·] = E [· | Gt−1 ] to denote the conditional
+expectation with respect to the game filtration for each t. In the case of binary (and categorical)
+outcomes, because the outcome distribution is completely specified by their mean, we simply let rt
+denote the (unknown) conditional mean of the outcome yt given Gt−1 for each t, with a slight abuse
+of notation. In such cases, we have that
+                                       rt = Et−1 [yt ] ∀t = 1, 2, . . . ,                                   (7)
+where Et−1 refers to the conditional expectation over yt ∼ rt | Gt−1 .
+
+Comparing Sequential Forecasters via Average Forecast Score Differentials. With the afore-
+mentioned setup, we can now use scoring rules to assess and compare the quality of the two forecasters
+over time. We define the average (forecast) score differential ∆t between the sequences of forecasts
+(pi )∞            ∞
+     i=1 and (qi )i=1 , up to time t, as the average difference in expected scores:
+                                       t
+                                 1X
+                           ∆t :=    Ei−1 [S (pi , yi ) − S (qi , yi )] ,             t ≥ 1,                 (8)
+                                 t
+                                     i=1
+
+where Ei−1 denotes the expectation over yi ∼ ri conditioned on the game filtration Gi−1 , which
+includes both forecasts pi and qi as well as ri . The time-varying parameter ∆t provides an intuitive
+way of quantifying the difference in the quality of forecasts made up to time t. We highlight that ∆t
+helps us infer whether one forecaster is better than the other on average (over time), as opposed to one
+strictly dominating the other (Giacomini and White, 2006; Henzi and Ziegel, 2022). This estimand is
+also used in Lai et al. (2011)’s asymptotic CI.
+      The parameter ∆t is not observable to the statistician or the forecasters, because reality’s moves
+r1 , . . . , rt are unknown and never observed. We thus define the empirical average (forecast) score
+differential ∆    ˆ t as the unbiased estimate of each summand in (8), also averaged over time:
+                                           t
+                              ˆ t := 1
+                                           X
+                              ∆                  [S (pi , yi ) − S (qi , yi )] ,   t ≥ 1.                   (9)
+                                     t
+                                           i=1
+
+ˆ t is completely observable to the statistician after time t.
+∆
+     The statistician’s goal then becomes quantifying how far ∆    ˆ t is from ∆t , while accounting for the
+uncertainty associated with sampling yt at each time t. To this end, we define the pointwise (forecast)
+score differential δi := Ei−1 [S(pi , yi ) − S(qi ; yi )] and its empirical counterpart δ̂i := S(pi , yi ) −
+S(qi , yi ). Then, it is immediate that the cumulative sums of deviations, defined by S0 = 1 and
+                                             Xt          
+                                      ˆ
+                              St := t ∆t − ∆t =     δ̂i − δi ,                     t ≥ 1,                  (10)
+                                                             i=1
+
+
+                                                            11
+
+## Page 12: forms a martingale, i.e., Et−1 [St ] = St−1 , ∀t ≥ 1. Previous work including Se
+
+源页：第 12 页
+
+forms a martingale, i.e., Et−1 [St ] = St−1 , ∀t ≥ 1. Previous work including Seillier-Moiseiwitsch
+and Dawid (1993); Lai et al. (2011) use this property to derive the asymptotic normality of empir-
+ical average score differentials. In the following sections, we illustrate how (St )∞t=0 can further be
+uniformly and non-asymptotically bounded by constructing exponential test supermartingales. As a
+result, we will be able to estimate and cover ∆t using CSs and also test its sign using e-processes.
+
+4.3     Time-Uniform Confidence Sequences for Average Score Differentials
+4.3.1    Time-Uniform Boundaries and Exponential Test Supermartingales
+We now show that we can uniformly bound the difference between ∆         ˆ t and ∆t over time using uniform
+boundaries
+Pt            and test supermartingales. To do this, we start with a cumulative sum process St :=
+       (
+   i=1 i δ̂ − δi ) as well as its intrinsic time V̂t , which is the variance process for St (to be defined
+later). Our goal is then to uniformly bound the sum St over the intrinsic time V̂t , which corresponds
+to bounding the difference between ∆     ˆ t and ∆t over time due to (10).
+    Following Howard et al. (2020), for any sum process (St )∞                                        ∞
+                                                                    t=0 and its intrinsic times (V̂t )t=0 , we
+define a (one-sided) uniform boundary u = uα with crossing probability α ∈ (0, 1) as any function of
+the intrinsic time that gives a time-uniform bound on the sums:
+                                                              
+                                    P ∀t ≥ 1 : St ≤ uα (V̂t ) ≥ 1 − α,                                    (11)
+
+that is, with probability at least 1 − α, the sums St are upper-bounded by u(V̂t ) at all times t. By
+similarly computing a uniform boundary to (−St , V̂t )∞  t=0 , we can also obtain a time-uniform lower
+bound on St . (Alternatively, we can directly define a two-sided sub-ψ uniform boundary, which
+satisfies P (∀t ≥ 1 : −uα (V̂t ) ≤ St ≤ uα (V̂t )) ≥ 1 − α. An example is Robbins (1970)’s two-sided
+normal mixture that we describe in Section 4.3.4.) The upper and lower bounds then jointly form a
+time-uniform CS on (∆t )∞  t=1 by rearranging the terms.
+    How do we show that there exists such a uniform boundary for our definitions of (St , V̂t )∞  t=0 ?
+Howard et al. (2020, 2021) show that there exists such a uniform boundary if, for each λ ∈ [0, λmax ),
+the exponential process defined by L0 (λ) = 1 and
+                                             n                 o
+                                Lt (λ) = exp λSt − ψ(λ)V̂t , t ≥ 1,                                (12)
+
+is a test supermartingale w.r.t. G. Here, ψ : [0, λmax ) → R is a “CGF-like” function (Howard et al.,
+2020), with a scale parameter c > 0, that controls how fast St can grow relative to the intrinsic time
+V̂t . It is called a “CGF-like” function because it closely resembles (or equals) a cumulant generating
+function (CGF) of a mean-zero random variable. In this paper, we use two ψ functions:
+      • ψN,c (λ) = c2 λ2 /2, ∀λ ∈ [0, ∞), which is the CGF of a centered Gaussian with variance c2 ;
+
+      • ψE,c (λ) = c−2 (− log(1 − cλ) − cλ), ∀λ ∈ [0, 1/c), which is a rescaled CGF of a centered
+        Exponential with scale c.
+If Lt (λ) is a test supermartingale for each λ ∈ [0, λmax ) for some ψ, then we say that (St )∞t=0 is sub-ψ
+                             ∞                                    ∞
+with variance process (V̂t )t=0 . In particular, we say that (St )t=0 is sub-Gaussian or sub-exponential,
+with variance process (V̂t )∞t=0 and scale c, if it is sub-ψN,c or sub-ψE,c respectively; these generalize
+the definitions of sub-Gaussian and sub-exponential random variables to cumulative sums w.r.t. intrin-
+sic time. The uniform boundary u defined using ψ is then called a sub-ψ uniform boundary.
+     Our goal is now to identify the conditions with which (Lt (λ))∞   t=0 is indeed a test supermartingale
+and use different ψ functions to obtain different uniform boundaries and hence CSs.
+
+                                                     12
+
+## Page 13: 4.3.2 Warmup: Hoeffding-Style Confidence Sequences
+
+源页：第 13 页
+
+4.3.2   Warmup: Hoeffding-Style Confidence Sequences
+We first derive an illustrative example of a CS for ∆t solely based on the sub-Gaussianity of the
+empirical pointwise score differentials (δ̂i )∞ i=1 . While the resulting CS is not the tightest one in our
+case, its derivation is simple enough to showcase the general pipeline for deriving CSs.
+       Recall the problem setup in Section 4.2, and for each i ≥ 1, consider two probability forecasts
+pi , qi ∈ [0, 1] on a binary outcome yi ∈ {0, 1} with unknown mean ri ∈ [0, 1]. Since pi , qi , and yi
+are all bounded, we know that the pointwise score differentials δ̂i for i ≥ 1 are also bounded for many
+of the scoring rules we’ve discussed (e.g., |δ̂i | ≤ 1 for the Brier, spherical, and zero-one scores). If
+|δ̂i | ≤ c for some c > 0, we know that δ̂i is c-sub-Gaussian (Hoeffding, 1963) conditioned on the
+                                                             2 2
+game filtration Gi−1 , meaning that Ei−1 [eλ(δ̂i −δi ) ] ≤ eλ c /2 = exp{ψN,c (λ)} for all λ ∈ R.
+                                                               Pt
+Pt Now, for each t, define the cumulative sum St =                i=1 (δ̂i − δi ) and the intrinsic time V̂t =
+     i=1 1 =  t. It then follows that, for each λ ∈   [0, ∞), the  exponential process (Lt (λ))∞  t=0 given by
+Lt (λ) = exp{λSt − ψN,c (λ)V̂t } is a test supermartingale:
+                                                h      n                         oi
+               Et−1 [Lt (λ)] = Lt−1 (λ) · Et−1 exp λ δ̂t − δt − ψN,c (λ) ≤ Lt−1 (λ).                       (13)
+
+Hence, there exists a sub-Gaussian uniform boundary for (St , V̂t ) such that the time-uniform guarantee
+in (11) holds. By rearranging terms and also using the analogous argument for (−St , V̂t ), we arrive at
+our first CS. Hereafter, the notation (a ± b) denotes the interval (a − b, a + b).
+
+Theorem 1 (Hoeffding-style confidence sequences for ∆t ). Suppose that δ̂i is c-sub-Gaussian condi-
+tioned on Gi−1 for i ≥ 1, for some c ∈ (0, ∞). Then, for any α ∈ (0, 1),
+                                           
+                          H       ˆt ± u(t)
+                        Ct := ∆                  forms a (1 − α)-CS for ∆t ,                   (14)
+                                         t
+
+where u = uα/2,c is any (one-sided) sub-Gaussian uniform boundary with crossing probability α2 and
+scale c (or alternatively, a two-sided version with crossing probability α and scale c).
+
+   The statement (14) is equivalent to saying that, with probability at least 1 − α, ∆t is contained in
+Ct for all time t, or that P (∀t ≥ 1 : ∆t ∈ CtH ) ≥ 1 − α. This CS is called a Hoeffding-style CS, as
+ H
+
+it extends Hoeffding (1963)’s inequality for the sums of independent sub-Gaussian random variables
+to the sequential case. In the sub-Gaussian case, it is also possible to construct a two-sided boundary
+without separately constructing a one-sided boundary. This is due to a classical result by Robbins
+(1970) that we restate later in (17), so the upper and lower confidence bounds need not be constructed
+separately; in practice, the one-sided and two-sided variants are nearly identical (Howard et al., 2021).
+We further discuss the possible choices of the uniform boundary in Section 4.3.4.
+     The condition for Theorem 1 (and for Theorem 2 that will follow shortly) is satisfied by many
+scoring rules for probability forecasts on binary or categorical outcomes, including the Brier, spherical,
+and zero-one scores. For the unbounded logarithmic score, one can use its truncated variant S(p, y) =
+y log(p ∨ ϵ) + (1 − y) log((1 − p) ∨ ϵ) for some small ϵ > 0; although the score is no longer proper,
+our methods remain valid. The condition is also satisfied for scoring rules on bounded continuous
+outcomes, such as Brier and quantile scores on [0, 1]-valued outcomes (See Section G).
+
+4.3.3   Main Result: Empirical Bernstein Confidence Sequences
+Now we are ready to present our main result, which is the derivation of a tight CS for ∆t . The key
+difference from the Hoeffding-style CS is that we now use an empirical estimate of the variance pro-
+
+                                                      13
+
+## Page 14: cess for the cumulative sums, leading to a variance-adaptive CS that is often mu
+
+源页：第 14 页
+
+cess for the cumulative sums, leading to a variance-adaptive CS that is often much tighter in practice.6
+Recall the problem setup in Section 4.2 once again.
+
+Theorem 2 (Empirical Bernstein confidence sequences for ∆t ). Suppose that |δ̂i | ≤ 2c for each i ≥ 1,
+for some c ∈ (0, ∞). Also, let V̂t = ti=1 (δ̂i − γi )2 , where (γi )∞
+                                     P                                         c c
+                                                                    i=1 is any − 2 , 2 -valued predictable
+sequence w.r.t. G. Then, for any α ∈ (0, 1),
+                                                 !
+                        EB         ˆt ± u( V̂t )
+                      Ct := ∆                         forms a (1 − α)-CS for ∆t ,                     (15)
+                                          t
+
+where u = uα/2,c is any sub-exponential uniform boundary with crossing probability α2 and scale c.
+
+     As before, the statement (15) is equivalent to saying that, with    probability at least 1 − α, ∆t is
+contained in CtEB for all time t, or that P ∀t ≥ 1 : ∆t ∈ CtEB ≥ 1 − α. The proof is provided in
+                                                                  
+
+Section A.2. Theorem 2 (and its proof) can be viewed as an extension of Theorem 4 in Howard et al.
+(2021) to our setup of sequential forecast comparison.
+     Like the Hoeffding-style CS in Theorem 1, the EB CS estimates the conditional predictive ability
+in an anytime-valid and distribution-free manner. The EB CS is further variance-adaptive because
+its width is a function of the empirical variance process (V̂t )∞
+                                                                t=0 , and we illustrate this empirically in
+Section 5. As before, we can use any bounded scoring rules, which in the binary and categorical cases
+include the Brier, spherical, and zero-one scores (proper), as well as the truncated logarithmic score
+(improper); scoring rules for bounded continuous outcomes can similarly be used. In addition, for
+unbounded proper scores for binary forecasts, such as the logarithmic score, we show in Section D
+that a normalized version of the average score differential, due to Winkler (1994), can be used.
+     The choice of the uniform boundary u is discussed in the following subsection. A reasonable
+choice for the predictable sequence (γi )∞i=1 is the average of previous score differentials, i.e., γi =
+∆ˆ i−1 , although a smarter choice may lead to tighter CS. For the rest of this paper, our default choice
+of CS for ∆t will be that of Theorem 2, using V̂t = ti=1 (δ̂i − ∆  ˆ i−1 )2 , unless specified otherwise.
+                                                      P
+
+
+4.3.4   Choosing the Uniform Boundary via the Method of Mixtures
+The specific choice of the uniform boundary u controls the tightness of the CS across time, and an
+extensive list of choices for u is covered in detail in Howard et al. (2021). While the simplest uniform
+boundaries are given as linear functions of the intrinsic time (Howard et al., 2020), curved uniform
+boundaries can produce CSs that are tighter across time. Here, we focus on a type of curved boundaries
+called the conjugate-mixture boundary; another option, called the polynomial stitching boundary, is
+also discussed in Section B.2. Either boundary type is applicable to both Theorems 1 and 2.
+    The conjugate-mixture (CM) boundary (Howard et al., 2021), denoted as uCM      α , represents a class
+of uniform boundaries arising from the method of mixtures, the first instance of which was de-
+rived by Darling and Robbins (1967). The key idea is summarized as follows. Since Lt (λ) =
+exp{λSt − ψ(λ)V̂t } is a test supermartingaleR for every λ ∈ [0, λmax ), it follows that for any dis-
+tribution F on [0, λmax ), the mixture Lmix
+                                         t   := Lt (λ)dF (λ) is also a test supermartingale. Choosing
+F to be conjugate (in the Bayesian sense) to ψ then gives a closed-form expression for Lmix     t . For
+                  ∞                               ∞
+example, if (St )t=0 is sub-Gaussian with (V̂t )t=0 (Theorem 1), then choosing F to be a Gaussian
+results in the normal mixture boundary (Robbins, 1970); if (St )∞                                      ∞
+                                                                     t=0 is sub-exponential with (V̂t )t=0
+(Theorem 2), then choosing F as a Gamma results in a gamma-exponential mixture boundary.
+   6
+    The improvement from a Hoeffding-style CS to an empirical Bernstein CS mirrors the improvement from Hoeffding’s
+inequality to empirical Bernstein’s inequality for bounded random variables in the fixed-sample case.
+
+
+                                                        14
+
+## Page 15: Type CS Ct Intrinsic Time V̂t Uniform Boundary u
+
+源页：第 15 页
+
+Type                     CS Ct             Intrinsic Time V̂t         Uniform Boundary u
+        Hoeffding-Style    
+                               ˆ t ± u(V̂t )
+                                                                                Normal Mixture
+                               ∆       t                       t
+        (Theorem 1)                                                            Polynomial Stitching
+                                                    Pt                 2
+        Emp. Bernstein                                  i=1 (δ̂i − γi ) ,   Gamma-Exponential Mixture
+                                              
+                               ˆ t ± u(V̂t )
+                               ∆
+        (Theorem 2)                    t
+                                                   (γi )∞
+                                                        i=1 predictable        Polynomial Stitching
+
+           Table 3: Summary of confidence sequences and their uniform boundary choices.
+
+
+    To elaborate, by Lemma 2 of Howard et al. (2021), if Lt (λ) = exp{λSt − ψ(λ)V̂t } is a test
+supermartingale for each λ ∈ [0, λmax ) and F is any probability distribution on [0, λmax ), then the
+following function is a sub-ψ uniform boundary with crossing probability α ∈ (0, 1):
+                                                               
+                           CM                               1
+                         uα (v) := sup s ∈ R : m(s, v) <            , v ≥ 0,                       (16)
+                                                            α
+
+where m(s, v) := exp {λs − ψ(λ)v} dF (λ). Because m(St , V̂t ) = Lmix
+                   R
+                                                                          t   is a test supermartingale,
+Ville’s inequality says that P (∀t ≥ 1 : m(St , V̂t ) < 1/α) ≥ 1 − α, which in turn implies that
+P (∀t ≥ 1 : St ≤ uCM                                                 ∞
+                       α (V̂t )) ≥ 1 − α. Similarly, if (−St , V̂t )t=0 is also sub-ψ, then the above
+procedure also gives the lower bound on St .
+    Importantly, the uniform boundary (16) can be used for both Theorems 1 and 2, with the choice
+of F differing in each case. For the Hoeffding-style CS in Theorem 1, a two-sided normal mixture
+boundary can be computed directly in closed-form by choosing F to be N (0, ρ−1 ) (Robbins, 1970):
+                                             s                       
+                                 CM                           v+ρ
+                                uα (v; ψN ) = (v + ρ) log                                          (17)
+                                                               α2 ρ
+where ρ > 0 is a free parameter. In practice, ρ can be chosen to optimize the width of the resulting
+CS at a pre-specified intrinsic time. A one-sided normal mixture boundary can also be derived in
+closed-form (Howard et al., 2021).
+    For the EB CS in Theorem 2, a one-sided gamma-exponential mixture boundary uCM     α (v; ψE ), with
+F as a Gamma, can be computed efficiently using a numerical root finder (m(s, v) has a closed form,
+and the boundary uCMα is obtained numerically; see Section B.1 for details). The one-sided boundary
+can be used for computing both the upper and lower confidence bounds of the EB CS. If a closed-form
+boundary is needed, then the polynomial stitching
+                                               √ boundary (Section B.2) can be used. Also, while
+the CM boundary has an asymptotic rate of O( v log v) as illustrated in (17), it is usually tighter than
+the polynomial stitched boundary in practice. In fact, the CM boundary is unimprovable in the case of
+sub-Gaussian random variables without additional assumptions (Howard et al., 2021, Proposition 4).
+    Table 3 summarizes the choice of uniform boundaries and the CSs we derived for estimating
+∆t . In our experiments, we use the conjugate-mixture uniform boundary by default, although we
+also perform an empirical comparison between the different choices as well as their hyperparameters
+in Section I.4. We use the publicly available implementation of the polynomial stitching and CM
+uniform boundaries by Howard et al. (2021).7
+
+4.4    Sequential Tests, e-Processes and p-Processes
+While our derivation so far has focused on CSs, we can also derive e-processes and p-processes (Shafer
+and Vovk, 2019; Vovk and Wang, 2021; Grünwald et al., 2023; Ramdas et al., 2020). In particular,
+  7
+      https://github.com/gostevehoward/confseq
+
+
+                                                          15
+
+## Page 16: an e-process can be derived as a lower bound on the exponential test supermartin
+
+源页：第 16 页
+
+an e-process can be derived as a lower bound on the exponential test supermartingale (12) that we
+used to construct the CS in the previous section. This correspondence is general to any exponential
+process upper-bounded by a test supermartingale, as noted in, e.g., Ramdas et al. (2020); Howard
+et al. (2021); our work utilizes this fact to introduce alternative sequential inference procedures with
+the same anytime-valid and distribution-free guarantees.
+
+Weak and Strong Null Hypotheses. Before deriving e- and p-processes, we first make clear the
+null hypotheses that correspond to the CS derived in Theorem 2. We define the weak one-sided null
+H0w (p, q) as
+                                               t
+                                            1X
+                          H0w (p, q) : ∆t =      δi ≤ 0, ∀t = 1, 2, . . . .                  (18)
+                                            t
+                                                   i=1
+
+H0w (p, q) implies that, across all times t, the first forecaster (p) is no better than the second fore-
+caster (q) on average. Note that H0w (p, q) is a composite null, in the sense that it consists of all joint
+distributions P on G   such that ∆t ≤ 0 for all t ≥ 1 under P . H0w (q, p) is analogously defined as
+  w               1 Pt
+H0 (q, p) : ∆t = t i=1 δi ≥ 0.
+    We now illustrate how the CSs derived in Theorem 1 and Theorem 2 would correspond to se-
+quential tests of the weak one-sided nulls H0w (p, q) and H0w (q, p), drawing from the duality between
+CSs and sequential tests (Johari et al., 2022; Howard et al., 2021; Ramdas et al., 2020). Specifically,
+because the upper and lower confidence bounds are often constructed separately, the (1 − α)-level CS
+for ∆t denoted as Ct = (Lt , Ut ) satisfies ∆t ≤ Ut with probability at least 1 − α2 and that ∆t ≥ Lt
+with probability at least 1 − α2 . Thus, if for any time t we find that Lt > 0 or Ut < 0, then we can
+reject either H0w (p, q) or H0w (q, p) with high probability. More generally, the CSs readily provide a
+valid stopping rule for rejecting H0w , a fact that we summarize in the following corollary. Below, we
+follow Robbins’ power-one testing framework which uses one-sided stopping rules that only stop on
+rejecting the null (and do not stop otherwise).
+
+Corollary 1 (A sequential test for H0w using a CS). Given a (1 − α)-CS Ct = (Lt , Ut ) obtained using
+either Theorem 1 or 2, the following stopping rule provides a valid level-α sequential test for H0w (p, q)
+and H0w (q, p) (jointly):
+
+                            Reject H0w (p, q) if Lt > 0; reject H0w (q, p) if Ut < 0.                       (19)
+
+This means that:
+
+        sup         P (∃t ≥ 1 : Reject H0w (p, q)) +      sup         P (∃t ≥ 1 : Reject H0w (q, p)) ≤ α.   (20)
+     P ∈H0w (p,q)                                      P ∈H0w (q,p)
+
+     The stopping rule (19) is equivalent to deciding that p has been better (worse) than q if Ct is
+entirely above (below) zero. The anytime-validity of this rule implies that the statistician can, e.g.,
+periodically perform the test as t increases and update their decision accordingly. On one extreme,
+the statistician can choose to perform the test after every round t, or on the other extreme, they can
+test just once at a designated time t∗ (while leaving open the possibility of revisiting the experiment
+some time later). Compared to a standard hypothesis test for a stationary mean, the underlying ∆t can
+change its course over time, so in general it may not be sufficient to test once at t∗ in order to have
+power against the weak null. See Section 5 for an illustration and Section 6 for a further discussion.
+     We note that separately testing for both H0w (p, q) and H0w (q, p) is not equivalent to simply testing
+for ∆t = 0, ∀t, which is equivalent to δt = 0, ∀t. Rather, the sequential test (19) is the combination of
+two separate sequential tests in (19) for H0w (p, q) and H0w (q, p), each at the significance level α/2. The
+
+                                                         16
+
+## Page 17: interpretation of the CS as two simultaneous sequential tests allows the user to
+
+源页：第 17 页
+
+interpretation of the CS as two simultaneous sequential tests allows the user to continuously monitor
+the score differential on both sides via the CS-based stopping rule (19).
+    For the sake of comparison, we also define the strong one-sided null H0s = H0s (p, q) as
+                                   H0s (p, q) : δt ≤ 0,   ∀t = 1, 2, . . . .                            (21)
+H0s (q, p) is defined analogously as H0s (q, p) : δt ≥ 0, ∀t = 1, 2, . . . . The recent work by Henzi and
+Ziegel (2022) develops e-processes (defined in the next paragraph) and sequential tests for this null.
+In contrast to H0w , H0s corresponds to saying that the first forecaster (p) is no better than the second
+forecaster (q) at every time step t = 1, 2, . . . . Thus, the strong null H0s implies the weak null H0w , but
+not vice versa. The critical distinction here is that rejecting H0s only tells us that p outperformed q at
+some time step t, but it does not tell us if either was better on average over time. To give a concrete
+example, fix k > 2 (say, k = 7 indicating Sundays), and define
+                        δt = +0.1 if t = k, 2k, 3k, . . . ;    δt = −1 otherwise.                       (22)
+In other words, p is generally worse than q but marginally better than q every kth time step (e.g., every
+Sunday). Because the strong null is false, any (powerful) sequential test for the strong null will reject
+it, and yet this may be a confusing conclusion as q is generally a better forecaster.
+
+Sub-exponential E-processes for the Weak Null. We now show that the exponential test super-
+martingale underlying the CS in Theorem 2 can also be transformed to directly measure evidence
+against the weak one-sided null (rather than make a decision at a level α). Formally, an e-process (Ram-
+das et al., 2022) for a (possibly composite) null hypothesis H0 is defined as a nonnegative process
+(Et )∞
+     t=0 , starting at one (E0 = 1), such that:
+
+                  for any P ∈ H0 and any arbitrary stopping time τ , EP [Eτ ] ≤ 1,                      (23)
+where we define E∞ := lim supt→∞ Et . The larger the value of Et , the more the evidence against
+the null. In particular, if the null is true, then it is unlikely to observe large values of the process
+at any stopping times (by Markov’s inequality, P (Eτ ≥ 1/α) ≤ α). An e-process is anytime-valid
+by definition (23) (validity at arbitrary stopping times), analogous to the anytime-validity of a CS in
+Equation 3, and the term ‘process’ is also used to emphasize this property. An e-process can also be
+interpreted in a fully game-theoretic statistical sense: an e-process for a composite null measures the
+minimum wealth among bets against each member of the null (Ramdas et al., 2022), such that it only
+grows large when there is evidence against all members. At a fixed t, Et is also called an e-variable,
+and its realization is called an e-value (Vovk and Wang, 2021; Grünwald et al., 2023).
+    We can now define and show an e-process that corresponds to Theorem 2. (We can also define an
+analogous e-process corresponding to Theorem 1, but this is omitted due to space constraints.) The
+following e-process is for the weak one-sided null H0w (p, q) and is related to the lower confidence
+bound of the CS from Theorem 2; the e-process for H0w (q, p) is analogous and related to the upper
+confidence bound of the CS. Recall once again the problem setup in Section 4.2.
+Theorem 3 (Sub-exponential E-processes for H0w ). Assume the same conditions as Theorem 2. Then,
+for each λ ∈ [0, 1/c),
+                           ( t                     )
+                              X
+              Et (λ) := exp λ    δ̂i − ψE,c (λ)V̂t     is an e-process for H0w (p, q).      (24)
+                                   i=1
+
+Furthermore, given a probability distribution F on [0, 1/c), the mixture process Etmix :=
+                                                                                              R
+                                                                                                  Et (λ)dF (λ)
+is an e-process for H0w (p, q).
+
+                                                     17
+
+## Page 18: The proof, provided in Section A.3, shows that under each P ∈ H0w , Et (λ) is up
+
+源页：第 18 页
+
+The proof, provided in Section A.3, shows that under each P ∈ H0w , Et (λ) is upper-bounded
+by a exponential test supermartingale for P , namely Lt (λ) in (12). Because a process is upper-
+bounded by a test supermartingale for P ∈ H0 if and only if it is an e-process for H0 (Ramdas
+et al., 2020), this establishes that Et (λ) is an e-process in the sense of (23). It then follows that
+Et ≤ Lt (λ)dF (λ) = Lmix
+   mix                           ∀t, so Etmix is also an e-process.
+         R
+                             t
+     The e-process of Theorem 3 is an anytime-valid inference procedure that provides a measure of
+accumulated evidence against the weak one-sided null H0w (p, q) at any stopping time. By definition, it
+is expected to be small under the weak null, and we only expect to see it grow large when the weak null
+does not hold. In comparison with Henzi and Ziegel (2022)’s e-process for the strong null, we see that
+our e-process provides a more useful notion of evidence for saying that one forecaster outperforms
+another. In the example of (22), an e-process for the strong null can grow large, even though q is
+generally a better forecaster; in contrast, our e-process (24) for the weak null is expected to remain
+small. In Section 5.3, we provide an empirical comparison of the two e-processes.
+
+Choosing λ (or F ) for E-processes. Theorem 3 tells us that the expected value of Et (λ) and Etmix
+are bounded by 1 at all stopping times under the null, for any choice of λ or any mixture distribu-
+tion F . In practice, we default to using a mixture e-process with the conjugate distribution F , as in
+Section 4.3.4. For the sub-exponential e-process, the gamma-exponentialPt mixture as before provides
+                                                             mix
+a closed form for the function m(s, v) in (16), so that Et = m( i=1 δ̂i , V̂t ) can be computed
+efficiently. The expression for m(s, v) is included in Section B.1.
+
+P-processes. Finally, we remark that any e-process for H0 can also be converted into an p-process
+for H0 , i.e., the sequence (pt )∞
+                                 t=0 that satisfies: for any α ∈ (0, 1),
+
+              for any P ∈ H0 and for any arbitrary stopping time τ , P (pτ ≤ α) ≤ α.               (25)
+
+A p-process evaluated at any stopping time τ , i.e. pτ , is a p-value, but unlike a classical p-value, a
+p-process is valid at arbitrary stopping times.
+    Any e-process (Et )∞ t=0 can be converted into a p-process via
+
+                                        pt := 1/ sup Ei ,   ∀t,                                    (26)
+                                                  i≤t
+
+following derivations from, e.g., Ramdas et al. (2020, 2022). We also remark that pt can alternatively
+be defined from a CS as the smallest α for which the (1 − α)-level CS does not include zero (Howard
+et al., 2021), so all three notions (CS, e-process, and p-process) are closely related.
+
+
+5     Experiments
+In this section, we run both simulated and real-data experiments for sequential forecast comparison
+using our CSs as well as e-processes. All code and data sources for the experiments are made publicly
+available online at https://github.com/yjchoe/ComparingForecasters.
+
+5.1   Numerical Simulations
+As our first experiment, we compare our Hoeffding-style and EB CSs (Theorems 1 and 2, respectively)
+on simulated data with the asymptotic fixed-time CIs due to Theorem 2 of Lai et al. (2011). The main
+goal is to confirm that the CSs cover time-varying average score differentials uniformly, unlike the
+fixed-time CI, and are also nearly as tight as the CI.
+
+                                                  18
+
+## Page 19: Forecasters
+
+源页：第 19 页
+
+Forecasters
+                       1.0
+
+                       0.8
+Probability Forecast
+
+
+                       0.6                                                          reality (rt)
+                                                                                    constant_0.5
+                       0.4                                                          laplace
+                                                                                    k29
+                       0.2                                                          mix_01_noiseless
+                                                                                    mix_10_noiseless
+                       0.0
+                             0   2000   4000          6000    8000      10000
+                                               Time
+
+Figure 2: Various forecasters on a simulated non-IID data (T = 104 ) with sharp changepoints across
+time. Note that, instead of plotting the binary outcomes yt ∈ {0, 1}, we plot the Reality’s choices
+(rt )Tt=1 that generates the outcome sequence. See text for details about the forecasters.
+
+
+     In our simulated experiments, we also include an asymptotic CS for time-varying means, recently
+developed by Waudby-Smith et al. (2021), as an additional tool for anytime-valid inference. Asymp-
+totic CSs can be viewed as alternatives to their non-asymptotic counterparts, including the ones we
+introduced in Section 4, and they trade off non-asymptotic validity to achieve versatility and also com-
+paratively smaller widths at smaller sample sizes. A formal review of asymptotic CSs in the context
+of sequential forecast comparison is included in Section C.
+     As for our simulated data, we generate a sequence of non-IID binary outcomes and compare
+different forecasters using our CSs. The overall simulation pipeline closely follows Game 1, with
+P = ∆(Y) = [0, 1], Y = {0, 1}, and T = 104 . At each round t = 1, . . . , T , each forecaster makes
+a probability forecast pt , qt ∈ P, then reality chooses rt , and finally yt ∼ Bernoulli(rt ) is sampled.
+The forecasts pt and qt are made only using the previous outcomes, i.e., y1 , . . . , yt−1 . The Reality’s
+choices (rt )Tt=1 is specifically chosen to be non-IID and contain sharp changepoints, as shown in
+Figure 2. This serves as a challenging test case for the EB CS, as the sharp changepoints make it
+difficult to quickly adapt to the underlying variance. See Section I.1.1 for further details.
+     At the end of each round t = 1, . . . , T , we compute the 95% Hoeffding-style and EB CS for ∆t ,
+using Theorems 1 and 2 respectively. We use the Brier score S(p, q) = 1 − (p − q)2 as our default
+scoring rule, but we also explore other scoring rules later in the section. As for the hyperparameter
+choices for sub-ψ uniform boundaries, we are guided by preliminary experiments in Section I.4.
+     We consider several forecasters, which are drawn with lines in Figure 2. These include the constant
+baseline, i.e., pt = 0.5 (constant_0.5), as well as the Laplace forecasting algorithm (laplace)
+pt = k+0.5
+         t+1 , where k = #{i ∈ [t] : yi = 1}. We further add predictions using the K29 defensive
+forecasting algorithm (k29) (Vovk et al., 2005), which is a game-theoretic forecasting method that
+yields calibrated forecasts. The method
+                                           depends
+                                                     on the choice of a kernel function, and here we use
+                                        (p−q)2
+the Gaussian RBF K(p, q) = exp − 2σ2               with bandwidth σ = 0.01. The mix_01_noiseless
+forecaster is defined as pt = 0.8 for t ≤ 6000 and pt = 0.2 for t > 6000; the mix_01 forecaster is
+a noisy version that adds an independent noise to pt by p˜t = pt + 0.5 · ϵt (clipped at 0 and 1), where
+ϵt is drawn IID from Student’s t-distribution with 1 degree of freedom. The mix_10_noiseless
+forecaster is defined as qt = 1 − pt and the mix_10 forecaster q̃t is analogously defined.
+
+                                                         19
+
+## Page 20: The choices of forecasters and Reality are made in such a way that the unknown p
+
+源页：第 20 页
+
+The choices of forecasters and Reality are made in such a way that the unknown parameter ∆t , for
+t = 1, . . . , T , can not only change its sign but also have different variances over time. For example, the
+mix_10 forecaster outperforms (∆t > 0) the mix_01 forecaster on average during t ∈ (2000, 6000),
+while the sign then reverses (∆t < 0) for t ∈ (6000, 10000). Among the algorithmic forecasters, the
+K29 variants consistently perform better than the Laplace algorithm, especially when using sharper
+kernels, because they are better at modeling the sharp changepoints over time.
+     In Figure 3, we plot the 95% Hoeffding-style CS (Theorem 1), EB CS (Theorem 2), and a fixed-
+time CI for ∆t (top left), as well as their widths (top right), the corresponding e-process (bottom
+left), and the cumulative miscoverage rates (bottom right). First, both CSs successfully cover ∆t at
+any given time point, and their widths decrease as more outcomes are observed. As expected, the
+width of the EB CS decays more quickly than the width of the Hoeffding CS due to its use of the
+empirical variance term (V̂t ) but more slowly than the fixed-time CI, matching the patterns observed
+in Howard et al. (2021); Waudby-Smith et al. (2021). As noted before, the fixed-time CI is only valid
+at a fixed time t and not uniformly over time, despite its tighter width, and this is illustrated by its large
+cumulative miscoverage rate, i.e., αt = P (∃i ≤ t : ∆i ∈       / Ci ) (estimated over the repeated sampling
+of y1 , . . . , yt under P ). In contrast, the EB CS8 keeps its cumulative miscoverage rate well below α
+(it is in fact zero, as it is constructed using supermartingales and not martingales). In Section H.2,
+we also include an analogous plot comparing our methods with other classical tests (Diebold and
+Mariano, 1995; Giacomini and White, 2006).
+     The sub-exponential e-processes for H0 (p, q) (solid green) and H0 (q, p) (dotted purple) show how
+they accurately track the accumulated evidence for/against each forecaster over time. For example, the
+e-process for H0 (p, q) stays below 1 during t < 2000, when neither forecaster outperforms the other,
+and grows large during t ∈ (2000, 6000) when data shows more evidence against the null hypothesis
+that ∆t ≤ 0, ∀t because the true ∆t in fact becomes positive. It then decreases back to values below
+1 during t ∈ (6000, 10000), when the true ∆t becomes negative. We note that the gray dotted line
+indicates the value 2/α = 40; testing whether an e-process exceeds 2/α corresponds to a level-(α/2)
+sequential test equivalent to the one stated in Corollary 1. In fact, the plots show that the points at
+which the (1 − α)-level EB CS excludes zero (on either side) are precisely when either e-process
+exceeds 2/α, illustrating the duality between the CS and the e-process.
+     In Figure 4, we now plot the 95% CSs (left), their widths (middle), and also the corresponding e-
+processes (right) for comparing the k29_poly3 forecaster against the laplace baseline, using the
+spherical score (strictly proper), zero-one score (proper), the ϵ-truncated logarithmic score (ϵ = 10−8 )
+(improper). We observe that all variants of CSs always cover the true ∆t over time, at α = 0.05,
+and its width decreases similarly to the case of Brier scores and eventually approaches that of the
+asymptotic CS. In terms of the width comparison between EB and Hoeffding CSs, we see that the
+EB CS is generally much tighter than the Hoeffding CS, and it decreases more slowly around time
+steps when there are sharp changepoints in ∆t . This can be explained by the variance-adaptive nature
+of the EB CS, which would use larger values of intrinsic time V̂t at sharp changepoints, whereas
+the Hoeffding CS simply uses V̂t = t irrespective of the variance process. The sub-exponential e-
+processes for H0w (p, q) and H0w (q, p) illustrate the accumulated evidence for the first forecaster in all
+three cases around the same time the CS moves entirely above zero, illustrating the duality between
+the two methods.
+     We include a plot of all pairwise comparisons between four of the forecasters in Section I.1.2.
+
+
+
+
+   8
+       The EB CS is computed with the polynomial stitching bound for computational efficiency.
+
+
+                                                            20
+
+## Page 21: t(mix_10, mix_01); S=BrierScore
+
+源页：第 21 页
+
+t(mix_10, mix_01); S=BrierScore
+
+       0.20
+                            95% CS/CI for t                           0.6
+                                                                                         Width of CS/CI
+       0.15                                          EB CS                               EB CS                 Asymptotic CS
+                                                     Hoeffding CS     0.5                Hoeffding CS          Fixed-Time CI
+       0.10                                          Asymptotic CS
+       0.05                                                           0.4
+                                                     Fixed-Time CI
+       0.00                                           t               0.3
+       0.05                                                           0.2
+       0.10
+       0.15                                                           0.1
+       0.20                                                           0.0
+              0     2000        4000          6000   8000     10000         0     2000    4000          6000   8000     10000
+
+       104
+                           E-Process (log-scale)                                   Cumulative Miscoverage Rate
+                                                                      1.0
+                                                                                         EB CS                 Asymptotic CS
+                                                                      0.8                Hoeffding CS          Fixed-Time CI
+       102
+                                                                      0.6
+       100
+                                                                      0.4
+      10 2
+                  H0 : t 0, t                                         0.2
+                  H0 : t 0, t
+      10 4                                                            0.0
+              0     2000        4000          6000   8000     10000         0     2000    4000          6000   8000     10000
+                                       Time                                                      Time
+
+
+Figure 3: Top Left: 95% EB CS (blue, solid), Hoeffding-style CS (skyblue, dash-dotted), asymptotic
+CS (green, dashed; Section C), and a fixed-time asymptotic CI (orange, dotted) for simulated time-
+varying average score differentials (∆t )Tt=1 between the mix_10 and mix_01 forecasters (T = 104 ).
+The Brier score is used. All CSs, but not the CI, uniformly cover the true score differential sequence,
+which changes signs sharply multiple times across the horizon. Top Right: Widths of the CSs and
+the CI across time steps. The variance-adaptive EB CS is tighter than the Hoeffding CS and slightly
+looser than the asymptotic CS; the fixed-time CI is the tightest, but it does not have the time-uniform
+guarantee. Bottom Left: Sub-exponential e-processes (Theorem 3) that measure the accumulated
+evidence against either forecaster (first forecaster: brown, dashed; second: purple, solid). Testing
+whether the e-process exceeds the dashed gray line at 2/0.05 = 40 corresponds to a sequential test
+at α = 0.05 (Corollary 1). Bottom Right: The cumulative miscoverage rate, which estimates αt =
+P (∃i ≤ t : ∆i ∈ / Ci ) over repeated sampling of y1 , . . . , yt under P , of the CSs/CIs. For a 95% CS,
+this rate is controlled at 0.05 by definition; it is in fact always zero for the non-asymptotic CSs in
+our experiments. For the fixed-time CI, this rate exceeds well above α and continues to increase (in
+log-scale of time).
+
+
+
+
+                                                                     21
+
+## Page 22: t(k29, laplace); S=SphericalScore
+
+源页：第 22 页
+
+t(k29, laplace); S=SphericalScore
+
+                    95% CS for t             0.5
+                                                           Width of CS             104
+                                                                                              E-Process (log-scale)
+       0.2                                                        EB CS
+                                             0.4                  Hoeffding CS     102
+       0.1                                                        Asymptotic CS
+                                             0.3
+       0.0                  EB CS                                                  100
+                            Hoeffding CS     0.2
+       0.1                                                                                     H0 : t 0, t
+                            Asymptotic CS    0.1                                   10 2
+       0.2                     t                                                               H0 : t 0, t
+                                             0.0                                   10 4
+             0   2000 4000 6000 8000 10000         0   2000 4000 6000 8000 10000          0   2000 4000 6000 8000 10000
+                        Time                                  Time                                    Time
+
+                                               t(k29, laplace); S=ZeroOneScore
+
+                    95% CS for t             0.5
+                                                           Width of CS             104
+                                                                                              E-Process (log-scale)
+       0.2                                                        EB CS
+                                             0.4                  Hoeffding CS     102
+       0.1                                                        Asymptotic CS
+                                             0.3
+       0.0                  EB CS                                                  100
+                            Hoeffding CS     0.2
+       0.1                                                                                     H0 : t 0, t
+                            Asymptotic CS    0.1                                   10 2
+       0.2                     t                                                               H0 : t 0, t
+                                             0.0                                   10 4
+             0   2000 4000 6000 8000 10000         0   2000 4000 6000 8000 10000          0   2000 4000 6000 8000 10000
+                        Time                                  Time                                    Time
+
+                                             t(k29, laplace); S=LogarithmicScore
+
+                    95% CS for t                           Width of CS             104
+                                                                                              E-Process (log-scale)
+       1.0                                                        EB CS
+                                             2.0
+       0.5
+                                                                  Hoeffding CS     102
+                                             1.5                  Asymptotic CS
+       0.0                  EB CS                                                  100
+                                             1.0
+                            Hoeffding CS
+       0.5                  Asymptotic CS                                          10 2        H0 : t 0, t
+                                             0.5
+       1.0                     t                                                               H0 : t 0, t
+                                             0.0                                   10 4
+             0   2000 4000 6000 8000 10000         0   2000 4000 6000 8000 10000          0   2000 4000 6000 8000 10000
+                        Time                                  Time                                    Time
+
+
+Figure 4: 95% EB (blue, solid), Hoeffding-style (skyblue, dash-dotted), and asymptotic (green,
+dashed) CSs (left), their widths (middle), and the sub-exponential e-processes (right) between the
+K29 forecaster and the Laplace forecaster. Three different scoring rules are used here: the spherical
+(top), the zero-one (middle), and the ϵ-truncated logarithmic (ϵ = 0.01) (bottom) scores. All scor-
+ing rules are positively oriented, such that positive values of ∆t indicate that the first forecaster is
+better than the second. Even when the scoring rule is not strictly proper (zero-one) or not proper at
+all (truncated logarithmic), all CSs still cover ∆t uniformly, and in general the width of the EB CS
+shrinks close to the asymptotic CS than the Hoeffding-style CS, which is wider. The e-processes for
+H0w : ∆t ≤ 0 (brown, dashed) cross the 2/α line (gray, dotted) as the lower confidence bound of the
+EB CS crosses zero.
+
+
+
+
+                                                             22
+
+## Page 23: 5.2 Comparing Forecasters on Major League Baseball Games
+
+源页：第 23 页
+
+5.2      Comparing Forecasters on Major League Baseball Games
+As our first real-world application of the CSs, we consider the problem of predicting wins and losses
+for baseball games played in the Major League Baseball (MLB). Sports game prediction is particu-
+larly suitable for our setting, because there are multiple publicly available probability forecasts on the
+outcome of each game (e.g., FiveThirtyEight, betting odds, and pundits/experts), that are frequently
+updated across time. There is also no obvious assumption to be reasonably made about the outcome of
+the games, such as stationarity or assumptions of parametric models. Recall Table 1 for an illustration
+of various probability forecasts made on MLB games.
+    We specifically focus on predicting the outcome of MLB games over ten years (2010-2019), cul-
+minating in the 2019 World Series between the Houston Astros and the Washington Nationals. We
+use every regular season and postseason MLB game from 2010 to 2019 as our dataset. We convert
+each game as a single time point in chronological order, leading to a total of T = 25, 165 games. As
+for the forecasters, we consider the following:
+
+       • 538: Game-by-game probability forecasts by FiveThirtyEight on every MLB game since 1871,
+         available at https://data.fivethirtyeight.com/#mlb-elo.
+       • vegas: Pre-game closing odds made on each game by online sports bettors, converted and
+         scaled to probabilities, as reported by https://Vegas-Odds.com.9
+       • constant: a constant baseline corresponding to pt = 0.5 for each t.
+       • laplace: A seasonally adjusted Laplace algorithm, representing the season win percentage
+         for each team. The final adjust win percentage from the previous season, reverted to the mean by
+         one-third, is used as the baseline probability for the next season. The final probability forecast
+         for a game between two teams is rescaled to sum to 1.
+       • k29: The K29 algorithm applied to each team, using the Gaussian kernel with σ = 0.1, com-
+         puted using data from the current season only. The final probability forecast for a game between
+         two teams is rescaled to sum to 1.
+
+In Section I.2.1, we give further details about the five forecasters and also plot their forecasts on the
+last 200 games of 2019.
+     We perform all pairwise comparisons of the five aforementioned forecasters on the 10-year win/loss
+predictions. See Sections I.4 for details on tuning the free hyperparameter on the uniform bound-
+ary. First, as we showed in Figure 1, we compare the two publicly available forecasters in 538
+(p) and vegas (q), finding that the vegas forecaster has marginally outperformed the 538 fore-
+caster: after T = 25, 165 games, 95% EB CS for ∆T is (−0.00265, −0.00062), and the e-value for
+H0w (q, p) : ∆t ≥ 0, ∀t is 2979.0. The fact that the vegas forecaster (marginally) outperformed the
+538 forecaster is interesting, especially given that the primary goal of sports bettors is not to max-
+imize predictive accuracy but their overall profit.10 Yet, given the relatively small score difference
+and also the inherent uncertainty in sports game outcomes,11 more fine-grained comparisons between
+real-world sports forecasters (e.g., regular season vs. playoffs, team-specific comparisons, and com-
+parisons with or without specific side information) remain interesting future work.
+     In Table 4, we further compare every other forecaster against the vegas forecaster by estimating
+the average Brier score differential ∆T using the 95% EB CS. We also show the corresponding sub-
+exponential e-processes (Theorem 3) for the null of H0w (q, p) : ∆t ≥ 0, ∀t, which translates to
+   9
+     https://sports-statistics.com/sports-data/mlb-historical-odds-scores-datasets/
+  10
+     https://fivethirtyeight.com/features/the-imperfect-pursuit-of-a-perfect-
+baseball-forecast/
+  11
+     https://projects.fivethirtyeight.com/checking-our-work/mlb-games/
+
+
+                                                     23
+
+## Page 24: Forecaster CTEB ET Forecaster CTEB ET
+
+源页：第 24 页
+
+Forecaster             CTEB              ET           Forecaster          CTEB             ET
+   538            (-0.00265, -0.00061)     2979.0        538             ( −∞, -0.01012)     > 104
+   laplace        (-0.00980, -0.00596)     > 104         laplace         ( −∞, -0.04723)     > 104
+   k29            (-0.01392, -0.00905)     > 104         k29             ( −∞, -0.14684)     > 104
+   constant       (-0.01115, -0.00713)     > 104         constant        ( −∞, -0.05165)     > 104
+           (a) ∆T (Brier) against vegas                   (b) WT (Winkler-logarithmic) against vegas
+
+Table 4: Comparing forecasters against the vegas forecaster. In (a), we present 95% EB CSs for
+the average Brier score differential (∆t )∞                                               EB
+                                           t=0 , evaluated at time T = 25, 165 (i.e., CT ), as well as
+the e-process for the null of H0w (q, p) : ∆t ≥ 0, ∀t, also evaluated at time T (i.e., ET ). In (b), we
+present the analogous table for the average Winkler score WT (Section D), which is a normalized
+difference in a proper score (the logarithmic score, in this case). Note that CTEB is one-sided due to the
+one-sided boundedness of WT . Positive (negative) values of ∆T and WT indicate that the forecaster
+is better (worse) than the baseline. We find that none of the other forecasters, including 538, have
+outperformed vegas from 2010 to 2019.
+
+
+saying that vegas is not assumed to be better under the null, evaluated at time T . Furthermore, we
+include comparisons involving the logarithmic score, namely via the average Winkler score WT (p, q)
+(Proposition 4, Section D) that quantifies the relative “skill” of forecasters (Winkler, 1994; Lai et al.,
+2011) as measured by a scoring rule (the logarithmic score, in this case). The Winkler score approach
+allows us to utilize unbounded proper scoring rules, such as the logarithmic score, when dealing with
+binary outcomes. Because the score is normalized and thus always maximized at 1, we can construct a
+one-sided CS with an upper confidence bound (UCB), and also construct an e-process against the null
+H0ww : Wt ≥ 0, ∀t. A negative UCB or a high value in the e-process indicates that p is significantly
+worse than q in relative skill.
+    Our results show that none of the other forecasters, including the 538 forecaster, have outper-
+formed vegas, both in terms of the Brier score and the Winkler-logarithmic score.
+    We include a plot of all pairwise comparisons between the five forecasters in Section I.2.2.
+
+
+5.3   Comparing Statistical Postprocessing Methods for Weather Forecasts
+As our second real-data experiment, we compare a set of statistical postprocessing methods for weather
+forecasts (Vannitsem et al., 2021), following the recent work by Henzi and Ziegel (2022). Statistical
+postprocessing here refers to the process of correcting for biases and dispersion errors in ensem-
+ble weather forecasts, which are produced by perturbing the initial conditions of numerical weather
+prediction (NWP) methods. As ensemble forecasts are commonly used in state-of-the-art weather
+forecasting systems as a means of producing probabilistic forecasts, statistical postprocessing is con-
+sidered a key component of modern weather forecasting.
+    Given 24-hour precipitation data from 2007 to 2017 at four locations (Brussels, Frankfurt, London
+Heathrow, and Zurich), our goal is to compare three postprocessing methods over time: isotonic dis-
+tributional regression (IDR; Henzi et al. (2021)), heteroscedastic censored logistic regression (HCLR;
+Messner et al. (2014)), and a variant of HCLR without its scale parameter (HCLR_). We use the Brier
+score throughout this section. See Section I.3 for details regarding data as well as a plot of the three
+forecasting methods.
+    Our main goal here is to sequentially compare the three statistical postprocessing methods using
+the EB CS and the sub-exponential e-process. As noted in Sections 2 and 4.4, the inferential con-
+
+                                                    24
+
+## Page 25: 90% CS on t(HCLR, IDR) 90% CS on t(IDR, HCLR_) 90% CS on t(HCLR, HCLR_)
+
+源页：第 25 页
+
+90% CS on t(HCLR, IDR)                    90% CS on t(IDR, HCLR_)                    90% CS on t(HCLR, HCLR_)
+                         0.04
+                                                                                                                                                                Airport
+                         0.02                                                                                                                                       Brussels
+                                                                                                                                                                    Frankfurt
+CS for t
+
+
+
+                         0.00                                                                                                                                       London
+                                                                                                                                                                    Zurich
+                         0.02
+
+                         0.04
+                                2012   2013   2014     2015   2016   2017 2012    2013   2014     2015   2016   2017 2012    2013   2014   2015   2016   2017
+                                                 Year                                        Year                                       Year
+                        104
+                                       H0 : t(HCLR, IDR) 0, t                    H0 : t(IDR, HCLR_) 0, t                    H0 : t(HCLR, HCLR_) 0, t
+
+                        103
+E-Process (log-scale)
+
+
+
+
+                        102                                                                                                                                      Airport
+                                                                                                                                                                   Brussels
+                        101
+                                                                                                                                                                   Frankfurt
+                        100                                                                                                                                        London
+                                                                                                                                                                   Zurich
+                        10 1
+                        10 2
+                               2012 2013 2014 2015 2016 2017 2012 2013 2014 2015 2016 2017 2012 2013 2014 2015 2016 2017
+                                                Year                                       Year                                       Year
+
+  Figure 5: Top: 90% EB CSs for ∆t between pairs of statistical postprocessing methods (HCLR and
+  IDR; IDR and HCLR_; HCLR and HCLR_) for 1-day ensemble forecasts using Theorem 2, computed
+  and plotted separately for each airport: Brussels (T = 1, 703), Frankfurt (T = 1, 809), London
+  (T = 1, 128), and Zurich (T = 1, 621). Positive (negative) scores of ∆t (p, q) indicate that forecaster
+  p is better (worse) than forecaster q. Overall, the CSs capture the time-varying score gap on average
+  between the two forecasters across the years. Bottom: E-processes for the null that H0w : ∆t ≤ 0, ∀t,
+  corresponding to (the lower bound of) the 90% CSs above. These e-processes are the weak (average-
+  based) counterpart to Henzi and Ziegel (2022)’s e-processes for the strong (step-by-step) null that
+  H0s : δt ≤ 0 ∀t. Note that the e-processes exceed 20 approximately when the lower bound of the 90%
+  CS exceeds 0. Both procedures use the Brier score as the scoring rule.
+
+
+  clusions drawn from the sub-exponential e-process (Theorem 3) are different from Henzi and Ziegel
+  (2022)’s e-process, which provides a test of conditional forecast dominance at all times (i.e., the strong
+  null), instead of average (i.e., the weak null). Given that the weak null is larger than the strong null,
+  we would generally expect the sub-exponential e-process for the weak null to be smaller than Henzi
+  and Ziegel (2022)’s e-process for the strong null. On the other hand, the two methods are similar in
+  that they are both valid at arbitrary (data-dependent) stopping times.
+       In Figure 5, we plot both the 90% EB CS on ∆t (top) as well as the sub-exponential e-processes
+  for the weak one-sided null H0w (bottom), between HCLR and IDR, IDR and HCLR_, and HCLR and
+  HCLR_ on 1-day PoP forecasts at the four airport locations. Note that we compare the same three
+  pairs as Henzi and Ziegel (2022), who compare e-processes for the strong one-sided null H0s . The EB
+  CS is computed using Theorem 2 and the gamma-exponential mixture boundary (16); the analogous
+  mixture e-processes are then computed using Theorem 3. We use the significance level of α = 0.1 for
+  the EB CS, corresponding the threshold of 2/α = 20 for each one-sided e-process.
+       We first note from Figure 5 that the lower bound of our 90% EB CS on ∆t (p, q) and the e-process
+  for H0w : ∆t (p, q) ≤ 0 share a similar trend over time, where the e-process grows large when the lower
+  bound grows significantly larger than zero, implying that the forecaster p is better than the forecaster
+  q, using the stopping rule (19). Whereas the CS provides a (two-sided) estimate of ∆t (p, q) with
+
+                                                                                                25
+
+## Page 26: uncertainty, the e-process explicitly gives the amount of evidence for whether o
+
+源页：第 26 页
+
+uncertainty, the e-process explicitly gives the amount of evidence for whether one is better than the
+other. This illustrates how the two procedures complement each other for anytime-valid inference on
+∆t . We also remark that, although we only plot the e-processes for one-sided null H0w (p, q), we can
+further compute the e-processes for H0w (q, p) : ∆t (q, p) ≤ 0, and they would correspond to the upper
+confidence bounds of the EB CSs.
+    Based on these results, we find from the 90% EB CSs that IDR forecasts are found to outperform
+both HCLR and HCLR_ 1-day forecasts for Brussels and that HCLR forecasts outperform HCLR_
+forecasts for Frankfurt and Zurich, but we do not find significant differences at other locations be-
+tween other pairs. The e-processes (thresholded at 20) lead to the same conclusions, and they clearly
+visualize at which point in time is one forecaster first found to outperform the other and how that
+pattern changes. For example, when comparing IDR to HCLR_ for Brussels, IDR is found to be better
+as early as 2012, and it also shows the period between late 2012 and late 2015 where it is no longer
+found to be better, before eventually regaining evidence favoring IDR starting 2016.
+    When we compare the sub-exponential e-processes for the weak null H0w with the e-processes
+for the strong null H0s , which are drawn in Figure 3 of Henzi and Ziegel (2022), we find that e-
+processes for the strong null are large whenever e-processes for the weak null are also large, but not
+vice versa. For example, the comparison of IDR against HCLR_ in Frankfurt is only found to have
+strong evidence against the strong null, but not the weak null. This is consistent with our previous
+discussion in Section 4.4 that the strong null implies the weak null and thus is easier to “reject” (or
+gather evidence against). For example, in Frankfurt, we can infer we only have strong evidence that
+IDR has outperformed HCLR_ at some point in time between 2012 and 2017, but we do not have
+sufficient evidence that IDR has outperformed HCLR_ on average in the same time period.
+    In Section E, we include e-processes for comparing lag-h forecasts in the same setting.
+
+
+6    Extensions and Discussion
+In the following, we discuss some related points that were not highlighted in previous sections.
+
+On the use of unbounded scoring rules. Our main results in Theorems 2 and 3 require the use
+of bounded scoring rules, which may be restrictive in certain use cases. If the score differentials are
+unbounded, a general solution would be to use the asymptotic CS (Section C), which assumes that
+only 2 + δ moments are bounded. When it comes to unbounded proper scores for binary outcomes,
+such as the logarithmic score, the Winkler score (Section D), which we used in Section 5.2, offers a
+nonasymptotic and anytime-valid solution.
+
+Comparing forecasts of lag h > 1. In general forecasting scenarios, we may encounter forecasts
+that are made h > 1 rounds ahead of when the outcome is revealed at time t. In these cases, the
+expected score differential we seek to estimate should be conditioned on the filtration available at the
+time of forecasting, rather than the filtration at round t−1. We formally derive methods for comparing
+lag-h forecasts in Section E. These include lagged sequential e-values (Arnold et al., 2023), which are
+not e-processes themselves but can nevertheless quantify the evidence against the weak null (and a
+“less weak” variant), as well as p-processes and e-processes that are more conservative. The technical
+details follow the recent discussions by Arnold et al. (2023); Henzi and Ziegel (2022). Constructing a
+more powerful e-process and also a CS for the lagged weak null remains a challenging problem.
+
+On “looking ahead” in distribution-free sequential inference on time-varying means. Our meth-
+ods are valid without any assumptions about the time-varying dynamics of the forecast score differ-
+
+                                                  26
+
+## Page 27: entials (δ̂i )∞
+
+源页：第 27 页
+
+entials (δ̂i )∞
+              i=1 , and in particular we avoid conditions involving stationarity or mixing. A large e-value
+against H0 : ∆t (p, q) ≤ 0, ∀t at some stopping time τ tells us that p has achieved a better con-
+ditional predictive performance than q up to τ on average. The utility of comparing forecasters in
+such a descriptive sense is often significant in the real world: determining a winner in real-world fore-
+casting competitions can often land significant cash prizes (e.g., financial forecasting12 ) and/or media
+attention (e.g., election and sports forecasting).
+     This also means that the inferential conclusions drawn from our methods need not extrapolate to
+future time steps, because hypothetically the forecasters or Reality (from Game 1) can completely
+change their behaviors going forward. Indeed, there is a distinction between saying that one has done
+better than the other and that one is going to be better than the other in the future — the former is
+descriptive, while the latter is predictive. All our methods provide evidence and uncertainty related
+to the former statement. Because we do not make any assumption that says “the future will resemble
+the past,” no method can make conclusive statements about the latter without clairvoyance. Our setup
+highlights that past performance can be compared in a distribution-free manner, while predictions of
+future performance will require nontrivial distributional assumptions.
+     Ultimately, the decision to take the inferential conclusion and extrapolate it toward the future
+is (and should be) left to the practitioner’s own beliefs. If a practitioner opts to make additional
+assumptions about Reality, then in principle, the conclusions drawn from our methods can extend to
+settings that the assumptions allow. If one is willing to assume, say, that the score differentials are
+constant, then the inferential conclusions will straightforwardly extrapolate to future time steps (in the
+assumed setting). Furthermore, the variance-adaptive EB CS will remain tight, because the underlying
+variance remains constant. It should be noted that, even under such assumptions, which are often made
+by classical methods like the Diebold and Mariano (1995) test, anytime-valid approaches avoid the
+“p-hacking” problem that the classical methods are susceptible to.
+
+
+
+
+  12
+       https://m6competition.com
+
+
+                                                    27
+
+## Page 28: Acknowledgements
+
+源页：第 28 页
+
+Acknowledgements
+YJC and AR thank Alexander Henzi, Johanna F. Ziegel, Rafael M. Frongillo, and the anonymous re-
+viewers for their valuable feedback on this work. AR acknowledges funding from NSF DMS 1916320.
+Research reported in this paper was sponsored in part by the DEVCOM Army Research Laboratory
+under Cooperative Agreement W911NF-17-2-0196 (ARL IoBT CRA). The views and conclusions
+contained in this document are those of the authors and should not be interpreted as representing
+the official policies, either expressed or implied, of the Army Research Laboratory or the U.S. Gov-
+ernment. The U.S. Government is authorized to reproduce and distribute reprints for Government
+purposes notwithstanding any copyright notation herein.
+
+
+References
+Abernethy, J. D. and Frongillo, R. M. (2012). A characterization of scoring rules for linear proper-
+  ties. In Mannor, S., Srebro, N., and Williamson, R. C., editors, Proceedings of the 25th Annual
+  Conference on Learning Theory, volume 23 of Proceedings of Machine Learning Research, pages
+  27.1–27.13, Edinburgh, Scotland. PMLR.
+
+Arnold, S., Henzi, A., and Ziegel, J. F. (2023). Sequentially valid tests for forecast calibration. The
+  Annals of Applied Statistics, 17(3):1909 – 1935.
+
+Bauer, H. (2001). Measure and Integration Theory. De Gruyter, Berlin, New York.
+
+Brier, G. W. (1950). Verification of forecasts expressed in terms of probability. Monthly Weather
+  Review, 78(1):1–3.
+
+Darling, D. A. and Robbins, H. (1967). Confidence sequences for mean, variance, and median. Pro-
+  ceedings of the National Academy of Sciences, 58(1):66–68.
+
+Dawid, A. P. (1984). Statistical theory: the prequential approach. Journal of the Royal Statistical
+  Society: Series A (General), 147(2):278–290.
+
+Dawid, A. P. and Musio, M. (2014). Theory and applications of proper scoring rules. Metron,
+  72(2):169–183.
+
+DeGroot, M. H. and Fienberg, S. E. (1983). The comparison and evaluation of forecasters. Journal of
+  the Royal Statistical Society: Series D (The Statistician), 32(1-2):12–22.
+
+Diebold, F. X. and Mariano, R. S. (1995). Comparing predictive accuracy. Journal of Business &
+  Economic Statistics, 13(3).
+
+Dunsmore, I. (1968). A Bayesian approach to calibration. Journal of the Royal Statistical Society:
+  Series B (Methodological), 30(2):396–405.
+
+Durrett, R. (2019). Probability: Theory and examples, volume 49. Cambridge University Press.
+
+Ehm, W., Gneiting, T., Jordan, A., and Krüger, F. (2016). Of quantiles and expectiles: consistent
+  scoring functions, Choquet representations and forecast rankings. Journal of the Royal Statistical
+  Society: Series B (Statistical Methodology), pages 505–562.
+
+Ehm, W. and Krüger, F. (2018). Forecast dominance testing via sign randomization. Electronic
+  Journal of Statistics, 12(2):3758–3793.
+
+                                                  28
+
+## Page 29: Fan, X., Grama, I., and Liu, Q. (2015). Exponential inequalities for martingales
+
+源页：第 29 页
+
+Fan, X., Grama, I., and Liu, Q. (2015). Exponential inequalities for martingales with applications.
+  Electronic Journal of Probability, 20:1–22.
+
+Frongillo, R. M. and Kash, I. A. (2021). General truthfulness characterizations via convex analysis.
+  Games and Economic Behavior, 130:636–662.
+
+Giacomini, R. and White, H. (2006).         Tests of conditional predictive ability.    Econometrica,
+  74(6):1545–1578.
+
+Gneiting, T. (2011). Making and evaluating point forecasts. Journal of the American Statistical
+  Association, 106(494):746–762.
+
+Gneiting, T., Balabdaoui, F., and Raftery, A. E. (2007). Probabilistic forecasts, calibration and sharp-
+  ness. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 69(2):243–268.
+
+Gneiting, T. and Raftery, A. E. (2007). Strictly proper scoring rules, prediction, and estimation.
+  Journal of the American Statistical Association, 102(477):359–378.
+
+Good, I. (1971). Comment on “Measuring information and uncertainty” by Robert J. Buehler. Foun-
+  dations of Statistical Inference, pages 337–339.
+
+Good, I. J. (1952). Rational decisions. Journal of the Royal Statistical Society: Series B (Methodolog-
+  ical), 14(1):107–114.
+
+Grünwald, P., de Heide, R., and Koolen, W. (2023). Safe testing. Journal of the Royal Statistical
+  Society: Series B (Statistical Methodology) (to appear).
+
+Grünwald, P. D. and Dawid, A. P. (2004). Game theory, maximum entropy, minimum discrepancy and
+  robust Bayesian decision theory. the Annals of Statistics, 32(4):1367–1433.
+
+Henzi, A. and Ziegel, J. F. (2022). Valid sequential inference on probability forecast performance.
+  Biometrika, 109(3):647–663.
+
+Henzi, A., Ziegel, J. F., and Gneiting, T. (2021). Isotonic distributional regression. Journal of the
+  Royal Statistical Society: Series B (Statistical Methodology), 83(5):963–993.
+
+Hoeffding, W. (1963). Probability inequalities for sums of bounded random variables. Journal of the
+  American Statistical Association, 58(301):13–30.
+
+Howard, S. R. and Ramdas, A. (2022). Sequential estimation of quantiles with applications to A/B
+  testing and best-arm identification. Bernoulli, 28(3):1704–1728.
+
+Howard, S. R., Ramdas, A., McAuliffe, J., and Sekhon, J. (2020). Time-uniform Chernoff bounds via
+  nonnegative supermartingales. Probability Surveys, 17:257–317.
+
+Howard, S. R., Ramdas, A., McAuliffe, J., and Sekhon, J. (2021). Time-uniform, nonparametric,
+  nonasymptotic confidence sequences. The Annals of Statistics, 49(2):1055 – 1080.
+
+Jamieson, K. and Jain, L. (2018). A bandit approach to multiple testing with false discovery control.
+  In Proceedings of the 32nd International Conference on Neural Information Processing Systems,
+  pages 3664–3674.
+
+Jamieson, K., Malloy, M., Nowak, R., and Bubeck, S. (2014). lil’UCB: An optimal exploration
+  algorithm for multi-armed bandits. In Conference on Learning Theory, pages 423–439. PMLR.
+
+                                                  29
+
+## Page 30: Johari, R., Koomen, P., Pekelis, L., and Walsh, D. (2022). Always valid inferenc
+
+源页：第 30 页
+
+Johari, R., Koomen, P., Pekelis, L., and Walsh, D. (2022). Always valid inference: Continuous moni-
+  toring of A/B tests. Operations Research, 70(3):1806–1821.
+
+Lai, T. L. (1976a). Boundary crossing probabilities for sample sums and confidence sequences. The
+  Annals of Probability, 4(2):299–312.
+
+Lai, T. L. (1976b). On confidence sequences. The Annals of Statistics, 4(2):265–280.
+
+Lai, T. L., Gross, S. T., and Shen, D. B. (2011). Evaluating probability forecasts. The Annals of
+  Statistics, 39(5):2356–2382.
+
+Lehmann, E. L. (1975). Nonparametrics: Statistical methods based on ranks. Holden-Day.
+
+Matheson, J. E. and Winkler, R. L. (1976). Scoring rules for continuous probability distributions.
+ Management Science, 22(10):1087–1096.
+
+McCarthy, J. (1956). Measures of the value of information. Proceedings of the National Academy of
+ Sciences, 42(9):654–655.
+
+Messner, J. W., Mayr, G. J., Wilks, D. S., and Zeileis, A. (2014). Extending extended logistic re-
+ gression: Extended versus separate versus ordered versus censored. Monthly Weather Review,
+ 142(8):3003–3014.
+
+Molteni, F., Buizza, R., Palmer, T. N., and Petroliagis, T. (1996). The ECMWF ensemble predic-
+ tion system: Methodology and validation. Quarterly Journal of the Royal Meteorological Society,
+ 122(529):73–119.
+
+Murphy, A. H. (1988). Skill scores based on the mean square error and their relationships to the
+ correlation coefficient. Monthly Weather Review, 116(12):2417–2424.
+
+Ovcharov, E. Y. (2018). Proper scoring rules and Bregman divergence. Bernoulli, 24(1):53–79.
+
+Ramdas, A., Grünwald, P., Vovk, V., and Shafer, G. (2023). Game-theoretic statistics and safe anytime-
+  valid inference. Statistical Science (to appear).
+
+Ramdas, A., Ruf, J., Larsson, M., and Koolen, W. (2020). Admissible anytime-valid sequential infer-
+  ence must rely on nonnegative martingales. arXiv preprint arXiv:2009.03167.
+
+Ramdas, A., Ruf, J., Larsson, M., and Koolen, W. M. (2022). Testing exchangeability: Fork-convexity,
+  supermartingales and e-processes. International Journal of Approximate Reasoning, 141:83–109.
+
+Robbins, H. (1970). Statistical methods related to the law of the iterated logarithm. The Annals of
+  Mathematical Statistics, 41(5):1397–1409.
+
+Robbins, H. and Siegmund, D. (1970). Boundary crossing probabilities for the wiener process and
+  sample sums. The Annals of Mathematical Statistics, 41(5):1410–1429.
+
+Rosenbaum, P. R. (1995). Observational studies. Springer.
+
+Savage, L. J. (1971). Elicitation of personal probabilities and expectations. Journal of the American
+  Statistical Association, 66(336):783–801.
+
+Schervish, M. J. (1989). A general method for comparing probability assessors. The Annals of Statis-
+  tics, 17(4):1856 – 1879.
+
+                                                 30
+
+## Page 31: Seillier-Moiseiwitsch, F. and Dawid, A. (1993). On testing the validity of seque
+
+源页：第 31 页
+
+Seillier-Moiseiwitsch, F. and Dawid, A. (1993). On testing the validity of sequential probability
+  forecasts. Journal of the American Statistical Association, 88(421):355–359.
+
+Shafer, G. (2021). Testing by betting: A strategy for statistical and scientific communication. Journal
+  of the Royal Statistical Society: Series A (Statistics in Society), 184(2):407–431.
+
+Shafer, G., Shen, A., Vereshchagin, N., and Vovk, V. (2011). Test martingales, Bayes factors and
+  p-values. Statistical Science, 26(1):84–101.
+
+Shafer, G. and Vovk, V. (2019). Game-theoretic foundations for probability and finance, volume 455.
+  Wiley.
+
+Vannitsem, S., Bremnes, J. B., Demaeyer, J., Evans, G. R., Flowerdew, J., Hemri, S., Lerch, S.,
+  Roberts, N., Theis, S., and Atencia, A. (2021). Statistical postprocessing for weather forecasts:
+  Review, challenges, and avenues in a big data world. Bulletin of the American Meteorological
+  Society, 102(3):E681–E699.
+
+Ville, J. (1939). Étude critique de la notion de collectif. Gauthier-Villars.
+
+Vovk, V., Takemura, A., and Shafer, G. (2005). Defensive forecasting. In International Workshop on
+  Artificial Intelligence and Statistics, pages 365–372. PMLR.
+
+Vovk, V. and Wang, R. (2021). E-values: Calibration, combination and applications. The Annals of
+  Statistics, 49(3):1736–1754.
+
+Waggoner, B. (2021). Linear functions to the extended reals. arXiv preprint arXiv:2102.09552.
+
+Waudby-Smith, I., Arbour, D., Sinha, R., Kennedy, E. H., and Ramdas, A. (2021). Time-uniform
+ central limit theory and asymptotic confidence sequences. arXiv preprint arXiv:2103.06476.
+
+Waudby-Smith, I. and Ramdas, A. (2023). Estimating means of bounded random variables by betting.
+ Journal of the Royal Statistical Society: Series B (Statistical Methodology).
+
+Waudby-Smith, I., Wu, L., Ramdas, A., Karampatziakis, N., and Mineiro, P. (2023). Anytime-valid
+ off-policy inference for contextual bandits. ACM/IMS Journal of Data Science (to appear).
+
+Winkler, R. L. (1977). Rewarding expertise in probability assessment. In Decision Making and
+ Change in Human Affairs, pages 127–140. Springer.
+
+Winkler, R. L. (1994). Evaluating probabilities: Asymmetric scoring rules. Management Science,
+ 40(11):1395–1405.
+
+Winkler, R. L., Munoz, J., Cervera, J. L., Bernardo, J. M., Blattenberger, G., Kadane, J. B., Lindley,
+ D. V., Murphy, A. H., Oliver, R. M., and Ríos-Insua, D. (1996). Scoring rules and the evaluation of
+ probabilities. Test, 5(1):1–60.
+
+Yen, Y.-M. and Yen, T.-J. (2021). Testing forecast accuracy of expectiles and quantiles with the
+  extremal consistent loss functions. International Journal of Forecasting, 37(2):733–758.
+
+Ziegel, J. F., Krüger, F., Jordan, A., and Fasciati, F. (2020). Robust forecast evaluation of expected
+  shortfall. Journal of Financial Econometrics, 18(1):95–120.
+
+
+
+
+                                                   31
+
+## Page 32: A Main Proofs
+
+源页：第 32 页
+
+A     Main Proofs
+A.1    Sub-exponential Test Supermartingales for Time-Varying Means
+The proofs of Theorems 2 and 3 are both based on a variance-adaptive test supermartingale that uni-
+formly bounds sums of random variables that are bounded from below. We first derive this test su-
+permartingale (which, by definition, is also an e-process itself) and use the result for the proofs of the
+main theorems in the following subsections.
+    We start by revisiting a useful lemma for the sub-exponential processes. Recall from Section 4.3.1
+that ψE,c (λ) = c−2 (− log(1 − cλ) − cλ), ∀λ ∈ [0, 1/c) is the exponential CGF-like function. By the
+proof of Lemma 4.1 in Fan et al. (2015), for any λ ∈ [0, 1/c) and any ξ ≥ −c,
+                                   exp λξ − ψE,c (λ)ξ 2 ≤ 1 + λξ.
+                                       
+                                                                                                     (27)
+Note that the original proof uses c = 1, but it straightforwardly generalizes to any value of c > 0. To
+see this, for any c > 0, set λ̃ = cλ ∈ [0, 1) and ξ˜ = c−1 ξ ≥ −1. Then, applying the lemma with
+c = 1 using (λ̃, ξ)˜ gives the desired result.
+     Now, we show a time-uniform sub-exponential boundary that is generally applicable to sums of
+random variables that are bounded from below. This is an extension of Lemma 3(e) from Howard
+et al. (2020), which also utilizes (27). We note that a similar extension is utilized in the recent work
+of Waudby-Smith et al. (2023) but without the predictable bounds (ci )∞       i=1 .
+     In the following, let (Xi )∞
+                                i=1 be  any process whose    conditional   means     µi := Ei−1P
+                                                                                               [Xi ] exist. Let
+                                                                                                t
+(St )∞
+     t=0  be its cumulative deviations from  the conditional means,  i.e., S 0 =    0 and St =  i=1 (Xi −µi ).
+Note that St is a martingale, i.e., Et−1                                   ∞
+                                         P[St ] = St−1 . Also, let (V̂t )t=0 be a nondecreasing variance
+process of the form V̂0 = 0 and V̂t = ti=1 (Xi − γi )2 , where (γi )∞    i=1 is a predictable process. Also,
+we take 1/∞ = 0 and, with a slight abuse of notation, [0, 0) = {0}.
+Proposition 1 (Sub-exponential test supermartingales for time-varying means). Suppose that there
+exists a predictable positive sequence (ci )∞
+                                            i=1 such that Xi − γi ≥ −ci a.s. for all i ≥ 1. Then,
+                                    t
+                                    Y        n                                    o
+                         Lt (λ) =         exp λ(Xi − µi ) − ψE,ci (λ) (Xi − γi )2                         (28)
+                                    i=1
+
+is a test supermartingale for each λ ∈ [0, 1/c0 ), where c0 = supi≥1 ci .
+Proof. For each i ≥ 1, it suffices to show that
+                       Ei−1 exp λ(Xi − µi ) − ψE,ci (λ)(Xi − γi )2 ≤ 1.
+                                                                
+                                                                                                          (29)
+    Let X̃i = Xi − µi and γ̃i = γi − µi . Then, X̃i − γ̃i = Xi − γi ≥ −ci a.s. by assumption. By (27),
+                        n                                    o
+                   exp λ(X̃i − γ̃i ) − ψE,ci (λ)(X̃i − γ̃i )2 ≤ 1 + λ(X̃i − γ̃i ).                (30)
+
+Multiplying each side by exp{λγ̃i } and rearranging terms, we get
+              n                            o
+          exp λX̃i − ψE,ci (λ)(X̃i − γ̃i )2 ≤ eλγ̃i (1 − λγ̃i ) + eλγ̃i λX̃i ≤ 1 + eλγ̃i λX̃i ,           (31)
+
+where in the second inequality we used the fact that 1 − x ≤ e−x for all x ∈ R.
+     Finally, we take the conditional expectation Ei−1 on each side. Because Ei−1 [X̃i ] = Ei−1 [Xi −
+µi ] = 0, and also because (γi )∞            ∞
+                                i=1 and (ci )i=1 are predictable, we get
+                     h     n                             oi                 h i
+                Ei−1 exp λX̃i − ψE,ci (λ)(X̃i − γ̃i )2 ≤ 1 + eλγ̃i λEi−1 X̃i = 1.                 (32)
+
+Substituting back in X̃i = Xi − µi and X̃i − γ̃i = Xi − γi , we get the desired result.
+
+                                                       32
+
+## Page 33: Proposition 1 is stated for a general setting in which bounds on the pointwise s
+
+源页：第 33 页
+
+Proposition 1 is stated for a general setting in which bounds on the pointwise score differentials
+can vary across time, as long as they form a predictable sequence. If there is a constant c ∈ (0, ∞)
+such that |δ̂i | ≤ 2c , such as in Theorems 2 and 3, then we can simply choose ci = c for all i and further
+simplify the expression (28) to
+                                          n                  o
+                             Lt (λ) = exp λSt − ψE,c (λ)V̂t , ∀λ ∈ [0, 1/c).                           (33)
+
+We return to the case of using non-constant predictable bounds in Section F.2.
+
+A.2    Proof of Theorem 2
+The proof is a direct consequence of Proposition 1, applied once each to the lower and upper confi-
+dence bounds.
+   The stated conditions imply that δ̂i − γi ≥ −c a.s. for all i ≥ 1. Define St = ti=1 (δ̂i − δi ).
+                                                                                    P
+Then, by Proposition 1, the process
+                                               n                 o
+                                Llcb
+                                  t (λ) = exp λSt − ψE,c (λ)V̂t                               (34)
+
+is a test supermartingale for λ ∈ [0, 1/c). By definition, this implies that (St )∞
+                                                                                  t=0 is sub-ψE,c (“sub-
+                                                       ∞
+exponential with scale c”) with variance process (V̂t )t=0 , and thus we have
+                                                              
+                                 P ∃t ≥ 1 : St ≥ uα/2 (V̂t ) ≤ α/2,                                 (35)
+
+for any sub-exponential uniform boundaryP(11) with crossing        probability α/2 and scale c, denoted
+here as uα/2 . Using the fact that 1t St = 1t ti=1 δ̂i − 1t ti=1 δi = ∆ˆ t − ∆t , we can divide each side
+                                                           P
+of the inequality by t to obtain the lower confidence bound (LCB).
+    Similarly, the conditions also imply that −δ̂i + γi ≥ −c, so Proposition 1 also implies that the
+process                                         n                       o
+                                Lucb
+                                  t (λ) = exp λ(−St ) − ψE,c (λ)V̂t                                  (36)
+is also a test supermartingale for λ ∈ [0, 1/c), or equivalently, (−St )∞  t=0 is sub-ψE,c with the same
+variance process (V̂t )∞
+                       t=0 . Applying the same   argument to  L  ucb (λ) gives the analogous upper confi-
+                                                                 t
+dence bound (UCB) using the same uniform boundary uα/2 .
+    Finally, combining the lower and upper confidence bounds with a union bound, we obtain the CS:
+                                                                 !
+                                            ˆ t − ∆t <  u( V̂t )
+                              P ∀t ≥ 1 : ∆                          ≥ 1 − α.                         (37)
+                                                           t
+
+A.3    Proof of Theorem 3
+We state and prove a slightly more general version of Theorem 3 that only assumes the empirical score
+differentials δ̂i are bounded from below and the predictable estimates γi are bounded (or truncated)
+from above. Theorem 3 assumes that the score differentials are bounded from below and above, so
+applying the following proposition twice to (δ̂i , γi )∞                    ∞
+                                                       i=1 and (−δ̂i , −γi )i=1 will give us the result.
+
+Proposition 2. Suppose that δ̂i ≥ − 2c for each i ≥ 1, for some c ∈ (0, ∞). Also, let (γi )∞   i=1 be any
+predictable sequence and V̂t = ti=1 (δ̂i − γ i )2 , where γ i = γi ∧ 2c . Then, for each λ ∈ [0, 1/c), the
+                                P
+process (Et (λ))∞
+                t=0 defined as E0 (λ) = 1 and
+                             ( t                      )
+                                X
+              Et (λ) := exp λ       δ̂i − ψE,c (λ)V̂t        is an e-process for H0w (p, q).         (38)
+                                  i=1
+
+
+                                                    33
+
+## Page 34: Proposition 2 tells us that, if the pointwise empirical score differentials are 
+
+源页：第 34 页
+
+Proposition 2 tells us that, if the pointwise empirical score differentials are bounded from below
+(or above), then we can derive a sub-exponential e-process for H0 (p, q) (or H0 (q, p)). An important
+use case for the more general scenario is when using the Winkler score (Winkler, 1994), which is
+bounded from above by 1 but unbounded from below, as we describe in Section D.
+                                                 ∞
+                                      P(E
+Proof of Proposition 2. First, note that
+                                         t
+                                           t (λ))t=0 is an adapted process w.r.t. G (and also consists of
+                                                            ˆ t − ∆t ). Since δ̂i − γ i ≥ −c for all i ≥ 1,
+empirical quantities only). Let St = i=1 (δ̂i − δi ) = t(∆
+Proposition 1 implies that                        n                  o
+                                   Lt (λ) := exp λSt − ψE (λ)V̂t                                       (39)
+
+is a test supermartingale for each λ ∈ [0, 1/c).
+     Now, under any P ∈ H0w (p, q), we have that exp −λ ti=1 δi ≥ 1, so for any t ≥ 1,
+                                                           P
+
+                                     ( t                    )   (   t
+                                                                         )
+                                         X                          X
+                        Lt (λ) = exp λ       δ̂i − ψE (λ)V̂t exp −λ   δi
+                                          i=1                                     i=1
+                                          t
+                                      (                           )
+                                          X
+                               ≥ exp λ          δ̂i − ψE (λ)V̂t       = Et (λ).                       (40)
+                                          i=1
+
+In other words, for each P ∈ H0w (p, q), the process (Et (λ))∞t=0 is upper-bounded by the test super-
+martingale (Lt (λ))t=0 at all times t. This implies that (Et (λ))∞
+                   ∞                                                                      w
+                                                                 t=0 is an e-process for H0 (p, q), by
+Corollary 22 of Ramdas et al. (2020).
+
+
+B     Details on Time-Uniform Boundary Choices
+B.1   Computing the Gamma-Exponential Mixture
+Here, we derive a closed-form expression (up to efficiently computable gamma functions) for the
+gamma-exponential mixture, which is used in both the mixture boundary for the CS (Equation (16))
+and in the mixture e-process for the weak null (Theorem 3). The mixture takes the following form:
+                                       Z
+                           m(s, v) := exp {λs − ψE,c (λ)v} fρ (λ)dλ,                            (41)
+
+where fρ , for any ρ > 0, is a reparametrized Gamma density fρ (λ) = C(ρ)(1          λ)ρ−1 e−ρ(1−λ) ,
+                                                                               R ∞− a−1
+                               ρρ
+λ ∈ [0, 1/c), where C(ρ) = γ(ρ,ρ)Γ(ρ) is the normalization constant, Γ(a, z) := z u e−u du is the
+upper incomplete gamma function, Γ(a) := Γ(a, 0) is the gamma function, and γ is the regularized
+lower incomplete gamma function:
+                                        Z z
+                                     1
+                        γ(a, z) :=          ua−1 e−u du, ∀a, z > 0.                         (42)
+                                   Γ(a) 0
+Both Γ and γ can be computed efficiently in standard scientific computing software. (E.g., γ can
+be computed using boost::math::gamma_p in C++ and scipy.special.gammainc in
+Python.)
+     We note here that all time-uniform boundaries have a “tradeoff of tightness” across different (in-
+trinsic) times (Howard et al., 2021), so that it is natural to have a hyperparameter that controls at what
+intrinsic time we want the resulting CS width to be optimized. In the above, the single hyperparam-
+eter, ρ > 0, can be related to the user-specified optimal intrinsic time vopt (and the significance level
+α) via the mapping ρ = −vopt (W−1 (−α2 /e) + 1), where W−1 is the lower branch of the Lambert
+
+                                                     34
+
+## Page 35: W function. As described in Proposition 3 of Howard et al. (2021), this choice o
+
+源页：第 35 页
+
+W function. As described in Proposition 3 of Howard et al. (2021), this choice of ρ uniquely min-
+                                         √
+imizes the width function v 7→ u(v)/ v, when u is the two-sided normal mixture boundary, and it
+is also known to also provide a good approximation for the (one-sided) gamma-exponential mixture
+boundary in practice.
+     The first part of the following proposition is essentially a restatement of Proposition 9 in Howard
+et al. (2021); the second part additionally provides an upper bound for the mixture when s ≪ 0 (e.g.,
+the mixture e-process when data supports the null).
+Proposition 3 (Gamma-exponential mixture for e-processes). Fix c > 0 and ρ > 0. Consider any
+values of s ∈ R and v ≥ 0. If cs+v+ρ
+                                c2
+                                      > 0, then
+                                  ρ  Γ v+ρ  2
+                                                 v+ρ cs+v+ρ 
+                                                  γ c2 , c2
+                                                                   
+                                                                     cs + v
+                                                                            
+                                            c
+                   m(s, v) = C 2                        v+ρ    exp            ;         (43)
+                                   c            cs+v+ρ  c2            c2
+                                                   c2
+
+otherwise, if cs+v+ρ
+                c2
+                     < 0, then
+                                                ρ  exp − ρ
+                                                                c2
+                                 m(s, v) ≤ C              v+ρ        ≤ 1.                           (44)
+                                                 c2        c2
+
+   This is precisely the formula for the sub-exponential mixture e-process in Theorem 3: Etmix =
+m( ti=1 δ̂i , V̂t ) with fρ being the mixture density. It makes sense that m(s, v) is upper-bounded by 1
+   P
+when cs+v+ρ
+        c2
+                < 0, because s < − v+ρ c < 0 would imply that the sum of score differentials is negative,
+supporting the weak null. In our implementation, we use the first upper bound in (44), which can be
+computed efficiently and get substantially smaller than 1 when v ≫ 0.
+Proof of Proposition 3. For simplicity, we assume c = 1. The proof is analogous for any c > 0.
+   Recall that ψE (λ) = − log(1 − λ) − λ for λ ∈ [0, 1). For any ρ > 0,
+                                  Z 1
+                  m(s, v) = C(ρ)      exp {λs − ψE (λ)v} · (1 − λ)ρ−1 e−ρ(1−λ) dλ
+                                   0
+                                  Z 1
+                          = C(ρ)      eλ(s+v) (1 − λ)v · (1 − λ)ρ−1 e−ρ(1−λ) dλ
+                                   0
+                                  Z 1
+                          = C(ρ)      (1 − λ)v+ρ−1 eλ(s+v)−ρ(1−λ) dλ
+                                   0
+                                  Z 1                                  
+                                                v+ρ−1 −(s+v+ρ)(1−λ)
+                          = C(ρ)        (1 − λ)      e               dλ es+v ,                 (45)
+                                       0
+where in the last equality we used
+ λ(s + v) − ρ(1 − λ) = (s + v) − (1 − λ)(s + v) − (1 − λ)ρ = −(s + v + ρ)(1 − λ) + (s + v).
+Now, let a = v + ρ and z = s + v + ρ, and note that a > 0.
+
+Case 1: z = s+v +ρ > 0. Using the change-of-variable formula u = (s+v +ρ)(1−λ) = z(1−λ),
+we have that
+                                      Z 0                
+                                               u a−1 −u du
+                       m(s, v) = C(ρ)                 e        es+v
+                                          z    z         −z
+                                            Z z            
+                                         1        a−1 −u
+                               = C(ρ) · a        u e du es+v                        (46)
+                                        z      0
+                                      Γ(a)γ(a, z) s+v
+                               = C(ρ)             e ,                               (47)
+                                            za
+
+                                                   35
+
+## Page 36: where we use the fact that the integral in (46) corresponds to the numerator of 
+
+源页：第 36 页
+
+where we use the fact that the integral in (46) corresponds to the numerator of the lower incomplete
+gamma function P (a, z) in (42). The expression (47) can be computed in closed-form.
+
+Case 2: z = s + v + ρ < 0. Using the change-of-variable formula u = −(s + v + ρ)(1 − λ) =
+−z(1 − λ), we obtain
+                                                             !
+                                              u a−1 u du
+                                       Z 0      
+                      m(s, v) = C(ρ)                   e       es+v
+                                         −z −z             z
+                                             Z −z             
+                                          1
+                              = C(ρ) ·               u e du es+v
+                                                      a−1 u
+                                       (−z)a     0
+                                             Z |z|           !
+                                        1
+                              = C(ρ) · a           ua−1 eu du es+v .                  (48)
+                                       |z|    0
+
+Although the integral in (48) is no longer a regularized lower incomplete gamma function, we can still
+show that m(s, v) is upper-bounded by 1. Since eu ≤ e|z| = e−z for u ≤ |z|, we have that
+                                                    Z |z|        !
+                                               1
+                          m(s, v) ≤ C(ρ) · a              ua−1 du e−z · es+v
+                                              |z|     0
+                                                    Z |z|        !
+                                               1
+                                   = C(ρ) · a             ua−1 du e−ρ                           (49)
+                                              |z|     0
+                                                   a  |z|
+                                               1     u
+                                   = C(ρ) · a                e−ρ
+                                              |z|     a 0
+                                      C(ρ)e−ρ
+                                   =            ,                                               (50)
+                                        v+ρ
+
+where in (49) we used −z + (s + v) = −(s + v + ρ) + (s + v) = −ρ, and in (50) we substituted in
+a = v + ρ. We can further bound this value, using the fact that v > 0 and substituting back in C(ρ):
+
+                                  C(ρ)e−ρ   C(ρ)e−ρ
+                      m(s, v) ≤           ≤
+                                   v+ρ         ρ
+                                                              Z ρ                   −1
+                                               ρ−1 −ρ                     ρ−1 −u
+                                           =ρ        e    ·           u     e      du
+                                                                  0
+                                                                Z ρ      −1
+                                               ρ−1 −ρ         −ρ      ρ−1
+                                           ≤ρ        e    · e        u du                        (51)
+                                                                      0
+                                                             ρ
+                                                                  ρ −1
+                                               ρ−1            u
+                                           =ρ        ·
+                                                              ρ       0
+                                           = 1,                                                  (52)
+
+where in (51) we used the fact that e−ρ ≤ e−u for u ∈ [0, ρ].
+
+B.2   The Polynomial Stitching Boundary
+The polynomial stitched boundary (Theorem 1, Howard et al. (2021)) provides a fully closed-form
+(without any gamma functions) alternative to the aforementioned gamma-exponential mixture bound-
+ary. It is constructed by finding a smooth analytical upper bound on a sequence of linear uniform
+
+                                                  36
+
+## Page 37: bounds across different timesteps. The boundary asymptotically grows with O( v l
+
+源页：第 37 页
+
+√
+bounds across different timesteps. The boundary asymptotically grows with O( v log log v) rate,
+matching the form of the law of the iterated logarithm (LIL). For example, a 95% EB CS for ∆t
+(Theorem 2) using the polynomial stitching boundary is given as follows (assuming |δ̂i | ≤ 1, ∀i):
+                 r                                                      
+             1.7    V̂t ∨ 1 log log 2 V̂t ∨ 1 + 3.8 + 3.4 log log 2 V̂t ∨ 1 + 13
+   ∆ˆt ± 2 ·                                                                                     (53)
+                                                   t
+where V̂t is the intrinsic time.
+      Ppolynomial stitched boundary can be applied to both Theorems 1 and 2 by setting V̂t = t and
+     The
+V̂t = ti=1 (δ̂i − γi )2 respectively. Previous work showed that the polynomial stitched boundary is a
+sub-gamma uniform boundary (Theorem 1, Howard et al. (2021)), which is also a “universal” sub-ψ
+uniform boundary for any CGF-like function ψ (Proposition 1, Howard et al. (2020)). We omit a full
+restatement of Howard et al. (2021)’s Theorem 1, which establishes the validity of the polynomial
+stitching boundary, but rather, we list its three hyperparameters for practical use:
+    • vopt > 0 determines the value of the intrinsic time at which the boundary is tightest;
+    • s > 1 controls how the crossing probability is distributed over intrinsic time;
+    • η > 1 controls the geometric spacing of the intrinsic time.
+Throughout this paper, we fix s = 1.4 and η = 2, as recommended by the original paper, and only
+adjust vopt , which serves the analogous role as the hyperparameter of the same name for the gamma-
+exponential boundary in Section B.1.
+    Although the stitching boundary is computed in closed form and matches the LIL rate, it is usually
+not as tight as the CM boundary in practice, and thus we use the CM boundary as our default in all of
+our main experiments.
+
+
+C    Asymptotic CSs for Sequential Forecast Comparison
+In their recent work, Waudby-Smith et al. (2021) introduce a new class of time-uniform CSs called
+asymptotic CSs, which trade the nonasymptotic guarantee of a standard CS (2) for applicability to a
+wider variety of scenarios, e.g., estimating the average treatment effect in causal inference (for which
+a nonasymptotic CS is not known). Formally, a sequence of confidence intervals (θ̂t ± RtA )∞     t=1 is a
+(1−α)-asymptotic CS (AsympCS) for (θt )t=1 if there exists a nonasymptotic (1−α)-CS (θ̂t ±Rt )∞
+                                           ∞                                                     NA
+                                                                                                     t=1 ,
+for (θt )∞
+         t=1 , such that
+                                                       a.s.
+                                            RtNA /RtA −→ 1.                                         (54)
+Furthermore, the AsympCS has an approximation rate of r(t) if RtNA − RtA = Oa.s. (r(t)). Def-
+inition (54) says that, as t → ∞, the AsympCS is an “arbitrarily precise approximation” of the
+nonasymptotic CS, and it can be viewed as approximately satisfying the time-uniform coverage prop-
+erty when t is large.
+     Waudby-Smith et al. (2021) describes an asymptotic CS for time-varying means that can be ap-
+plied to our setting of estimating (∆t )∞t=1 under Lyapunov CLT-type conditions. For the sake of com-
+pleteness, we include the (simplified) assumptions and the resulting closed form of the asymptotic CS,
+adapted to our setting and notations.                                      Pt
+     Let σt2 = Et−1 [(δ̂t − δt )2 ] denote the conditional variance, Vt =          2
+                                                                              i=1 σi be the cumulative
+conditional                   2      −1
+              variance, and σ̃t = t Vt be the average. Let σ̂t be any estimator of σt2 , such as σ̂t2 =
+                                                                2
+ −1
+     Pt           ˆ     2                                               2    −1                  ˆ
+t      i=1 (δ̂i − ∆i−1 ) . (Notice that, in the setting of Theorem 2, σ̂t = t V̂t with γi set to ∆i−1 .)
+Now, we assume the following:
+
+                                                   37
+
+## Page 38: (a) σ̃t2 −→ σ∗2 for some σ∗2 > 0;
+
+源页：第 38 页
+
+a.s.
+  (a) σ̃t2 −→ σ∗2 for some σ∗2 > 0;
+  (b) there exists q > 2 such that the q th moments of δ̂t is uniformly bounded (a.s.) for all t ≥ 1; and
+                 a.s.
+  (c) σ̂t2 /σ̃t2 −→ 1.
+
+As noted in the paper, these conditions can be substantially more general than either sub-Gaussianity
+or boundedness. Given these assumptions, we know by Theorem 2.3 of Waudby-Smith et al. (2021)
+that, for any ρ > 0 and any α ∈ (0, 1),
+                                      v                                   !
+                                       u                      p
+                                       u 2(tσ̂ 2 ρ2 + 1)           2  2
+                                                                tσ̂t ρ + 1 
+                       CtA := ∆ ˆt ± t       t
+                                                         log                                     (55)
+                                                2
+                                              t ρ  2                α
+
+                                                                           √
+forms a (1 − α)-AsympCS for (∆t )∞    t=1 with an approximation rate of o( Vt log Vt /t). ρ > 0 is a hy-
+perparameter that affects the relative tightness of the CS across time, analogous to the hyperparameter
+ρ in Section B. In our experiments, we follow Waudby-Smith et al. (2021) (Equation 74) and use the
+choice that approximately optimizes the width at a pre-specified time t∗ ≥ 1:
+                                      r
+                                         2 log(1/α) + log(1 + 2 log(1/α))
+                            ρ(t∗ ) =                                        .                       (56)
+                                                         t∗
+Unless specified otherwise, t∗ is chosen to be 100 in our experiments.
+    As illustrated in Figures 3 and 4, the AsympCS is typically tighter than the EB CS (Theorem 2)
+for smaller values of t, and as t grows large the widths of the two CSs become close to one another.
+
+
+D    Comparing Relative Forecasting Skills Using the Winkler Score
+In a typical forecast comparison scenario, we are often interested in comparing a newly developed
+forecasting algorithm (say, p) with an existing baseline (say, q). For example, a company that already
+deploys a daily forecasting algorithm may want to A/B test if its newly developed method is at least
+as good as the existing one. In such settings, we may be interested in the relative improvement of
+a forecaster over a baseline, and early work by Murphy (1988) and Winkler (1994) propose using
+normalized scoring rules that better reflect the relative “skill” of the new forecaster.
+     In this section, we show how our main results can be extended in a unique way to construct time-
+uniform CSs and e-processes for the average Winkler score (Winkler, 1994), which is a normalized
+version of the average score differentials between probability forecasts on binary outcomes. Interest-
+ingly, these results yield SAVI approaches that are valid without a boundedness or sub-Gaussianity
+assumption on the underlying scoring rule, and instead, they are valid whenever the scoring rule is
+proper (Gneiting and Raftery, 2007). The Winkler score is particularly useful when comparing proba-
+bility forecasters based on the logarithmic score, which is a strictly proper but unbounded score, as we
+showcased in Section 5.2. We remark that Lai et al. (2011) first showed the asymptotic normality of
+the average Winkler score. In contrast to their work, the methods we develop here are nonasymptotic
+and anytime-valid, depending only on the natural upper bound (of 1) on the Winkler score; we also
+allow the baseline forecaster to be nonconstant.
+     Formally, we first define the (pointwise) Winkler score w(p, q, y) with a base scoring rule S as
+follows:
+                                    S(p, y) − S(q, y)
+            w(p, q, y) :=                                     ,   p, q ∈ (0, 1), y ∈ {0, 1},        (57)
+                            S(p, 1 (p > q)) − S(q, 1 (p > q))
+
+                                                   38
+
+## Page 39: where we set 0/0 := 0. We note that (57) is equivalent to the increment in the e
+
+源页：第 39 页
+
+where we set 0/0 := 0. We note that (57) is equivalent to the increment in the e-process of Henzi
+and Ziegel (2022) (details in Section H.1), and thus we can interpret Henzi and Ziegel (2022)’s e-
+process for the strong null as betting directly proportionally to the relative forecasting skill between
+the forecasters. We also define the expected (pointwise) Winkler score as
+
+                                                       Ey∼r [S(p, y)] − Ey∼r [S(q, y)]
+                 w(p, q; r) := Ey∼r [w(p, q, y)] =                                      ,                (58)
+                                                      S(p, 1 (p > q)) − S(q, 1 (p > q))
+
+for p, q ∈ (0, 1) and r ∈ [0, 1]. As before, y ∼ r denotes y ∼ Bernoulli(r) (conditional on p and
+q). Winkler (1994, Section 4) showed that, given any constant forecaster q ∈ (0, 1), the scoring rule
+Sq′ (p, y) = w(p, q, y) is (strictly) proper for p whenever S itself is (strictly) proper. The score is also
+standardized in the following sense. Suppose that p is a calibrated forecaster and q is the “least skillful”
+calibrated forecaster, i.e., the constant forecaster that predicts the historical average (climatology in
+weather forecasting). Then, the expected Winkler score w(p, q; r) is zero (minimum) when p = q and
+one (maximum) when p ∈ {0, 1}. The empirical Winkler score w(p, q, y) can take negative values,
+which would suggest that p is worse than q on forecasting the outcome y under S.
+     In the following lemma, we summarize the characteristics of the Winkler score that are useful for
+both its interpretation and the proofs that will follow shortly.
+
+Lemma 1 (Winkler (1994)). Let S be a proper scoring rule. Then, for any p, q ∈ (0, 1) and y ∈
+{0, 1},                                (
+                                        1     if y = 1 (p > q) ;
+                          w(p, q, y) =                                                    (59)
+                                        ≤ 0 otherwise.
+
+In the case that y ̸= 1 (p > q), the denominator is non-negative and the numerator is non-positive.
+
+     See Winkler (1994, 1977) for a proof. Lemma 1 establishes that p gets a positive score of 1 if it
+is at least as good as q, but otherwise, it does not get a positive score. Two implications are: (i) the
+Winkler score is bounded from above by 1, and (ii) when we take the average of pointwise Winkler
+scores over t forecasts and outcomes, we can read off the sign of the average to tell whether p has
+better or worse forecasting skills than q.
+     Returning to the sequential setup in Game 1, we now treat the pointwise Winkler scores between
+(pt )∞            ∞
+     t=1 and (qt )t=1 as the analogs of pointwise score differentials from Section 4. Because (pt )t=1
+                                                                                                       ∞
+         ∞
+and (qt )t=1 are predictable w.r.t. G, we replace the expectation in (58) with the conditional expectation
+w.r.t. Gt−1 . Then, for each t, we can define the (expected) average Winkler score up to t:
+                                            t
+                                      1X
+                                Wt :=    Et−1 [w(pi , qi , yi )],      t ≥ 1.                            (60)
+                                      t
+                                           i=1
+
+This is the time-varying sequence of parameters that we seek to estimate; we also analogously define
+the weak Winkler (WW) null
+                                 H0ww,≥ (p, q) : Wt ≥ 0, ∀t ≥ 1.                                (61)
+For this null, the sign is the opposite of (18): we assert that p is at least as good as q as our null,
+and rejecting H0ww,≥ (p, q) would mean that p is decidedly worse than q on average up to some time
+t. Note also that we slightly generalize the average score from Winkler (1994)’s to allow the baseline
+forecaster to be any predictable (0, 1)-valued forecaster (qt )∞   t=1 .
+    We are now ready to present our main result. In the following, we denote the (empirical)    pointwise
+                                                                                          1 Pt
+Winkler scores as ŵi = w(pi , qi , yi ) for each i and their average over time as Ŵt := t i=1 w(pi , qi , yi ).
+
+                                                     39
+
+## Page 40: Proposition 4 (Sequential inference on the average Winkler score). Suppose that 
+
+源页：第 40 页
+
+Proposition 4 (Sequential inference on the average Winkler score). Suppose that S is a proper scoring
+rule and that pi , qi ∈ (0, 1) for each i ≥ 1. Let (γ i )∞
+                                                         i=1 be a [−1, ∞)-valued predictable process and
+         Pt                2
+let V̂t = i=1 (ŵi − γ i ) .
+
+   1. (One-sided EB CS for (Wt )∞                                                       EB ∞
+                                t=1 .) For each α ∈ (0, 1), the sequence of intervals (Ct )t=1
+      defined as                                          
+                            CtEB := −∞, Ŵt + t−1 uα (V̂t ) ∩ (−∞, 1]                     (62)
+
+      is a (1 − α)-CS for (Wt )∞
+                               t=1 , for any sub-exponential uniform boundary uα with crossing prob-
+      ability α and scale 2.
+
+   2. (Sub-exponential e-process for H0ww,≥ .) For each λ ∈ [0, 1/2), the process (Et (λ))∞
+                                                                                          t=0 defined
+      as E0 (λ) = 1 and                          n                     o
+                                    Et (λ) := exp −λŴt − ψE,2 (λ)V̂t                                  (63)
+
+      is an e-process for H0ww,≥ : Wt ≥ 0, ∀t, and so is the mixture process Etmix :=
+                                                                                           R
+                                                                                               Et (λ)dF (λ)
+      for any distribution F on [0, 1/c).
+
+     The proof is a direct application of Proposition 1, using the upper bound of 1 on the empirical
+pointwise Winkler scores. Because the Winkler score is unbounded from below, the standard machin-
+ery only readily provides the upper confidence bound for (Wt )∞    t=1 . Thus, we derive a one-sided CS
+in (62) that tells us the certainty to which we know Wt is away from 1. The sub-exponential e-process
+in (63) corresponds to this upper confidence bound and measures the evidence against the null that p
+is at least as good as q. From the sequential testing point-of-view, either a large value in the e-process
+or a small value of the upper confidence bound suggests that p underperforms q; conversely, either
+a small value in the e-process or a value close to 1 for the upper confidence bound (i.e., a vacuous
+CS) tells us that there is no such evidence. Note that, to satisfy the constraint on the predictable pro-
+cess (γi )∞i=1 to be bounded from below by −1, we can choose as default the running average as in
+Theorem 2, but cap it from below at −1, i.e., γi = −1 ∨ Ŵi−1 .
+
+Proof of Proposition 4. We first use Lemma 1 to obtain an upper bound of 1 on the pointwise empiri-
+cal Winkler scores, wi = w(pi , qi , yi ). Then, the rest of the proof follows similarly from the proofs of
+Proposition 1 as well as Theorem 2 and Theorem 3.
+    Specifically, define the process (Lt (λ))∞t=0 as L0 (λ) = 1 and
+                                            n                              o
+                            Lt (λ) := exp λ −Ŵt + Wt − ψE,2 (λ)V̂t ,                                 (64)
+
+which is a test supermartingale an w.r.t. G for each λ ∈ [0, 1/2) by Proposition 1 and Lemma 1. By
+definition, the process (t(Wt − Ŵt ))∞  t=0 is sub-exponential with scale 2 (i.e., sub-ψE,2 ) having the
+                       ∞
+variance process (V̂t )t=0 . The results then follow analogously to Theorems 2 and 3.
+
+     We close with the note that, if the main goal is rather to tightly estimate (Wt )∞t=1 from both
+sides or to test the null H0ww,≤ : Wt ≤ 0, ∀t, then there is a way to use either the sub-Gaussianity
+or the boundedness assumption on scoring rules (rather than propriety) and apply any of our main
+Theorems; the proof would be analogous for each application. The caveat with the Winkler score
+is that it is unbounded from below even when using a bounded base scoring rule, such as the Brier
+score, because the lower bound depends on how close q can get to 0 or 1. If qt = q ∈ (0, 1) is the
+climatology forecaster, then this is not an issue, and the two-sided approach can also be useful. We
+summarize the analogs of Theorem 2 and Theorem 3 for the average Winkler score as a corollary.
+
+                                                    40
+
+## Page 41: Corollary 2 (Two-sided sequential inference on the average Winkler score.). Supp
+
+源页：第 41 页
+
+Corollary 2 (Two-sided sequential inference on the average Winkler score.). Suppose there exists
+                                                         ∞
+             Pt that ŵi ≥ 12− c for any i ≥ 1. Let (γi )i=1 be a [1 − c, 1]-valued predictable process
+some c > 0 such
+and let V̂t = i=1 (ŵi − γi ) . Then,
+    1. (Two-sided EB CS for (Wt )∞                                                       EB ∞
+                                 t=1 .) For each α ∈ (0, 1), the sequence of intervals (Ct )t=1
+       defined as                                         
+                              CtEB := Ŵt ± t−1 uα/2 (V̂t ) ∩ (−∞, 1]                      (65)
+       is a (1 − α)-CS for (Wt )∞t=1 , for any sub-exponential uniform boundary uα/2 with crossing
+       probability α/2 and scale c.
+    2. (Sub-exponential e-process for H0ww,≤ .) For each λ ∈ [0, 1/c), the process (Et (λ))∞
+                                                                                           t=0 defined
+       as E0 (λ) = 1 and                           n                   o
+                                      Et (λ) := exp λŴt − ψE,c (λ)V̂t                            (66)
+
+       is an e-process for H0ww,≤ : Wt ≤ 0, ∀t, and so is the mixture process Etmix := Et (λ)dF (λ)
+                                                                                        R
+
+       for any distribution F on [0, 1/c).
+   The value of c may depend on both the choice of S and how close qi can get to either 0 or 1. For
+example, if S is the Brier score and qi ∈ [q0 , 1 − q0 ] for some constant q0 ∈ (0, 1), then c = 2/q0 .
+
+
+E     Comparing Lagged Forecasts
+Given an integer lag h ≥ 1, if pi and qi were lag-h forecasts made at round i for the eventual outcome
+yi+h−1 , then we would be interested in the following time-varying parameter:
+                                 t−h+1
+                (h)          1    X
+              ∆t      :=               Ei−1 [S(pi , yi+h−1 ) − S(qi , yi+h−1 )] ,   ∀t ≥ h.           (67)
+                           t−h+1
+                                      i=1
+
+For each t ≥ h, we take the average up to the (t − h + 1)th round, because the forecasts made beyond
+that round can only be evaluated after the tth round. The conditional expectation is taken in such a
+way that the forecasters (pi and qi ) are evaluated based on the information they had at the time of
+forecasting (Gi−1 ) and not the one right before the outcome is realized (Gi+h−1 ).
+     The case of h = 1 corresponds to the setting we considered in Section 4, but extending the
+construction to the case of h > 1 is not straightforward. For example, the sequence (Et (λ))∞          t=0
+defined analogously to the one in Theorem 3 would not be an e-process w.r.t. the game filtration G,
+let alone a process, because the tth term would include future outcomes that are not realized at time
+t. Rather, the process (Et (λ))∞t=0 now only satisfies the weaker property that Et−h [Et ] ≤ 1 for all
+(non-stopping) times t ≥ h under H0 . In their recent work, Arnold et al. (2023) refer to such processes
+as sequential e-values for H0 at lag h and propose to combine h subsequences of the original process
+that are each test supermartingales w.r.t. different sub-filtrations of G.
+     Although lag-h sequential e-values are not e-processes themselves, the recent preprints of Arnold
+et al. (2023); Henzi and Ziegel (2022) show that there is a workaround to turn them into an e-process
+possessing anytime-validity. Here, we adapt their approach and develop e- and p-processes for weaker
+                                                                                           (h)
+nulls similar to the weak null in the lag-1 case; developing a tight CS for estimating ∆t remains an
+open problem.
+                                                                                       (h)
+     To proceed, we define two weak nulls related to the sequence of parameters (∆t )∞      t=h . The first
+is a straightforward generalization of the lag-1 weak null (18) to any h ≥ 1:
+                                                      (h)
+                                     H0w (p, q; h) : ∆t     ≤ 0,   ∀t ≥ h.                            (68)
+
+                                                      41
+
+## Page 42: This recovers H0w (p, q) when h = 1. We refer to (68) as the lag-h weak null bet
+
+源页：第 42 页
+
+This recovers H0w (p, q) when h = 1. We refer to (68) as the lag-h weak null between p and q.
+   Because of the aforementioned challenge in the h > 1 case, we also define a null hypothesis for
+which we can derive a more powerful e-process. The lag-h period-wise (PW) weak null, which we
+denote as H0pw (p, q; h), asserts that the weak null holds at every hth step for all periods k ∈ {1, . . . , h},
+making it (slightly) stronger than the weak null but weaker than the strong null.
+   Formally, define the index set
+                                                                            
+                            [k]                                    t−k
+                           It = k + 1 + hs : s = 0, 1, . . . ,             −1 ,                            (69)
+                                                                     h
+
+which includes every hth round of the game starting at k + 1 up to (at most) t − h + 1. (For t < h + k,
+ [k]                                                   [k]       1   P                       Ph    [k]
+It = ∅.) Now, for each k = 1, . . . , h, we define ∆t := t−h+1          i∈I
+                                                                            [k] δi , so that  k=1 ∆t =
+                                                                                     t
+  (h)
+∆t . Then, the lag-h PW weak null is defined as
+
+                                                [k]
+                           H0pw (p, q; h) : ∆t ≤ 0,           ∀t ≥ h, ∀k = 1, . . . , h.                   (70)
+
+It is clear from their definitions that the following inclusion relationships hold between the three null
+hypotheses:
+                                        H0w (h) ⊇ H0pw (h) ⊇ H0s (h)                                 (71)
+for any h ≥ 1. When h is a small integer (say, 5 or 10) and t grows large, the lag-h PW weak null is
+still much weaker than the lag-h strong null.
+     Having defined the two nulls, we first present an e-process and a p-process for the lag-h PW
+null (70). Because we cannot straightforwardly derive an e-process for h > 1, we start with a p-
+process constructed using the lag-h sequential e-values and then use a p-to-e calibrator (Shafer et al.,
+2011) to obtain an e-process that remains valid at arbitrary stopping times. An analogous proposition
+for (68) is shown later and relies on similar proof techniques.
+           (h)
+     Let δ̂i = S(pi , yi+h−1 ) − S(qi , yi+h−1 ) be the empirical pointwise score differential for lag-h
+                         (h)          (h)
+forecasts. Note that δi = Ei−1 [δ̂i ]. In addition, we say that a function f : [0, 1] → [0, ∞) is a
+                                                       R1
+p-to-e calibrator if it is non-increasing and satisfies 0 f (u)du = 1.
+                                                                             (h)
+Proposition 5 (Sequential inference for H0pw (h)). Suppose that |δ̂i | ≤ 2c for all i ≥ 1, for some c ∈
+(0, ∞). Let (γi )∞           c c
+                 i=1 be a [− 2 , 2 ]-valued predictable process w.r.t. G. Also, for each k ∈ {1, . . . , h}
+and λ ∈ [0, 1/c), define
+                                                                   2 
+                    [k]                        (h)            (h)
+                                Y
+                   Et (λ) =             exp λδ̂i − ψE,c (λ) δ̂i − γi      ,              ∀t ≥ 0,           (72)
+                                  [k]
+                               i∈It
+
+        Q
+where     i∈∅ (·) = 1. Then, for each λ ∈ [0, 1/c), the following statements are true:
+
+   1. (Averaged sequential e-values.) The process
+
+                                                          h
+                                                        1 X [k]
+                                         Ētpw (λ) :=      Et (λ),         ∀t ≥ 0,                         (73)
+                                                        h
+                                                         k=1
+
+        is adapted w.r.t. G and satisfies EP [Ēτpw
+                                                  +h−1 (λ)] ≤ 1 for any G-stopping time τ and any P ∈
+           pw
+        H0 (p, q; h).
+
+                                                         42
+
+## Page 43: 2. (P-process.) The process (ppw ∞
+
+源页：第 43 页
+
+2. (P-process.) The process (ppw ∞
+                                 t )t=1 defined by
+                                                                                         
+                          he log h                               [k]                 [k]
+                 ppw
+                  t := Ph             ,         where         pt := 1 ∧    1/ sup Ei (λ) ,     ∀t ≥ 0,       (74)
+                                   [k]                                            i≤t
+                        k=1    1/p t
+
+        is a p-process for H0pw (p, q; h) w.r.t. G.
+   3. (Calibrated e-process.) Let f : [0, 1] → [0, ∞) be any p-to-e calibrator. Then, the process
+      (Etpw )∞               pw
+             t=0 defined by E0 = 1 and
+
+                                                 Etpw := f (ppw
+                                                             t ),        ∀t ≥ 1                                (75)
+        is an e-process for H0pw (p, q; h) w.r.t. G.
+                                                          [k]
+    The structure of the index set ensures that Et (λ) for each k is adapted and non-increasing under
+                                                         [k]
+the null. For example, with lag-3 forecasts, Et (λ) for each k is computed using each of the subse-
+quences (1, 4, 7, . . . ), (2, 5, 8, . . . ), and (3, 6, 9, . . . ). As for the choice of a p-to-e calibrator f , we
+follow Vovk and Wang (2021); Ramdas et al. (2022) and use (as our default)
+                                                1 − p + p log p
+                                      f (p) =                   ,        p ∈ [0, 1].                           (76)
+                                                   p(log p)2
+   In words, sequential e-values are expected to be at most 1 at time τ +h−1, where τ is any stopping
+time w.r.t. G. In contrast, the p-process directly yields a valid sequential test without such a condition,
+and it can also be calibrated to yield an e-process.
+
+Proof of Proposition 5. Our goal is to derive a p-process for H0pw (h) based on ideas from the proofs
+of Proposition 3.4 in Arnold et al. (2023) and from the validity of their proposed sequential test, and
+then to calibrate it into an e-process (Shafer et al., 2011; Ramdas et al., 2022).
+
+                                           [k]
+Sub-filtrations G[k] and processes Lt . Recall that G = (Gt )∞                     [1]
+                                                             t=0 , and define the G , . . . , G
+                                                                                               [h] as
+
+follows: for each k = 1, . . . , h,
+                                      [k] ∞
+                                        
+                                                      [k]
+                          G[k] := Gt        , where Gt := G⌊ t−k ⌋h+k .                         (77)
+                                                 t=0                              h
+
+            t−k             t−k                                  [k]
+Because h h + k ≤ h h + k ≤ t, we have Gt ⊆ Gt ∀t, i.e., G[k] is a sub-filtration of G for
+                                  
+
+each k. (Each G [k] only updates its filtration every h steps.)
+    In the following, we fix λ ∈ [0, 1/c) and omit any dependence on it for notational convenience.
+                                                [k]                   [k]
+For each k = 1, . . . , h, define the process (Lt )∞t=0 as follows: L0 := 1 and, for each t ≥ 1,
+                                          [k]
+                                                  Y
+                                         Lt :=        li−1 (yi+h−1 ),                            (78)
+                                                          [k]
+                                                       i∈It
+        Q
+where      i∈∅ (·) = 1 and
+                                                                          2 
+                                               (h)  (h)                (h)
+                     li−1 (yi+h−1 ) := exp λ δ̂i − δi     − ψE,c (λ) δ̂i − γi      .                           (79)
+
+(We index (79) by i − 1, because it only consists of Gi−1 -measurable terms aside from yi+h−1 . For
+           (h)          (h)                                     [k]
+example, δi = Ei−1 [δ̂i ] is Gi−1 -measurable.) Then, each (Lt )∞   t=0 is an adapted process w.r.t. G,
+                            [k]
+because the last index of It is at most t − h + 1, and the outcome corresponding to that index is yt ,
+which is Gt -measurable.
+
+                                                              43
+
+## Page 44: [k] (h) (h)
+
+源页：第 44 页
+
+[k]                                                                                         (h)             (h)
+(Lt )∞t=0 is a test supermartingale w.r.t. G
+                                                [k] for each k. Recall that E[δ̂
+                                                                                i  | Gi−1 ] = δi by
+definition. Since the score differentials are bounded by assumption, the proof of Proposition 1 (with
+yi replaced with yi+h−1 in the proof) implies that
+
+                                          E [li−1 (yi+h−1 ) | Gi−1 ] ≤ 1      ∀i ≥ h.                               (80)
+                        t−k                                           [k]     [k]                    [k]          [k]
+Now, if t < h or         ̸= t−k
+                            hh (i.e., not an integer), then It = It−1 by construction, so Lt = Lt−1 .
+                                                                         [k]    [k]
+On the other hand, if t ≥ h and t−k
+                                      t−k
+                                   h    = h , then algebra shows that Lt = Lt−1 · lt−h (yt ), and also
+        [k]
+that Gt−1 = Gj (t−1)−k kh+k = G( t−k −1)h+k = Gt−h . Thus,
+                        h                   h
+
+                                     h         i
+                                      [k]  [k]    [k]                             [k]
+                                   E Lt | Gt−1 = Lt−1 · E [lt−h (yt ) | Gt−h ] ≤ Lt−1 .                             (81)
+
+                                                                                      [k]                            [k]
+The above algebra also shows that each multiplicative increment of Lt is either constant (1) or Gt -
+                          [k]
+measurable. Therefore, (Lt )∞                                       [k]
+                              t=0 is a test supermartingale w.r.t. G .
+
+
+(Ētpw )∞                                          pw                          pw
+        t=0 is a sequential e-value of lag h for H0 (w.r.t. G). Under any P ∈ H0 (p, q; h), we
+know that
+                                     [k]
+                                           X (h)
+                                   ∆t =         δi ≤ 0, ∀t ≥ h.                           (82)
+                                                        [k]
+                                                     i∈It
+
+We thus have, P -almost surely,
+                                          2 
+    [k]                 (h)          (h)
+          Y
+ Et =          exp λδ̂i − ψE,c (λ) δ̂i − γi                                                                         (83)
+                 [k]
+              i∈It
+                          
+               
+                X         
+                            Y                                2 
+                       (h)                (h)            (h)            [k]
+          ≤ exp −     δi     ·     exp λδ̂i − ψE,c (λ) δ̂i − γi      = Lt ,                         ∀t ≥ h.         (84)
+               
+                 [k]
+                           
+                              [k]
+                            i∈It           i∈It
+
+                                                            [k]                         [k]                   [k]
+In other words, under any P ∈ H0w (p, q; h), Et is upper-bounded by Lt for each k, where (Lt )∞      t=0
+is a test supermartingale w.r.t. G[k] . By the supermartingale optional stopping theorem (e.g., Theorem
+4.8.4, Durrett (2019)), we thus have that, for any stopping time τ [k] w.r.t. G[k] ,
+                                                  h     i
+                                                    [k]
+                                              EP Eτ [k] ≤ 1,                                        (85)
+
+under any P ∈ H0w (p, q; h).
+    Finally, the construction (77) implies that, for any stopping time τ w.r.t. G, the mapping τ 7→ τ [k]
+defined by                                                  
+                                    [k]       τ −k−1
+                                  τ :=                     +1 h+k                                  (86)
+                                                   h
+gives a stopping time w.r.t. G[k] (Henzi and Ziegel, 2022), where τ [k] ∈ {τ, τ + 1, . . . , τ + (h − 1)}.
+Therefore, for any stopping time τ w.r.t. G,
+                                                                   h
+                                                              1X   h
+                                                                     [k]
+                                                                          i
+                                         EP [Ēτ +h−1 ] ≤        EP Eτ [k] ≤ 1,                                     (87)
+                                                              h
+                                                                  k=1
+
+for any P ∈ H0w (p, q; h).
+
+                                                                  44
+
+## Page 45: (ppw ∞ pw
+
+源页：第 45 页
+
+[k]
+(ppw  ∞                         pw
+  t )t=0 is a p-process for H0 . The key idea here is to first use the fact that Lt is a test super-
+                                            [k]
+martingale w.r.t. G[k] that upper-bounds Et , for each k ∈ {1, . . . , h}, and then use the time-uniform
+equivalence lemma for probabilities (Ramdas et al., 2020), along with a p-merging function (Vovk and
+Wang, 2021), to obtain a combined p-process.
+    First, define the following process for each k = 1, . . . , h:
+                                                          
+                                  [k]                  [k]
+                                 qt := 1 ∧ 1/ sup Li           , ∀t ≥ 1.                             (88)
+                                                   i≤t
+
+                                                     [k]
+The process involves the running supremum of (Lt )∞     t=0 , which is a test supermartingale w.r.t. G
+                                                                                                      [k] as
+                                                      [k]     [k]                             pw
+we showed earlier. In particular, (84) implies that pt ≥ qt for all t and k under P ∈ H0 .
+                                             [k]
+   Applying Ville (1939)’s inequality to (Lt )∞  t=0 , for any P ,
+                                                                 
+                   
+                                [k]
+                                        
+                                                          [k]   1
+                 P ∃t ≥ 1 : qt ≤ α = P sup Li ≥                     ≤ α, ∀α ∈ (0, 1).                  (89)
+                                                  t≥1           α
+                                            [k]    [k]
+Then, under any P ∈ H0pw , the fact that pt ≥ qt under P implies
+                                                
+                                           [k]
+                            P ∃t ≥ 1 : pt ≤ α ≤ α, ∀α ∈ (0, 1).                                        (90)
+
+                                                                                 [k]
+    Now, following an earlier proof in (79) where we showed that (Lt )∞      t=0 is an adapted process
+                                                             [k] ∞
+w.r.t. the game filtration G, we can analogously show that (Et )t=0 is also an adapted process w.r.t. G,
+             [k]
+and so is (pt )∞ t=0 by its definition. Then, by Lemma 2 of Ramdas et al. (2020), (i) ⇒ (iii), equa-
+tion (90) implies that                         
+                                    P p[k]
+                                         τ ≤  α   ≤ α, ∀α ∈ (0, 1),                                (91)
+                                                                           [k]
+for any stopping time τ w.r.t. G and P ∈ H0pw (h). In other words, (pt )∞                          pw
+                                                                           t=1 is a p-process for H0 (h)
+w.r.t. G, for each k ∈ {1, . . . , h}.
+                                               [k]
+     Finally, we can merge the p-processes (pt )∞  t=1 at any G-stopping times. For any G-stopping time
+τ , using the harmonic average p-merging function by Vovk and Wang (2021) combined with (91)
+gives, for any P ∈ H0pw ,
+                                       P (ppw
+                                           τ ≤ α) ≤ α,     ∀α ∈ (0, 1).                              (92)
+
+(Etpw )∞                         pw
+       t=0 is an e-process for H0 . This follows directly from the validity of a p-to-e calibrator for
+p-processes (e.g., Proposition 12, Ramdas et al. (2020)).
+
+    The statements and proofs for the weak null H0w (h) are completely analogous, except that in-
+stead of taking averages across the h sub-processes we have to take the minimum/maximum for e-/p-
+                                                                                  [k]
+processes, because the weak null only implies that there exists some k for which ∆t ≤ 0.
+
+Proposition 6 (Sequential inference for H0w (h)). Assume the same setup as Proposition 5. Then, for
+each λ ∈ [0, 1/c), the following statements are true:
+
+   1. (Minimum sequential e-values.) The process
+                                                                     [k]
+                                           Ētw (λ) := min Et (λ)                                      (93)
+                                                         k=1,...,h
+
+      satisfies EP [Ēτpw                                                    w
+                        +h−1 (λ)] ≤ 1 for any G-stopping time τ and any P ∈ H0 (p, q; h).
+
+
+                                                    45
+
+## Page 46: 2. (P-process.) The process (pw ∞
+
+源页：第 46 页
+
+2. (P-process.) The process (pw  ∞
+                                  t )t=1 defined by
+                                                                                 
+                                            [k]             [k]              [k]
+                         pw
+                          t := max pt ,              where pt := 1 ∧ 1/ sup Ei (λ) ,                 (94)
+                                k=1,...,h                                    i≤t
+
+       is an p-process for H0w (p, q; h) w.r.t. G.
+
+    3. (Calibrated e-process.) Let f : [0, 1] → [0, ∞) be any p-to-e calibrator. Then, the process
+       (Etw )∞               w
+             t=0 defined by E0 = 1 and
+
+                                                  Etw := f (pw
+                                                             t ),   ∀t ≥ 1                           (95)
+
+       is an e-process for H0w (p, q; h) w.r.t. G.
+     The methods described in Propositions 5 and 6 both provide valid options for sequentially com-
+paring lag-h forecasters. While Etpw may involve a seemingly less intuitive null hypothesis, it upper-
+bounds Etw , and it can grow more quickly when either null is false. Rejecting H0pw (p, q; h) implies
+                                                       [k]
+that there exists some k ∈ {1, . . . , h} such that ∆t > 0 for some t. For example, if h = 2, then it
+implies p outperforms q on average on either odd or even days. A scenario in which rejecting H0pw (h)
+would clearly not imply H0w (h) is when (coincidentally) there is seasonality of period exactly h in
+the game — e.g., when comparing 7-day forecasts for a sequence of outcomes that have a different
+distribution every weekend, Etw and Etpw may differ significantly. A simple way to mitigate this issue
+is to simply monitor both e-processes (depending on the use case).
+     In Table 5, we list the sequential e-values for H0w (Proposition 6), H0pw (Proposition 5), and H0s
+(Henzi and Ziegel (2022); denoted as Ē s ), for the weather comparison tasks in Section 5.3 with lags
+h = 1, . . . , 5. As in Henzi and Ziegel (2022), no stopping is applied in any of the sequential e-values.
+As shown, while Ē w tends to be overly conservative, Ē pw remains relatively powerful despite testing
+a substantially weaker null than the strong null (for Ē s ). Across different locations and lags, Ē s is
+generally large (≥ 20) whenever Ē pw is large, and this is explained by the inclusion relationship
+between the nulls in (71). The comparison of HCLR against HCLR_ in Zurich is the only case
+where Ē pw exceeds Ē s . In this case, the e-values drawn over time (similar to Figure 5) show that
+there are multiple time periods (2012-2013 and 2014-2015) during which both Ē s and Ē pw decrease
+substantially, and it is possible that the choice of the hyperparameter or the variance-adaptivity of our
+e-values affects how quickly they “rebound” after such sharp decreases.
+     We close with the note that the choice of how aggressively one can bet, either via the choice of
+the hyperparameter in the mixture distribution F for Ē w and Ē pw (cf. Section 4.4) or the alternative
+probability π1 for E s , directly affects the power of these e-values. Developing powerful strategies for
+choosing F in the lagged scenario remains a problem deserving of future investigation.
+
+
+F     Inference for Predictable Subsequences and Bounds
+Martingale theory tells us that we can substitute each variable in the exponential supermartingale (12)
+with any predictable terms, similar to (γi )∞
+                                            i=1 in Theorem 2. In doing so, we must make sure that the
+resulting test supermartingale leads to estimating/testing an appropriate quantity of interest. Here, we
+illustrate two useful extensions involving this general technique.
+
+F.1    Inference for Predictable Subsequences
+Suppose that each round of our forecast comparison game (Game 1) happens daily, but we are only
+interested in comparing the forecasters on weekdays, on every other day, or more interestingly, on
+
+                                                          46
+
+## Page 47: HCLR/IDR IDR/HCLR– HCLR/HCLR–
+
+源页：第 47 页
+
+HCLR/IDR                   IDR/HCLR–                   HCLR/HCLR–
+    Location    Lag        w
+                         Ē    Ē pw   Ē s         Ē w
+                                                           Ē pw   Ē s          Ē w
+                                                                                       Ē pw   Ē s
+                  1     0.012 0.012   0.000        > 100 > 100 > 100            1.083  1.083 > 100
+                  2     0.021 0.033   0.000        0.196 1.659 > 100            0.510  1.196 > 100
+     Brussels     3     0.049 0.060   0.006        0.060 0.121    1.786         0.698  2.289 > 100
+                  4     0.053 1.032 22.811         0.018 0.042    0.000         0.114  1.855 > 100
+                  5     0.145 0.714 > 100          0.021 0.034    0.000         0.254 19.411 > 100
+                  1     0.034 0.034   0.000        1.284 1.284 > 100            > 100 > 100 > 100
+                  2     0.022 0.029   0.000        1.573 7.223 > 100            1.537 69.508 > 100
+    Frankfurt     3     0.022 0.041   0.000        0.311 3.814 > 100            0.836 > 100 > 100
+                  4     0.047 0.214   0.361        0.033 0.090    0.122         0.163 27.920 > 100
+                  5     0.037 0.334   2.468        0.023 0.104    0.001         0.173  1.781 > 100
+                  1     0.041 0.041   0.029        0.277 0.277    1.351         0.285  0.285  2.845
+                  2     0.038 0.038   0.021        0.289 0.321    2.002         0.164  0.200  5.178
+     London       3     0.037 0.061   0.185        0.087 0.367    0.203         0.141  0.241  9.613
+                  4     0.077 0.121   1.751        0.051 0.108    0.018         0.077  1.714  8.428
+                  5     0.070 0.208   4.949        0.032 0.066    0.002         0.113  0.279  1.427
+                  1     0.034 0.034   0.003        6.670 6.670 25.692           > 100 > 100 61.747
+                  2     0.054 0.061   0.012        0.328 0.415 19.229           2.195 > 100 74.745
+     Zurich       3     0.066 0.487   1.079        0.037 0.197    0.661         1.877  7.311 94.613
+                  4     0.091 1.553 30.478         0.023 0.066    0.004         0.210 54.131 47.069
+                  5     0.082 8.436 > 100          0.026 0.053    0.000         0.192  3.964 40.648
+
+Table 5: Lag-h sequential e-values between pairs of statistical postprocessing methods for ensemble
+weather forecasts across different locations and lags, where T is the last time step (January 01, 2017).
+Ē w , Ē pw , and Ē s indicate the lag-h sequential e-values for the lag-h weak, period-wise weak, and
+strong nulls, respectively. All procedures use the Brier score as the scoring rule. “p/q” indicates the
+null that “p is no better than q.” Generally speaking, Ē w is the most conservative, while Ē pw can be
+powerful against its relatively weak null (compared to the strong null for Ē s ).
+
+
+
+days after some specific event happens (e.g., days following market crashes). To formalize this, we
+introduce a predictable {0, 1}-valued process ξ := (ξt )∞t=1 and then estimate/test the average score
+differential only at times when ξt = 1. The resulting parameter of interest is expressed as follows:
+
+
+                               Pt                     t
+                                     ξi δi      1    X
+                 ∆t (ξ1:t ) := Pi=1
+                                  t        = Pt          ξi Ei−1 [S(pi , yi ) − S(qi , yi )] ,           (96)
+                                  i=1 ξi      i=1 ξi i=1
+
+
+
+
+where δi = Ei−1 [δ̂i ] = Ei−1 [S(pi , yi ) − S(qi , yi )] and ξ1:t = (ξ1 , . . . , ξt ). ∆t (ξ1:t ) measures
+the time-varying average score differential only for times when ξi = 1. Henzi and Ziegel (2022)
+introduce an analogous extension   to testing the strong null (21), where the predictable condition
+ξt = 1 max{pt , qt } ≥ 12 is used to compare extreme precipitation forecasts.
+                         
+
+   Because the conditions are predictable, we have the property that Ei−1 [ξi δ̂i ] = ξi Ei−1 [δ̂i ] = ξi δi ,
+from which the proofs of Theorem 1 (assuming sub-Gaussianity), as well as Theorem 2 and Theorem 3
+
+                                                      47
+
+## Page 48: (assuming boundedness), straightforwardly follow. For example, for each λ ∈ [0, 
+
+源页：第 48 页
+
+(assuming boundedness), straightforwardly follow. For example, for each λ ∈ [0, 1/c), consider
+                              Y      n                                 o
+             Lt (λ; ξ1:t ) :=    exp λ(δ̂i − δi ) − ψE (λ)(δ̂i − γi )2                         (97)
+                              i:ξi =1
+                             t h
+                             Y                    n                                 oi
+                           =    (1 − ξi ) + ξi exp λ(δ̂i − δi ) − ψE (λ)(δ̂i − γi )2 .                 (98)
+                              i=1
+
+Then, under the same conditions as Proposition 1, Lt (λ; ξ1:t ) is a test supermartingale w.r.t. G:
+                                         h                       n                                  oi
+ Et−1 [Lt (λ; ξ1:t )] = Lt−1 (λ; ξ1:t−1 ) (1 − ξi ) + ξi Et−1 exp λ(δ̂i − δi ) − ψE (λ)(δ̂i − γi )2    (99)
+                   ≤ Lt−1 (λ; ξ1:t−1 ),                                                              (100)
+
+for each t ≥ 1. We used the predictability of (ξt )∞
+                                                   t=1 in (99) and the boundedness condition (see proof
+of Proposition 1) in (100). Applying this to the proof of Theorem 2 shows that we can construct an
+EB CS for (∆t (ξ1:t ))∞
+                      t=1 .
+    Similarly, we can also derive the corresponding sub-exponential e-process for the null H0w (ξ) :
+∆t (ξ1:t ) ≤ 0, ∀t. This e-process is given by
+                                           Y        n                       o
+                          Et (λ; ξ1:t ) :=     exp λδ̂i − ψE (λ)(δ̂i − γi )2 ,                    (101)
+                                          i:ξi =1
+
+                                                           w
+                                                                                            Pt
+Q any λ ∈ [0, 1/c). This is an e-process because, under H0 (ξ), we have that exp(−λ
+for                                                                                            i=1 ξi δi ) =
+  i:ci =1 exp(−λδi ) ≥ 1, and thus
+                               Y      n                                 o
+               Et (λ; ξ1:t ) ≤     exp λ(δ̂i − δi ) − ψE (λ)(δ̂i − γi )2 = Lt (λ; ξ1:t ).            (102)
+                              i:ξi =1
+
+Since Et (λ; ξ1:t ) is upper-bounded by the test supermartingale Lt (λ; ξ1:t ) for all t under H0w (ξ), it
+follows that Et (λ; ξ1:t ) is an e-process for H0w (ξ) (Ramdas et al., 2020).
+    In summary, both the CS and the e-process remain valid under predictable conditions.
+
+F.2   Inference Under Predictable Bounds
+For Theorems 2 and 3, we require that the pointwise score differentials are bounded by some fixed
+constant, i.e., |δ̂i | ≤ 2c for all i, for some c ∈ (0, ∞). In practice, this may be restrictive when the
+value of c is not known a priori or its range shifts drastically over time. One way to mitigate this issue
+is to have a predictable bound (ci )∞   i=1 at each round, such that
+
+                                                            ci
+                                                    δ̂i ≤      ,                                     (103)
+                                                            2
+for i ≥ 1, instead of having a uniform bound over all rounds. Predictable bounds can also be useful in
+cases where one can guess how bad/good the forecasts can be before each new round begins.
+    Here, we show that we can extend both Theorem 2 and Theorem 3 to work for predictably bounded
+score differentials. This result depends on the following facts about the exponential CGF-like function,
+ψE,c (λ), as a function of its scale c. Below, we take 1/0 = ∞.
+Lemma 2. For each λ ≥ 0, the function fλ (c) := ψE,c (λ) = c−2 [−cλ − log(1 − cλ)] is non-
+decreasing and convex on c ∈ (0, 1/λ). Furthermore, fλ is strictly increasing and strongly convex on
+c ∈ (0, 1/λ) if and only if λ > 0.
+
+                                                      48
+
+## Page 49: Fixed CGF Type
+
+源页：第 49 页
+
+Fixed                                                            CGF Type
+            15             = 0.9                                                 15
+                                                                                            E, 1( )
+                           = 0.95                                                           N, 1( )
+            10             = 1.0                                                 10
+  E, c( )
+
+
+
+
+                                                                            ()
+             5                                                                    5
+
+             0                                                                    0
+                 0.0      0.2       0.4        0.6       0.8     1.0                  0.0       0.2   0.4   0.6   0.8   1.0
+                                           c
+
+Figure 6: Left: Plots of the exponential CGF-like function fλ (c) = ψE,c (λ) against c ∈ (0, 1/λ), for
+fixed λ values of 0.9, 0.95, and 1.0. For each λ ≥ 0, fλ (c) is strictly increasing and strongly convex
+on c ∈ (0, 1/λ). Right: Comparing ψE,1 (λ), as a function of λ ∈ [0, 1), with the Gaussian CGF
+ψN,1 (λ) = λ2 /2.
+
+
+Proof. Since fλ (c) is twice differentiable w.r.t. c, it suffices to show that fλ′ (c) ≥ 0 and fλ′′ (c) ≥ 0 for
+all c, and also that fλ′ (c) > 0 and fλ′′ (c) > 0 for all c if and only if λ > 0.
+     Given that 0 ≤ cλ < 1, we utilize the Taylor series of x 7→ − log(1 − x) at x = 0:
+                                                          ∞
+                                                          X (cλ)t                     c2 λ2 c3 λ3
+                                − log(1 − cλ) =                            = cλ +          +      + ··· ,                (104)
+                                                                 t                      2     3
+                                                          t=1
+
+which converges (absolutely). It then follows that
+                                                                                                      ∞
+                                          −cλ − log(1 − cλ)   λ2 cλ3             2
+                                                                                   X (cλ)t
+                           fλ (c) =                         =   +    + · · · = λ           .                             (105)
+                                                 c2           2   3                  t+2
+                                                                                                      t=0
+
+Taking first derivatives term-by-term,
+                                                                           ∞
+                                                                           X tλt ct−1
+                                                         fλ′ (c) = λ2                       .                            (106)
+                                                                                 t+2
+                                                                           t=1
+
+Given that c > 0, we have that fλ′ (c) ≥ 0 for any λ ≥ 0. Furthermore, we have that fλ′ (c) > 0 for
+λ > 0 and fλ′ (c) = 0 for λ = 0.
+   Similarly, taking second derivatives term-by-term,
+                                                                     ∞
+                                                                     X t(t − 1)λt ct−2
+                                                     fλ′′ (c) = λ2                              .                        (107)
+                                                                                 t+2
+                                                                     t=2
+
+Given that c > 0, we have that fλ′′ (c) ≥ 0 for any λ ≥ 0. Furthermore, we have that fλ′′ (c) > 0 for
+λ > 0 and fλ′′ (c) = 0 for λ = 0.
+
+   In Figure 6, we plot ψE,c (λ) as a function of c, illustrating that it is indeed strictly increasing
+and strongly convex for different values of λ > 0, and we also show that ψE,1 as a function of λ
+approximates ψN,1 (λ) = λ2 /2 as λ → 0+ .
+   Now, we derive an e-process that involves predictable bounds and is upper-bounded by a test
+supermartingale that uses a uniform bound (12). First, let c0 be a (possibly infinite) constant such that
+
+                                                                       49
+
+## Page 50: ci ≤ c0 for all i. Also, let v̂i = (δ̂i − γi )2 where (γi )∞
+
+源页：第 50 页
+
+ci ≤ c0 for all i. Also, let v̂i = (δ̂i − γi )2 where (γi )∞
+                                                           i=1 is any predictable sequence as in Theorems 2
+and 3.
+    Now, for each λ ∈ [0, 1/c0 ) (as before, we set 1/∞ = 0 and [0, 0) = {0}), define the following
+processes: L0 (λ) = L0 (λ) = 1, and for t ≥ 1,
+            e
+                                   Y t                                       2 
+                       Lt (λ) :=        exp λ δ̂i − δi − ψE,c0 (λ) δ̂i − γi           ;               (108)
+                       e           i=1
+                                   Y t                                       2 
+                       Lt (λ) :=        exp λ δ̂i − δi − ψE,ci (λ) δ̂i − γi           .               (109)
+                                  i=1
+
+
+(If c0 = ∞, then ψE,c0 is not well-defined, so set Lt (λ) = 1 for all t ≥ 1.)
+                                                   e
+Proposition 7. Suppose that |δ̂i | ≤ c2i , where (ci )∞  is a strictly positive predictable sequence. Also,
+         Pt              2             ∞
+                                                   i=1
+                                                      ci ci
+                                                            
+let V̂t = i=1 (δ̂i − γi ) , where (γi )i=1 is any − 2 , 2 -valued predictable sequence. Then, for each
+λ ∈ [0, 1/c0 ), the following statements are true:
+
+   1. Lt (λ) ≤ Lt (λ) for all t ≥ 1;
+      e
+   2. The process (Lt (λ))∞
+                          t=0 is a test supermartingale w.r.t. G;
+
+   3. (A predictably-bounded e-process.) The process (Et (λ))∞
+                                                             t=0 , defined as E0 (λ) = 1 and
+
+                                       t
+                                       Y                                  2 
+                           Et (λ) :=          exp λδ̂i − ψE,ci (λ) δ̂i − γi      , ∀t ≥ 1,           (110)
+                                        i=1
+
+
+         is an e-process for H0w (p, q) : ∆t ≤ 0, ∀t ≥ 1.
+
+Proof.      1. Using the fact that ci ≤ c0 for each i and that ψE,c (λ) is non-decreasing in c by
+         Lemma 2, we obtain
+                                              n                  o
+                                  Lt (λ) = exp λSt − ψE,c0 (λ)V̂t ≤ Lt (λ).                          (111)
+                                  e
+
+   2. If c0 = ∞, then we must have λ = 0, so (Lt (λ))∞  t=0 always takes the value 1 and is a (triv-
+      ial) test supermartingale. Otherwise, Proposition 2 directly implies that (Lt (λ))∞
+                                                                                        t=0 is a test
+      supermartingale w.r.t. G.
+
+   3. Because (ci )∞                                                 ∞
+                    i=1 is predictable w.r.t. G, the process (Et (λ))t=0 is adapted w.r.t. G. Then,
+                                                              w
+      Et (λ) ≤ Lt (λ) (P -a.s.) for all t under any P ∈ H0 (p, q), as in the proof of Theorem 3,
+      and thus the result follows by Corollary 22 of Ramdas et al. (2020).
+
+
+
+    Note that, if a constant bound c0 = c > 0 were known a priori, then Lt (λ) coincides with
+the exponential test supermartingale in Equation (12). The e-process (110) can e be more powerful
+                                  ∞
+than using the analogous (E t (λ))t=0 involving c0 in some cases, although taking the mixture over λ
+(Section 4.3.4) may not yield
+                           e a closed form.
+
+
+                                                        50
+
+## Page 51: G Generalizations To Other Outcome and Forecast Types
+
+源页：第 51 页
+
+G     Generalizations To Other Outcome and Forecast Types
+
+In principle, the game-theoretic approach we describe in Section 4.1 can straightforwardly generalize
+beyond the case of probability forecasts on dichotomous events. We briefly discuss two such general-
+izations and to what extent our methods are applicable in each case.
+    The first is to the case of C-categorical outcomes, for C ≥ 2. We can start with the game-
+theoretic setup (Game 1) and parameterize the outcome space using C-dimensional length-1 binary
+vectors, i.e., Y = {ec }C                            C
+                         c=1 where ec = [1 (i = c)]i=1 , and Pthe set of forecasts as the C-dimensional
+                                    C−1                         C
+probability simplex, i.e., P = ∆          = {p ∈ [0, 1]C :      c=1 p
+                                                                      (c) = 1}. Reality also makes its
+
+choices from ∆C−1 . Note that, if C = 2, we can recover the binary case via the mapping p =
+(1 − p, p), for p ∈ [0, 1]. Then, by choosing any bounded scoring rule for categorical outcomes, we
+can straightforwardly apply Theorems 2 and 3 to obtain CSs and e/p-processes (respectively) on the
+average score differentials. The C-dimensional Brier score, defined as S(p, y) = 1 − ∥p − y∥22 , is
+bounded within [0, 1]; the spherical and zero-one scores can be defined analogously (Gneiting and
+Raftery, 2007) and are similarly bounded. We note that using the normalized Winkler score to utilize
+unbounded scores, as in Section D, is not straightforward.
+    The next extension is to the case of continuous outcomes. In this case, we can once again start with
+the game-theoretic setup (Game 1) and parameterize the outcome space as Y ⊆ Rd for some d ≥ 1.
+At each round t, Reality now chooses an arbitrary distribution rt on Y, from which yt is sampled.
+Depending on the specific forecasting task, the forecasters may either predict (i) certain functional(s)
+of the outcome distribution, denoted as Γ(P ) for each P ∈ P, or (ii) the CDF (or density) itself. As an
+example for (i), each forecaster may predict a level-α (e.g., 95%) prediction interval (lt , ut ), in which
+case the statistician can use the α-interval score (Dunsmore, 1968):
+
+            Sα ((l, u), y) = −(u − l) − (2/α)(l − y)1 (y < l) − (2/α)(y − u)1 (y > u) ,              (112)
+
+for (l, u) ⊆ Y and y ∈ Y. As an example for (ii), each forecaster may predict a (Borel-measurable)
+CDF Ft for yt , in which case the statistician can use the continuously ranked probability score
+(CRPS) (Matheson and Winkler, 1976):
+                     Z ∞
+                           (F (x) − 1 (x ≥ y))2 dx =                  |Y − Y ′ | − E [|Y − y|] ,
+                                                                               
+      S(F, y) = −                                          E′                                        (113)
+                      −∞                                 Y,Y ∼F                   Y ∼F
+
+
+for any CDF F and outcome y ∈ Y. In either case, our main results (Theorems 2 and 3) are applicable
+when the associated score differentials are bounded. Specifically, we can allow the choices of Y, P,
+and S such that P ⊆ P (c) , where
+
+                    P (c) = {p ∈ ∆(Y) : |S(p, y) − S(q, y)| ≤ c/2, ∀q ∈ ∆(Y)} ,                      (114)
+
+for some c ∈ (0, ∞). For instance, if Y = [0, 1], then our main theorems can be used to compare mean,
+quantile, or interval forecasts on Y, using the corresponding scoring rule in each case (Gneiting, 2011).
+If (114) is restrictive for the use case, then one may consider using predictable bounds (Section F.2)
+or the asymptotic CS (Section C). Deriving a fully general anytime-valid procedure for unbounded
+domains and scoring rules remains an open problem.
+     In Table 6, we summarize these extensions based on the different choices of the outcome space Y
+and the forecast type P within Game 1.
+
+                                                    51
+
+## Page 52: Outcome Type Categorical Continuous
+
+源页：第 52 页
+
+Outcome Type                          Categorical                           Continuous
+        Domain                            Y = {ec }C
+                                                   c=1                            Y ⊆ Rd
+    Reality’s Choice                       rt ∈ ∆C−1                   rt ∈ ∆(Y) (arbitrary distribution)
+    Forecast Type                         Probability                     Functional             Distribution
+       Domain                             P = ∆C−1                            Γ(P)                P ⊆ ∆(Y)
+  Forecast Examples                 any C-dim. probability          mean, prediction interval        CDF
+   Score Examples               Brier, spherical, 0-1, log scores   quadratic, interval scores      CRPS
+  Thms. 2 & 3 apply                                    if P ⊆ P (c) for some c ∈ (0, ∞)
+
+Table 6: Different specifications of Game 1 based on the outcome space and the forecast type, and the
+types of scoring rules that can be used in each case. In principle, the game-theoretic setup in our main
+paper (Section 4.1) can straightforwardly extend to these settings; our main approaches (Theorems 2
+and 3) extend to cases where the score differentials are bounded.
+
+
+H      Comparison with Other Forecast Comparison Methods
+H.1     Methodological Comparison with Henzi and Ziegel (2022)
+The biggest difference between our approach and Henzi and Ziegel (2022)’s (HZ) is in the difference
+between the strong and weak nulls, as described in the main text. Here, we summarize other method-
+ological differences that are worth noting for practical use cases. HZ focus on sequentially comparing
+forecasts on dichotomous events using consistent scoring functions (Gneiting, 2011), which straight-
+forwardly induce proper scoring rules, and they develop e-processes of the form
+
+                                t 
+                                Y                                     S(pi , yi ) − S(qi , yi )
+    EtHZ (λ1 , . . . , λt ) =         1 + λi δ̃i ,   where δ̃i =                                          ,
+                                                            |S(pi , 1 (pi ≥ qi )) − S(qi , 1 (pi ≥ qi ))|
+                           i=1
+                                                                                                        (115)
+for a [0, 1]-valued predictable sequence (λt )∞
+                                              t=1 and a negatively  oriented  scoring function   S. The  form
+of δ̃i is exactly that of the Winkler score: by Lemma 1 and reversing the orientation of S, we see that
+δ̃i = −w(pi , qi , yi ), and thus HZ’s e-process can be interpreted as betting on the relative forecasting
+skill as determined by the pointwise empirical Winkler score (57). In this sense, our e-process for the
+weak Winkler null in Proposition 4 is a weak-null counterpart of HZ’s e-process.
+     In terms of the specific form of the e-process, (115) is an example of a product form e-process,
+contrasting with our exponential form variant. The two forms of e-processes are both found the lit-
+erature, such as the product form in Waudby-Smith and Ramdas (2023) and the exponential form
+in Howard et al. (2021) for estimating bounded means. Also, while the e-process we derive in (24)
+explicitly shows its variance-adaptive property and further utilizes the method of mixtures (Robbins,
+1970), HZ’s e-process seeks to optimize its power by optimizing the growth rate of the e-process in
+the worst case (GROW) (Grünwald et al., 2023) under a chosen alternative (typically set to a convex
+combination of pt and qt ).
+     In terms of use cases, the CSs perform estimation and thus provide information as to exactly how
+much one forecaster is outperforming the other. The methods in our paper are agnostic to the different
+types of outcomes (Section G), so they can, e.g., be applied to forecasts on categorical outcomes with
+C > 2 categories and to forecasts on bounded continuous outcomes. HZ’s approach is applicable to
+any consistent scoring functions (Gneiting, 2011) on binary outcomes and can also test for forecast
+dominance w.r.t. all consistent scoring functions.
+
+                                                           52
+
+## Page 53: Forecasters 95% CS/CI for t
+
+源页：第 53 页
+
+Forecasters                                       95% CS/CI for t
+                                                                                                                                    1.0
+                                                                                                                                               Cumulative Type I Error
+                             1.00                                             0.06                              EB CS                            EB CS               GW Test
+                                                                                                                Fixed-Time CI                    DM Test             Fixed-Time CI
+      Probability Forecast
+                                                                              0.04                                                  0.8
+                             0.75                                                                                t
+                                                                              0.02                                                  0.6
+                             0.50                                             0.00
+                                                                                                                                    0.4
+                                        reality (rt)                          0.02
+                             0.25       optimist                              0.04                                                  0.2
+                             0.00       pessimist                             0.06
+                                    0    2500          5000   7500 10000                                                            0.0
+                                                                                     0   2000     4000   6000        8000   10000         0   2000   4000     6000     8000    10000
+                                                       Time                                          Time                                                  Time
+
+
+Figure 7: Left: Two forecasters, denoted as optimist (blue) and pessimist (orange), on a sim-
+ulated reality sequence (gray). There is no performance gap between the two in Brier score. Middle:
+The true average score differentials (∆t )Tt=1 (dark red) along with the 95% EB CS (blue) and the fixed-
+time CI (yellow). Right: Comparing the cumulative type I error rate for the EB CS (blue), the DM
+test of unconditional predictive ability (green), the GW test of conditional predictive ability (orange),
+and Lai et al. (2011)’s asymptotic CIs (yellow). All tests are for one-sided nulls of the form “optimist
+performs no better than the pessimist.” Unlike the EB CS, all classical fixed-time methods, including
+DM and GW tests, incur a cumulative miscoverage/false decision rate higher than α = 0.05.
+
+
+H.2                  Comparison with DM and GW Tests
+As we highlighted in Section 2, the key difference between our work and existing forecast comparison
+methods, such as Diebold and Mariano (1995); Giacomini and White (2006); Lai et al. (2011); Ehm
+and Krüger (2018), is whether they have an anytime-valid guarantee. Here, we present additional
+experiments to illustrate that (i) the DM and GW tests are not valid at arbitrary stopping times, like
+most other classical tests including Lai et al. (2011), and (ii) anytime-valid methods need not require
+larger sample sizes than DM and GW tests for high power.
+    To recap, the DM test of unconditional predictive ability tests
+
+                                                                           H0DM : E[δ̂n ] = 0,              ∀n ≥ 1,                                                                    (116)
+
+where the scoring rule is assumed to depend only on the forecast error, e.g., S(pn , yn ) = 1−(pn −yn )2 .
+By the DM assumption, the loss differentials are assumed to be covariance stationary, implying that
+E[δ̂n ] = δ for some fixed δ at any n. Given the (stationary) autocovariance function γ(k) for score
+differentials and a consistent estimator fˆ(0) of its spectrum
+                                                             q at frequency zero, the DM test uses the
+                                             √ ˆ
+asymptotic normality under H    DM given by n(∆n − µ)/ 2π fˆ(0) ⇝ N (0, 1).
+                                                                   0
+    The GW test, on the other hand, is a test of conditional predictive ability that tests
+
+                                                                       H0GW : En−1 [δ̂m,n ] = 0,                     ∀n ≥ 1.                                                           (117)
+
+Here, m is the maximum window size that each forecaster can look back to, meaning that the test now
+depends on the forecasting model. The GW assumption allows for nonstationarity, although the test
+statistic involves weights that depend on mixing assumptions (Lai et al., 2011).
+     First, we consider a simplistic setting in which ∆t = 0 for each time t and both the DM and GW
+assumptions are met. We compare two forecasters, named optimist (pt ) and pessimist (qt ),
+that are equally apart from Reality (rt ) in their forecasts (Figure 7, left). For all methods, we test their
+form of the null that “the optimist is no better than the pessimist” under the Brier score. As
+expected, both the EB CS (Theorem 2) and the fixed-time CI (Lai et al., 2011) to quickly shrink to
+zero (Figure 7, middle), and also neither the DM nor GW test falsely rejects the null at T = 10, 000.
+
+                                                                                                53
+
+## Page 54: Forecasters
+
+源页：第 54 页
+
+Forecasters
+                                                                      0.2
+                                                                                 95% CS for t                                H0 : "p is no better than q"
+                        1.00                                                                                          1.00
+ Probability Forecast              reality (rt)
+                        0.75       k29                                0.1                                             0.75
+                                   laplace                                                                                       Test
+
+
+
+
+                                                                                                            p-value
+                        0.50                                          0.0                                             0.50        CR [SAVI]
+
+
+
+
+                                                                 CS
+                                                                                                                                  HZ [SAVI]
+                        0.25                                          0.1                         EB CS               0.25        DM
+                                                                                                   t                              GW
+                        0.00                                          0.2                                             0.00
+                               0   2500      5000   7500 10000              0   2500    5000   7500 10000                    0   2500     5000   7500   10000
+                                             Time                                       Time                                              Time
+
+
+Figure 8: Left: Two forecasters, k29 (blue) and laplace (orange), on a simulated reality sequence
+(gray) that induces a changepoint in the loss differentials later in the time horizon. Middle: The 95%
+EB CS for (∆t )Tt=1 using the Brier score. ∆t stays zero initially but trends positive later. Right: P-
+values for the null “k29 is no better than laplace” at each sample size t. CR (ours; blue) and HZ
+(yellow) are anytime-valid (SAVI), whereas DM (green) and GW (orange) are not. When ∆t quickly
+trends positive (t ≈ 7300), all p-values shrink to zero, and neither CR nor HZ requires substantially
+many extra samples to get to zero compared to DM and GW.
+
+
+
+
+    Now, we can also compute the cumulative type I error rate, which for p-values (pt ) is given
+by αt = P (∃i ≤ t : pi ≤ α). For CS/CIs (Ct ), this is equivalent in this case to the cumulative
+miscoverage rate αt = P (∃i ≤ t : 0 ∈  / Ci ) that we used earlier in Section 5.1, because ∆t = 0 under
+any P ∈ H0 . The quantity is estimated over a repeated sampling of the data under P . We expect that
+an anytime-valid procedure satisfies αt ≤ α for any t by definition, whereas classical fixed-time tests
+such as the DM and GW tests do not. As shown Figure 7 (right), the cumulative type I errors of both
+the DM and GW tests exceed the significance level of α = 0.05 after roughly 100 and 1000 steps,
+respectively, and they continue to trend upward in log-scale. This confirms that the p-values obtained
+by DM or GW tests, much like the fixed-time CI, are overconfident under continuous monitoring and
+thus at data-dependent stopping times, even when their assumptions are met. In other words, the DM
+and GW tests, along with fixed-time CIs, do not have an anytime-valid guarantee.
+
+    Next, we show that the anytime-validity of SAVI methods (CSs, e-processes, and p-processes),
+do not necessarily require larger sample sizes than the classical tests. We compare two forecasters,
+k29 with a 3-degree polynomial kernel (pt ) and laplace (qt ), whose average and pointwise score
+differentials stay close to zero for a while (t ≤ 7000) until a sharp changepoint in the data is introduced
+and ∆t trends positive afterwards (Figure 8, left). Note that this invalidates the covariance stationarity
+assumption of the DM test. The EB CS for ∆t is drawn in the middle plot of Figure 8, which shows
+that the CS uniformly covers the time-varying average as expected.
+
+     To illustrate that SAVI approaches do not necessarily require larger sample sizes for “detecting”
+this changepoint, we compare SAVI and non-SAVI p-values for the null that “k29 is no better than
+laplace” under the Brier score. First, we plot the p-process, pt = 1/ supi≤t Ei given by (26), where
+(Et )∞t=0 is the sub-exponential e-process (24) that corresponds to the LCB of the CS. This is denoted
+in the right plot of Figure 8 (denoted as “CR”). We also plot the p-process constructed from Henzi and
+Ziegel (2022)’s e-process (EtHZ )∞                                  HZ = 1/ sup
+                                   t=0 via the same mapping, i.e., pt
+                                                                                      HZ
+                                                                                 i≤t Ei . As shown in
+the plot, when compared against the DM and GW p-values, both our and HZ’s p-processes shrink to
+zero nearly as quickly, indicating that they require comparable amounts of data to reject the null when
+∆t trends positive.
+
+                                                                                       54
+
+## Page 55: I Additional Experiment Details and Results
+
+源页：第 55 页
+
+I     Additional Experiment Details and Results
+I.1     Additional Details & Results from Numerical Simulations
+I.1.1    Data Generation
+The reality sequence (rt )Tt=1 is specifically chosen to be non-IID and contain sharp changepoints, as
+drawn with gray dots in Figure 2:
+
+                                 rt = [0.8 · θt + 0.2 · (1 − θt )] + ϵt ,
+
+where                              
+                                   
+                                   0.5           for t ∈ [1, 2000]
+                                   
+                                   1             for t ∈ [2001, 4000]
+                                   
+                                   
+                                   
+                               θt = 0             for t ∈ [4001, 6000]
+                                   
+                                    1             for t ∈ [6001, 8000]
+                                   
+                                   
+                                   
+                                   
+                                   
+                                    0             for t ∈ [8001, 10000]
+                                   
+
+and ϵt ∼ N (0, 0.12 ) is an independent Gaussian noise for each t.
+
+I.1.2    All Pairwise Comparisons in Numerical Simulations
+In Figure 9, we plot the 95% EB, Hoeffding-style, and asymptotic CSs for all pairwise comparisons
+between the constant baseline (constant_0.5), the Laplace forecaster (laplace), and the K29
+forecasters with the 3-degree polynomial kernel and the Gaussian RBF kernel with bandwidth 0.01
+(k29_poly3 and k29_rbf0.01, respectively). The Brier score is used. Across all pairwise com-
+parisons, both CSs uniformly cover the true score differentials across all times, regardless of whether
+the score differentials contain sharp changepoints and contain specific trends.
+
+
+
+
+                                                   55
+
+## Page 56: 95% Confidence Sequences on t; S=BrierScore
+
+源页：第 56 页
+
+95% Confidence Sequences on t; S=BrierScore
+                                                                   t(k29_poly3, k29_rbf0.01): (0.010, 0.019)           t(k29_poly3, laplace): (0.056, 0.073)         t(k29_poly3, constant_0.5): (0.056, 0.073)
+                                                            0.10                                               0.10                                               0.10
+                                t
+                                                            0.05                                               0.05                                               0.05
+                             EB CS
+                             Hoeffding CS                   0.00                                               0.00                                               0.00
+                             Asymptotic CS
+                                                            0.05                                               0.05                                               0.05
+
+                                                            0.10                                               0.10                                               0.10
+                                                                     0      2500    5000     7500    10000             0      2500     5000     7500    10000             0      2500     5000     7500    10000
+              t(k29_rbf0.01, k29_poly3): (-0.019, -0.010)                                                             t(k29_rbf0.01, laplace): (0.043, 0.058)       t(k29_rbf0.01, constant_0.5): (0.042, 0.058)
+           0.10                                                                                                0.10                                               0.10
+
+           0.05                                                                                                0.05                                               0.05
+CS for t
+
+
+
+
+           0.00                                                                                                0.00                                               0.00
+
+           0.05                                                                                                0.05                                               0.05
+
+           0.10                                                                                                0.10                                               0.10
+                  0      2500       5000   7500    10000                                                               0      2500     5000     7500    10000             0      2500     5000     7500    10000
+                  t(laplace, k29_poly3): (-0.073, -0.056)          t(laplace, k29_rbf0.01): (-0.058, -0.043)                                                             t(laplace, constant_0.5): (-0.003, 0.003)
+           0.10                                             0.10                                                                                                  0.10
+
+           0.05                                             0.05                                                                                                  0.05
+CS for t
+
+
+
+
+           0.00                                             0.00                                                                                                  0.00
+
+           0.05                                             0.05                                                                                                  0.05
+
+           0.10                                             0.10                                                                                                  0.10
+                  0      2500       5000   7500    10000             0      2500    5000     7500    10000                                                                0      2500     5000     7500    10000
+             t(constant_0.5, k29_poly3): (-0.073, -0.056)     t(constant_0.5, k29_rbf0.01): (-0.058, -0.042)          t(constant_0.5, laplace): (-0.003, 0.003)
+           0.10                                             0.10                                               0.10
+
+           0.05                                             0.05                                               0.05
+CS for t
+
+
+
+
+           0.00                                             0.00                                               0.00
+
+           0.05                                             0.05                                               0.05
+
+           0.10                                             0.10                                               0.10
+                  0      2500       5000   7500    10000             0      2500    5000     7500    10000             0      2500     5000     7500    10000
+                                    Time                                            Time                                               Time
+
+
+Figure 9: 95% EB (blue), Hoeffding-style (skyblue), and asymptotic (green) CSs on ∆t between four
+different forecasters (k29_poly3, k29_rbf0.01, laplace, and constant_0.5) plotted in
+Figure 2. Scoring rule is the Brier score, and positive values of ∆t indicate that the first forecaster is
+better than the second. In all comparisons, both CSs cover ∆t uniformly, and the width of the EB CS
+approaches that of the asymptotic CS as time grows large.
+
+
+
+
+                                                                                                        56
+
+## Page 57: Home Team Win Probability Forecasts (gray: playoffs)
+
+源页：第 57 页
+
+Home Team Win Probability Forecasts (gray: playoffs)
+                      1.0
+
+                      0.8
+Probability/Outcome
+
+
+
+                      0.6
+
+                      0.4
+
+                      0.2         fivethirtyeight     laplace
+                                  vegas               k29
+                      0.0         constant
+                                                                 Games (last 100 of 2019)
+
+Figure 10: Various forecasters on the last 100 MLB games played in 2019 (including regular season
+and postseason). FiveThirtyEight and Vegas forecasts are publicly available forecasts online; Laplace
+and K29 forecasts are made using historical outcomes as data without external information. Note that
+the forecasts are computed using data from a 10-year window (2010 to 2019), but we only show the
+last 100 games here for visualization purposes. The shaded region highlights the playoffs (the last
+seven being the World Series games).
+
+
+I.2                    Additional Details & Results from the MLB Experiment
+For all MLB-related experiments, we choose vopt = 100, given the longer time horizon considered
+(compared to other experiments in this paper).
+
+I.2.1                       Details on the MLB Forecasters
+
+Here, we describe in detail the five Major League Baseball (MLB) forecasters that are compared in
+Section 5.2. Figure 10 illustrate their forecasts on the last 100 games of 2019.
+
+                • 538: Game-by-game probability forecasts on every MLB game since 1871, available at https:
+                  //data.fivethirtyeight.com/#mlb-elo. According to the methodology report at
+                  https://fivethirtyeight.com/features/how-our-mlb-predictions-work/,
+                  the probabilities are calculated using an ELO-based rating system for each team, and game-
+                  specific adjustments are made for the starting pitcher as well as other external factors (travel,
+                  rest, home field advantage, etc.). Before each new season, team ratings are reverted to the mean
+                  by one-third and combined with preseason projections from other sources (Baseball Prospec-
+                  tus’s PECOTA, FanGraphs’ depth charts, and Clay Davenport’s predictions).
+
+                • vegas: Pre-game closing odds made on each game by online sports bettors, as reported by
+                  https://Vegas-Odds.com. (Download source: https://sports-statistics.
+                  com/sports-data/mlb-historical-odds-scores-datasets/.) The betting odds
+                  are given in the American format, so each odds o is converted to its implied probability p via
+                                    100                −o
+                  p = 1 (o ≥ 0) 100+o    + 1 (o < 0) 100−o . Then, for each matchup, the pair of implied probabil-
+                  ities for each team is rescaled to sum to 1. For example, given a matchup between team A and
+                  team B with betting odds oA = −140 and oB = +120, the implied probabilities are p̃A = 0.58
+                  and p̃B = 0.45, and the rescaled probabilities are pA = 0.56 and pB = 0.44.
+
+                                                                         57
+
+## Page 58: 95% Confidence Sequences on t; S=BrierScore
+
+源页：第 58 页
+
+95% Confidence Sequences on t; S=BrierScore
+                                                                          t(fivethirtyeight, vegas): (-0.003, -0.001)          t(fivethirtyeight, constant): (0.006, 0.009)          t(fivethirtyeight, laplace): (0.005, 0.008)          t(fivethirtyeight, k29): (0.008, 0.012)
+                                                                   0.02                                                 0.02                                                  0.02                                                 0.02
+                                EB CS                              0.01                                                 0.01                                                  0.01                                                 0.01
+                                Asymptotic CS
+                                                                   0.00                                                 0.00                                                  0.00                                                 0.00
+
+                                                                   0.01                                                 0.01                                                  0.01                                                 0.01
+
+                                                                   0.02                                                 0.02                                                  0.02                                                 0.02
+                                                                           0      5000 10000 15000 20000 25000                  0      5000 10000 15000 20000 25000                  0      5000 10000 15000 20000 25000                  0    5000 10000 15000 20000 25000
+                    t(vegas, fivethirtyeight): (0.001, 0.003)                                                                        t(vegas, constant): (0.007, 0.011)                   t(vegas, laplace): (0.006, 0.010)                    t(vegas, k29): (0.009, 0.014)
+           0.02                                                                                                         0.02                                                  0.02                                                 0.02
+
+           0.01                                                                                                         0.01                                                  0.01                                                 0.01
+CS for t
+
+
+
+
+           0.00                                                                                                         0.00                                                  0.00                                                 0.00
+
+           0.01                                                                                                         0.01                                                  0.01                                                 0.01
+
+           0.02                                                                                                         0.02                                                  0.02                                                 0.02
+                    0     5000 10000 15000 20000 25000                                                                          0      5000 10000 15000 20000 25000                  0      5000 10000 15000 20000 25000                  0    5000 10000 15000 20000 25000
+                  t(constant, fivethirtyeight): (-0.009, -0.006)               t(constant, vegas): (-0.011, -0.007)                                                                      t(constant, laplace): (-0.003, 0.000)                t(constant, k29): (0.000, 0.005)
+           0.02                                                    0.02                                                                                                       0.02                                                 0.02
+
+           0.01                                                    0.01                                                                                                       0.01                                                 0.01
+CS for t
+
+
+
+
+           0.00                                                    0.00                                                                                                       0.00                                                 0.00
+
+           0.01                                                    0.01                                                                                                       0.01                                                 0.01
+
+           0.02                                                    0.02                                                                                                       0.02                                                 0.02
+                    0     5000 10000 15000 20000 25000                     0      5000 10000 15000 20000 25000                                                                       0      5000 10000 15000 20000 25000                  0    5000 10000 15000 20000 25000
+                  t(laplace, fivethirtyeight): (-0.008, -0.005)                t(laplace, vegas): (-0.010, -0.006)                  t(laplace, constant): (-0.000, 0.003)                                                                     t(laplace, k29): (0.002, 0.005)
+           0.02                                                    0.02                                                 0.02                                                                                                       0.02
+
+           0.01                                                    0.01                                                 0.01                                                                                                       0.01
+CS for t
+
+
+
+
+           0.00                                                    0.00                                                 0.00                                                                                                       0.00
+
+           0.01                                                    0.01                                                 0.01                                                                                                       0.01
+
+           0.02                                                    0.02                                                 0.02                                                                                                       0.02
+                    0     5000 10000 15000 20000 25000                     0      5000 10000 15000 20000 25000                  0      5000 10000 15000 20000 25000                                                                       0    5000 10000 15000 20000 25000
+                    t(k29, fivethirtyeight): (-0.012, -0.008)                    t(k29, vegas): (-0.014, -0.009)                     t(k29, constant): (-0.005, -0.000)                    t(k29, laplace): (-0.005, -0.002)
+           0.02                                                    0.02                                                 0.02                                                  0.02
+
+           0.01                                                    0.01                                                 0.01                                                  0.01
+CS for t
+
+
+
+
+           0.00                                                    0.00                                                 0.00                                                  0.00
+
+           0.01                                                    0.01                                                 0.01                                                  0.01
+
+           0.02                                                    0.02                                                 0.02                                                  0.02
+                    0     5000 10000 15000 20000 25000                     0      5000 10000 15000 20000 25000                  0      5000 10000 15000 20000 25000                  0      5000 10000 15000 20000 25000
+                                     Time                                                    Time                                                 Time                                                 Time
+
+
+
+Figure 11: Comparing MLB win probability forecasts from 2010 to 2019, using the EB and Hoeffding-
+style CSs at significance level α = 0.05. T = 25, 165 corresponds to the final game of the 2019 World
+Series. The Brier score is used. We find that, over time, the five forecasters are found to achieve sig-
+nificantly different predictive performance from each other (except laplace and constant), with
+the vegas forecaster achieving the best performance, followed by fivethirtyeight, laplace
+≈ constant, and k29. The title of each subplot includes the 95% EB CS at T = 25, 165.
+
+
+             • constant: a constant baseline predicting pt = 0.5 for each t.
+
+             • laplace: A seasonally adjusted Laplace algorithm, representing the season win percentage
+               for each team. Mathematically, it is given by pt = kntt+c +1 , where kt is the number of wins so far
+                                                                           t
+
+               in the season, nt is the number of games played in this season, and ct ∈ [0, 1] is a baseline that
+               represents the final probability forecast from the previous season, reverted toP   the mean by one-
+               third. For example, if the previous season ended after round t0 , then kt = t−1      i=t0 1 (yi = 1),
+               nt = t − t0 , and ct = 32 · pt0 + 13 · 12 (with c0 = 12 ). The final probability forecast for a game
+               between two teams is rescaled to sum to 1.
+
+             • k29: The K29 algorithm applied to each team, using the Gaussian kernel with bandwidth 0.1,
+               computed using data from the current season only. The final probability forecast for a game
+               between two teams is rescaled to sum to 1.
+
+
+
+                                                                                                                                             58
+
+## Page 59: 1-Day Precipitation Forecasts: Brussels
+
+源页：第 59 页
+
+1-Day Precipitation Forecasts: Brussels
+                      1.0
+
+                      0.8
+Probability/Outcome
+
+
+                      0.6                                                                                                                 Forecast
+                                                                                                                                             IDR
+                      0.4                                                                                                                    HCLR
+                                                                                                                                             HCLR_
+                      0.2
+
+                      0.0
+                            2016-10-01   2016-10-15   2016-11-01          2016-11-15               2016-12-01   2016-12-15   2017-01-01
+                                                                   Date (final 3 months of data)
+
+  Figure 12: Comparing three statistical postprocessing methods (IDR, HCLR, HCLR_) for 1-day en-
+  semble weather forecasts on the Probability of Precipitation (PoP). The binary outcome is drawn as
+  gray dots. For visualization purposes, we plot the data and the forecasts only for the final 3 months
+  (October 01, 2016 to January 01, 2017) and at one airport location (Brussels).
+
+
+  I.2.2                       All Pairwise Comparisons of MLB Forecasters
+
+  Figure 11 includes all pairwise comparisons between the five MLB forecasters considered in our
+  experiment. See main text from Section 5.2 for further details.
+
+
+  I.3                       Additional Details & Results from the Weather Experiment
+  The setup closely follows the comparison experiment by Henzi and Ziegel (2022), who compare statis-
+  tical postprocessing methods for predicting the probability of precipitation (PoP) using the ensemble
+  forecast data from the European Centre for Medium-Range Weather Forecasts (ECMWF; Molteni
+  et al. (1996)). The dataset includes the observed 24-hour precipitation from January 06, 2007 to Jan-
+  uary 01, 2017 at four airport locations (Brussels, Frankfurt, London Heathrow, and Zurich), and for
+  each location and date it also includes 1- to 5-day ensemble forecasts, consisting of a higher resolu-
+  tion forecast, 50 perturbed ensemble forecasts at a lower resolution, and a control run for the perturbed
+  forecasts. They consider three statistical postprocessing methods in their experiments: isotonic dis-
+  tributional regression (IDR; Henzi et al. (2021)), heteroscedastic censored logistic regression (HCLR;
+  Messner et al. (2014)), and a variant of HCLR without its scale parameter (HCLR_). Each method
+  is applied to the first half of the data, separately for each airport location and lag h = 1, . . . , 5, and
+  the second-half data is used to make sequential comparisons of the postprocessing methods. Note that
+  each location has a different number of observations: 3,406 for Brussels, 3,617 for Frankfurt, 2,256
+  for London, and 3,241 for Frankfurt. See Section 5 in Henzi et al. (2021) and Section 5.1 in Henzi
+  and Ziegel (2022) for further details about the dataset and the postprocessing methods.
+      In Figure 12, we plot the three forecasters (1-day) on the PoP for the final year (2016-2017) in
+  Brussels.
+
+
+  I.4                       Fine-Tuning the CS Width Using Simulated IID Mean Differentials
+  The uniform boundaries we use in our CSs come with hyperparameter(s) that one can choose to
+  optimize the CS widths at specific intrinsic times (i.e., values that the non-decreasing sequence (V̂t )∞
+                                                                                                          t=1
+  can take). As explained in Section B, this choice can be thought of as an additional fine-tuning step
+  and is secondary to choosing the type of uniform boundary. Nevertheless, since it is a hyperparameter,
+  we seek to find a reasonable default that can be used for typical scenarios of forecast comparison
+
+                                                                                   59
+
+## Page 60: Histogram of i Cumulative Variance vs. Sample Size
+
+源页：第 60 页
+
+Histogram of i                                                      Cumulative Variance vs. Sample Size
+                  0.05
+                                                                                                    80
+
+
+
+
+                                                                         Cumulative Variance (Vt)
+                  0.04
+                                                                                                    60
+    Probability
+
+
+                  0.03
+                                                                                                    40
+                  0.02
+                                                                                                    20
+                  0.01
+
+                  0.00                                                                               0
+                         0.0   0.2     0.4       0.6         0.8   1.0                                   0     2000 4000 6000 8000 10000
+                                             i                                                                       Sample Size (t)
+                                                       IID
+Figure 13: (Left) Histogram of δ̂i ∼ Beta(30, 10) −P   Beta(10, 30) for i = 1, . . . , 10, 000.P(Right)
+Plot of the cumulative variance (intrinsic time) V̂t = ti=1 (δ̂i − ∆                ˆ i−1 = i−1 δ̂j .
+                                                                   ˆ i−1 )2 , where ∆
+                                                                                                 j=1
+Note that the hyperparameter vopt , which we discuss below, determines the intrinsic time V̂t at which
+the uniform boundary is the tightest.
+
+
+without an a priori knowledge of how large the intrinsic time can get.
+    To achieve this, we compare the widths of various CSs for the mean differential between two
+independent and identically distributed (IID) random variables. The main reason for using IID data
+is so that we can compare the width of our CSs with other CSs developed in previous work (Howard
+et al., 2021; Waudby-Smith and Ramdas, 2023; Waudby-Smith et al., 2021), including ones that only
+apply to IID means.
+    To begin, we simulate score differences by sampling two IID Beta random variables and taking
+their differences:
+                                     IID
+                                δ̂i ∼ Beta(30, 10) − Beta(10, 30),                                           ∀i = 1, . . . , 10, 000.          (118)
+                                                   30       10
+Note that −1 ≤ δ̂i ≤ 1 a.s. and that E[δ̂i ] = 30+10    − 10+30 = 21 . Figure 13 illustrates the data sampled
+according to (118) (left) as well as the cumulative variance (intrinsic time) V̂t = ti=1 (δ̂i − ∆      ˆ i−1 )2 ,
+                                                                                         P
+        ˆ i−1 =  P  i−1
+where ∆             j=1 δ̂j , over the sample size t (right).
+    Given the data, we now compare different configurations of the EB CS (Theorem 2) for the mean
+score differential. Using the EB CS with the conjugate-mixture uniform boundary (Section 4.3.4),
+we first show how we choose a default value for vopt , the hyperparameter for the uniform boundary
+that specifies the intrinsic time at which the CS width is optimized (defined in Section B). Recall that,
+in our previous plot, we showed the values of intrinsic times across sample sizes for this data. In
+Figure 14 (left), we plot the widths of the 95% EB CS against different choices of vopt . Comparing
+the values of vopt ∈ {0.1, 1, 10, 100, 1000}, we find that the EB CS is generally the tightest across
+time for vopt = 10 or vopt = 100. Based on the result, we use a default value of vopt = 10 for all our
+experiments involving the EB CS in the paper, unless specified otherwise.
+    We now compare EB CSs constructed using different types of uniform boundaries, including the
+conjugate-mixture (“ConjMix”) boundary and the polynomial stitching boundary (Section B.2). In
+this comparison, we additionally include EB CSs constructed using the predictable-mixture (“Pred-
+Mix”) boundary (Waudby-Smith and Ramdas, 2023), which is an efficient alternative that works
+specifically for bounded IID means. Finally, we include the asymptotic CSs that we described in
+
+                                                                              60
+
+## Page 61: CS Width vs. Sample Size, by vopt CS Width vs. Sample Size, by CS Type
+
+源页：第 61 页
+
+CS Width vs. Sample Size, by vopt                                 CS Width vs. Sample Size, by CS Type
+           0.14                                   vopt                       0.14                                CS Type
+           0.12                                    0.1                       0.12                                   ConjMix-EB
+                                                   1.0                                                              Stitching-EB
+           0.10                                    10.0                      0.10                                   PredMix-EB
+CS Width
+
+
+
+
+                                                                  CS Width
+           0.08                                    100.0                     0.08                                   Asymptotic
+           0.06                                    1000.0                    0.06
+           0.04                                                              0.04
+           0.02                                                              0.02
+           0.00                                                              0.00
+                  0    2000     4000    6000     8000     10000                     0      2000    4000    6000       8000    10000
+                               Sample Size (t)                                                    Sample Size (t)
+
+Figure 14: Left: Widths of conjugate-mixture EB CSs per sample sizes (t), across different values
+of the hyperparameter vopt (optimal intrinsic time). The choices vopt = 10 and vopt = 100 give
+the smallest widths overall, with the former being tighter early on and the latter later on. Right:
+Widths of EB CSs using different uniform boundaries, including the conjugate-mixture (“ConjMix”)
+and predictable-mixture (“PredMix”) boundaries, and also the asymptotic CS. Overall, the asymptotic
+CS is the tightest, although the mixture EB CSs achieve similar widths for large sample sizes. The
+stitching EB CS is considerably wider than the mixture variants.
+
+
+Section C as a reference.
+    In Figure 14 (right), we plot the widths of all CS variants at the coverage level of 95%, optimized
+for the intrinsic time vopt = 10 when applicable. Generally speaking, we observe that the asymptotic
+CS achieves the tightest width, although the (non-asymptotic) EB CS variants using mixture bound-
+aries approach that width for large sample sizes. This is consistent with our intuition, as the asymptotic
+CS is the large-sample “limit” of the EB CS in terms of width (Waudby-Smith et al., 2021). Among
+the EB CS variants, the conjugate-mixture variant is tighter towards the beginning (t < 103 ) while the
+predictable-mixture becomes slightly tighter afterwards; the stitching CS is not as tight as the other
+two. This is also as expected, as both mixture CSs are known to have similar widths (up to differences
+determined by hyperparameters) (Waudby-Smith and Ramdas, 2023), while the stitching CS tends to
+be looser in practice (Howard et al., 2021). We close with the note that any of these (EB or asymptotic)
+CSs are substantially tighter than Hoeffding-style CSs (Theorem 1) in most cases, regardless of the
+uniform boundary choice. This is evident from our earlier experiments in Section 5.1.
+
+
+
+
+                                                              61
