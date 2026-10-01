@@ -56,8 +56,8 @@ cronjobs:
           prompt: "先检查 memory/{今天日期}.md 中是否有 '## 跳过分析'，如果有则跳过。否则执行赛前分析：spawn 一个编排 subagent 后台执行全流程——1) match-scraper 抓取赛程；2) match-screening 初筛；3) 对每场初筛通过的比赛 spawn worker 执行 deep-analysis；4) 收齐所有分析结果后用 recommendation 精选并推送。每步都写入今日 memory。主会话回复主人「⚡ 已启动赛前分析」后保持可用。",
         },
         {
-          // 赛后复盘 09:30
-          schedule: "30 9 * * *",
+          // 赛后复盘 10:30
+          schedule: "30 10 * * *",
           prompt: "执行赛后复盘：spawn 一个 subagent 后台执行——用 post-review 获取昨日比赛结果，对比推荐记录，计算命中率，分析失误，更新长期统计，生成复盘报告并推送给主人。主会话回复主人「⚡ 已启动赛后复盘」后保持可用。",
         },
       ],
