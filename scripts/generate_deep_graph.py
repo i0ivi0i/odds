@@ -177,7 +177,44 @@ def run_deep_graphify():
     add_inferred(hub_map['memory'], hub_map['analysis'], "calibrates_poisson_lambda_deviation_direction", 0.95)
     add_inferred(hub_map['template'], hub_map['recommendation'], "enforces_standard_six_column_presentation", 0.95)
 
-    # Connect all disconnected components to their semantic parents
+    # 4d. Semantic Synonym & Conceptual Equivalence Interconnection (所有意思相近的词语、词汇、句子互相联系关联)
+    synonym_clusters = [
+        {'name': '主胜_胜_独赢', 'terms': ['主胜', '胜', 'home win', '独赢', '主队胜', '主赢', '让胜']},
+        {'name': '平局_平_和局', 'terms': ['平局', '平', 'draw', '和局', '冷平', '逼平', '互交白卷', '让平']},
+        {'name': '客胜_负_客赢', 'terms': ['客胜', '负', 'away win', '客赢', '客队胜', '让负']},
+        {'name': '让球_亚盘_AH', 'terms': ['让球', '让盘', '亚盘', '亚洲让分', 'ah', 'asian handicap', '净胜球', '受让', '升盘', '降盘', '盘口']},
+        {'name': '欧赔_欧指_1X2', 'terms': ['欧指', '欧赔', '1x2', 'european odds', '胜平负赔率', '初赔', '即时赔率', '威廉', '365', '立博', '易胜博', 'interwetten', '平博', '马会']},
+        {'name': '大小球_进球数_OU', 'terms': ['大小球', '进球数', '总进球', 'over under', 'ou', '大球', '小球', '入球数', '波胆', '比分']},
+        {'name': '诱盘_诱买_造热', 'terms': ['诱盘', '诱买', '造热', '诱上', '诱客', '诱主', '假突破', '引流', '高水诱买']},
+        {'name': '阻盘_阻热_防守底线', 'terms': ['阻盘', '阻热', '赶筹', '阻上', '阻客', '高水阻力', '防守底线', '控水']},
+        {'name': '逆向走势_RLM', 'terms': ['rlm', '逆向线路移动', 'reverse line movement', '赔率逆行', '逆向变盘', '逆势走水']},
+        {'name': '泊松模型_期望进球', 'terms': ['泊松', 'poisson', 'lambda', 'λ', '比分分布', '预期进球', 'dixon_coles', '公平赔率', '泊松基准']},
+        {'name': '庄家_机构_精算师', 'terms': ['庄家', '机构', '博彩公司', '精算师', 'bookmaker', '净赔付最小化', '风险对冲', '资金天平', '凯利', '返还率', '去水', 'devig']},
+        {'name': '战意_保级_升级_争冠', 'terms': ['战意', '升级争夺', '保级战', '争冠', '抢分', '晋级', 'motivation', '头名争夺']},
+        {'name': '伤停_缺阵_轮换', 'terms': ['伤停', '缺阵', '停赛', '轮换', '首发替补', 'injury', 'suspension']},
+        {'name': '赛后复盘_自进化', 'terms': ['赛后复盘', 'post_review', '复盘', '命中率', '对账', 'wheatcroft', '布莱尔分', 'brier', '待验证', '自进化', '错因剖析', '反事实']},
+        {'name': 'Subagents_多智能体编排', 'terms': ['subagents', 'subagent', '子代理', '工作子代理', '编排', 'delegate_task', 'worker']},
+        {'name': '预测市场_Polymarket', 'terms': ['polymarket', '预测市场', '美分倍率', 'cents', '下单链接', 'gamma_api']}
+    ]
+
+    syn_edges_added = 0
+    for cluster_item in synonym_clusters:
+        matched_nodes = []
+        for n, d in G.nodes(data=True):
+            text = (str(n) + ' ' + str(d.get('label', ''))).lower()
+            if any(t.lower() in text for t in cluster_item['terms']):
+                matched_nodes.append(n)
+        
+        if matched_nodes:
+            hub = max(matched_nodes, key=lambda x: G.degree(x))
+            for mn in matched_nodes:
+                if mn != hub and not G.has_edge(hub, mn):
+                    add_inferred(hub, mn, f"semantically_synonymous_{cluster_item['name']}", conf=0.92, weight=1.0)
+                    syn_edges_added += 1
+
+    print(f"Added {syn_edges_added} semantic synonym & conceptual equivalence edges across 16 domain clusters.")
+
+    # 4e. Connect all disconnected components to their semantic parents (0孤岛铁律)
     comps = list(nx.connected_components(G))
     print(f"Connecting remaining {len(comps)} components...")
     
