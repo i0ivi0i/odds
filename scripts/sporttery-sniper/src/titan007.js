@@ -1,5 +1,6 @@
 import https from "node:https";
 import http from "node:http";
+import { fetchFallbackInjuries } from "./injury-service.js";
 
 const TITAN_DETAIL_BASE = "https://live.titan007.com/detail";
 const TITAN_STATIC_BASE = "https://livestatic.titan007.com";
@@ -35,6 +36,10 @@ const SELECTED_EUROPE_COMPANIES = new Map([
   ["177", "平博"],
   ["976", "188"],
   ["432", "香港马会"],
+  ["255", "Bwin"],
+  ["81", "伟德"],
+  ["110", "SNAI"],
+  ["2", "必发"],
 ]);
 
 const HANDICAP_NAMES = [
@@ -274,8 +279,22 @@ export async function fetchMatchData(
   ]);
   const liveDetail = parseDetailHtml(liveDetailHtml);
   const analysisData = parseAnalysisHtml(analysisHtml);
+  let lineupInjuries = liveDetail.lineupInjuries;
+  if (!lineupInjuries?.home?.length && !lineupInjuries?.away?.length) {
+    try {
+      const fallback = await fetchFallbackInjuries({
+        league: liveDetail.basic?.league,
+        homeTeam: liveDetail.basic?.homeTeam,
+        awayTeam: liveDetail.basic?.awayTeam,
+      });
+      if (fallback?.home?.length || fallback?.away?.length) {
+        lineupInjuries = fallback;
+      }
+    } catch {}
+  }
   const detail = {
     ...liveDetail,
+    lineupInjuries,
     leagueStandings: analysisData.leagueStandings,
     headToHead: analysisData.headToHead,
   };
@@ -1335,9 +1354,12 @@ export function buildAnalysisContext({
   lines.push("- 本地：香港马会（单独标注本地偏差，不参与与国际盘简单平均）");
   lines.push("");
   lines.push("**胜平负（欧赔）**");
-  lines.push("- 非亚洲赛事 主看：威廉、365bet、立博");
+  lines.push("- 非亚洲赛事 主看：威廉、365bet、立博、伟德、平博");
+  lines.push("- 德国联赛 必看：威廉、365bet、Interwetten（三家交叉认证）");
+  lines.push("- 欧洲大陆赛事 参考：Bwin、Interwetten；意系赛事特看：SNAI");
   lines.push("- 亚洲赛事 主看：在上述基础上提高澳门、皇冠权重");
   lines.push("- 辅助：Interwetten、皇冠、易胜博、平博、188");
+  lines.push("- 交易所对冲参考：必发");
   lines.push("- 本地：香港马会");
   lines.push("");
   lines.push("### 分析顺序");
