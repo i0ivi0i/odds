@@ -4,9 +4,9 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 ---
 
-## 核心工具：sporttery-sniper
+## 核心系统：sporttery-sniper
 
-所有 titan007 数据抓取都通过仓库内脚本项目 `scripts/sporttery-sniper` 完成。正式工作流只使用该脚本。
+所有多源数据与盘口抓取均通过仓库内核心系统 `scripts/sporttery-sniper` 完成。正式工作流只使用该系统。通用配置与接口端点已集中收录于 `config/datasources.json`。
 
 ### 运行环境
 

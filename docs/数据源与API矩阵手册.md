@@ -37,7 +37,7 @@
 - **Big Balls Sports Data API**：
   - 接口：`https://api.bigballsdata.com/v1/injuries`；
   - 覆盖：西甲、意甲、德甲、法甲、美职联；
-  - 凭证：自动读取 `~/.gemini/config/bigballs_tokens.json`；
+  - 凭证：优先自动读取项目通用配置 `config/api_keys.json`（见 `config/datasources.json` 统一索引）；
   - 调度模块：`scripts/sporttery-sniper/src/injury-service.js`。
 
 ### 4. 预测市场与美分撮合（Polymarket Gamma API）
@@ -51,7 +51,7 @@
 ### 1. Football-Data.org
 - **定位**：欧洲五大联赛及欧战官方赛程、积分榜、H2H 历史战绩权威备用库。
 - **免费配额**：每分钟 10 次请求（永久免费，无需付费）。
-- **本地凭证**：已预配于 `~/.gemini/config/football_data_tokens.json`（含主备两条 Token）。
+- **本地凭证**：已预配于项目通用配置 `config/api_keys.json`（含主备两条 Token，模板见 `config/api_keys.example.json`）。
 
 ### 2. The Odds API (`the-odds-api.com`)
 - **定位**：国际顶级做市商（Pinnacle 平博、Bet365、Betfair 必发）无偏赔率与历史变动查询。
@@ -65,6 +65,6 @@
 
 ## 四、维护与安全守则
 
-1. **凭证隔离**：所有商业/官方 API 密钥一律存放于本地 `~/.gemini/config/`，严禁硬编码进公共代码仓库。
+1. **凭证隔离与通用性**：所有商业/官方 API 密钥统一存放于项目标准配置 `config/api_keys.json`，并由 `.gitignore` 严格阻断，严禁泄露进公共代码仓库。
 2. **零成本原则**：所有选型以**永久免费配额**为硬性前提，严禁引入强制付费或月租绑卡服务。
 3. **一致性检查**：运行 `python scripts/check_consistency.py --print-ok` 确保图谱拓扑 100% 连通与数据契约一致。

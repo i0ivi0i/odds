@@ -89,11 +89,31 @@ const cachedBbsTeamPlayers = new Map();
 
 /**
  * 读取本地配置的 Big Balls API 密钥
+ * 优先读取项目通用配置 config/api_keys.json，其次检查用户目录通用配置
  */
 export function loadBbsToken() {
   if (process.env.BBS_API_KEY?.trim()) {
     return process.env.BBS_API_KEY.trim();
   }
+
+  // 1. 优先读取项目通用配置 config/api_keys.json
+  const candidateConfigPaths = [
+    path.resolve(process.cwd(), "config", "api_keys.json"),
+    path.resolve(process.cwd(), "..", "..", "config", "api_keys.json"),
+    path.join(os.homedir(), ".config", "odds", "api_keys.json"),
+  ];
+
+  for (const cfgPath of candidateConfigPaths) {
+    if (fs.existsSync(cfgPath)) {
+      try {
+        const parsed = JSON.parse(fs.readFileSync(cfgPath, "utf8"));
+        const key = parsed?.bigballs?.primary_key || parsed?.bigballs?.backup_key;
+        if (key && !key.includes("[REDACTED]")) return key;
+      } catch {}
+    }
+  }
+
+  // 2. 备用兼容路径
   const homeDir = os.homedir();
   const tokenFile = path.join(homeDir, ".gemini", "config", "bigballs_token.txt");
   if (fs.existsSync(tokenFile)) {

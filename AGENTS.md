@@ -99,13 +99,13 @@ subagent：获取赛果 → 对比推荐 → 计算命中率 → 分析失误 �
 
 唯一数据抓取入口：仓库内 `scripts/sporttery-sniper`。
 
-该脚本整合了多源数据管道与双轨热备架构，输出标准化 Agent JSON（`agent.schedule`、`agent.analysis`、`agent.review`），原生适配爱马仕 Hermes 及通用 Agent 消费：
+该系统整合了多源数据管道与双轨热备架构，输出标准化 Agent JSON（`agent.schedule`、`agent.analysis`、`agent.review`），原生适配爱马仕 Hermes 及通用 Agent 消费：
 1. **主数据源（Primary）**：titan007 XML、HTML、JS 接口（毫秒级提供 14 大机构欧亚全周期时序与 Crown 波胆）；
 2. **热备数据源（Secondary）**：澳客网与中国体彩官方网关（`okooo-adapter.js`，主源异常或超时自动平滑熔断接管，详见 ADR 0001）；
 3. **微观阵容双引擎（Lineups & Injuries）**：直连英超官方 FPL 数据库与 Big Balls 商业数据 API（`injury-service.js`，完全解耦第三方爬虫，零等待直取伤员出战概率）；
 4. **交易执行与冷平对冲**：直连 Polymarket 官方区块链 Gamma 接口获取真实美分报价与下单直达链接。
 
-正式流程只使用该脚本，详细命令见 TOOLS.md。
+通用配置与端点见 `config/datasources.json`。正式流程只使用该系统，详细命令见 TOOLS.md。
 
 ## 三、技能流程指引
 
