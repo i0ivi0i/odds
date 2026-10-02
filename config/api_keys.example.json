@@ -1,0 +1,25 @@
+{
+  "football_data": {
+    "provider": "football-data.org",
+    "primary_token": "[REDACTED]",
+    "backup_token": "[REDACTED]",
+    "rate_limit": "10 req/min (free forever)"
+  },
+  "bigballs": {
+    "provider": "bigballsdata.com",
+    "primary_key": "[REDACTED]",
+    "backup_key": "[REDACTED]",
+    "rate_limit": "500 req/day per key (dual rotation = 1,000 req/day)"
+  },
+  "api_football": {
+    "provider": "api-sports.io",
+    "primary_key": "[REDACTED]",
+    "backup_key": "[REDACTED]",
+    "rate_limit": "100 req/day per key"
+  },
+  "the_odds_api": {
+    "provider": "the-odds-api.com",
+    "api_key": "[REDACTED]",
+    "note": "Starter plan 500 requests/month free"
+  }
+}

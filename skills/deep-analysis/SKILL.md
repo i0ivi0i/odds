@@ -11,7 +11,7 @@ metadata: { "emoji": "📊" }
 ## 数据抓取方式（强制）
 
 - 默认使用仓库内 `scripts/sporttery-sniper` 抓取比赛上下文。
-- 数据抓取只使用该脚本；脚本失败时本场直接标记为「数据抓取失败」。
+- 数据抓取只使用本系统；本系统抓取失败时本场直接标记为「数据抓取失败」。
 - 抓取命令：
   ```bash
   cd scripts/sporttery-sniper

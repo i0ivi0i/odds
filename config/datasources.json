@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "description": "倍率分析推演系统通用数据源与API矩阵统一配置",
+  "datasources": {
+    "primary_odds": {
+      "name": "球探数据网 (titan007)",
+      "type": "lightweight_data_stream",
+      "status": "active",
+      "base_urls": {
+        "schedule": "https://jc.titan007.com/xml/odds_jc.txt",
+        "detail": "https://live.titan007.com/detail",
+        "analysis": "https://zq.titan007.com/analysis",
+        "europe_odds": "https://1x2d.titan007.com",
+        "asian_odds": "https://vip.titan007.com/changeDetail/handicap.aspx",
+        "over_under_odds": "https://vip.titan007.com/changeDetail/overunder.aspx",
+        "crown_full_index": "https://vip.titan007.com/Crown/FullIndex.aspx"
+      },
+      "tracked_bookmakers": [
+        { "id": "115", "name": "威廉", "role": "英伦古典三巨头·主认证" },
+        { "id": "281", "name": "365bet", "role": "全球资金盘第一巨头·主认证" },
+        { "id": "82", "name": "立博", "role": "英伦古典三巨头·主认证" },
+        { "id": "81", "name": "伟德", "role": "英伦古典三巨头·初盘标杆·主认证" },
+        { "id": "177", "name": "平博", "role": "全球顶尖做市商·尖锐对账·主认证" },
+        { "id": "104", "name": "Interwetten", "role": "德系与欧陆防守·德国联赛三家交叉认证必抓" },
+        { "id": "255", "name": "Bwin", "role": "欧洲大陆散户风向标·重点参考" },
+        { "id": "110", "name": "SNAI", "role": "意系国家特许巨头·意系赛事特看" },
+        { "id": "2", "name": "必发", "role": "全球第一对冲撮合交易所·对冲参考" },
+        { "id": "1", "name": "澳彩", "role": "亚洲盘口鼻祖·亚盘四家主认证·亚洲五家必抓" },
+        { "id": "3", "name": "皇冠", "role": "亚洲主力庄家·亚盘四家主认证·波胆基准" },
+        { "id": "12", "name": "易胜博", "role": "亚洲知名机构·亚盘四家主认证" },
+        { "id": "48", "name": "香港马会", "role": "本地特许受限盘·亚洲五家必抓" },
+        { "id": "976", "name": "188", "role": "亚洲做市商辅助" }
+      ]
+    },
+    "secondary_odds_failover": {
+      "name": "澳客网 / 体彩官方镜像网关",
+      "type": "failover_backup",
+      "status": "hot_standby",
+      "failover_timeout_ms": 30000,
+      "max_retries": 1,
+      "base_urls": {
+        "okooo_mobile": "https://m.okooo.com/jczq/",
+        "okooo_match": "https://m.okooo.com/soccer/match/",
+        "sporttery_official": "https://webapi.sporttery.cn/gateway/jc/football/getMatchCalculatorV1.qry"
+      }
+    },
+    "injuries_and_lineups": {
+      "fpl_premier_league": {
+        "name": "英超官方数据库 (Fantasy Premier League API)",
+        "type": "official_rest_api",
+        "url": "https://fantasy.premierleague.com/api/bootstrap-static/",
+        "cost": "free",
+        "rate_limit": "unlimited"
+      },
+      "bigballs_sports_data": {
+        "name": "Big Balls Sports Data API",
+        "type": "commercial_rest_api",
+        "url": "https://api.bigballsdata.com/v1/injuries",
+        "leagues": ["epl", "la_liga", "serie_a", "bundesliga", "ligue_1", "mls"],
+        "cost": "free_tier",
+        "credentials_ref": "config/api_keys.json#bigballs"
+      }
+    },
+    "prediction_market_execution": {
+      "polymarket": {
+        "name": "Polymarket 预测市场",
+        "type": "web3_prediction_market",
+        "gamma_api": "https://gamma-api.polymarket.com/events",
+        "clob_api": "https://clob.polymarket.com",
+        "web_base": "https://polymarket.com/zh/sports"
+      }
+    },
+    "standby_open_apis": {
+      "football_data_org": {
+        "name": "Football-Data.org",
+        "type": "open_rest_api",
+        "url": "https://api.football-data.org/v4",
+        "cost": "free_tier",
+        "rate_limit": "10 req/min",
+        "credentials_ref": "config/api_keys.json#football_data"
+      },
+      "the_odds_api": {
+        "name": "The Odds API",
+        "type": "global_odds_rest_api",
+        "url": "https://api.the-odds-api.com/v4/sports",
+        "cost": "free_tier",
+        "rate_limit": "500 req/month",
+        "credentials_ref": "config/api_keys.json#the_odds_api"
+      },
+      "sofascore_mobile": {
+        "name": "Sofascore Mobile Feed",
+        "type": "direct_mobile_feed",
+        "url": "https://api.sofascore.com/api/v1",
+        "cost": "free",
+        "rate_limit": "none"
+      }
+    }
+  }
+}
