@@ -9,11 +9,13 @@ import {
   buildOpenClawAnalysisPayload,
   buildOpenClawSchedulePayload,
   buildReviewContext,
-  fetchMatchData,
-  fetchJcSchedule,
   parseHistoryWindow,
   parseMatchId,
 } from "./titan007.js";
+import {
+  fetchMatchDataWithFailover,
+  fetchScheduleWithFailover,
+} from "./failover-manager.js";
 
 async function main() {
   const { command, help, input, historyWindow, scheduleDate, format } = parseCliArgs(
@@ -26,7 +28,7 @@ async function main() {
 
   if (command === "schedule") {
     const targetDate = scheduleDate || localDateString();
-    const data = await fetchJcSchedule(globalThis.fetch, {
+    const data = await fetchScheduleWithFailover({
       saleDate: targetDate,
     });
     if (format === "agent-json") {
@@ -44,7 +46,7 @@ async function main() {
     return;
   }
 
-  const data = await fetchMatchData(input);
+  const data = await fetchMatchDataWithFailover(input);
   if (command === "review") {
     if (format === "agent-json") {
       console.log(

@@ -976,8 +976,17 @@ export function buildOpenClawSchedulePayload(schedule, options = {}) {
 
 export function buildAgentAnalysisPayload(data, options = {}) {
   const basic = data?.detail?.basic ?? {};
+  const baseContext = buildAnalysisContext({
+    detail: data?.detail ?? {},
+    markets: data?.markets ?? {},
+    sourceUrl: data?.sourceUrl,
+    liveDetailUrl: data?.liveDetailUrl,
+    historyWindow: options.historyWindow ?? "all",
+  });
   return {
     kind: options.kind ?? "agent.analysis",
+    source: data?.source ?? "primary:titan007",
+    failoverNotice: data?.failoverNotice ?? null,
     generatedAt: options.generatedAt ?? localDateTimeString(),
     historyWindow: options.historyWindow ?? "all",
     match: {
@@ -993,13 +1002,7 @@ export function buildAgentAnalysisPayload(data, options = {}) {
     lineupInjuries: data?.detail?.lineupInjuries ?? { home: [], away: [] },
     markets: data?.markets ?? {},
     correctScoreOdds: buildCorrectScoreOdds(data?.markets ?? {}),
-    context: buildAnalysisContext({
-      detail: data?.detail ?? {},
-      markets: data?.markets ?? {},
-      sourceUrl: data?.sourceUrl,
-      liveDetailUrl: data?.liveDetailUrl,
-      historyWindow: options.historyWindow ?? "all",
-    }),
+    context: data?.failoverNotice ? `${data.failoverNotice}\n\n${baseContext}` : baseContext,
   };
 }
 
