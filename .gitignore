@@ -50,7 +50,6 @@ __pycache__/
 data/
 analysis/
 report/
-memory/
 
 # Graphify 图谱产出，本地生成，不纳入版本管理
 graphify-out/
