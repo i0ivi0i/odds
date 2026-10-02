@@ -214,7 +214,91 @@ def run_deep_graphify():
 
     print(f"Added {syn_edges_added} semantic synonym & conceptual equivalence edges across 16 domain clusters.")
 
-    # 4e. Connect all disconnected components to their semantic parents (0孤岛铁律)
+    # 4e. High-Order LLM Semantic Understanding & Cognitive Ontology (大模型超强高阶语义认知全景映射)
+    high_order_cognition = [
+        {
+            "id": "博弈论：极小化最大损失准则 (Minimax Regret Criterion)",
+            "label": "极小化最大损失",
+            "desc": "庄家面对资金风险自营博弈，核心目标是极小化最大赔付损失 min max(净赔付 - 总注额)。",
+            "targets": [hub_map['analysis'], hub_map['soul'], "2004_Levitt_NBER_w9422"]
+        },
+        {
+            "id": "行为金融学：散户豪门偏见与非对称收割 (Bettor Favorite Bias & Asymmetric Pricing)",
+            "label": "散户偏见与非对称收割",
+            "desc": "散户大众天然存在豪门与低赔稳胆偏见，庄家利用认知盲区非对称布盘以大众资金对冲高赔风险。",
+            "targets": [hub_map['analysis'], hub_map['screening'], "2004_Levitt_NBER_w9422"]
+        },
+        {
+            "id": "市场微观结构：知情交易者与尖锐资金 (Informed Trading & Sharp Money)",
+            "label": "知情交易与尖锐资金",
+            "desc": "知情交易者（Sharp Money）携带高信息量大额投注，迫使庄家逆向移动盘赔（RLM），揭示机构真实防守底线。",
+            "targets": [hub_map['analysis'], hub_map['recommendation'], "2017_Kaunitz_用庄家赔率寻找足球错价_arXiv_v2"]
+        },
+        {
+            "id": "信息论：机构全市场共识与定价锚点 (Market Consensus Anchor & Model Discrepancy)",
+            "label": "全市场共识与定价锚点",
+            "desc": "以机构全市场倍率为统一定价锚点，去水聚合形成客观概率基准，自有模型与泊松仅用于寻找机构定价偏差。",
+            "targets": [hub_map['analysis'], hub_map['tools'], "2023_Hegarty_Whelan_足球赔率预测_双市场_MPRA工作论文"]
+        },
+        {
+            "id": "概率统计：双变量泊松与相依性修正 (Bivariate Poisson & Dixon-Coles Dependency)",
+            "label": "双变量泊松与相依性修正",
+            "desc": "足球进球并非独立物理分布，低比分（0:0, 1:0, 0:1, 1:1）存在显著正负相关性，须通过 Dixon-Coles 参数对齐真实比分概率。",
+            "targets": [hub_map['poisson'], hub_map['analysis'], "2017_Feng_英超赔率与动态进球分布_arXiv_v5"]
+        },
+        {
+            "id": "预测科学：布莱尔严格适当概率评分 (Brier Score Strictly Proper Scoring)",
+            "label": "布莱尔严格适当概率评分",
+            "desc": "预测不应沦为猜中与否的对错本，必须使用严格适当评分规则（Brier Score）对赛前点概率进行客观数学校准。",
+            "targets": [hub_map['post_review'], hub_map['memory'], "2019_Wheatcroft_足球概率预测评分"]
+        },
+        {
+            "id": "复杂动态系统：杯赛淘汰赛防守脆断与进球肥尾 (Tournament Defense Fragility & Fat-Tail Breakout)",
+            "label": "杯赛防守脆断与进球肥尾",
+            "desc": "杯赛与淘汰赛阶段由于晋级硬性指标与生死战意，防守稳态在失球后呈现雪崩式非线性脆断，进球数呈现典型肥尾效应。",
+            "targets": [hub_map['analysis'], hub_map['screening'], "2026_Wilkens_德甲预测与滚动验证"]
+        },
+        {
+            "id": "序贯决策学：结果偏见与过程审计分离 (Aiyer Outcome Bias & Process Audit)",
+            "label": "结果偏见与过程审计分离",
+            "desc": "已知赛果后评价决策会产生严重后视偏差，复盘必须严格遵循 Aiyer 原则，赛前依据过程审计必须与赛后赛果严格隔离。",
+            "targets": [hub_map['post_review'], hub_map['soul'], "2023_Aiyer_结果偏见与决策评价"]
+        },
+        {
+            "id": "贝叶斯统计：动态离散时间加权模型 (Bayesian Dynamic Discrete-Time Modeling)",
+            "label": "贝叶斯动态离散时间加权",
+            "desc": "球队实力与进攻防守参数（λ）非静态常数，应采用贝叶斯时序动态加权，在重大伤停、换帅时快速转移状态。",
+            "targets": [hub_map['analysis'], hub_map['screening'], "2025_Macri_足球贝叶斯加权动态模型_arXiv"]
+        },
+        {
+            "id": "预测检验学：条件预测能力与滚动样本外检验 (Conditional Predictive Ability & Rolling Out-of-Sample Testing)",
+            "label": "条件预测能力与滚动样本外检验",
+            "desc": "任何策略调整与新规则不能单凭一两场赛后解释确立，必须通过 Giacomini 条件检验在滚动样本外进行序贯验证。",
+            "targets": [hub_map['memory'], hub_map['post_review'], "2006_Giacomini_条件预测能力检验"]
+        }
+    ]
+
+    cognition_edges_added = 0
+    for cog in high_order_cognition:
+        cid = cog["id"]
+        if not G.has_node(cid):
+            G.add_node(cid, label=cog["label"], description=cog["desc"], file_type="epistemological_concept", source_file=str(root / 'docs/论文/README.md'))
+        for tgt in cog["targets"]:
+            matched_targets = []
+            if isinstance(tgt, str) and G.has_node(tgt):
+                matched_targets.append(tgt)
+            else:
+                for n in G.nodes:
+                    if tgt and str(tgt).lower() in str(n).lower():
+                        matched_targets.append(n)
+            for mt in matched_targets:
+                if mt != cid and not G.has_edge(cid, mt):
+                    add_inferred(cid, mt, "theoretically_grounds_and_governs", conf=0.96, weight=1.0)
+                    cognition_edges_added += 1
+
+    print(f"Added {cognition_edges_added} high-order cognitive conceptual edges bridging theory, math, and operations.")
+
+    # 4f. Connect all disconnected components to their semantic parents (0孤岛铁律)
     comps = list(nx.connected_components(G))
     print(f"Connecting remaining {len(comps)} components...")
     
