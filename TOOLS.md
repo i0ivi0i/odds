@@ -107,6 +107,23 @@ npm test
 
 6 列表最后一格的查找步骤见 `docs/Polymarket链接查找教程.md`。读盘不改图上数字；找链接用体彩现价对场次，再用接口核实体，禁止瞎拼地址。
 
+## 多数据源与双轨热备系统 (Failover System)
+
+为彻底杜绝单一第三方网站依赖与关站停摆风险，系统底层实现了统一数据插座规范（详见 ADR 0001）：
+
+### 1. 赔率与赛程双轨热备
+- **主数据源（Primary）**：titan007，支持 14 大机构（含威廉、立博、伟德、平博、Bwin、SNAI、必发等）全时序与 Crown 波胆。
+- **备用热备（Secondary）**：澳客网 + 中国体彩官方网关（`okooo-adapter.js`）。
+- **自动熔断策略**：由 `failover-manager.js` 统一调度，主源异常或超时自动重试 1 次，若依然打不开，1 秒内平滑切换至备用源，并在最终输出中添加透明通知。
+
+### 2. 阵容伤停独立双引擎 (Lineup & Injury Engine)
+- **英超官方 FPL 数据库**：通过 `injury-service.js` 直连英超官方数据，零等待获取主力伤情与出战概率。
+- **Big Balls Sports Data API**：直连商业体育数据网关，支持西甲、意甲、德甲、法甲、美职联，凭证读取自 `~/.gemini/config/bigballs_tokens.json`。
+
+### 3. 海外免费开放 API 矩阵储备
+- **Football-Data.org**：免费提供欧洲主要联赛赛程、积分榜、H2H 交锋与阵容（凭证读取自 `~/.gemini/config/football_data_tokens.json`）。
+- **The Odds API (the-odds-api.com)**：免费 Starter 方案支持平博、365、威廉等做市商标准 1X2 与盘口查询（详见 ADR 0012）。
+
 ## Subagent 工具
 
 ### sessions_spawn — 启动后台 subagent
