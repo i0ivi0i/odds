@@ -62,3 +62,7 @@ graphify-out/
 
 # 论文按页转写的中间截图，不纳入版本管理
 .ky-md-work/
+
+# Compound Engineering 本地覆盖与临时工作区
+.compound-engineering/*.local.yaml
+.context/compound-engineering/
