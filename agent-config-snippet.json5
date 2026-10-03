@@ -51,9 +51,14 @@ cronjobs:
           prompt: "执行赛程同步：spawn 一个 subagent 后台执行——用 match-scraper 抓取今日全量赛程，推送赛程列表给主人，完成后写入今日 memory。主会话回复主人「⚡ 已启动赛程同步」后保持可用。",
         },
         {
-          // 赛前分析 17:00
-          schedule: "0 17 * * *",
-          prompt: "先检查 memory/{今天日期}.md 中是否有 '## 跳过分析'，如果有则跳过。否则执行赛前分析：spawn 一个编排 subagent 后台执行全流程——1) match-scraper 抓取赛程；2) match-screening 初筛；3) 对每场初筛通过的比赛 spawn worker 执行 deep-analysis；4) 收齐所有分析结果后用 recommendation 精选并推送。每步都写入今日 memory。主会话回复主人「⚡ 已启动赛前分析」后保持可用。",
+          // 早盘分析 17:30 (仅限开球时间 ≤ 22:00 的早盘场次)
+          schedule: "30 17 * * *",
+          prompt: "执行早盘赛前分析（仅限开球时间 ≤ 22:00 的早场比赛）：spawn 一个编排 subagent 后台执行——1) match-scraper 抓取赛程；2) match-screening 仅初筛早盘场次；3) 对通过场次 spawn worker 执行 deep-analysis；4) recommendation 精选推送。若无早场比赛则空仓跳过。主会话回复主人「⚡ 已启动早盘分析」后保持可用。",
+        },
+        {
+          // 晚盘分析 21:30 (深夜及次日凌晨场次)
+          schedule: "30 21 * * *",
+          prompt: "先检查 memory/{今天日期}.md 中是否有 '## 跳过分析'，如果有则跳过。否则执行晚盘赛前分析（深夜及次日凌晨场次）：spawn 一个编排 subagent 后台执行全流程——1) match-scraper 刷新最新盘赔；2) match-screening 初筛晚盘场次；3) 对通过场次 spawn worker 执行 deep-analysis；4) recommendation 精选推送。每步都写入今日 memory。主会话回复主人「⚡ 已启动晚盘分析」后保持可用。",
         },
         {
           // 赛后复盘 10:30
