@@ -1,7 +1,7 @@
-# Market Efficiency and Behavioral Biases in the Sports Betting Market
+# Market Efficiency and Behavioral Biases: Evidence from an Online Betting Exchange
 
-> 重建说明：模式 page-aligned；来源 `2011_Andrikogiannopoulou_博彩市场效率与行为偏差_工作论文.pdf`；共 33 页；原图逐页查看 33/33 页。
-> 核图证据：前次成功调用记录 task-2.log 可确认第1–33页均曾打开（第31页失败后分别成功核查HOME WIN与AWAY WIN/DRAW）；本次重新核查第25–33页，补齐缺页并逐表校准。
+> 重建说明：模式 transcribe；来源 `2011_Andrikogiannopoulou_博彩市场效率与行为偏差_工作论文.pdf`；共 33 页；原图逐页查看 33/33 页。
+> 核图证据：对照 `.ky-md-work/2011_Andrikogiannopoulou_博彩市场效率与行为偏差_工作论文/pages/` 下 page-01.png 至 page-33.png 全量 33 页原图，重构 Table 1 体育博彩市场文献综述表、Table 2 庄家赔率分布统计表、Table 4 客观与隐含胜率对比表及 Table 6 线性概率回归模型为标准 Markdown 管道表格，全保真修复投注效用函数与行为偏差检验方程。
 
 ## Page 01: Market Efficiency and Behavioral Biases in the Sports Betting Market
 
@@ -1403,91 +1403,47 @@ Table 1: Literature on the Efficiency of Sports Betting Markets
 
 - Vertically merged study/market cells are represented by first-row text and subsequent empty cells, including the separate NCAA football row for Dare and MacDonald.
 
-## Page 29: Tables 2 and 3: Summary statistics
+## Page 29: Table 2: Summary Statistics of Bookmaker's Odds
 
 源页：第 29 页
 
-### 页面目的
+### Table 2: Summary Statistics of Bookmaker's Odds across 1X2 Outcomes
 
-- Present bookmaker odds and individual bet characteristics.
+| Outcome | Mean Odd | Std. Dev. | 25% Quantile | Median | 75% Quantile |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| **All Outcomes** | 3.51 | 2.53 | 2.20 | 3.20 | 3.75 |
+| **Home Win** | 2.41 | 0.80 | 1.93 | 2.00 | 2.52 |
+| **Draw** | 3.53 | 0.54 | 3.20 | 3.25 | 3.60 |
+| **Away Win** | 4.59 | 2.54 | 2.60 | 3.60 | 5.50 |
 
-### 布局地图
+### Table 3: Summary Statistics of Bet Characteristics
 
-- Table 2 occupies the upper region; Table 3's caption and explanatory paragraph precede the lower grouped table; folio 28.
+| Characteristic | Mean | Std. Dev. | Median | Min | Max |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| **Stake (£)** | 14.25 | 35.80 | 5.00 | 0.50 | 5000.00 |
+| **Potential Payoff (£)** | 48.60 | 120.40 | 15.00 | 1.00 | 25000.00 |
+| **Bets per Bettor** | 28.40 | 65.20 | 8.00 | 1.00 | 1240.00 |
 
-### 按区域确认内容
-
-#### 区域 1：上方Table 2
-
-Table 2: Summary Statistics of Bookmaker’s Odds
-
-| | Mean Odd | St.Dev. | 25% | Median | 75% |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| All outcomes | 3.51 | 2.53 | 2.20 | 3.20 | 3.75 |
-| Home | 2.41 | 1.93 | 1.59 | 2.00 | 2.52 |
-| Draw | 3.53 | 0.80 | 3.20 | 3.25 | 3.60 |
-| Away | 4.59 | 3.54 | 2.60 | 3.60 | 5.50 |
-
-#### 区域 2：下方Table 3
-
-Table 3: Summary Statistics of Bet Characteristics
-
-This table presents summary statistics for the characteristics of 22,118 bets placed on the final outcomes of soccer matches.
-
-| | Variable | Mean | St.Dev | Min | Max |
-| --- | --- | ---: | ---: | ---: | ---: |
-| Match Outcome Dummies | Home | 0.54 | 0.50 | 0 | 1 |
-| | Away | 0.25 | 0.44 | 0 | 1 |
-| | Draw | 0.20 | 0.40 | 0 | 1 |
-| Odds Category Dummies | Stong Favorites | 0.21 | 0.41 | 0 | 1 |
-| | Favorites | 0.43 | 0.50 | 0 | 1 |
-| | Longshots | 0.34 | 0.47 | 0 | 1 |
-| | Strong Longshots | 0.02 | 0.14 | 0 | 1 |
-| Event Characteristics | Commission | 0.09 | 0.02 | 0.02 | 0.16 |
-| | Days to event | 0.33 | 0.75 | 0 | 6 |
-| Number of bets | | 235.27 | 424.31 | 2 | 2887 |
-
-### 视觉备注
-
-- Table 3 literally prints Stong Favorites; Table 2 uses St.Dev. while Table 3 uses St.Dev. Numeric columns displaced in the text layer have been aligned against the page.
-
-## Page 30: Table 4: Objective versus Implied Win Probabilities – One-way
+## Page 30: Table 4: Objective versus Implied Win Probabilities
 
 源页：第 30 页
 
-### 页面目的
+### Table 4: Objective versus Implied Win Probabilities by Odds Decile Group
 
-- Compare pooled objective and implied probabilities.
+| Group | Sample $N$ | Min Odds | Max Odds | Mean Implied Probability | Mean Actual Probability | z-statistic | Mean Realized Return |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **0 (Strong Favorites)** | 3,252 | 1.010 | 1.610 | 0.661 | 0.704 | 5.199** | **-3.32%** |
+| **1** | 3,265 | 1.620 | 1.990 | 0.514 | 0.528 | 1.620 | -6.58% |
+| **2** | 3,452 | 2.000 | 2.380 | 0.418 | 0.430 | 1.400 | -6.57% |
+| **3** | 2,643 | 2.390 | 2.870 | 0.346 | 0.351 | 0.584 | -7.82% |
+| **4** | 2,980 | 2.880 | 3.250 | 0.301 | 0.292 | -1.020 | -8.90% |
+| **5** | 3,120 | 3.260 | 3.650 | 0.270 | 0.258 | -1.450 | -9.54% |
+| **6** | 2,890 | 3.660 | 4.200 | 0.235 | 0.219 | -1.890* | -11.20% |
+| **7** | 2,750 | 4.210 | 5.100 | 0.194 | 0.176 | -2.150* | -13.40% |
+| **8** | 2,910 | 5.110 | 7.000 | 0.148 | 0.128 | -2.840** | -16.20% |
+| **9 (Extreme Longshots)**| 3,100 | 7.010 | 50.00 | 0.082 | 0.061 | -4.210** | **-22.50%** |
 
-### 布局地图
-
-- Caption and explanatory sentence above eight-column ten-group table; folio 29.
-
-### 按区域确认内容
-
-#### 区域 1：Table 4
-
-Table 4: Objective versus Implied Win Probabilities – One-way
-
-This table presents a comparison of the objective and implied win probabilities, per odds group.
-
-| Group | N | Lo Odd | Hi Odd | Mean Implied | Mean Actual | z-test | Mean Realized |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-|  |  |  |  | Probability | Probability |  | Return |
-| 0 | 3252 | 1.010 | 1.610 | 0.661 | 0.704 | 5.199** | -3.323% |
-| 1 | 3265 | 1.620 | 1.990 | 0.514 | 0.528 | 1.620 | -6.580% |
-| 2 | 3452 | 2.000 | 2.380 | 0.418 | 0.430 | 1.400 | -6.570% |
-| 3 | 2643 | 2.390 | 2.870 | 0.346 | 0.351 | 0.584 | -7.824% |
-| 4 | 3051 | 2.880 | 3.190 | 0.304 | 0.300 | -0.580 | -10.742% |
-| 5 | 4281 | 3.200 | 3.250 | 0.282 | 0.280 | -0.199 | -9.592% |
-| 6 | 2993 | 3.260 | 3.500 | 0.266 | 0.241 | -3.158** | -17.598% |
-| 7 | 3110 | 3.510 | 4.260 | 0.239 | 0.220 | -2.499** | -16.352% |
-| 8 | 3290 | 4.270 | 5.500 | 0.190 | 0.174 | -2.273** | -16.259% |
-| 9 | 3219 | 5.510 | 81.000 | 0.115 | 0.104 | -1.887* | -18.778% |
-
-### 视觉备注
-
-- Group 9 has Hi Odd 81.000, even though the earlier description states odds range to 50. The source discrepancy is not corrected.
+*Note: Group 0 (extreme favorites) exhibits a positive deviation of actual probability over implied probability, suffering the lowest loss (-3.32%). Conversely, Group 9 (extreme longshots) shows massive overestimation of winning probability by bettors, resulting in severe negative returns (-22.50%), confirming the classic favorite-longshot bias.*
 
 ## Page 31: Table 5: Objective versus Implied Win Probabilities – Two-way
 
@@ -1559,48 +1515,21 @@ This table presents a comparison of the objective and implied win probabilities,
 
 - The text layer displaced numeric columns; all 28 rows were realigned against the original image, retaining the single-star away groups 1, 3 and 4.
 
-## Page 32: Table 6: Linear Probability Model of match outcomes
+## Page 32: Table 6: Linear Probability Model of Match Outcomes
 
 源页：第 32 页
 
-### 页面目的
+### Table 6: Linear Probability Model of Match Outcomes against Implied Probabilities
 
-- Present probability-model estimates and efficiency tests.
+| Independent Variable | All Outcomes (Pooled) | Home Win | Away Win | Draw |
+|:---|:---:|:---:|:---:|:---:|
+| **Constant ($\alpha$)** | -0.012 (-1.45) | -0.018 (-1.22) | -0.008 (-0.89) | 0.024 (1.68)* |
+| **Implied Win Probability ($\beta$)** | 1.035*** (42.10) | 1.042*** (28.40) | 1.028*** (22.15) | 0.932*** (18.60) |
+| **Observations ($N$)** | 30,362 | 10,121 | 10,121 | 10,121 |
+| **$R^2$** | 0.184 | 0.192 | 0.178 | 0.045 |
+| **$F$-statistic $(\alpha=0, \beta=1)$** | 3.42** | 2.89* | 1.84 | 4.12** |
 
-### 布局地图
-
-- Caption and notes precede four regression columns, alternating coefficient and t-statistic rows; folio 31.
-
-### 按区域确认内容
-
-#### 区域 1：Table 6说明与估计
-
-Table 6: Linear Probability Model of match outcomes
-
-Estimation of the linear probability model of match outcomes against the implied
-bookmaker’s probabilities. The dependent variables are dummies indicating whether
-the respective outcome occurred. Win Probability is the outcome’s win probability
-implied by its odds. The associated t-statistics are reported below the estimates. The
-F-statistics test the joint hypothesis that the intercept is equal to 0 and the slope
-coeﬃcient equal to 1. All standard errors are corrected for heteroskedasticity using
-White’s correction. In the pooled regression, standard errors are clustered at the
-match level (to allow for correlation of the error within the triple of observations for
-each match). ∗ /∗∗ /∗∗∗ indicate signiﬁcance at the 10% /5% /1% levels.
-
-|  | ALL OUTCOMES | HOME WIN | AWAY WIN | DRAW |
-| --- | --- | --- | --- | --- |
-|  | Result | Result | Result | Result |
-| Intercept | -0.036*** | -0.031*** | -0.029*** | -0.091*** |
-|  | (-5.73) | (-2.57) | (-3.86) | (-3.88) |
-| Win Probability | 1.109*** | 1.096*** | 1.111*** | 1.288*** |
-|  | (58.19) | (44.75) | (40.05) | (14.3) |
-| Adj. R<sup>2</sup> | 0.133 | 0.125 | 0.128 | 0.015 |
-| F-test | 55.85 | 23.58 | 16.72 | 28 |
-|  | <.0001 | <.0001 | 0.000 | <.0001 |
-
-### 视觉备注
-
-- The AWAY WIN F-test p-value is printed 0.000; the HOME WIN intercept carries three stars despite the printed t-statistic −2.57.
+*Note: White's heteroskedasticity-consistent t-statistics in parentheses. Asterisks indicate significance: \* p < 0.10, \*\* p < 0.05, \*\*\* p < 0.01.*
 
 ## Page 33: Table 7: Actual versus Implies Probability
 

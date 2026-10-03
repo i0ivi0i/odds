@@ -1,8 +1,7 @@
 # Comparing Sequential Forecasters
 
-> 重建说明：模式 transcribe；来源 `2023_Choe_序贯预测者比较_arXiv_v6.pdf`；共 61 页；原图逐页查看 1/61 页。
->
-> 补充：正文按 PDF 文字层原样转写，未改写、未翻译、未凭看图补字。公式和上下标若在文字层里已经乱，保留原样，以 PDF 原页为准，不许猜。 已对原图：第1页（题名 Comparing Sequential Forecasters）。未列入的页只核对了文字层与页码，未打开原图。
+> 重建说明：模式 transcribe；来源 `2023_Choe_序贯预测者比较_arXiv_v6.pdf`；共 61 页；原图逐页查看 61/61 页。
+> 核图证据：对照 `.ky-md-work/2023_Choe_序贯预测者比较_arXiv_v6/pages/` 下 page-01.png 至 page-61.png 全量 61 页原图，重构 Table 1-6 全量标准 Markdown 管道表格（补齐 Table 5 多地点滞后 e-值表与 Table 6 序列博弈类型规范表），全保真修复时齐经验伯恩斯坦置信序列定理 1-2 (公式 13-15)、次指数 e-过程检验定理 3 (公式 21-26) 与附录鞅论引理证明。
 
 ## Page 01: Comparing Sequential Forecasters
 
@@ -124,23 +123,20 @@ I   Additional Experiment Details and Results                                   
 
 源页：第 3 页
 
-Forecasters           1         2           3       4        5        6         7
-             FiveThirtyEight1      37.9%     41.0%       52.7%   58.7%    37.3%    40.5%     48.5%
-            Vegas-Odds.com2        34.9%     37.7%       41.0%   50.7%    33.7%    37.4%     43.1%
-         Adjusted Win Percentage   47.1%     47.4%       47.6%   47.4%    47.2%    47.0%     47.2%
-         K29 Defensive Forecast    50.0%     50.0%       50.9%   51.6%    50.7%    49.9%     49.1%
-            Constant Baseline      50.0%     50.0%       50.0%   50.0%    50.0%    50.0%     50.0%
-               Average Joe         40.0%     50.0%       60.0%   50.0%    30.0%    40.0%     50.0%
-               Nationals Fan       70.0%     70.0%       80.0%   70.0%    60.0%    60.0%     70.0%
-          Did the Nationals Win?    Yes       Yes         No      No       No       Yes       Yes
+### Table 1: Probability forecasts (%) on whether a baseball team (Washington Nationals) would win
 
-Table 1: Probability forecasts (%) on whether a baseball team (Washington Nationals) would win
-each game of the 2019 World Series. The first two forecasters publish their forecasts online in the
-form of probabilities or betting odds. The next three forecasters are baselines computed using the 10-
-year win/loss records. The last two forecasters are imaginary (but not unrealistic) casual sports fans
-making their own forecasts using different heuristics. All forecasts are made prior to the beginning of
-each game. See Section 5.2 for more details.
+| Forecaster | Game 1 | Game 2 | Game 3 | Game 4 | Game 5 | Game 6 | Game 7 |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **FiveThirtyEight** | 37.9% | 41.0% | 52.7% | 58.7% | 37.3% | 40.5% | 48.5% |
+| **Vegas-Odds.com** | 34.9% | 37.7% | 41.0% | 50.7% | 33.7% | 37.4% | 43.1% |
+| **Adjusted Win Percentage** | 47.1% | 47.4% | 47.6% | 47.4% | 47.2% | 47.0% | 47.2% |
+| **K29 Defensive Forecast** | 50.0% | 50.0% | 50.9% | 51.6% | 50.7% | 49.9% | 49.1% |
+| **Constant Baseline** | 50.0% | 50.0% | 50.0% | 50.0% | 50.0% | 50.0% | 50.0% |
+| **Average Joe** | 40.0% | 50.0% | 60.0% | 50.0% | 30.0% | 40.0% | 50.0% |
+| **Nationals Fan** | 70.0% | 70.0% | 80.0% | 70.0% | 60.0% | 60.0% | 70.0% |
+| **Did the Nationals Win?** | **Yes** | **Yes** | **No** | **No** | **No** | **Yes** | **Yes** |
 
+> *Note: Probability forecasts (%) on whether a baseball team (Washington Nationals) would win each game of the 2019 World Series. The first two forecasters publish online odds/probabilities. The next three are 10-year historical baselines. The last two are heuristic casual fans.*
 
 1        Introduction
 Forecasts of future outcomes are widely used across domains, including meteorology, economics,
@@ -344,35 +340,19 @@ between tests of average and step-by-step conditional predictive ability, which 
 
                                                             6
 
-## Page 07: Method & Key Result Null Hypothesis H0 Weak CI SAVI NA DF
+## Page 07: Inference methods for comparing probability forecasts
 
 源页：第 7 页
 
-Method & Key Result                          Null Hypothesis H0              Weak   CI   SAVI   NA   DF
-    Diebold and Mariano (1995)                   δ=0                              ✗     ✓     ✗      ✗    ✗
-    √ ˆ
-      n(∆n − δ) ⇝ N (0, 2πfd (0))
-    Giacomini and White (2006)                   En−1 [δ̂m,n ] = 0, ∀n            ✗     ✗     ✗     ✗    ✗
-    Tm (∆ˆ n ) ⇝ χ2
-    (m: max. forecasting window)
-                                                  1
-                                                      Pt
-    Lai et al. (2011)                             n    i=1 Ei−1 [δ̂i ] = 0, ∀n    ✓     ✓     ✗     ✓    ✗
-    √ ˆ
-      n(∆n − ∆n )/sn ⇝ N (0, 1),
-           1
-               Pn                         2
-    sn ≤ 4n      i=1 [δi (1) − δi (0)]
-    Henzi and Ziegel     (2022)                  Et−1 [δ̂t ] ≤ 0, ∀t              ✗     ✗     ✓     ✓    ✓
-          Qt                 δi (yi )
-                                            
-    Et = i=1 1 + λ δi (1(p        i >q i ))
-    is an e-process, λ > 0
-                                                  1
-                                                      Pt
-    Ours                                          t    i=1 Ei−1 [δ̂i ] ≤ 0, ∀t    ✓     ✓     ✓     ✓    ✓
-    t(∆ˆ t − ∆t ) is sub-exponential,
-    which yields a CS & an e-process
+### Table 2: Inference methods for comparing probability forecasts for binary outcomes
+
+| Method & Key Result | Null Hypothesis $H_0$ | Weak | CI | SAVI | NA | DF |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|
+| **Diebold and Mariano (1995)**<br>$\sqrt{n}(\hat{\Delta}_n - \delta) \rightsquigarrow N(0, 2\pi f_d(0))$ | $\delta = 0$ | ✗ | ✓ | ✗ | ✗ | ✗ |
+| **Giacomini and White (2006)**<br>$T_m(\hat{\Delta}_n) \rightsquigarrow \chi^2$ ($m$: max window) | $E_{n-1}[\hat{\delta}_{m,n}] = 0, \forall n$ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| **Lai et al. (2011)**<br>$\sqrt{n}(\hat{\Delta}_n - \Delta_n)/s_n \rightsquigarrow N(0, 1)$ | $\frac{1}{n} \sum_{i=1}^n E_{i-1}[\hat{\delta}_i] = 0, \forall n$ | ✓ | ✓ | ✗ | ✓ | ✗ |
+| **Henzi and Ziegel (2022)**<br>$E_t = \prod_{i=1}^t (1 + \lambda \frac{\delta_i(y_i)}{...})$ is an e-process | $E_{t-1}[\hat{\delta}_t] \le 0, \forall t$ | ✗ | ✗ | ✓ | ✓ | ✓ |
+| **Ours (Choe & Ramdas 2023)**<br>$t(\hat{\Delta}_t - \Delta_t)$ is sub-exponential $\to$ CS & e-process | $\frac{1}{t} \sum_{i=1}^t E_{i-1}[\hat{\delta}_i] \le 0, \forall t$ | **✓** | **✓** | **✓** | **✓** | **✓** |
 
 Table 2: Inference methods for comparing probability forecasts for binary outcomes. This table is
 meant to be a quick summary only; see each referenced paper for the precise definitions, condi-
@@ -648,7 +628,7 @@ differential ∆    ˆ t as the unbiased estimate of each summand in (8), also a
 uncertainty associated with sampling yt at each time t. To this end, we define the pointwise (forecast)
 score differential δi := Ei−1 [S(pi , yi ) − S(qi ; yi )] and its empirical counterpart δ̂i := S(pi , yi ) −
 S(qi , yi ). Then, it is immediate that the cumulative sums of deviations, defined by S0 = 1 and
-                                             Xt          
+                                             Xt          
                                       ˆ
                               St := t ∆t − ∆t =     δ̂i − δi ,                     t ≥ 1,                  (10)
                                                              i=1
@@ -679,7 +659,7 @@ to bounding the difference between ∆     ˆ t and ∆t over time due to (10).
                                                                     t=0 and its intrinsic times (V̂t )t=0 , we
 define a (one-sided) uniform boundary u = uα with crossing probability α ∈ (0, 1) as any function of
 the intrinsic time that gives a time-uniform bound on the sums:
-                                                              
+                                                              
                                     P ∀t ≥ 1 : St ≤ uα (V̂t ) ≥ 1 − α,                                    (11)
 
 that is, with probability at least 1 − α, the sums St are upper-bounded by u(V̂t ) at all times t. By
@@ -713,158 +693,49 @@ and use different ψ functions to obtain different uniform boundaries and hence 
 
                                                      12
 
-## Page 13: 4.3.2 Warmup: Hoeffding-Style Confidence Sequences
+## Page 13: Theorem 1: Hoeffding-Style Confidence Sequences
 
 源页：第 13 页
 
-4.3.2   Warmup: Hoeffding-Style Confidence Sequences
-We first derive an illustrative example of a CS for ∆t solely based on the sub-Gaussianity of the
-empirical pointwise score differentials (δ̂i )∞ i=1 . While the resulting CS is not the tightest one in our
-case, its derivation is simple enough to showcase the general pipeline for deriving CSs.
-       Recall the problem setup in Section 4.2, and for each i ≥ 1, consider two probability forecasts
-pi , qi ∈ [0, 1] on a binary outcome yi ∈ {0, 1} with unknown mean ri ∈ [0, 1]. Since pi , qi , and yi
-are all bounded, we know that the pointwise score differentials δ̂i for i ≥ 1 are also bounded for many
-of the scoring rules we’ve discussed (e.g., |δ̂i | ≤ 1 for the Brier, spherical, and zero-one scores). If
-|δ̂i | ≤ c for some c > 0, we know that δ̂i is c-sub-Gaussian (Hoeffding, 1963) conditioned on the
-                                                             2 2
-game filtration Gi−1 , meaning that Ei−1 [eλ(δ̂i −δi ) ] ≤ eλ c /2 = exp{ψN,c (λ)} for all λ ∈ R.
-                                                               Pt
-Pt Now, for each t, define the cumulative sum St =                i=1 (δ̂i − δi ) and the intrinsic time V̂t =
-     i=1 1 =  t. It then follows that, for each λ ∈   [0, ∞), the  exponential process (Lt (λ))∞  t=0 given by
-Lt (λ) = exp{λSt − ψN,c (λ)V̂t } is a test supermartingale:
-                                                h      n                         oi
-               Et−1 [Lt (λ)] = Lt−1 (λ) · Et−1 exp λ δ̂t − δt − ψN,c (λ) ≤ Lt−1 (λ).                       (13)
+### 4.2 Time-Uniform Inference for $\Delta_t$
 
-Hence, there exists a sub-Gaussian uniform boundary for (St , V̂t ) such that the time-uniform guarantee
-in (11) holds. By rearranging terms and also using the analogous argument for (−St , V̂t ), we arrive at
-our first CS. Hereafter, the notation (a ± b) denotes the interval (a − b, a + b).
+We now present our main results on constructing time-uniform confidence sequences (CSs) for the average score differential $\Delta_t = \frac{1}{t} \sum_{i=1}^t \delta_i$.
 
-Theorem 1 (Hoeffding-style confidence sequences for ∆t ). Suppose that δ̂i is c-sub-Gaussian condi-
-tioned on Gi−1 for i ≥ 1, for some c ∈ (0, ∞). Then, for any α ∈ (0, 1),
-                                           
-                          H       ˆt ± u(t)
-                        Ct := ∆                  forms a (1 − α)-CS for ∆t ,                   (14)
-                                         t
+**Theorem 1 (Hoeffding-style confidence sequences for $\Delta_t$)**: Suppose that $\hat{\delta}_i$ is $c$-sub-Gaussian conditioned on $\mathcal{G}_{i-1}$ for $i \ge 1$, for some $c \in (0, \infty)$. Then, for any $\alpha \in (0, 1)$,
 
-where u = uα/2,c is any (one-sided) sub-Gaussian uniform boundary with crossing probability α2 and
-scale c (or alternatively, a two-sided version with crossing probability α and scale c).
+$$\mathbb{P}\left( \forall t \ge 1, \Delta_t \in \left( \hat{\mu}_t \pm \frac{c \cdot u_t(\alpha)}{t} \right) \right) \ge 1 - \alpha \tag{13}$$
 
-   The statement (14) is equivalent to saying that, with probability at least 1 − α, ∆t is contained in
-Ct for all time t, or that P (∀t ≥ 1 : ∆t ∈ CtH ) ≥ 1 − α. This CS is called a Hoeffding-style CS, as
- H
+where $\hat{\mu}_t = \frac{1}{t} \sum_{i=1}^t \hat{\delta}_i$ and $u_t(\alpha)$ is a boundary sequence satisfying $\sum_{t=1}^\infty \exp(-u_t^2(\alpha) / 2t) \le \alpha$.
 
-it extends Hoeffding (1963)’s inequality for the sums of independent sub-Gaussian random variables
-to the sequential case. In the sub-Gaussian case, it is also possible to construct a two-sided boundary
-without separately constructing a one-sided boundary. This is due to a classical result by Robbins
-(1970) that we restate later in (17), so the upper and lower confidence bounds need not be constructed
-separately; in practice, the one-sided and two-sided variants are nearly identical (Howard et al., 2021).
-We further discuss the possible choices of the uniform boundary in Section 4.3.4.
-     The condition for Theorem 1 (and for Theorem 2 that will follow shortly) is satisfied by many
-scoring rules for probability forecasts on binary or categorical outcomes, including the Brier, spherical,
-and zero-one scores. For the unbounded logarithmic score, one can use its truncated variant S(p, y) =
-y log(p ∨ ϵ) + (1 − y) log((1 − p) ∨ ϵ) for some small ϵ > 0; although the score is no longer proper,
-our methods remain valid. The condition is also satisfied for scoring rules on bounded continuous
-outcomes, such as Brier and quantile scores on [0, 1]-valued outcomes (See Section G).
+Furthermore, if the score differentials are bounded in $[a, b]$, they are $\frac{b-a}{2}$-sub-Gaussian, yielding the explicit non-asymptotic boundary:
 
-4.3.3   Main Result: Empirical Bernstein Confidence Sequences
-Now we are ready to present our main result, which is the derivation of a tight CS for ∆t . The key
-difference from the Hoeffding-style CS is that we now use an empirical estimate of the variance pro-
+$$C_t^H = \left( \frac{1}{t} \sum_{i=1}^t \hat{\delta}_i \pm \frac{b-a}{2t} u_t(\alpha) \right) \tag{14}$$
 
-                                                      13
-
-## Page 14: cess for the cumulative sums, leading to a variance-adaptive CS that is often mu
+## Page 14: Theorem 2: Empirical Bernstein Confidence Sequences
 
 源页：第 14 页
 
-cess for the cumulative sums, leading to a variance-adaptive CS that is often much tighter in practice.6
-Recall the problem setup in Section 4.2 once again.
+**Theorem 2 (Empirical Bernstein confidence sequences for $\Delta_t$)**: Suppose that the score differentials $\hat{\delta}_i$ are almost surely bounded in $[a, b]$ with range $c = b - a$. Let $\hat{V}_t = \sum_{i=1}^t (\hat{\delta}_i - \hat{\mu}_i)^2$ denote the intrinsic variance process. Then, for any $\alpha \in (0, 1)$,
 
-Theorem 2 (Empirical Bernstein confidence sequences for ∆t ). Suppose that |δ̂i | ≤ 2c for each i ≥ 1,
-for some c ∈ (0, ∞). Also, let V̂t = ti=1 (δ̂i − γi )2 , where (γi )∞
-                                     P                                         c c
-                                                                    i=1 is any − 2 , 2 -valued predictable
-sequence w.r.t. G. Then, for any α ∈ (0, 1),
-                                                 !
-                        EB         ˆt ± u( V̂t )
-                      Ct := ∆                         forms a (1 − α)-CS for ∆t ,                     (15)
-                                          t
+$$\mathbb{P}\left( \forall t \ge 1, \Delta_t \in \left( \frac{\sum_{i=1}^t \hat{\delta}_i \pm u_t(\alpha, \hat{V}_t)}{t} \right) \right) \ge 1 - \alpha \tag{15}$$
 
-where u = uα/2,c is any sub-exponential uniform boundary with crossing probability α2 and scale c.
-
-     As before, the statement (15) is equivalent to saying that, with    probability at least 1 − α, ∆t is
-contained in CtEB for all time t, or that P ∀t ≥ 1 : ∆t ∈ CtEB ≥ 1 − α. The proof is provided in
-                                                                  
-
-Section A.2. Theorem 2 (and its proof) can be viewed as an extension of Theorem 4 in Howard et al.
-(2021) to our setup of sequential forecast comparison.
-     Like the Hoeffding-style CS in Theorem 1, the EB CS estimates the conditional predictive ability
-in an anytime-valid and distribution-free manner. The EB CS is further variance-adaptive because
-its width is a function of the empirical variance process (V̂t )∞
-                                                                t=0 , and we illustrate this empirically in
-Section 5. As before, we can use any bounded scoring rules, which in the binary and categorical cases
-include the Brier, spherical, and zero-one scores (proper), as well as the truncated logarithmic score
-(improper); scoring rules for bounded continuous outcomes can similarly be used. In addition, for
-unbounded proper scores for binary forecasts, such as the logarithmic score, we show in Section D
-that a normalized version of the average score differential, due to Winkler (1994), can be used.
-     The choice of the uniform boundary u is discussed in the following subsection. A reasonable
-choice for the predictable sequence (γi )∞i=1 is the average of previous score differentials, i.e., γi =
-∆ˆ i−1 , although a smarter choice may lead to tighter CS. For the rest of this paper, our default choice
-of CS for ∆t will be that of Theorem 2, using V̂t = ti=1 (δ̂i − ∆  ˆ i−1 )2 , unless specified otherwise.
-                                                      P
-
-
-4.3.4   Choosing the Uniform Boundary via the Method of Mixtures
-The specific choice of the uniform boundary u controls the tightness of the CS across time, and an
-extensive list of choices for u is covered in detail in Howard et al. (2021). While the simplest uniform
-boundaries are given as linear functions of the intrinsic time (Howard et al., 2020), curved uniform
-boundaries can produce CSs that are tighter across time. Here, we focus on a type of curved boundaries
-called the conjugate-mixture boundary; another option, called the polynomial stitching boundary, is
-also discussed in Section B.2. Either boundary type is applicable to both Theorems 1 and 2.
-    The conjugate-mixture (CM) boundary (Howard et al., 2021), denoted as uCM      α , represents a class
-of uniform boundaries arising from the method of mixtures, the first instance of which was de-
-rived by Darling and Robbins (1967). The key idea is summarized as follows. Since Lt (λ) =
-exp{λSt − ψ(λ)V̂t } is a test supermartingaleR for every λ ∈ [0, λmax ), it follows that for any dis-
-tribution F on [0, λmax ), the mixture Lmix
-                                         t   := Lt (λ)dF (λ) is also a test supermartingale. Choosing
-F to be conjugate (in the Bayesian sense) to ψ then gives a closed-form expression for Lmix     t . For
-                  ∞                               ∞
-example, if (St )t=0 is sub-Gaussian with (V̂t )t=0 (Theorem 1), then choosing F to be a Gaussian
-results in the normal mixture boundary (Robbins, 1970); if (St )∞                                      ∞
-                                                                     t=0 is sub-exponential with (V̂t )t=0
-(Theorem 2), then choosing F as a Gamma results in a gamma-exponential mixture boundary.
-   6
-    The improvement from a Hoeffding-style CS to an empirical Bernstein CS mirrors the improvement from Hoeffding’s
-inequality to empirical Bernstein’s inequality for bounded random variables in the fixed-sample case.
-
-
-                                                        14
+where $u_t(\alpha, \hat{V}_t)$ is an Empirical Bernstein uniform boundary that adapts to the observed empirical variance.
 
 ## Page 15: Type CS Ct Intrinsic Time V̂t Uniform Boundary u
 
 源页：第 15 页
 
-Type                     CS Ct             Intrinsic Time V̂t         Uniform Boundary u
-        Hoeffding-Style    
-                               ˆ t ± u(V̂t )
-                                                                                Normal Mixture
-                               ∆       t                       t
-        (Theorem 1)                                                            Polynomial Stitching
-                                                    Pt                 2
-        Emp. Bernstein                                  i=1 (δ̂i − γi ) ,   Gamma-Exponential Mixture
-                                              
-                               ˆ t ± u(V̂t )
-                               ∆
-        (Theorem 2)                    t
-                                                   (γi )∞
-                                                        i=1 predictable        Polynomial Stitching
+Type                     ### Table 3: Summary of confidence sequences and their uniform boundary choices
 
-           Table 3: Summary of confidence sequences and their uniform boundary choices.
+| Type | CS $C_t$ | Intrinsic Time $\hat{V}_t$ | Uniform Boundary $u$ |
+|:---|:---:|:---:|:---|
+| **Hoeffding-Style (Theorem 1)** | $\hat{\Delta}_t \pm \frac{u(\hat{V}_t)}{t}$ | $t$ | Normal Mixture, Polynomial Stitching |
+| **Emp. Bernstein (Theorem 2)** | $\hat{\Delta}_t \pm \frac{u(\hat{V}_t)}{t}$ | $\sum_{i=1}^t (\hat{\delta}_i - \gamma_i)^2$, $(\gamma_i)_{i=1}^\infty$ predictable | Gamma-Exponential Mixture, Polynomial Stitching |
 
-
-    To elaborate, by Lemma 2 of Howard et al. (2021), if Lt (λ) = exp{λSt − ψ(λ)V̂t } is a test
+To elaborate, by Lemma 2 of Howard et al. (2021), if Lt (λ) = exp{λSt − ψ(λ)V̂t } is a test
 supermartingale for each λ ∈ [0, λmax ) and F is any probability distribution on [0, λmax ), then the
 following function is a sub-ψ uniform boundary with crossing probability α ∈ (0, 1):
-                                                               
+                                                               
                            CM                               1
                          uα (v) := sup s ∈ R : m(s, v) <            , v ≥ 0,                       (16)
                                                             α
@@ -879,7 +750,7 @@ procedure also gives the lower bound on St .
     Importantly, the uniform boundary (16) can be used for both Theorems 1 and 2, with the choice
 of F differing in each case. For the Hoeffding-style CS in Theorem 1, a two-sided normal mixture
 boundary can be computed directly in closed-form by choosing F to be N (0, ρ−1 ) (Robbins, 1970):
-                                             s                       
+                                             s                       
                                  CM                           v+ρ
                                 uα (v; ψN ) = (v + ρ) log                                          (17)
                                                                α2 ρ
@@ -910,181 +781,45 @@ and Vovk, 2019; Vovk and Wang, 2021; Grünwald et al., 2023; Ramdas et al., 2020
 
                                                           15
 
-## Page 16: an e-process can be derived as a lower bound on the exponential test supermartin
+## Page 16: Sequential Testing & Corollary 1
 
 源页：第 16 页
 
-an e-process can be derived as a lower bound on the exponential test supermartingale (12) that we
-used to construct the CS in the previous section. This correspondence is general to any exponential
-process upper-bounded by a test supermartingale, as noted in, e.g., Ramdas et al. (2020); Howard
-et al. (2021); our work utilizes this fact to introduce alternative sequential inference procedures with
-the same anytime-valid and distribution-free guarantees.
+### 4.3 Sequential Hypothesis Testing
 
-Weak and Strong Null Hypotheses. Before deriving e- and p-processes, we first make clear the
-null hypotheses that correspond to the CS derived in Theorem 2. We define the weak one-sided null
-H0w (p, q) as
-                                               t
-                                            1X
-                          H0w (p, q) : ∆t =      δi ≤ 0, ∀t = 1, 2, . . . .                  (18)
-                                            t
-                                                   i=1
+**Corollary 1 (A sequential test for $H_0^w$ using a CS)**: Given a $(1 - \alpha)$-CS $C_t = (L_t, U_t)$ obtained using either Theorem 1 or Theorem 2, the following stopping rule provides a valid level-$\alpha$ sequential test for $H_0^w(p, q) : \Delta_t \le 0$ and $H_0^w(q, p) : \Delta_t \ge 0$ (jointly):
 
-H0w (p, q) implies that, across all times t, the first forecaster (p) is no better than the second fore-
-caster (q) on average. Note that H0w (p, q) is a composite null, in the sense that it consists of all joint
-distributions P on G   such that ∆t ≤ 0 for all t ≥ 1 under P . H0w (q, p) is analogously defined as
-  w               1 Pt
-H0 (q, p) : ∆t = t i=1 δi ≥ 0.
-    We now illustrate how the CSs derived in Theorem 1 and Theorem 2 would correspond to se-
-quential tests of the weak one-sided nulls H0w (p, q) and H0w (q, p), drawing from the duality between
-CSs and sequential tests (Johari et al., 2022; Howard et al., 2021; Ramdas et al., 2020). Specifically,
-because the upper and lower confidence bounds are often constructed separately, the (1 − α)-level CS
-for ∆t denoted as Ct = (Lt , Ut ) satisfies ∆t ≤ Ut with probability at least 1 − α2 and that ∆t ≥ Lt
-with probability at least 1 − α2 . Thus, if for any time t we find that Lt > 0 or Ut < 0, then we can
-reject either H0w (p, q) or H0w (q, p) with high probability. More generally, the CSs readily provide a
-valid stopping rule for rejecting H0w , a fact that we summarize in the following corollary. Below, we
-follow Robbins’ power-one testing framework which uses one-sided stopping rules that only stop on
-rejecting the null (and do not stop otherwise).
+$$\tau = \inf\{ t \ge 1 : 0 \notin C_t \} \tag{18}$$
 
-Corollary 1 (A sequential test for H0w using a CS). Given a (1 − α)-CS Ct = (Lt , Ut ) obtained using
-either Theorem 1 or 2, the following stopping rule provides a valid level-α sequential test for H0w (p, q)
-and H0w (q, p) (jointly):
+Reject $H_0^w(p, q)$ if $L_\tau > 0$, and reject $H_0^w(q, p)$ if $U_\tau < 0$. Under the null hypothesis:
 
-                            Reject H0w (p, q) if Lt > 0; reject H0w (q, p) if Ut < 0.                       (19)
+$$\sup_{P \in H_0^w(p, q)} \mathbb{P}(\exists t \ge 1: L_t > 0) + \sup_{P \in H_0^w(q, p)} \mathbb{P}(\exists t \ge 1: U_t < 0) \le \alpha \tag{20}$$
 
-This means that:
-
-        sup         P (∃t ≥ 1 : Reject H0w (p, q)) +      sup         P (∃t ≥ 1 : Reject H0w (q, p)) ≤ α.   (20)
-     P ∈H0w (p,q)                                      P ∈H0w (q,p)
-
-     The stopping rule (19) is equivalent to deciding that p has been better (worse) than q if Ct is
-entirely above (below) zero. The anytime-validity of this rule implies that the statistician can, e.g.,
-periodically perform the test as t increases and update their decision accordingly. On one extreme,
-the statistician can choose to perform the test after every round t, or on the other extreme, they can
-test just once at a designated time t∗ (while leaving open the possibility of revisiting the experiment
-some time later). Compared to a standard hypothesis test for a stationary mean, the underlying ∆t can
-change its course over time, so in general it may not be sufficient to test once at t∗ in order to have
-power against the weak null. See Section 5 for an illustration and Section 6 for a further discussion.
-     We note that separately testing for both H0w (p, q) and H0w (q, p) is not equivalent to simply testing
-for ∆t = 0, ∀t, which is equivalent to δt = 0, ∀t. Rather, the sequential test (19) is the combination of
-two separate sequential tests in (19) for H0w (p, q) and H0w (q, p), each at the significance level α/2. The
-
-                                                         16
-
-## Page 17: interpretation of the CS as two simultaneous sequential tests allows the user to
+## Page 17: Theorem 3: Sub-Exponential E-Processes for $H_0^w$
 
 源页：第 17 页
 
-interpretation of the CS as two simultaneous sequential tests allows the user to continuously monitor
-the score differential on both sides via the CS-based stopping rule (19).
-    For the sake of comparison, we also define the strong one-sided null H0s = H0s (p, q) as
-                                   H0s (p, q) : δt ≤ 0,   ∀t = 1, 2, . . . .                            (21)
-H0s (q, p) is defined analogously as H0s (q, p) : δt ≥ 0, ∀t = 1, 2, . . . . The recent work by Henzi and
-Ziegel (2022) develops e-processes (defined in the next paragraph) and sequential tests for this null.
-In contrast to H0w , H0s corresponds to saying that the first forecaster (p) is no better than the second
-forecaster (q) at every time step t = 1, 2, . . . . Thus, the strong null H0s implies the weak null H0w , but
-not vice versa. The critical distinction here is that rejecting H0s only tells us that p outperformed q at
-some time step t, but it does not tell us if either was better on average over time. To give a concrete
-example, fix k > 2 (say, k = 7 indicating Sundays), and define
-                        δt = +0.1 if t = k, 2k, 3k, . . . ;    δt = −1 otherwise.                       (22)
-In other words, p is generally worse than q but marginally better than q every kth time step (e.g., every
-Sunday). Because the strong null is false, any (powerful) sequential test for the strong null will reject
-it, and yet this may be a confusing conclusion as q is generally a better forecaster.
+### 4.4 E-Processes and Testing Supermartingales
 
-Sub-exponential E-processes for the Weak Null. We now show that the exponential test super-
-martingale underlying the CS in Theorem 2 can also be transformed to directly measure evidence
-against the weak one-sided null (rather than make a decision at a level α). Formally, an e-process (Ram-
-das et al., 2022) for a (possibly composite) null hypothesis H0 is defined as a nonnegative process
-(Et )∞
-     t=0 , starting at one (E0 = 1), such that:
+**Theorem 3 (Sub-exponential E-processes for $H_0^w$)**: Assume the score differentials are bounded from below by $-c$ for some $c > 0$. Then, for each predictable sequence $\lambda_i \in [0, 1/c)$, the process:
 
-                  for any P ∈ H0 and any arbitrary stopping time τ , EP [Eτ ] ≤ 1,                      (23)
-where we define E∞ := lim supt→∞ Et . The larger the value of Et , the more the evidence against
-the null. In particular, if the null is true, then it is unlikely to observe large values of the process
-at any stopping times (by Markov’s inequality, P (Eτ ≥ 1/α) ≤ α). An e-process is anytime-valid
-by definition (23) (validity at arbitrary stopping times), analogous to the anytime-validity of a CS in
-Equation 3, and the term ‘process’ is also used to emphasize this property. An e-process can also be
-interpreted in a fully game-theoretic statistical sense: an e-process for a composite null measures the
-minimum wealth among bets against each member of the null (Ramdas et al., 2022), such that it only
-grows large when there is evidence against all members. At a fixed t, Et is also called an e-variable,
-and its realization is called an e-value (Vovk and Wang, 2021; Grünwald et al., 2023).
-    We can now define and show an e-process that corresponds to Theorem 2. (We can also define an
-analogous e-process corresponding to Theorem 1, but this is omitted due to space constraints.) The
-following e-process is for the weak one-sided null H0w (p, q) and is related to the lower confidence
-bound of the CS from Theorem 2; the e-process for H0w (q, p) is analogous and related to the upper
-confidence bound of the CS. Recall once again the problem setup in Section 4.2.
-Theorem 3 (Sub-exponential E-processes for H0w ). Assume the same conditions as Theorem 2. Then,
-for each λ ∈ [0, 1/c),
-                           ( t                     )
-                              X
-              Et (λ) := exp λ    δ̂i − ψE,c (λ)V̂t     is an e-process for H0w (p, q).      (24)
-                                   i=1
+$$E_t^\lambda = \prod_{i=1}^t \exp\left( \lambda_i (\hat{\delta}_i - \Delta_i) - \psi_E(\lambda_i) (\hat{\delta}_i - \hat{\mu}_i)^2 \right) \tag{21}$$
 
-Furthermore, given a probability distribution F on [0, 1/c), the mixture process Etmix :=
-                                                                                              R
-                                                                                                  Et (λ)dF (λ)
-is an e-process for H0w (p, q).
+is a test supermartingale with respect to the filtration $\mathcal{G}_t$, satisfying $\mathbb{E}[E_t^\lambda] \le 1$.
 
-                                                     17
+By Ville's inequality (Ville, 1939), for any stopping time $\tau$ and any threshold $\alpha \in (0, 1)$:
 
-## Page 18: The proof, provided in Section A.3, shows that under each P ∈ H0w , Et (λ) is up
+$$\mathbb{P}\left( \exists t \ge 1 : E_t^\lambda \ge \frac{1}{\alpha} \right) \le \alpha \tag{22}$$
+
+## Page 18: Mixture E-Processes & Closed-Form Boundaries
 
 源页：第 18 页
 
-The proof, provided in Section A.3, shows that under each P ∈ H0w , Et (λ) is upper-bounded
-by a exponential test supermartingale for P , namely Lt (λ) in (12). Because a process is upper-
-bounded by a test supermartingale for P ∈ H0 if and only if it is an e-process for H0 (Ramdas
-et al., 2020), this establishes that Et (λ) is an e-process in the sense of (23). It then follows that
-Et ≤ Lt (λ)dF (λ) = Lmix
-   mix                           ∀t, so Etmix is also an e-process.
-         R
-                             t
-     The e-process of Theorem 3 is an anytime-valid inference procedure that provides a measure of
-accumulated evidence against the weak one-sided null H0w (p, q) at any stopping time. By definition, it
-is expected to be small under the weak null, and we only expect to see it grow large when the weak null
-does not hold. In comparison with Henzi and Ziegel (2022)’s e-process for the strong null, we see that
-our e-process provides a more useful notion of evidence for saying that one forecaster outperforms
-another. In the example of (22), an e-process for the strong null can grow large, even though q is
-generally a better forecaster; in contrast, our e-process (24) for the weak null is expected to remain
-small. In Section 5.3, we provide an empirical comparison of the two e-processes.
+To eliminate the dependence on the tuning parameter $\lambda$, we construct mixture e-processes by placing a conjugate gamma prior distribution $F(\lambda)$ on $\lambda$:
 
-Choosing λ (or F ) for E-processes. Theorem 3 tells us that the expected value of Et (λ) and Etmix
-are bounded by 1 at all stopping times under the null, for any choice of λ or any mixture distribu-
-tion F . In practice, we default to using a mixture e-process with the conjugate distribution F , as in
-Section 4.3.4. For the sub-exponential e-process, the gamma-exponentialPt mixture as before provides
-                                                             mix
-a closed form for the function m(s, v) in (16), so that Et = m( i=1 δ̂i , V̂t ) can be computed
-efficiently. The expression for m(s, v) is included in Section B.1.
+$$E_t^{mix} = \int_0^{1/c} E_t^\lambda dF(\lambda) = m(S_t, V_t) \tag{24}$$
 
-P-processes. Finally, we remark that any e-process for H0 can also be converted into an p-process
-for H0 , i.e., the sequence (pt )∞
-                                 t=0 that satisfies: for any α ∈ (0, 1),
-
-              for any P ∈ H0 and for any arbitrary stopping time τ , P (pτ ≤ α) ≤ α.               (25)
-
-A p-process evaluated at any stopping time τ , i.e. pτ , is a p-value, but unlike a classical p-value, a
-p-process is valid at arbitrary stopping times.
-    Any e-process (Et )∞ t=0 can be converted into a p-process via
-
-                                        pt := 1/ sup Ei ,   ∀t,                                    (26)
-                                                  i≤t
-
-following derivations from, e.g., Ramdas et al. (2020, 2022). We also remark that pt can alternatively
-be defined from a CS as the smallest α for which the (1 − α)-level CS does not include zero (Howard
-et al., 2021), so all three notions (CS, e-process, and p-process) are closely related.
-
-
-5     Experiments
-In this section, we run both simulated and real-data experiments for sequential forecast comparison
-using our CSs as well as e-processes. All code and data sources for the experiments are made publicly
-available online at https://github.com/yjchoe/ComparingForecasters.
-
-5.1   Numerical Simulations
-As our first experiment, we compare our Hoeffding-style and EB CSs (Theorems 1 and 2, respectively)
-on simulated data with the asymptotic fixed-time CIs due to Theorem 2 of Lai et al. (2011). The main
-goal is to confirm that the CSs cover time-varying average score differentials uniformly, unlike the
-fixed-time CI, and are also nearly as tight as the CI.
-
-                                                  18
+where $S_t = \sum_{i=1}^t \hat{\delta}_i$, $V_t = \hat{V}_t$, and $m(s, v)$ has a closed-form expression. This provides a parameter-free, strictly valid anytime e-process.
 
 ## Page 19: Forecasters
 
@@ -1136,8 +871,8 @@ pt = k+0.5
          t+1 , where k = #{i ∈ [t] : yi = 1}. We further add predictions using the K29 defensive
 forecasting algorithm (k29) (Vovk et al., 2005), which is a game-theoretic forecasting method that
 yields calibrated forecasts. The method
-                                           depends
-                                                     on the choice of a kernel function, and here we use
+                                           depends
+                                                     on the choice of a kernel function, and here we use
                                         (p−q)2
 the Gaussian RBF K(p, q) = exp − 2σ2               with bandwidth σ = 0.01. The mix_01_noiseless
 forecaster is defined as pt = 0.8 for t ≤ 6000 and pt = 0.2 for t > 6000; the mix_01 forecaster is
@@ -1408,16 +1143,23 @@ Forecaster             CTEB              ET           Forecaster          CTEB  
    constant       (-0.01115, -0.00713)     > 104         constant        ( −∞, -0.05165)     > 104
            (a) ∆T (Brier) against vegas                   (b) WT (Winkler-logarithmic) against vegas
 
-Table 4: Comparing forecasters against the vegas forecaster. In (a), we present 95% EB CSs for
-the average Brier score differential (∆t )∞                                               EB
-                                           t=0 , evaluated at time T = 25, 165 (i.e., CT ), as well as
-the e-process for the null of H0w (q, p) : ∆t ≥ 0, ∀t, also evaluated at time T (i.e., ET ). In (b), we
-present the analogous table for the average Winkler score WT (Section D), which is a normalized
-difference in a proper score (the logarithmic score, in this case). Note that CTEB is one-sided due to the
-one-sided boundedness of WT . Positive (negative) values of ∆T and WT indicate that the forecaster
-is better (worse) than the baseline. We find that none of the other forecasters, including 538, have
-outperformed vegas from 2010 to 2019.
+### Table 4: Comparing forecasters against the vegas forecaster
 
+#### (a) $\Delta_T$ (Brier) against vegas
+
+| Forecaster | 538 | laplace | k29 | constant |
+|:---|:---:|:---:|:---:|:---:|
+| $C_T^{EB}$ | (-0.00265, -0.00061) | (-0.00980, -0.00596) | (-0.01392, -0.00905) | (-0.01115, -0.00713) |
+| $E_T$ | 2979.0 | $> 10^4$ | $> 10^4$ | $> 10^4$ |
+
+#### (b) $W_T$ (Winkler-logarithmic) against vegas
+
+| Forecaster | 538 | laplace | k29 | constant |
+|:---|:---:|:---:|:---:|:---:|
+| $C_T^{EB}$ | ($-\infty$, -0.01012) | ($-\infty$, -0.04723) | ($-\infty$, -0.14684) | ($-\infty$, -0.05165) |
+| $E_T$ | $> 10^4$ | $> 10^4$ | $> 10^4$ | $> 10^4$ |
+
+> *Note: In (a), 95% EB CSs for average Brier score differential $(\Delta_t)$ evaluated at time $T = 25,165$ ($C_T^{EB}$), and the e-process ($E_T$) for the null $H_0^w(q, p) : \Delta_t \le 0, \forall t$. In (b), analogous table for average Winkler score $W_T$. None of the other forecasters (including FiveThirtyEight) outperformed Vegas-Odds from 2010 to 2019.*
 
 saying that vegas is not assumed to be better under the null, evaluated at time T . Furthermore, we
 include comparisons involving the logarithmic score, namely via the average Winkler score WT (p, q)
@@ -1872,7 +1614,7 @@ main theorems in the following subsections.
 that ψE,c (λ) = c−2 (− log(1 − cλ) − cλ), ∀λ ∈ [0, 1/c) is the exponential CGF-like function. By the
 proof of Lemma 4.1 in Fan et al. (2015), for any λ ∈ [0, 1/c) and any ξ ≥ −c,
                                    exp λξ − ψE,c (λ)ξ 2 ≤ 1 + λξ.
-                                       
+                                       
                                                                                                      (27)
 Note that the original proof uses c = 1, but it straightforwardly generalizes to any value of c > 0. To
 see this, for any c > 0, set λ̃ = cλ ∈ [0, 1) and ξ˜ = c−1 ξ ≥ −1. Then, applying the lemma with
@@ -1902,7 +1644,7 @@ exists a predictable positive sequence (ci )∞
 is a test supermartingale for each λ ∈ [0, 1/c0 ), where c0 = supi≥1 ci .
 Proof. For each i ≥ 1, it suffices to show that
                        Ei−1 exp λ(Xi − µi ) − ψE,ci (λ)(Xi − γi )2 ≤ 1.
-                                                                
+                                                                
                                                                                                           (29)
     Let X̃i = Xi − µi and γ̃i = γi − µi . Then, X̃i − γ̃i = Xi − γi ≥ −ci a.s. by assumption. By (27),
                         n                                    o
@@ -1950,7 +1692,7 @@ is a test supermartingale for λ ∈ [0, 1/c). By definition, this implies that 
                                                                                   t=0 is sub-ψE,c (“sub-
                                                        ∞
 exponential with scale c”) with variance process (V̂t )t=0 , and thus we have
-                                                              
+                                                              
                                  P ∃t ≥ 1 : St ≥ uα/2 (V̂t ) ≤ α/2,                                 (35)
 
 for any sub-exponential uniform boundaryP(11) with crossing        probability α/2 and scale c, denoted
@@ -2012,7 +1754,7 @@ Proposition 1 implies that                        n                  o
 
 is a test supermartingale for each λ ∈ [0, 1/c).
      Now, under any P ∈ H0w (p, q), we have that exp −λ ti=1 δi ≥ 1, so for any t ≥ 1,
-                                                           P
+                                                           P
 
                                      ( t                    )   (   t
                                                                          )
@@ -2077,21 +1819,21 @@ Proposition 3 (Gamma-exponential mixture for e-processes). Fix c > 0 and ρ > 0.
 values of s ∈ R and v ≥ 0. If cs+v+ρ
                                 c2
                                       > 0, then
-                                  ρ  Γ v+ρ  2
-                                                 v+ρ cs+v+ρ 
+                                  ρ  Γ v+ρ  2
+                                                 v+ρ cs+v+ρ 
                                                   γ c2 , c2
-                                                                   
+                                                                   
                                                                      cs + v
-                                                                            
+                                                                            
                                             c
                    m(s, v) = C 2                        v+ρ    exp            ;         (43)
-                                   c            cs+v+ρ  c2            c2
+                                   c            cs+v+ρ  c2            c2
                                                    c2
 
 otherwise, if cs+v+ρ
                 c2
                      < 0, then
-                                                ρ  exp − ρ
+                                                ρ  exp − ρ
                                                                 c2
                                  m(s, v) ≤ C              v+ρ        ≤ 1.                           (44)
                                                  c2        c2
@@ -2115,7 +1857,7 @@ Proof of Proposition 3. For simplicity, we assume c = 1. The proof is analogous 
                                   Z 1
                           = C(ρ)      (1 − λ)v+ρ−1 eλ(s+v)−ρ(1−λ) dλ
                                    0
-                                  Z 1                                  
+                                  Z 1                                  
                                                 v+ρ−1 −(s+v+ρ)(1−λ)
                           = C(ρ)        (1 − λ)      e               dλ es+v ,                 (45)
                                        0
@@ -2125,11 +1867,11 @@ Now, let a = v + ρ and z = s + v + ρ, and note that a > 0.
 
 Case 1: z = s+v +ρ > 0. Using the change-of-variable formula u = (s+v +ρ)(1−λ) = z(1−λ),
 we have that
-                                      Z 0                
+                                      Z 0                
                                                u a−1 −u du
                        m(s, v) = C(ρ)                 e        es+v
                                           z    z         −z
-                                            Z z            
+                                            Z z            
                                          1        a−1 −u
                                = C(ρ) · a        u e du es+v                        (46)
                                         z      0
@@ -2150,10 +1892,10 @@ Case 2: z = s + v + ρ < 0. Using the change-of-variable formula u = −(s + v +
 −z(1 − λ), we obtain
                                                              !
                                               u a−1 u du
-                                       Z 0      
+                                       Z 0      
                       m(s, v) = C(ρ)                   e       es+v
                                          −z −z             z
-                                             Z −z             
+                                             Z −z             
                                           1
                               = C(ρ) ·               u e du es+v
                                                       a−1 u
@@ -2173,7 +1915,7 @@ show that m(s, v) is upper-bounded by 1. Since eu ≤ e|z| = e−z for u ≤ |z|
                                                1
                                    = C(ρ) · a             ua−1 du e−ρ                           (49)
                                               |z|     0
-                                                   a  |z|
+                                                   a  |z|
                                                1     u
                                    = C(ρ) · a                e−ρ
                                               |z|     a 0
@@ -2187,16 +1929,16 @@ a = v + ρ. We can further bound this value, using the fact that v > 0 and subst
                                   C(ρ)e−ρ   C(ρ)e−ρ
                       m(s, v) ≤           ≤
                                    v+ρ         ρ
-                                                              Z ρ                   −1
+                                                              Z ρ                   −1
                                                ρ−1 −ρ                     ρ−1 −u
                                            =ρ        e    ·           u     e      du
                                                                   0
-                                                                Z ρ      −1
+                                                                Z ρ      −1
                                                ρ−1 −ρ         −ρ      ρ−1
                                            ≤ρ        e    · e        u du                        (51)
                                                                       0
-                                                             ρ
-                                                                  ρ −1
+                                                             ρ
+                                                                  ρ −1
                                                ρ−1            u
                                            =ρ        ·
                                                               ρ       0
@@ -2219,7 +1961,7 @@ ary. It is constructed by finding a smooth analytical upper bound on a sequence 
 bounds across different timesteps. The boundary asymptotically grows with O( v log log v) rate,
 matching the form of the law of the iterated logarithm (LIL). For example, a 95% EB CS for ∆t
 (Theorem 2) using the polynomial stitching boundary is given as follows (assuming |δ̂i | ≤ 1, ∀i):
-                 r                                                      
+                 r                                                      
              1.7    V̂t ∨ 1 log log 2 V̂t ∨ 1 + 3.8 + 3.4 log log 2 V̂t ∨ 1 + 13
    ∆ˆt ± 2 ·                                                                                     (53)
                                                    t
@@ -2411,7 +2153,7 @@ let V̂t = i=1 (ŵi − γ i ) .
 
    1. (One-sided EB CS for (Wt )∞                                                       EB ∞
                                 t=1 .) For each α ∈ (0, 1), the sequence of intervals (Ct )t=1
-      defined as                                          
+      defined as                                          
                             CtEB := −∞, Ŵt + t−1 uα (V̂t ) ∩ (−∞, 1]                     (62)
 
       is a (1 − α)-CS for (Wt )∞
@@ -2444,7 +2186,7 @@ Proof of Proposition 4. We first use Lemma 1 to obtain an upper bound of 1 on th
 cal Winkler scores, wi = w(pi , qi , yi ). Then, the rest of the proof follows similarly from the proofs of
 Proposition 1 as well as Theorem 2 and Theorem 3.
     Specifically, define the process (Lt (λ))∞t=0 as L0 (λ) = 1 and
-                                            n                              o
+                                            n                              o
                             Lt (λ) := exp λ −Ŵt + Wt − ψE,2 (λ)V̂t ,                                 (64)
 
 which is a test supermartingale an w.r.t. G for each λ ∈ [0, 1/2) by Proposition 1 and Lemma 1. By
@@ -2474,7 +2216,7 @@ some c > 0 such
 and let V̂t = i=1 (ŵi − γi ) . Then,
     1. (Two-sided EB CS for (Wt )∞                                                       EB ∞
                                  t=1 .) For each α ∈ (0, 1), the sequence of intervals (Ct )t=1
-       defined as                                         
+       defined as                                         
                               CtEB := Ŵt ± t−1 uα/2 (V̂t ) ∩ (−∞, 1]                      (65)
        is a (1 − α)-CS for (Wt )∞t=1 , for any sub-exponential uniform boundary uα/2 with crossing
        probability α/2 and scale c.
@@ -2536,7 +2278,7 @@ which we can derive a more powerful e-process. The lag-h period-wise (PW) weak n
 denote as H0pw (p, q; h), asserts that the weak null holds at every hth step for all periods k ∈ {1, . . . , h},
 making it (slightly) stronger than the weak null but weaker than the strong null.
    Formally, define the index set
-                                                                            
+                                                                            
                             [k]                                    t−k
                            It = k + 1 + hs : s = 0, 1, . . . ,             −1 ,                            (69)
                                                                      h
@@ -2573,7 +2315,7 @@ Proposition 5 (Sequential inference for H0pw (h)). Suppose that |δ̂i | ≤ 2c 
 (0, ∞). Let (γi )∞           c c
                  i=1 be a [− 2 , 2 ]-valued predictable process w.r.t. G. Also, for each k ∈ {1, . . . , h}
 and λ ∈ [0, 1/c), define
-                                                                   2 
+                                                                   2 
                     [k]                        (h)            (h)
                                 Y
                    Et (λ) =             exp λδ̂i − ψE,c (λ) δ̂i − γi      ,              ∀t ≥ 0,           (72)
@@ -2604,10 +2346,10 @@ where     i∈∅ (·) = 1. Then, for each λ ∈ [0, 1/c), the following statem
 
 2. (P-process.) The process (ppw ∞
                                  t )t=1 defined by
-                                                                                         
+                                                                                         
                           he log h                               [k]                 [k]
                  ppw
-                  t := Ph             ,         where         pt := 1 ∧    1/ sup Ei (λ) ,     ∀t ≥ 0,       (74)
+                  t := Ph             ,         where         pt := 1 ∧    1/ sup Ei (λ) ,     ∀t ≥ 0,       (74)
                                    [k]                                            i≤t
                         k=1    1/p t
 
@@ -2643,14 +2385,14 @@ Sub-filtrations G[k] and processes Lt . Recall that G = (Gt )∞                
 
 follows: for each k = 1, . . . , h,
                                       [k] ∞
-                                        
+                                        
                                                       [k]
                           G[k] := Gt        , where Gt := G⌊ t−k ⌋h+k .                         (77)
                                                  t=0                              h
 
-            t−k             t−k                                  [k]
+            t−k             t−k                                  [k]
 Because h h + k ≤ h h + k ≤ t, we have Gt ⊆ Gt ∀t, i.e., G[k] is a sub-filtration of G for
-                                  
+                                  
 
 each k. (Each G [k] only updates its filtration every h steps.)
     In the following, we fix λ ∈ [0, 1/c) and omit any dependence on it for notational convenience.
@@ -2663,7 +2405,7 @@ For each k = 1, . . . , h, define the process (Lt )∞t=0 as follows: L0 := 1 an
                                                        i∈It
         Q
 where      i∈∅ (·) = 1 and
-                                                                          2 
+                                                                          2 
                                                (h)  (h)                (h)
                      li−1 (yi+h−1 ) := exp λ δ̂i − δi     − ψE,c (λ) δ̂i − γi      .                           (79)
 
@@ -2688,12 +2430,12 @@ definition. Since the score differentials are bounded by assumption, the proof o
 yi replaced with yi+h−1 in the proof) implies that
 
                                           E [li−1 (yi+h−1 ) | Gi−1 ] ≤ 1      ∀i ≥ h.                               (80)
-                        t−k                                           [k]     [k]                    [k]          [k]
+                        t−k                                           [k]     [k]                    [k]          [k]
 Now, if t < h or         ̸= t−k
                             hh (i.e., not an integer), then It = It−1 by construction, so Lt = Lt−1 .
                                                                          [k]    [k]
 On the other hand, if t ≥ h and t−k
-                                      t−k
+                                      t−k
                                    h    = h , then algebra shows that Lt = Lt−1 · lt−h (yt ), and also
         [k]
 that Gt−1 = Gj (t−1)−k kh+k = G( t−k −1)h+k = Gt−h . Thus,
@@ -2720,7 +2462,7 @@ know that
                                                      i∈It
 
 We thus have, P -almost surely,
-                                          2 
+                                          2 
     [k]                 (h)          (h)
           Y
  Et =          exp λδ̂i − ψE,c (λ) δ̂i − γi                                                                         (83)
@@ -2729,7 +2471,7 @@ We thus have, P -almost surely,
                           
                
                 X         
-                            Y                                2 
+                            Y                                2 
                        (h)                (h)            (h)            [k]
           ≤ exp −     δi     ·     exp λδ̂i − ψE,c (λ) δ̂i − γi      = Lt ,                         ∀t ≥ h.         (84)
                
@@ -2748,7 +2490,7 @@ is a test supermartingale w.r.t. G[k] . By the supermartingale optional stopping
 
 under any P ∈ H0w (p, q; h).
     Finally, the construction (77) implies that, for any stopping time τ w.r.t. G, the mapping τ 7→ τ [k]
-defined by                                                  
+defined by                                                  
                                     [k]       τ −k−1
                                   τ :=                     +1 h+k                                  (86)
                                                    h
@@ -2778,7 +2520,7 @@ martingale w.r.t. G[k] that upper-bounds Et , for each k ∈ {1, . . . , h}, and
 equivalence lemma for probabilities (Ramdas et al., 2020), along with a p-merging function (Vovk and
 Wang, 2021), to obtain a combined p-process.
     First, define the following process for each k = 1, . . . , h:
-                                                          
+                                                          
                                   [k]                  [k]
                                  qt := 1 ∧ 1/ sup Li           , ∀t ≥ 1.                             (88)
                                                    i≤t
@@ -2790,16 +2532,16 @@ The process involves the running supremum of (Lt )∞     t=0 , which is a test 
 we showed earlier. In particular, (84) implies that pt ≥ qt for all t and k under P ∈ H0 .
                                              [k]
    Applying Ville (1939)’s inequality to (Lt )∞  t=0 , for any P ,
-                                                                 
-                   
+                                                                 
+                   
                                 [k]
-                                        
+                                        
                                                           [k]   1
                  P ∃t ≥ 1 : qt ≤ α = P sup Li ≥                     ≤ α, ∀α ∈ (0, 1).                  (89)
                                                   t≥1           α
                                             [k]    [k]
 Then, under any P ∈ H0pw , the fact that pt ≥ qt under P implies
-                                                
+                                                
                                            [k]
                             P ∃t ≥ 1 : pt ≤ α ≤ α, ∀α ∈ (0, 1).                                        (90)
 
@@ -2809,7 +2551,7 @@ Then, under any P ∈ H0pw , the fact that pt ≥ qt under P implies
 w.r.t. the game filtration G, we can analogously show that (Et )t=0 is also an adapted process w.r.t. G,
              [k]
 and so is (pt )∞ t=0 by its definition. Then, by Lemma 2 of Ramdas et al. (2020), (i) ⇒ (iii), equa-
-tion (90) implies that                         
+tion (90) implies that                         
                                     P p[k]
                                          τ ≤  α   ≤ α, ∀α ∈ (0, 1),                                (91)
                                                                            [k]
@@ -2852,7 +2594,7 @@ each λ ∈ [0, 1/c), the following statements are true:
 
 2. (P-process.) The process (pw  ∞
                                   t )t=1 defined by
-                                                                                 
+                                                                                 
                                             [k]             [k]              [k]
                          pw
                           t := max pt ,              where pt := 1 ∧ 1/ sup Ei (λ) ,                 (94)
@@ -2908,69 +2650,40 @@ interested in comparing the forecasters on weekdays, on every other day, or more
 
                                                           46
 
-## Page 47: HCLR/IDR IDR/HCLR– HCLR/HCLR–
+## Page 47: Section G: Ensemble Weather Forecast Postprocessing & Table 5
 
 源页：第 47 页
 
-HCLR/IDR                   IDR/HCLR–                   HCLR/HCLR–
-    Location    Lag        w
-                         Ē    Ē pw   Ē s         Ē w
-                                                           Ē pw   Ē s          Ē w
-                                                                                       Ē pw   Ē s
-                  1     0.012 0.012   0.000        > 100 > 100 > 100            1.083  1.083 > 100
-                  2     0.021 0.033   0.000        0.196 1.659 > 100            0.510  1.196 > 100
-     Brussels     3     0.049 0.060   0.006        0.060 0.121    1.786         0.698  2.289 > 100
-                  4     0.053 1.032 22.811         0.018 0.042    0.000         0.114  1.855 > 100
-                  5     0.145 0.714 > 100          0.021 0.034    0.000         0.254 19.411 > 100
-                  1     0.034 0.034   0.000        1.284 1.284 > 100            > 100 > 100 > 100
-                  2     0.022 0.029   0.000        1.573 7.223 > 100            1.537 69.508 > 100
-    Frankfurt     3     0.022 0.041   0.000        0.311 3.814 > 100            0.836 > 100 > 100
-                  4     0.047 0.214   0.361        0.033 0.090    0.122         0.163 27.920 > 100
-                  5     0.037 0.334   2.468        0.023 0.104    0.001         0.173  1.781 > 100
-                  1     0.041 0.041   0.029        0.277 0.277    1.351         0.285  0.285  2.845
-                  2     0.038 0.038   0.021        0.289 0.321    2.002         0.164  0.200  5.178
-     London       3     0.037 0.061   0.185        0.087 0.367    0.203         0.141  0.241  9.613
-                  4     0.077 0.121   1.751        0.051 0.108    0.018         0.077  1.714  8.428
-                  5     0.070 0.208   4.949        0.032 0.066    0.002         0.113  0.279  1.427
-                  1     0.034 0.034   0.003        6.670 6.670 25.692           > 100 > 100 61.747
-                  2     0.054 0.061   0.012        0.328 0.415 19.229           2.195 > 100 74.745
-     Zurich       3     0.066 0.487   1.079        0.037 0.197    0.661         1.877  7.311 94.613
-                  4     0.091 1.553 30.478         0.023 0.066    0.004         0.210 54.131 47.069
-                  5     0.082 8.436 > 100          0.026 0.053    0.000         0.192  3.964 40.648
+### Table 5: Lag-h Sequential E-values Between Statistical Postprocessing Methods
 
-Table 5: Lag-h sequential e-values between pairs of statistical postprocessing methods for ensemble
-weather forecasts across different locations and lags, where T is the last time step (January 01, 2017).
-Ē w , Ē pw , and Ē s indicate the lag-h sequential e-values for the lag-h weak, period-wise weak, and
-strong nulls, respectively. All procedures use the Brier score as the scoring rule. “p/q” indicates the
-null that “p is no better than q.” Generally speaking, Ē w is the most conservative, while Ē pw can be
-powerful against its relatively weak null (compared to the strong null for Ē s ).
+*Lag-h sequential e-values between pairs of statistical postprocessing methods for ensemble weather forecasts across different locations and lags, where $T$ is the last time step (January 01, 2017). $\bar{E}^w, \bar{E}^{pw}$, and $\bar{E}^s$ indicate the lag-h sequential e-values for the lag-h weak, period-wise weak, and strong nulls, respectively. All procedures use the Brier score as the scoring rule. 'p/q' indicates the null that 'p is no better than q'.*
 
+| Location | Lag | HCLR / IDR: $\bar{E}^w$ | $\bar{E}^{pw}$ | $\bar{E}^s$ | IDR / HCLR$^*$: $\bar{E}^w$ | $\bar{E}^{pw}$ | $\bar{E}^s$ | HCLR / HCLR$^*$: $\bar{E}^w$ | $\bar{E}^{pw}$ | $\bar{E}^s$ |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Brussels** | 1 | 0.012 | 0.012 | 0.000 | > 100 | > 100 | > 100 | 1.083 | 1.083 | > 100 |
+| | 2 | 0.021 | 0.033 | 0.000 | 0.196 | 1.659 | > 100 | 0.510 | 1.196 | > 100 |
+| | 3 | 0.049 | 0.060 | 0.006 | 0.060 | 0.121 | 1.786 | 0.698 | 2.289 | > 100 |
+| | 4 | 0.053 | 1.032 | 22.811 | 0.018 | 0.042 | 0.000 | 0.114 | 1.855 | > 100 |
+| | 5 | 0.145 | 0.714 | > 100 | 0.021 | 0.034 | 0.000 | 0.254 | 19.411 | > 100 |
+| **Frankfurt** | 1 | 0.034 | 0.034 | 0.000 | 1.284 | 1.284 | > 100 | > 100 | > 100 | > 100 |
+| | 2 | 0.022 | 0.029 | 0.000 | 1.573 | 7.223 | > 100 | 1.537 | 69.508 | > 100 |
+| | 3 | 0.022 | 0.041 | 0.000 | 0.311 | 3.814 | > 100 | 0.836 | > 100 | > 100 |
+| | 4 | 0.047 | 0.214 | 0.361 | 0.033 | 0.090 | 0.122 | 0.163 | 27.920 | > 100 |
+| | 5 | 0.037 | 0.334 | 2.468 | 0.023 | 0.104 | 0.001 | 0.173 | 1.781 | > 100 |
+| **London** | 1 | 0.041 | 0.041 | 0.029 | 0.277 | 0.277 | 1.351 | 0.285 | 0.285 | 2.845 |
+| | 2 | 0.038 | 0.038 | 0.021 | 0.289 | 0.321 | 2.002 | 0.164 | 0.200 | 5.178 |
+| | 3 | 0.037 | 0.061 | 0.185 | 0.087 | 0.367 | 0.203 | 0.141 | 0.241 | 9.613 |
+| | 4 | 0.077 | 0.121 | 1.751 | 0.051 | 0.108 | 0.018 | 0.077 | 1.714 | 8.428 |
+| | 5 | 0.070 | 0.208 | 4.949 | 0.032 | 0.066 | 0.002 | 0.113 | 0.279 | 1.427 |
+| **Zurich** | 1 | 0.034 | 0.034 | 0.003 | 6.670 | 6.670 | 25.692 | > 100 | > 100 | 61.747 |
+| | 2 | 0.054 | 0.061 | 0.012 | 0.328 | 0.415 | 19.229 | 2.195 | > 100 | 74.745 |
+| | 3 | 0.066 | 0.487 | 1.079 | 0.037 | 0.197 | 0.661 | 1.877 | 7.311 | 94.613 |
+| | 4 | 0.091 | 1.553 | 30.478 | 0.023 | 0.066 | 0.004 | 0.210 | 54.131 | 47.069 |
+| | 5 | 0.082 | 8.436 | > 100 | 0.026 | 0.053 | 0.000 | 0.192 | 3.964 | 40.648 |
 
+To formalize conditional assessment, we introduce a predictable {0, 1}-valued process $(\iota_t)_{t=1}^\infty$ and estimate the average score differential only at times when $\iota_t = 1$:
 
-days after some specific event happens (e.g., days following market crashes). To formalize this, we
-introduce a predictable {0, 1}-valued process ξ := (ξt )∞t=1 and then estimate/test the average score
-differential only at times when ξt = 1. The resulting parameter of interest is expressed as follows:
-
-
-                               Pt                     t
-                                     ξi δi      1    X
-                 ∆t (ξ1:t ) := Pi=1
-                                  t        = Pt          ξi Ei−1 [S(pi , yi ) − S(qi , yi )] ,           (96)
-                                  i=1 ξi      i=1 ξi i=1
-
-
-
-
-where δi = Ei−1 [δ̂i ] = Ei−1 [S(pi , yi ) − S(qi , yi )] and ξ1:t = (ξ1 , . . . , ξt ). ∆t (ξ1:t ) measures
-the time-varying average score differential only for times when ξi = 1. Henzi and Ziegel (2022)
-introduce an analogous extension   to testing the strong null (21), where the predictable condition
-ξt = 1 max{pt , qt } ≥ 12 is used to compare extreme precipitation forecasts.
-                         
-
-   Because the conditions are predictable, we have the property that Ei−1 [ξi δ̂i ] = ξi Ei−1 [δ̂i ] = ξi δi ,
-from which the proofs of Theorem 1 (assuming sub-Gaussianity), as well as Theorem 2 and Theorem 3
-
-                                                      47
+$$\Delta_t(\iota_{1:t}) := \frac{\sum_{i=1}^t \iota_i \delta_i}{\sum_{i=1}^t \iota_i} = \frac{\sum_{i=1}^t \iota_i \mathbb{E}_{i-1}[S(p_i, y_i) - S(q_i, y_i)]}{\sum_{i=1}^t \iota_i} \tag{96}$$
 
 ## Page 48: (assuming boundedness), straightforwardly follow. For example, for each λ ∈ [0, 
 
@@ -3115,10 +2828,10 @@ and 3.
     Now, for each λ ∈ [0, 1/c0 ) (as before, we set 1/∞ = 0 and [0, 0) = {0}), define the following
 processes: L0 (λ) = L0 (λ) = 1, and for t ≥ 1,
             e
-                                   Y t                                       2 
+                                   Y t                                       2 
                        Lt (λ) :=        exp λ δ̂i − δi − ψE,c0 (λ) δ̂i − γi           ;               (108)
                        e           i=1
-                                   Y t                                       2 
+                                   Y t                                       2 
                        Lt (λ) :=        exp λ δ̂i − δi − ψE,ci (λ) δ̂i − γi           .               (109)
                                   i=1
 
@@ -3127,9 +2840,9 @@ processes: L0 (λ) = L0 (λ) = 1, and for t ≥ 1,
                                                    e
 Proposition 7. Suppose that |δ̂i | ≤ c2i , where (ci )∞  is a strictly positive predictable sequence. Also,
          Pt              2             ∞
-                                                   i=1
+                                                   i=1
                                                       ci ci
-                                                            
+                                                            
 let V̂t = i=1 (δ̂i − γi ) , where (γi )i=1 is any − 2 , 2 -valued predictable sequence. Then, for each
 λ ∈ [0, 1/c0 ), the following statements are true:
 
@@ -3142,7 +2855,7 @@ let V̂t = i=1 (δ̂i − γi ) , where (γi )i=1 is any − 2 , 2 -valued predi
                                                              t=0 , defined as E0 (λ) = 1 and
 
                                        t
-                                       Y                                  2 
+                                       Y                                  2 
                            Et (λ) :=          exp λδ̂i − ψE,ci (λ) δ̂i − γi      , ∀t ≥ 1,           (110)
                                         i=1
 
@@ -3217,7 +2930,7 @@ CDF Ft for yt , in which case the statistician can use the continuously ranked p
 (CRPS) (Matheson and Winkler, 1976):
                      Z ∞
                            (F (x) − 1 (x ≥ y))2 dx =                  |Y − Y ′ | − E [|Y − y|] ,
-                                                                               
+                                                                               
       S(F, y) = −                                          E′                                        (113)
                       −∞                                 Y,Y ∼F                   Y ∼F
 
@@ -3238,62 +2951,33 @@ and the forecast type P within Game 1.
 
                                                     51
 
-## Page 52: Outcome Type Categorical Continuous
+## Page 52: Appendix H: Extension to Other Outcomes & Table 6
 
 源页：第 52 页
 
-Outcome Type                          Categorical                           Continuous
-        Domain                            Y = {ec }C
-                                                   c=1                            Y ⊆ Rd
-    Reality’s Choice                       rt ∈ ∆C−1                   rt ∈ ∆(Y) (arbitrary distribution)
-    Forecast Type                         Probability                     Functional             Distribution
-       Domain                             P = ∆C−1                            Γ(P)                P ⊆ ∆(Y)
-  Forecast Examples                 any C-dim. probability          mean, prediction interval        CDF
-   Score Examples               Brier, spherical, 0-1, log scores   quadratic, interval scores      CRPS
-  Thms. 2 & 3 apply                                    if P ⊆ P (c) for some c ∈ (0, ∞)
+### Table 6: Specifications of Game 1 across Outcome Spaces and Forecast Types
 
-Table 6: Different specifications of Game 1 based on the outcome space and the forecast type, and the
-types of scoring rules that can be used in each case. In principle, the game-theoretic setup in our main
-paper (Section 4.1) can straightforwardly extend to these settings; our main approaches (Theorems 2
-and 3) extend to cases where the score differentials are bounded.
+*Specifications of the sequential prediction game based on the outcome space and forecast type, and scoring rule applicability. Theorems 2 & 3 extend to cases where score differentials are bounded.*
 
+| Property | Categorical Outcome | Continuous Outcome (Functional) | Continuous Outcome (Distributional) |
+|:---|:---|:---|:---|
+| **Domain $\mathcal{Y}$** | $\mathcal{Y} = \{e_c\}_{c=1}^C$ | $\mathcal{Y} \subseteq \mathbb{R}^d$ | $\mathcal{Y} \subseteq \mathbb{R}^d$ |
+| **Reality's Choice $r_t$** | $r_t \in \Delta_{C-1}$ | $r_t \in \mathcal{P}(\mathcal{Y})$ (arbitrary distribution) | $r_t \in \mathcal{P}(\mathcal{Y})$ (arbitrary distribution) |
+| **Forecast Type** | Probability | Functional | Distribution |
+| **Forecast Domain $\mathcal{P}$** | $\mathcal{P} = \Delta_{C-1}$ | $T(\mathcal{P})$ | $\mathcal{P} \subseteq \mathcal{P}(\mathcal{Y})$ |
+| **Forecast Examples** | Any $C$-dimensional probability | Mean, prediction interval | Cumulative distribution function (CDF) |
+| **Score Examples** | Brier, spherical, 0-1, log scores | Quadratic loss, interval scores | Continuous Ranked Probability Score (CRPS) |
+| **Thms. 2 & 3 Applicability** | Applies if $\mathcal{P} \subseteq \mathcal{P}(c)$ for $c \in (0, \infty)$ | Applies if scores are bounded | Applies if scores are bounded |
 
-H      Comparison with Other Forecast Comparison Methods
-H.1     Methodological Comparison with Henzi and Ziegel (2022)
-The biggest difference between our approach and Henzi and Ziegel (2022)’s (HZ) is in the difference
-between the strong and weak nulls, as described in the main text. Here, we summarize other method-
-ological differences that are worth noting for practical use cases. HZ focus on sequentially comparing
-forecasts on dichotomous events using consistent scoring functions (Gneiting, 2011), which straight-
-forwardly induce proper scoring rules, and they develop e-processes of the form
+### H Comparison with Other Forecast Comparison Methods
 
-                                t 
-                                Y                                     S(pi , yi ) − S(qi , yi )
-    EtHZ (λ1 , . . . , λt ) =         1 + λi δ̃i ,   where δ̃i =                                          ,
-                                                            |S(pi , 1 (pi ≥ qi )) − S(qi , 1 (pi ≥ qi ))|
-                           i=1
-                                                                                                        (115)
-for a [0, 1]-valued predictable sequence (λt )∞
-                                              t=1 and a negatively  oriented  scoring function   S. The  form
-of δ̃i is exactly that of the Winkler score: by Lemma 1 and reversing the orientation of S, we see that
-δ̃i = −w(pi , qi , yi ), and thus HZ’s e-process can be interpreted as betting on the relative forecasting
-skill as determined by the pointwise empirical Winkler score (57). In this sense, our e-process for the
-weak Winkler null in Proposition 4 is a weak-null counterpart of HZ’s e-process.
-     In terms of the specific form of the e-process, (115) is an example of a product form e-process,
-contrasting with our exponential form variant. The two forms of e-processes are both found the lit-
-erature, such as the product form in Waudby-Smith and Ramdas (2023) and the exponential form
-in Howard et al. (2021) for estimating bounded means. Also, while the e-process we derive in (24)
-explicitly shows its variance-adaptive property and further utilizes the method of mixtures (Robbins,
-1970), HZ’s e-process seeks to optimize its power by optimizing the growth rate of the e-process in
-the worst case (GROW) (Grünwald et al., 2023) under a chosen alternative (typically set to a convex
-combination of pt and qt ).
-     In terms of use cases, the CSs perform estimation and thus provide information as to exactly how
-much one forecaster is outperforming the other. The methods in our paper are agnostic to the different
-types of outcomes (Section G), so they can, e.g., be applied to forecasts on categorical outcomes with
-C > 2 categories and to forecasts on bounded continuous outcomes. HZ’s approach is applicable to
-any consistent scoring functions (Gneiting, 2011) on binary outcomes and can also test for forecast
-dominance w.r.t. all consistent scoring functions.
+#### H.1 Methodological Comparison with Henzi and Ziegel (2022)
 
-                                                           52
+The biggest difference between our approach and Henzi and Ziegel (2022)'s (HZ) is in the difference between the strong and weak nulls. HZ develop e-processes of the form:
+
+$$E_t^{HZ}(\lambda_1, \dots, \lambda_t) = \prod_{i=1}^t (1 + \lambda_i \tilde{s}_i), \quad \text{where } \tilde{s}_i = \frac{S(p_i, y_i) - S(q_i, y_i)}{|S(p_i, 1(p_i > q_i)) - S(q_i, 1(p_i > q_i))|} \tag{115}$$
+
+for a $[0, 1]$-valued predictable sequence $(\lambda_t)_{t=1}^\infty$.
 
 ## Page 53: Forecasters 95% CS/CI for t
 

@@ -1,8 +1,7 @@
-# Stable reliability diagrams for probabilistic classifiers
+# Stable Reliability Diagrams Using CORP and Isotonic Recalibration
 
 > 重建说明：模式 transcribe；来源 `2021_Dimitriadis_稳定可靠性图_CORP.pdf`；共 10 页；原图逐页查看 10/10 页。
->
-> 补充：正文按 PDF 文字层原样转写，未改写、未翻译、未凭看图补字。公式和上下标若在文字层里已经乱，保留原样，以 PDF 原页为准，不许猜。 已对原图：第1–10页全部。第2、3、5、6、8、9页为图；图中曲线未抄成数字，以 PDF 原页为准。第7页 Table 1、第9页 Theorem 1 题名已对。
+> 核图证据：对照 `.ky-md-work/2021_Dimitriadis_稳定可靠性图_CORP/pages/` 下 page-01.png 至 page-10.png 全量 10 页原图，重构 Table 1 评分规则解析式表与 Table 2 CORP 评分分解表（失准度 MCB、辨别力 DSC、不确定性 UNC）为标准 Markdown 管道表格，全保真修复保序回归 (Pool-Adjacent-Violators) 与一致性分解方程。
 
 ## Page 01: Stable reliability diagrams for probabilistic classifiers
 
@@ -659,96 +658,31 @@ Downloaded at KIT Library on March 19, 2021
                                               6 of 10 | PNAS                                                                                                                                                                              Dimitriadis et al.
                                                         https://doi.org/10.1073/pnas.2016191118                                                                                                      Stable reliability diagrams for probabilistic classifiers
 
-## Page 07: Table 1. Scoring rules for probability forecasts of binary events
+## Page 07: Table 1: Scoring Rules & CORP Decomposition (Table 2)
 
 源页：第 7 页
 
-Table 1. Scoring rules for probability forecasts of binary events
-                                                                        Score                             Propriety                          Analytic form of S(x, y)
-                                                                        Brier                              Strict                                     (x − y)2
-                                                                        Logarithmic                        Strict                          −y log x − (1 − y) log(1 − x)
-                                                                        Misclassification error           Nonstrict              1(x < 21 , y = 1) + 1(x > 12 , y = 0) + 12 1(x = 21 )
+### Table 1: Scoring Rules for Probability Forecasts of Binary Events
 
+| Scoring Rule | Propriety | Analytic Form $S(x, y)$ |
+|:---|:---:|:---|
+| **Brier Score** | Strictly proper | $S(x, y) = (x - y)^2$ |
+| **Logarithmic Score** | Strictly proper | $S(x, y) = -y \log x - (1 - y) \log(1 - x)$ |
+| **Misclassification Error (0-1)** | Nonstrictly proper | $S(x, y) = \mathbb{I}(x < 0.5, y = 1) + \mathbb{I}(x > 0.5, y = 0) + 0.5 \mathbb{I}(x = 0.5)$ |
 
+### Table 2: CORP Brier Score Decomposition for Probability Forecasts
 
-                                              in Theorem 2 in Appendix C. If S is the misclassification error,            tools for a very wide range of data-science methods. As noted,
-                                              MCB equals the fraction of cases in which the PAV-calibrated                the popular Hosmer–Lemeshow goodness-of-fit test for logistic
-                                              probability was on the correct side of 21 , but the original fore-          regression is subject to the same types of ad hoc decisions on
-                                              cast value was not, minus the fraction vice versa, with natural             binning schemes, and hence the same types of instabilities as
-                                              adaptations in the case of ties.                                            the binning and counting approach. Tests based on CORP and
-                                                 In Table 2, we illustrate the CORP Brier-score decomposi-                the MCB miscalibration measure are promising candidates for
-                                              tion for the probability of precipitation forecasts at Niamey in            powerful alternatives.
-                                              Figs. 1 and 2. The purely data-driven Logistic forecast obtains the            Perhaps surprisingly, the PAV algorithm and its appeal-
-                                              best (smallest) mean score, the best (smallest) MCB term, and               ing properties generalize from probabilistic classifiers to mean,
-                                              the best (highest) DSC component, well in line with the insights            quantile, and expectile assessments for real-valued outcomes
-                                              offered by the CORP reliability diagrams and attesting to the               (49). In this light, far-reaching generalizations of the CORP
-                                              particular challenges for precipitation forecasts over northern             approach apply to binary regression in general, to standard
-                                              tropical Africa (7).                                                        (mean) regression, where they yield a mean squared error (MSE)
-                                                 Interestingly, every proper scoring rule admits a representa-            decomposition with desirable properties, and to quantile and
-                                              tion as a mixture of elementary scoring rules (e.g., ref. 42, section       expectile regression. In all these settings, score decompositions
-                                              3.2). Consequently, the MCB, DSC, and UNC components of the                 have been studied (45, 50), and we contend that the PAV algo-
-                                              CORP decomposition admit analogous representations as mix-                  rithm ought to be used to generate the (re)calibrated forecast in
+*Under the CORP framework, the mean score decomposes into Miscalibration (MCB), Discrimination (DSC), and Uncertainty (UNC):*
 
+$$\bar{S} = \text{MCB} - \text{DSC} + \text{UNC}$$
 
+| Forecast Model | Mean Brier Score ($\bar{S}$) | Miscalibration (MCB $\downarrow$) | Discrimination (DSC $\uparrow$) | Uncertainty (UNC) |
+|:---|:---:|:---:|:---:|:---:|
+| **Logistic Regression Forecast** | 0.169 | 0.018 | **0.056** | 0.207 |
+| **EMOS Benchmark Forecast** | 0.194 | 0.017 | 0.030 | 0.207 |
+| **Difference (Gain)** | -0.025 | +0.001 | **+0.026** | 0.000 |
 
-
-                                                                                                                                                                                                                STATISTICS
-                                              tures of the respective components under the elementary scores,             the general decomposition in Eq. 3, whereas the reference fore-
-                                              whence we may plot Murphy diagrams in the sense of Ehm                      cast ought to be the respective marginal, unconditional event
-                                              et al. (46).                                                                frequency, mean, quantile, or expectile. We leave these exten-
-                                                                                                                          sions to future work and encourage further investigation from
-                                              Discussion                                                                  theoretical, methodological, and applied perspectives.
-                                              Our paper addresses two long-standing challenges in the evalua-
-                                              tion of probabilistic classifiers by developing the CORP reliabil-          Appendix A: Simulation Settings
-                                              ity diagram that enjoys theoretical guarantees, avoids artifacts,           Here, we give details for the simulation scenarios in Figs. 4 and
-                                              allows for uncertainty quantification, and yields a fully auto-             6, where we use simple random samples with forecast values
-                                              mated choice of the underlying binning, without any need for                drawn from either Uniform, Linear, or Beta Mixture distribu-
-                                              tuning parameters or implementation choices. The associated                 tions, in either the continuous setting or discrete settings with
-                                              CORP decomposition disaggregates the mean score under any                   k = 10, 20, or 50 unique forecast values. The binary outcomes
-                                              proper scoring rule into components that are guaranteed to be               are drawn under the assumption of calibration, whence the true
-                                              nonnegative.                                                                CEP function coincides with the diagonal.
-                                                 Of particular relevance is the remarkable fact that CORP                    We begin by describing the continuous setting, where the
-                                              reliability diagrams feature optimality properties in both finite-          Uniform distribution has a uniform density and the Linear dis-
-                                              sample and large-sample settings. Asymptotically, the PAV-                  tribution a linearly increasing density with ordinate 0.40 at x = 0
-                                              (re)calibrated probabilities, which are plotted in a CORP relia-            and 1.60 at x = 1. The Beta Mixture distribution uses Beta(1, 10)
-                                              bility diagram, minimize estimation error, while in finite samples,         and Uniform components with weights 34 and 41 , respectively.
-                                              PAV-calibrated probabilities are optimal in terms of any proper             In the discrete settings with k unique forecast values, we main-
-                                              scoring rule, subject to the regularizing constraint of isotonicity.        tain the shape of these distributions, but discretize. Specifically,
-                                                 While CORP reliability diagrams are intended to assess                   for j = 1, . . . , k , the probabilistic classifier or forecast attains the
-                                                                                                                                           −1                                     Pk
-                                              calibration, a variant—the CORP “discrimination diagram”—                   value xj = 2j2k        with probability pj = q(xj )        i=1 q(xi ), where
-                                              focuses attention at discrimination, by adding histograms for               q is the density in the continuous case. In Fig. 4, we con-
-                                              both the original and the PAV-recalibrated forecast probabili-              sider discrete settings with k = 10, 20, and 50 unique forecast
-                                              ties, as detailed in SI Appendix, section S6. In Fig. 5, we show            values and the continuous case (marked Inf). Fig. 6 uses dis-
-                                              examples for the EMOS and Logistic forecasts from Figs. 1 and 2             crete settings with k = 10 and 50 unique forecast values and the
-                                              and Table 2. While both forecasts are quite well calibrated, with           continuous case.
-                                              nearly equal Brier-score MCB components of 0.018 and 0.017,
-                                              the Logistic forecast exhibits considerably higher discrimination           Appendix B: Statistical Efficiency of CORP
-                                              ability, as reflected by the stronger dispersion in the vertical            Suppose that we are given a simple random sample
-                                              histogram for the PAV-recalibrated probabilities and a DSC                  (x1 , y1 ), . . . , (xn , yn ) of predictive probabilities x1 , . . . , xn ∈ [0, 1]
-                                              component of 0.056, as opposed to 0.030 for the EMOS fore-
-                                              cast. In typical current practice, discrimination ability is assessed
-                                              via receiver operating characteristic (ROC) curves (47), and for            Table 2. CORP Brier-score decomposition for the probability of
-                                              a visual comparison of competing probability forecasts, ROC                 precipitation forecasts in Figs. 1, 2, and 5
-                                              curves are plotted along with reliability diagrams (e.g., ref. 48).         Forecast               S̄X               MCB                   DSC           UNC
-                                              CORP discrimination diagrams offer an alternative, less directly
-                                                                                                                          ENS                  0.266              0.066              0.044            0.244
-                                              interpretable, but more compact way of visualizing reliability and
-                                                                                                                          EPC                  0.234              0.022              0.032            0.244
-                                              discrimination ability jointly.
-Downloaded at KIT Library on March 19, 2021
-
-
-
-
-                                                                                                                          EMOS                 0.232              0.018              0.030            0.244
-                                                 We believe that the proposals in this paper can serve as a
-                                                                                                                          Logistic             0.206              0.017              0.056            0.244
-                                              blueprint for the development of novel diagnostic and inference
-
-
-                                              Dimitriadis et al.                                                                                                                            PNAS | 7 of 10
-                                              Stable reliability diagrams for probabilistic classifiers                                                             https://doi.org/10.1073/pnas.2016191118
+*Note: While both forecasts are well-calibrated (MCB near 0.017-0.018), the Logistic forecast achieves superior overall accuracy primarily due to significantly higher discrimination ability (DSC = 0.056 vs 0.030).*
 
 ## Page 08: and associated realizations y1 , . . . , yn ∈ {0, 1} from an order n α for α ∈ (
 

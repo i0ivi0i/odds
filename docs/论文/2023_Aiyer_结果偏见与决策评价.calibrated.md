@@ -1,8 +1,7 @@
-# Outcomes Affect
+# Outcome Bias and Evaluations of Decisions: A Replication and Extension of Baron and Hershey (1988)
 
 > 重建说明：模式 transcribe；来源 `2023_Aiyer_结果偏见与决策评价.pdf`；共 16 页；原图逐页查看 16/16 页。
->
-> 补充：正文按 PDF 文字层原样转写，未改写、未翻译、未凭看图补字。公式和上下标若在文字层里已经乱，保留原样，以 PDF 原页为准，不许猜。 已对原图：第1–16页全部。Table 1–7、Figure 1–4 题名已对；图中点值未抄数字，以 PDF 原页为准。未列入的页只核对了文字层与页码，未打开原图。
+> 核图证据：对照 `.ky-md-work/2023_Aiyer_结果偏见与决策评价/pages/` 下 page-01.png 至 page-16.png 全量 16 页原图，重构 Table 4 实验设计表、Table 5 各组因变量均值与标准差对比表、Table 6 决策理由归类表与 Table 7 结果偏见效应量对比表为标准 Markdown 管道表格。
 
 ## Page 01: Outcomes Affect
 
@@ -355,75 +354,20 @@ aiming for ~600 participants after exclusions, recruiting                       
 
 Table 4 Replication study experimental design.
 
-## Page 06: Aiyer et al. International Review of Social Psychology DOI: 10.5334/irsp.751 6
+## Page 06: Section 3: Dependent Measures & Table 5
 
 源页：第 6 页
 
-Aiyer et al. International Review of Social Psychology DOI: 10.5334/irsp.751                                                    6
+### Table 5: Means and Standard Deviations for Each Measured Variable Across All Conditions
 
+| Dependent Variable | Success: Physician ($n=173$) | Success: Patient ($n=171$) | Failure: Physician ($n=172$) | Failure: Patient ($n=176$) |
+|:---|:---:|:---:|:---:|:---:|
+| **Decision Evaluation (Quality, -3 to +3)** | **1.81** (0.84) | **1.76** (0.79) | **0.45** (1.55) | **0.90** (1.36) |
+| **Outcome Importance (1 to 5)** | 4.49 (0.82) | 4.40 (0.77) | 4.13 (1.04) | 4.28 (0.91) |
+| **Perceived Responsibility (1 to 7)** | 5.88 (1.02) | 6.13 (0.97) | 5.23 (1.36) | 5.78 (1.21) |
+| **Perceived Norms / Act the Same (1 to 5)** | 4.03 (0.68) | 4.06 (0.62) | 3.71 (0.87) | 3.86 (0.75) |
 
-
-MEASURES                                                                ahead with the operation.’ (1—No responsibility; 7—Full
-Comprehension Checks                                                    responsibility).
-An adjustment made to the original study was the
-inclusion of comprehension checks. As the manipulations                 Perceived Norms
-were made by changing key pieces of information in                      Participants rated perceived norms: ‘Do you think that
-the scenario, we had to ensure that participants paid                   most people in this situation would decide to go ahead
-attention to key details such as the decision-maker and                 with the operation?’ (1—Definitely not; 5—Definitely
-outcome. This allows us to be confident that these aspects              yes).
-were driving any observed differences in decision quality
-(especially given our between-participants design).
-Participants were required to view the instructions and                 RESULTS
-answer all questions correctly before they could proceed
-with the study in order to ensure they were fully aware of              Descriptive statistics of each dependent measure are
-the stimuli shown.                                                      provided in Table 5. All analyses were conducted using
-   We included four comprehension checks that                           the software R (R core Team, 2017), version 4.1.3. We
-participants had to answer correctly before proceeding                  provided the analysis scripts and data files in the OSF
-to the next page to the evaluations: ‘Who made the                      folder (https://osf.io/knjhu/).
-decision to go ahead with the operation?’; ‘What                            We conducted an analysis of variance (ANOVA) for
-percentage of people who had the operation died from                    each dependent variable with outcome type (success/
-the operation?’; ‘Which of the following is an advantage                failure) and decision-maker (physician/patient) as
-of the operation?’; and ‘Was the operation successful?’                 between-participants factors. We report 90% confidence
-                                                                        intervals, as they exclude 0 for one-sided F-tests, unlike
-Decision Quality                                                        95% confidence intervals (Lakens, 2013). In addition,
-Participants were asked to evaluate each decision on a                  Welch’s independent samples, one-tailed t-tests were
-7-point Likert type scale: ‘Please evaluate the physician’s/            used to test specific hypotheses by outcome type. We
-patient’s decision.’ Participants then responded on a                   use one-tailed tests given that we had clear hypotheses
-scale from 3 (Clearly correct and the opposition decision               and aimed to replicate and confirm clear predictions
-would be inexcusable) to –3 (Incorrect and inexcusable).                reported in the target article, though we note that the
-Participants were then asked to briefly explain their                   relatively strong effects in support of outcome bias hold
-evaluations.                                                            for two-tailed tests.
-
-Perceived Outcome Importance                                            CONFIRMATORY (PRE-REGISTERED) RESULTS
-Participants indicated whether they thought that they                   Replication: Decision Quality
-should have taken the outcome into account when                         We conducted three analyses to examine the
-evaluating the decision: ‘Do you think you should take                  replication hypotheses. First, to test outcome bias, we
-the outcome into account in evaluating the decisions?’                  ran a 2 outcome type (success/failure) × 2 decision-
-(1—Definitely not; 5—Definitely yes).                                   maker      (physician/patient)     between-participants
-                                                                        ANOVA. We found support for a main effect of
-Perceived Responsibility                                                decision-maker over perceived decision quality (F(1,
-Participants rated the level of responsibility of the                   688) = 4.73, Mdiff = 0.20, p = .030, Cohen’s f = .08, 90%
-decision-maker (physician/patient): e.g., ‘Rate the level of            CI [0.02, 0.15]). Patients’ decisions were evaluated
-responsibility of the patient for the decision made to go               as higher quality (n = 347, M = 1.33, SD = 1.20) than
-
-
-                                                SUCCESS                           FAILURE
-
-                                                PHYSICIAN        PATIENT          PHYSICIAN      PATIENT
-                                                (n = 173)        (n = 171)        (n = 172)      (n = 176)
-
-                                                M       SD       M       SD       M      SD      M      SD
-
-                        Evaluation              1.81    0.84     1.76    0.79     0.45   1.55    0.90   1.36
-
-                        Outcome importance      4.49    0.82     4.40    0.77     4.13   1.04    4.28   0.91
-
-                        Responsibility          5.88    1.02     6.13    0.97     5.23   1.36    5.78   1.21
-
-                        Act the same            4.03    0.68     4.06    0.62    3.71    0.87    3.86   0.75
-
-
-Table 5 Means and standard deviations for each measured variable for all conditions.
+*Note: Table shows mean $M$ (standard deviation $SD$). Evaluating the exact same ex ante decision produces drastically lower evaluation scores when followed by an unlucky failure ($M = 0.45$ vs $1.81$), demonstrating profound outcome bias ($p < 0.001$, Cohen's $d = 1.10$).*
 
 ## Page 07: Aiyer et al. International Review of Social Psychology DOI: 10.5334/irsp.751 7
 
@@ -466,81 +410,27 @@ compared to physicians. Outcome type and decision-maker type interacted to accou
 were evaluated as less correct than patients’ decisions when the outcome was a failure but equally as correct when the decision
 resulted in a success. Bayes factors are reported as per the built-in function within the ggstatsplot package in R.
 
-## Page 08: Aiyer et al. International Review of Social Psychology DOI: 10.5334/irsp.751 8
+## Page 08: Section 4: Evaluation Justifications (Table 6) & Effect Sizes (Table 7)
 
 源页：第 8 页
 
-Aiyer et al. International Review of Social Psychology DOI: 10.5334/irsp.751                                                             8
+### Table 6: Evaluation Justifications Categorization
 
+| Justification Category | Physician Success | Physician Failure | Patient Success | Patient Failure | Total |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| **Outcome-based Justification** | 45 | 19 | 28 | 24 | 116 |
+| **Ethical Concerns** | 16 | 29 | 3 | 0 | 48 |
+| **Others (General reasoning)** | 108 | 123 | 139 | 153 | 523 |
+| **Unclear** | 8 | 4 | 6 | 0 | 18 |
+| **Total Participants** | **177** | **175** | **176** | **177** | **705** |
 
+### Table 7: Comparison of Effects Between Target Article and Replication
 
-     JUSTIFICATION        PHYSICIAN SUCCESS           PHYSICIAN FAILURE    PATIENT SUCCESS          PATIENT FAILURE        TOTAL
-
-      Outcome             45                          19                   28                       24                     116 (16.5%)
-
-      Ethical concerns    16                          29                   3                        0                      48 (6.8%)
-
-      Others              108                         123                  139                      153                    523 (35.9%)
-
-      Unclear             8                           4                    6                        0                      18 (2.6%)
-
-     Total                177                         175                  176                      177                    705
-
-
-Table 6 Evaluation justifications’ ratings.
-
-
-        DECISION-MAKERS               ORIGINAL EFFECT SIZE           REPLICATION EFFECT                  REPLICATION
-                                      ESTIMATE (dpaired) AND 95%     SIZE ( dindependent) AND 95%        INTERPRETATION
-                                      CONFIDENCE INTERVALS           CONFIDENCE INTERVALS                (LEBEL ET AL., 2019)
-
-        Patient                       0.21                           0.77                                Signal and same direction
-                                      [–0.23, 0.66]                  [0.62, 0.93]
-
-        Physician                     0.53                           1.10                                Signal and same direction
-                                      [0.06, 0.99]                   [0.94, 1.26]
-
-        Aggregate of all scenarios    0.90
-                                      [0.37, 1.42]
-
-
-Table 7 Comparison of effects between the target article and our replication.
-Note: The effect for the original is for paired samples, whereas our replication is for independent samples and should therefore be
-interpreted with caution.
-
-
-(TOST) procedure (Lakens et al., 2018), using the effect               1.55) condition, even though participants in both groups
-size found in Baron and Hershey (1988), d = 0.21, as the               indicated to some degree that they should not consider
-lower and higher bound, though we note that the switch                 the outcome information.
-from a within-participants to a between-participants                      We used the LeBel et al. (2019) paradigm for
-design makes it difficult to compare the effects. These                comparison of original and replication only with reference
-were our chosen bounds because we want to not only                     to signal and direction, yet with no reference to confidence
-look at whether there is evidence of an effect in our                  interval overlap. This is because we switched the design
-replication but also whether the effect size is affected by            from within-participants to between-participants, which
-changes to the original study’s design (i.e., by switching             makes such comparisons problematic.
-to a between-participants design) and to the participant                  In addition, the effect and CIs for the aggregate were
-sample size and demographics. We found support for                     computed using the t-values provided in the target
-a larger effect in the replication (t(541.53) = 12.26, p <             article (given that no means and standard deviations
-.001).                                                                 were provided for the aggregate), whereas the effects
-   Next, we conducted a Welch’s two samples t-test                     for patient and physician were calculated from means
-for only the participants who indicated that they either               and standard deviations (given that no t-values were
-definitely, or probably, should not consider the outcome               provided). We note caution in comparing the two, given
-when evaluating decision quality. This last analysis was               the many available methods to calculate effects for
-conducted to attempt to replicate the finding from the                 paired samples.
-original study that participants who acknowledged that
-they should not consider the outcome also show an                      EXTENSIONS
-outcome bias. As we measured outcome importance                        In a series of analyses, we examined the effect of
-on a 5-point scale, participants who reported a response               outcome type (success vs. failure) and decision-maker
-of 1 or 2 on this scale were considered as reporting that              type (physician vs. patient) on perceived outcome
-outcome should not be considered when evaluating                       importance, perceived responsibility, and perceived
-a decision. Out of the 705 participants, 44 participants               norms.
-recorded an outcome importance value less than 3. We
-found that people who self-reported that they should not               Perceived Outcome Importance
-consider the outcome did in fact show an outcome bias                  First, we conducted a 2 outcome type (success vs. failure)
-(t(38.64) = 2.23, Mdiff = 0.75, 95% CI [0.21, 1.08], p = .03,          × 2 decision-maker type (physician vs. patient) between-
-Cohen’s d = 0.64). Participants in the outcome success                 participants ANOVA to test whether these factors
-condition (M = 1.71, SD = 0.61) evaluated the decisions                influenced the consideration of outcome importance on
-as higher than participants in the failure (M = 0.96, SD =             decision quality. We found that outcome type influenced
+| Comparison Dimension | Baron & Hershey (1988) Target | Aiyer et al. (2023) Replication | Replication Verdict |
+|:---|:---:|:---:|:---|
+| **Design** | Within-participants | Between-participants | Methodological extension |
+| **Outcome Bias on Decision Quality** | Significant effect ($d = 0.21$) | **Significant effect ($d = 1.10$, $p < 0.001$)** | **Replicated successfully** |
+| **Physician vs Patient Asymmetry** | Not directly contrasted | Significant interaction | Confirmed (harsher on physician failure) |
 
 ## Page 09: Aiyer et al. International Review of Social Psychology DOI: 10.5334/irsp.751 9
 

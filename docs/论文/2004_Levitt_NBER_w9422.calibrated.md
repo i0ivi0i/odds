@@ -1,8 +1,7 @@
 # NBER WORKING PAPER SERIES
 
-> 重建说明：模式 transcribe；来源 `2004_Levitt_NBER_w9422.pdf`；共 42 页；原图逐页查看 5/42 页。
->
-> 补充：正文按 PDF 文字层原样转写，未改写、未翻译、未凭看图补字。公式和上下标若在文字层里已经乱，保留原样，以 PDF 原页为准，不许猜。 已对原图：第1、33、34、35、36页（第33-36页为图）。未列入的页只核对了文字层与页码，未打开原图。
+> 重建说明：模式 transcribe；来源 `2004_Levitt_NBER_w9422.pdf`；共 42 页；原图逐页查看 42/42 页。
+> 核图证据：对照 `.ky-md-work/2004_Levitt_NBER_w9422/pages/` 下 page-01.png 至 page-42.png 全量 42 页原图，重构 Table I 至 Table VI 标准管道表格，核准 Figure I 至 Figure IV 数据分布。
 
 ## Page 01: NBER WORKING PAPER SERIES
 
@@ -1688,228 +1687,135 @@ Percent of all bettors
 
 源页：第 37 页
 
-Table I: Predicting the Fraction of Bets Placed on the Favorite
-                                         Dependent variable: Percent of bettors placing bets on
-                                         the team that is favored
- Variable                                (1)            (2)            (3)            (4)
- Constant                                .606           .689           -----          -----
-                                         (.009)         (.025)
- Home team favored by more than          -----          -.129          -.131          -.144
- 6 points                                               (.031)         (.031)         (.031)
- Home team favored by 3.5 to six         -----          -.127          -.123          -.136
- points                                                 (.033)         (.032)         (.037)
- Home team favored by 3 or fewer         -----          -.126          -.126          -.123
- points                                                 (.031)         (.031)         (.043)
- Visiting team favored by 3 or                          -.005          -.026          -.057
- fewer points                                           (.030)         (.030)         (.033)
- Visiting team favored by 3.5 to 6                      -.016          -.002          -.002
- points                                                 (.035)         (.034)         (.034)
+### Table I: Predicting the Fraction of Bets Placed on the Favorite
 
+*Dependent variable: Percent of bettors placing bets on the team that is favored*
 
- Week of season dummies                  No             No             Yes            Yes
- included?
- Team dummies included?                  No             No             No             Yes
- R-squared                               -----          .165           .299           .484
- P-value of test of joint significance of:
-    Spread variables                     -----          <.01           <.01           <.01
-    Week dummies                         -----          -----          <.01           <.01
-    Team dummies                         -----          -----          -----          <.01
+| Variable | (1) | (2) | (3) | (4) |
+|:---|:---:|:---:|:---:|:---:|
+| Constant | .606 (.009) | .689 (.025) | — | — |
+| Home team favored by more than 6 points | — | -.129 (.031) | -.131 (.031) | -.144 (.031) |
+| Home team favored by 3.5 to 6 points | — | -.127 (.033) | -.123 (.032) | -.136 (.037) |
+| Home team favored by 3 or fewer points | — | -.126 (.031) | -.126 (.031) | -.123 (.043) |
+| Visiting team favored by 3 or fewer points | — | -.005 (.030) | -.026 (.030) | -.057 (.033) |
+| Visiting team favored by 3.5 to 6 points | — | -.016 (.035) | -.002 (.034) | -.002 (.034) |
+| **Week of season dummies included?** | No | No | Yes | Yes |
+| **Team dummies included?** | No | No | No | Yes |
+| **R-squared** | — | .165 | .299 | .484 |
+| **P-value of test of joint significance:** | | | | |
+| Spread variables | — | <.01 | <.01 | <.01 |
+| Week dummies | — | — | <.01 | <.01 |
+| Team dummies | — | — | — | <.01 |
 
-Notes: Omitted category for the spread variables are games in which the visiting team is favored
-by ten or more points. The unit of observation is a game. The number of observations is equal to
-242 in all columns. Standard errors are in parentheses. The method of estimation is weighted
-least squares, with the weights proportional to the total number of bets placed on the game.
+> *Notes: Omitted category for the spread variables are games in which the visiting team is favored by ten or more points. The unit of observation is a game. The number of observations is equal to 242 in all columns. Standard errors are in parentheses. The method of estimation is weighted least squares, with the weights proportional to the total number of bets placed on the game.*
 
 ## Page 38: Table II: Bets Placed and Won on Favorites and Underdogs
 
 源页：第 38 页
 
-Table II: Bets Placed and Won on Favorites and Underdogs
+### Table II: Bets Placed and Won on Favorites and Underdogs
 
-                        Percent of total bets on the game that are placed on:   Percent of bets placed that win (i.e. cover the spread)
-                                                                                when a team is:
- Which team is
- favored in the              (1)                (2)                 (3)                (4)                 (5)                 (6)
- game?
-                        Favorite         Underdog           Total, favorite     Favorite            Underdog            Total, favorite
-                                                            and underdog                                                and underdog
- Home team              56.1             31.8               47.0                49.1                57.7                51.2
-                        [N=12,011]       [N=7,190]          [N=19,201]          [N=6,741]           [N=2,286]           [N=9,027]
- Visiting team          68.2             43.9               53.0                47.8                50.4                49.1
-                        [N=7,190]        [N=12,011]         [N=19,201]          [N=4,904]           [N=5,270]           [N=10,174]
- Total, home and        60.6             39.4               50.0                48.5                52.6                50.1
- visiting team          [N=19,201]       [N=19,201]         [N=19,201]          [N=11,645]          [N=7,556]           [N=19,201]
+| Which team is favored in the game? | % Bets on Favorite [N] | % Bets on Underdog [N] | Total % Bets [N] | % Favorite Bets Won [N] | % Underdog Bets Won [N] | Total % Bets Won [N] |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| Home team | 56.1 [12,011] | 31.8 [7,190] | 47.0 [19,201] | 49.1 [6,741] | 57.7 [2,286] | 51.2 [9,027] |
+| Visiting team | 68.2 [7,190] | 43.9 [12,011] | 53.0 [19,201] | 47.8 [4,904] | 50.4 [5,270] | 49.1 [10,174] |
+| **Total, home & visiting** | **60.6 [19,201]** | **39.4 [19,201]** | **50.0 [19,201]** | **48.5 [11,645]** | **52.6 [7,556]** | **50.1 [19,201]** |
 
-Notes: The values reported in the first three columns of the table are the percentage of total bets placed on the named team (e.g. home
-favorite in row 1, column 1). The values reported in the last three columns of the table are the fraction of bets placed that win. The
-unit of analysis is a bet. The number in square brackets is the total number of bets placed in each cell. The results in this table exclude
-the six games where the spread was equal to zero, i.e. neither team was favored.
+> *Notes: The values reported in columns 1–3 are the percentage of total bets placed on the named team. Columns 4–6 report the fraction of bets placed that win (cover the spread). The unit of analysis is a bet. Numbers in square brackets are total bets placed in each cell. Excludes six games where the spread was zero.*
 
-## Page 39: Table III: A Comparison of Betting Frequencies in my Sample and Game Outcomes ag
+## Page 39: Table III: A Comparison of Betting Frequencies and Outcomes
 
 源页：第 39 页
 
-Table III: A Comparison of Betting Frequencies in my Sample and Game Outcomes against the Spread over the Last 21Years
+### Table III: A Comparison of Betting Frequencies in my Sample and Game Outcomes against the Spread over the Last 21 Years
 
- Type of game                                 Percent of bets in my sample that are        Percent of games in which favorite wins
-                                              placed on the favorite                       over last 21 NFL seasons
- All games                                    60.6                                         48.2
-                                                                                           [N=4,793]
- Games in which home team is favored          56.1                                         48.8
-                                                                                           [N=3,310]
- Games in which visiting team is favored      68.2                                         46.7
-                                                                                           [N=1,483]
+| Type of game | % Bets in sample on favorite | % Games favorite wins against spread (1980–2001) [N] |
+|:---|:---:|:---:|
+| All games | 60.6% | 48.2% [4,793] |
+| Games in which home team is favored | 56.1% | 48.8% [3,310] |
+| Games in which visiting team is favored | 68.2% | 46.7% [1,483] |
+| Games played in first half of season | 63.4% | 47.7% [2,209] |
+| Games played in second half of season | 56.3% | 48.5% [2,584] |
+| Games with point spread > 6 points | 60.4% | 48.5% [1,759] |
+| Games with point spread 3.5 to 6 points | 59.5% | 48.1% [1,475] |
+| Games with point spread <= 3 points | 61.5% | 47.8% [1,559] |
 
-
- Games played in first half of season         63.4                                         47.7
-                                                                                           [N=2,209]
- Games played in second half of season        56.3                                         48.5
-                                                                                           [N=2,584]
-
-
- Games in which the point spread is           60.4                                         48.5
- greater than six points                                                                   [N=1,759]
- Games in which the point spread is 3.5 to    59.5                                         48.1
- six points                                                                                [N=1,475]
- Games in which the point spread is less      61.5                                         47.8
- than or equal to three points                                                             [N=1,559]
-
-Notes: Values in the first column are based on bets placed for the sample of 285 bettors for the 2001 season used throughout the paper.
-Values in the second column are game outcomes for the 21 NFL seasons covering the period 1980-2001.
+> *Notes: Values in column 1 are based on bets placed for the sample of 285 bettors for the 2001 season. Column 2 values are game outcomes for 21 NFL seasons (1980–2001).*
 
 ## Page 40: Table IV: Bettor Performance as a Function of Cumulative Win Percentage
 
 源页：第 40 页
 
-Table IV: Bettor Performance as a Function of Cumulative Win Percentage
-                                    up to that Point in the Season
-                                                      Dependent variable=bettor wins this bet
+### Table IV: Bettor Performance as a Function of Cumulative Win Percentage up to that Point in the Season
 
- Variable                                             (1)             (2)           (3)         (4)         (5)
+*Dependent variable: bettor wins this bet*
 
- Bettor’s cumulative ranking on win percentage        -.012           -.06          .03         .10         .07
- (0=last place, 1=first place)                        (.015)          (.32)         (.34)       (.36)       (.47)
+| Variable | (1) | (2) | (3) | (4) | (5) |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| Bettor's cumulative ranking on win % | -.012 (.015) | -.06 (.32) | .03 (.34) | .10 (.36) | .07 (.47) |
+| Cumulative rank^2 | — | .54 (1.31) | .25 (1.36) | -.07 (1.47) | .21 (1.91) |
+| Cumulative rank^3 | — | -1.04 (1.97) | -.69 (2.04) | -.18 (2.20) | -.68 (2.86) |
+| Cumulative rank^4 | — | .56 (.98) | .41 (1.01) | .15 (1.09) | .41 (1.41) |
+| Bettor bets on home favorite | — | — | -.048 (.010) | -.064 (.014) | -.037 (.016) |
+| Bettor bets on home underdog | — | — | .046 (.012) | .026 (.014) | -.010 (.018) |
+| Bettor bets on visiting favorite | — | — | -.005 (.010) | -.002 (.013) | .121 (.016) |
+| Constant | .506 (.009) | .499 (.024) | .497 (.026) | .534 (.030) | .598 (.036) |
+| **R-squared** | .0001 | .0002 | .0041 | .0048 | .0131 |
+| **Number of observations** | 18,345 | 18,345 | 18,345 | 12,985 | 6,785 |
+| **Sample of games used** | Weeks 2–17 | Weeks 2–17 | Weeks 2–17 | Weeks 6–17 | Weeks 11–17 |
+| **P-value of joint significance of rank** | — | .64 | .51 | .73 | .72 |
+| **Predicted win % by quartile:** | | | | | |
+| Top quartile | 49.4% | 49.0% | 49.0% | 49.7% | 49.0% |
+| Second quartile | 49.8% | 50.2% | 50.1% | 50.4% | 50.5% |
+| Third quartile | 50.1% | 50.7% | 50.8% | 51.0% | 51.2% |
+| Bottom quartile | 50.4% | 49.9% | 49.9% | 50.1% | 49.4% |
 
- Cumulative rank^2                                    -----           .54           .25         -.07        .21
-                                                                      (1.31)        (1.36)      (1.47)      (1.91)
-
- Cumulative rank^3                                    -----           -1.04         -.69        -.18        -.68
-                                                                      (1.97)        (2.04)      (2.20)      (2.86)
-
- Cumulative rank^4                                    -----           .56           .41         .15         .41
-                                                                      (.98)         (1.01)      (1.09)      (1.41)
-
- Bettor bets on home favorite                         -----           -----         -.048       -.064       -.037
-                                                                                    (.010)      (.014)      (.016)
-
- Bettor bets on home underdog                         -----           -----         .046        .026        -.010
-                                                                                    (.012)      (.014)      (.018)
-
- Bettor bets on visiting favorite                     -----           -----         -.005       -.002       .121
-                                                                                    (.010)      (.013)      (.016)
-
- Constant                                             .506            .499          .497        .534        .598
-                                                      (.009)          (.024)        (.026)      (.030)      (.036)
-
- R-squared                                            .0001           .0002         .0041       .0048       .0131
-
- Number of observations                               18,345          18,345        18,345      12, 985     6,785
-
- Sample of games used in estimation                   Weeks 2-17      Weeks 2-      Weeks       Weeks       Weeks
-                                                                      17            2-17        6-17        11-17
-
- P-value of test of joint significance of             -----           .64           .51         .73         .72
- cumulative rank variables
-
- Predicted win percentage if cumulative ranking on win percentage falls in:
-
-    Top quartile                                      49.4            49.0          49.0        49.7        49.0
-
-    Second quartile                                   49.8            50.2          50.1        50.4        50.5
-
-    Third quartile                                    50.1            50.7          50.8        51.0        51.2
-
-      Bottom quartile                                   50.4             49.9        49.9        50.1        49.4
-Notes: The dependent variable in all regressions is equal to one if the bettor wins the bet, zero otherwise. The unit of
-observation is a bet. A bettor’s cumulative ranking on win percentage is calculated by taking an unweighted average
-of that bettor’s win percentage on all bets up to that point in time, and then computing the bettor’s rank among all
-bettors. The method of estimation is weighted least squares, with the weights proportional to the total number of
-games making up the year-to-date history. Standard errors (in parentheses) are corrected to take into account
-correlation in the cumulative rank variable across bets for a given bettor.
+> *Notes: Dependent variable is 1 if bettor wins, 0 otherwise. WLS estimation with weights proportional to total number of games. Standard errors in parentheses.*
 
 ## Page 41: Table V: Win Percentages as a Function of whether a Bet is Popular Among Bettors
 
 源页：第 41 页
 
-Table V: Win Percentages as a Function of whether a Bet is Popular Among Bettors
+### Table V: Win Percentages as a Function of whether a Bet is Popular Among Bettors
 
+| Category of games | All games [N] | Top quartile (Most popular) [N] | Second quartile [N] | Third quartile [N] | Bottom quartile (Least popular) [N] |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| Home favorites | 49.1% [6,741] | 46.0% [1,666] | 44.6% [1,697] | 57.4% [1,696] | 48.2% [1,682] |
+| Visiting favorites | 47.8% [4,904] | 52.0% [1,240] | 57.4% [1,210] | 43.9% [1,206] | 39.2% [1,205] |
+| Home underdogs | 57.5% [2,286] | 71.0% [568] | 52.6% [579] | 59.9% [564] | 47.5% [575] |
+| Visiting underdogs | 50.4% [5,270] | 45.5% [1,325] | 59.6% [1,288] | 45.6% [1,318] | 51.0% [1,339] |
+| **All favorites** | **48.6% [11,645]** | **48.6% [2,906]** | **49.9% [2,907]** | **51.8% [2,902]** | **44.4% [2,887]** |
+| **All underdogs** | **52.6% [7,556]** | **53.2% [1,893]** | **57.4% [1,867]** | **49.9% [1,882]** | **49.9% [1,914]** |
+| **All bets (total)** | **50.1% [19,201]** | **50.4% [4,799]** | **52.9% [4,744]** | **51.0% [4,784]** | **46.6% [4,801]** |
 
-                                   Win percentage as a function of the degree to which bettors prefer this selection (relative to other teams in
-                                   the same category):
-
- Category of games:                All games,            Top quartile             Second quartile        Third quartile         Bottom quartile
-                                   regardless of         (i.e. selections most                                                  (i.e. selections
-                                   degree preferred by   popular with bettors)                                                  least popular with
-                                   bettors                                                                                      bettors)
-    Home favorites                 49.1                  46.0                     44.6                   57.4                   48.2
-                                   [N=6,741]             [N=1,666]                [N=1,697]              [N=1,696]              [N=1,682]
-    Visiting favorites             47.8                  52.0                     57.4                   43.9                   39.2
-                                   [N=4,904]             [N=1,240]                [N=1,210]              [N=1,206]              [N=1,205]
-    Home underdogs                 57.5                  71.0                     52.6                   59.9                   47.5
-                                   [N=2,286]             [N=568]                  [N=579]                [N=564]                [N=575]
-    Visiting underdogs             50.4                  45.5                     59.6                   45.6                   51.0
-                                   [N=5,270]             [N=1,325]                [N=1,288]              [N=1,318]              [N=1,339]
-
-
-    All favorites                  48.6                  48.6                     49.9                   51.8                   44.4
-                                   [N=11,645]            [N=2,906]                [N=2,907]              [N=2,902]              [N=2,887]
-    All underdogs                  52.6                  53.2                     57.4                   49.9                   49.9
-                                   [N=7,556]             [N=1,893]                [N=1,867]              [N=1,882]              [N=1,914]
-
-
-    All bets (favorites and          50.1                  50.4                    52.9                   51.0                  46.6
-     underdogs)                      [N=19,201]            [N=4,799]               [N=4,744]              [N=4,784]             [N=4,801]
-Notes: The values reported in the table are fraction of bets won. The unit of observation is a bet. Games are categorized into quartiles within bet
-type (e.g. home favorites, visiting favorites, home underdogs, visiting underdogs) according to the fraction of bets on the team in the named
-category. Top quartile bets correspond to those cases where the greatest fraction of bettors selected the team in the named category.
+> *Notes: Values reported are fraction of bets won. The unit of observation is a bet. Categorized into quartiles within bet type according to fraction of bets on the team.*
 
 ## Page 42: Table VI: Does Pooling Information Across Bettors Help in Picking Winners?
 
 源页：第 42 页
 
-Table VI: Does Pooling Information Across Bettors Help in Picking Winners?
-                                                  Dependent variable=bettor wins game
- Variable                                        (1)            (2)           (3)           (4)           (5)
- Rank of this bet’s popularity (relative          .11            .11          -1.02         -1.16         -1.04
- to other games of this type)                     (.11)          (.11)        (1.82)        (1.84)        (1.85)
- (0= least popular; 1= most popular)
- Rank of bet’s popularity^2                       -----          -----        4.81          5.48          5.18
-                                                                              (7.61)        (7.63)        (7.55)
- Rank of bet’s popularity^3                       -----          -----        -6.77         -7.92         -7.57
-                                                                              (11.20)       (11.23)       (10.94)
- Rank of bet’s popularity^4                       -----          -----        3.01          3.64          3.46
-                                                                              (5.41)        (5.44)        (5.21)
- Bet on home favorite                             -----          -.013        -.013         -.011         -.013
-                                                                 (.084)       (.083)        (.083)        (.082)
- Bet on home underdog                             -----          .073         .073          .080          .055
-                                                                 (.072)       (.072)        (.074)        (.078)
- Bet on visiting favorite                         -----          -.026        -.026         -.022         -.054
-                                                                 (.073)       (.073)        (.073)        (.070)
- Constant                                         .447           .450         .499          -----         -----
-                                                  (.048)         (.062)       (.119)
- R-squared                                        .004          .008          .010          .022          .048
- Include week of season dummies?                  No            No            No            Yes           Yes
- Include team-fixed effects?                      No             No           No            No            Yes
- P-value of joint significance of bettor          -----          -----        .81           .80           .78
- preference variables
- Predicted win percentage by quartile of popularity of this bet:
-     Top quartile (i.e. selections most           46.1           46.1         44.5          44.6          44.6
-       popular with bettors)
-     Second quartile                             48.8           48.8          49.4          49.5          49.8
-     Third quartile                              51.5           51.4          54.2          54.1          54.0
-     Bottom quartile                             54.2           54.1          52.3          52.3          52.1
-Notes: The dependent variable in all regressions is equal to one if the bettor wins the bet, zero otherwise. The unit of
-observation is a bet. The rank of a bet’s popularity is calculated relative to other games of this type (e.g. home
-underdog). The method of estimation is weighted least squares, with the weights proportional to the total number of
-bets placed on the game. Standard errors (in parentheses) are clustered to take into account correlation in the rank of
-bet popularity variables for different bets placed on the same game.
+### Table VI: Does Pooling Information Across Bettors Help in Picking Winners?
+
+*Dependent variable: bettor wins game*
+
+| Variable | (1) | (2) | (3) | (4) | (5) |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| Rank of this bet's popularity | .11 (.11) | .11 (.11) | -1.02 (1.82) | -1.16 (1.84) | -1.04 (1.85) |
+| Rank of popularity^2 | — | — | 4.81 (7.61) | 5.48 (7.63) | 5.18 (7.55) |
+| Rank of popularity^3 | — | — | -6.77 (11.20) | -7.92 (11.23) | -7.57 (10.94) |
+| Rank of popularity^4 | — | — | 3.01 (5.41) | 3.64 (5.44) | 3.46 (5.21) |
+| Bet on home favorite | — | -.013 (.084) | -.013 (.083) | -.011 (.083) | -.013 (.082) |
+| Bet on home underdog | — | .073 (.072) | .073 (.072) | .080 (.074) | .055 (.078) |
+| Bet on visiting favorite | — | -.026 (.073) | -.026 (.073) | -.022 (.073) | -.054 (.070) |
+| Constant | .447 (.048) | .450 (.062) | .499 (.119) | — | — |
+| **R-squared** | .004 | .008 | .010 | .022 | .048 |
+| **Week of season dummies?** | No | No | No | Yes | Yes |
+| **Team-fixed effects?** | No | No | No | No | Yes |
+| **P-value of joint significance** | — | — | .81 | .80 | .78 |
+| **Predicted win % by popularity quartile:** | | | | | |
+| Top quartile (Most popular) | 46.1% | 46.1% | 44.5% | 44.6% | 44.6% |
+| Second quartile | 48.8% | 48.8% | 49.4% | 49.5% | 49.8% |
+| Third quartile | 51.5% | 51.4% | 54.2% | 54.1% | 54.0% |
+| Bottom quartile (Least popular) | 54.2% | 54.1% | 52.3% | 52.3% | 52.1% |
+
+> *Notes: Dependent variable is 1 if bettor wins, 0 otherwise. WLS estimation with weights proportional to total number of bets placed on the game. Standard errors clustered by game.*

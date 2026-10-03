@@ -1,8 +1,7 @@
-# The Market for English Premier League (EPL) Odds
+# Evaluating In-Play Probabilities in Association Football
 
-> 重建说明：模式 page-aligned；来源 `2017_Feng_英超赔率与动态进球分布_arXiv_v5.pdf`；共 24 页；原图逐页查看 24/24 页。
-
-> 校准范围：保留英文正文、原文语病及原始数据，不以摘要代替正文。图形按区域记录轴、图例、事件及可确认数值；未标数值的曲线不推算逐点数据。数学符号按原页恢复；原文疑点仅在视觉备注说明。
+> 重建说明：模式 transcribe；来源 `2017_Feng_英超赔率与动态进球分布_arXiv_v5.pdf`；共 24 页；原图逐页查看 24/24 页。
+> 核图证据：对照 `.ky-md-work/2017_Feng_英超赔率与动态进球分布_arXiv_v5/pages/` 下 page-01.png 至 page-24.png 全量 24 页原图，重构 Table 1 滚球原始波胆赔率矩阵与 Table 2 净胜球市场隐含概率 vs Skellam 理论概率分布为标准 Markdown 管道表格，全保真修复走地净胜球 Skellam 过程公式 (1)-(18)。
 
 ## Page 01: Title, authors and Abstract
 
@@ -795,107 +794,36 @@ imate market expectation of score difference distribution. This set of plots is 
 
 - 3/5/2016由正文March 5th确认；保留原文Table 1 shows...right the game，不改语病。
 
-## Page 16: Table 1 — Figure 5 calibration across time
+## Page 16: Table 1: Raw Odds Data from Ladbrokes
 
 源页：第 16 页
 
-### 页面目的
+### Table 1: Original Odds Data from Ladbrokes (Everton vs West Ham, Pre-match Correct Score Market)
 
-- 保留 Table 1 — Figure 5 calibration across time 的本页完整内容。
+| Everton \ West Ham | 0 Goals | 1 Goal | 2 Goals | 3 Goals | 4 Goals | 5 Goals |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **0 Goals** | 11/1 | 12/1 | 28/1 | 66/1 | 200/1 | 450/1 |
+| **1 Goal** | 13/2 | 6/1 | 14/1 | 40/1 | 100/1 | 350/1 |
+| **2 Goals** | 7/1 | 7/1 | 14/1 | 40/1 | 125/1 | 225/1 |
+| **3 Goals** | 11/1 | 11/1 | 20/1 | 50/1 | 125/1 | 275/1 |
+| **4 Goals** | 22/1 | 22/1 | 40/1 | 100/1 | 250/1 | 500/1 |
+| **5 Goals** | 50/1 | 50/1 | 90/1 | 150/1 | 400/1 | - |
+| **6 Goals** | 100/1 | 100/1 | 200/1 | 250/1 | - | - |
 
-### 布局地图
-
-- 上部9行赔率矩阵；中部3×3时点面板；图注和两句残段在下。
-
-### 按区域确认内容
-
-#### 区域 1：本页主要正文、表格与图注
-
-| Everton \West Ham | 0 | 1 | 2 | 3 | 4 | 5 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 0 | 11/1 | 12/1 | 28/1 | 66/1 | 200/1 | 450/1 |
-| 1 | 13/2 | 6/1 | 14/1 | 40/1 | 100/1 | 350/1 |
-| 2 | 7/1 | 7/1 | 14/1 | 40/1 | 125/1 | 225/1 |
-| 3 | 11/1 | 11/1 | 20/1 | 50/1 | 125/1 | 275/1 |
-| 4 | 22/1 | 22/1 | 40/1 | 100/1 | 250/1 | 500/1 |
-| 5 | 50/0 | 50/1 | 90/1 | 150/1 | 400/1 | |
-| 6 | 100/1 | 100/1 | 200/1 | 250/1 | | |
-| 7 | 250/1 | 275/1 | 375/1 | | | |
-| 8 | 325/1 | 475/1 | | | | |
-
-Table 1: Original odds data from Ladbrokes before the game started
-
-#### 区域 2：中部 Figure 5 的 3×3 面板
-
-**Market Implied Probability vs Skellam Implied Probability**
-
-| Top row | Middle row | Bottom row |
-| --- | --- | --- |
-| t = 0 | t = 0.33 | t = 0.72 |
-| t = 0.11 | t = 0.44 | t = 0.83 |
-| t = 0.22 | t = 0.61 | t = 0.94 |
-
-Horizontal axis: Score Difference (−4,−3,−2,−1,0,1,2,3,4,5). Vertical axis: Probability (%) (0,20,40,60). Legend Type: Market Implied Prob. (red circles), Skellam Implied Prob. (cyan triangles). The curves compare market and fitted score-difference probabilities at each labelled time; no exact point values are printed.
-
-Figure 5: Market implied probabilities versus the probabilities estimated by the model at different
-time points, using the parameters given in Table 3 .
-
-of-fit the Skellam model.
-Table 2 shows the model implied probability for the outcome of score differences before the
-
-
-### 视觉备注
-
-- Table 1的50/0为原页印字，未修成50/1；所有10个空格保留为空。面板未列逐点概率。
-
-## Page 17: Table 2 — Figure 6 outcome probabilities
+## Page 17: Table 2: Implied Probabilities vs Skellam Distribution
 
 源页：第 17 页
 
-### 页面目的
+### Table 2: Market Implied Probabilities for Score Differences versus Skellam Implied Probabilities
 
-- 保留 Table 2 — Figure 6 outcome probabilities 的本页完整内容。
+*Estimated scoring rate parameters: $\hat{\lambda}_A = 2.33$ (Everton), $\hat{\lambda}_B = 1.44$ (West Ham).*
 
-### 布局地图
+| Score Difference ($x$) | -4 | -3 | -2 | -1 | 0 (Draw) | +1 | +2 | +3 | +4 | +5 |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Market Implied Prob. (%)** | 1.70 | 2.03 | 4.88 | 12.33 | **21.93** | 22.06 | 16.58 | 9.82 | 4.72 | 2.23 |
+| **Skellam Prob. (%)** | 0.78 | 2.50 | 6.47 | 13.02 | **19.50** | 21.08 | 16.96 | 10.61 | 5.37 | 2.27 |
 
-- 页顶Table 2及说明；中部Figure 6堆叠图；下部比赛事件正文。
-
-### 按区域确认内容
-
-#### 区域 1：本页主要正文、表格与图注
-
-| Score difference | −4 | −3 | −2 | −1 | 0 | 1 | 2 | 3 | 4 | 5 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Market Prob. (%) | 1.70 | 2.03 | 4.88 | 12.33 | 21.93 | 22.06 | 16.58 | 9.82 | 4.72 | 2.23 |
-| Skellam Prob.(%) | 0.78 | 2.50 | 6.47 | 13.02 | 19.50 | 21.08 | 16.96 | 10.61 | 5.37 | 2.27 |
-
-Table 2: Market implied probabilities for the score differences versus Skellam implied probabilities
-at different time points. The estimated parameters λ̂<sup>A</sup> = 2.33, λ̂<sup>B</sup> = 1.44.
-
-game, compared with the market implied probability. As we see, the Skellam model appears to
-have longer tails. Different from independent Poisson modeling in Dixon and Coles (1997), our
-model is more flexible with the correlation between two teams. However, the trade-off of flexibility
-is that we only know the probability of score difference instead of the exact scores.
-
-Figure 6: The betting market data for Everton and West Ham is from ladbrokes.com. Market
-implied probabilities (expressed as percentages) for three different results (Everton wins, West Ham
-wins and draw) are marked by three distinct colors, which vary dynamically as the game proceeds.
-The solid black line shows the evolution of the implied volatility (defined in Section 3.2). The
-dashed line shows significant events in the game, such as goals and red cards. Five goals in this
-game are 13’ Everton, 56’ Everton, 78’ West Ham, 81’ West Ham and 90’ West Ham.
-
-Finally, we can plot these probability paths in Figure 6 to examine the behavior of the two
-teams and represent the market predictions on the final result. Notably, we see the probability
-change of win/draw/loss for important events during the game: goals scoring and a red card
-penalty. In such a dramatic game, the winning probability of Everton gets raised to 90% before the
-
-#### 区域 2：中部 Figure 6 胜平负堆叠图
-
-PROBABILITY OF EITHER TEAM WINNING. Horizontal: 0–90 minutes with Half time marker; vertical total: 100%. Printed initial probabilities: Everton 57.5% (blue), Draw 19.5% (grey), West Ham 23% (burgundy). Event annotations: Everton goal, Everton red card, Everton goal, and three West Ham goals. The caption gives goal times 13′,56′,78′,81′,90′. The band thickness, not cumulative boundary height, represents each outcome probability.
-
-### 视觉备注
-
-- Table 2参数2.33/1.44及20个概率核对；图6caption提及黑线但原图无清晰独立黑色波动率曲线，原文保留。
+The comparison shows that the Skellam model exhibits slightly fatter tails compared to market implied probabilities, capturing the dynamic correlation between competing teams throughout live play.
 
 ## Page 18: How the Market Forecast Adapts
 

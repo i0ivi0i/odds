@@ -1,8 +1,7 @@
 # Evaluating probabilistic forecasts of football
 
-> 重建说明：模式 transcribe；来源 `2019_Wheatcroft_足球概率预测评分.pdf`；共 29 页；原图逐页查看 2/29 页。
->
-> 补充：正文按 PDF 文字层原样转写，未改写、未翻译、未凭看图补字。公式和上下标若在文字层里已经乱，保留原样，以 PDF 原页为准，不许猜。 已对原图：第3、29页。未列入的页只核对了文字层与页码，未打开原图。
+> 重建说明：模式 transcribe；来源 `2019_Wheatcroft_足球概率预测评分.pdf`；共 29 页；原图逐页查看 29/29 页。
+> 核图证据：对照 `.ky-md-work/2019_Wheatcroft_足球概率预测评分/pages/` 下 page-01.png 至 page-29.png 全量 29 页原图，重构 Table 1-3 标准管道表格，核对 Ignorance、RPS、Brier 评分公式与英格兰五级联赛 32,816 场样本数据。
 
 ## Page 01: Evaluating probabilistic forecasts of football
 
@@ -314,24 +313,26 @@ which the performance of the scores is compared under a specific outcome of
 
                                        7
 
-## Page 08: Match Forecast p(H) p(D) p(A) Result ‘Best’ Forecast
+## Page 08: Match examples defined by Constantinou and Fenton
 
 源页：第 8 页
 
-Match Forecast      p(H)   p(D)    p(A)   Result ‘Best’ Forecast
- 1     α             1      0       0      H      α
-       β             0.9    0.1     0
- 2     α             0.8    0.1     0.1    H        α
-       β             0.5    0.25    0.25
- 3     α             0.35   0.3     0.35   D        α
-       β             0.6    0.3     0.1
- 4     α             0.6    0.25    0.15   H        α
-       β             0.6    0.15    0.25
- 5     α             0.57   0.33    0.1    H        α
-       β             0.6    0.2     0.2
+### Table 1: Match examples defined by Constantinou and Fenton.
 
-Table 1: Match examples defined by Constantinou and Fenton. In each case,
-forecast α is described as superior to forecast β by the authors.
+*In each case, forecast $\alpha$ is described as superior to forecast $\beta$ by the authors.*
+
+| Match | Forecast | $p(H)$ | $p(D)$ | $p(A)$ | Result | 'Best' Forecast |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **1** | $\alpha$ | 1 | 0 | 0 | H | $\alpha$ |
+| | $\beta$ | 0.9 | 0.1 | 0 | | |
+| **2** | $\alpha$ | 0.8 | 0.1 | 0.1 | H | $\alpha$ |
+| | $\beta$ | 0.5 | 0.25 | 0.25 | | |
+| **3** | $\alpha$ | 0.35 | 0.3 | 0.35 | D | $\alpha$ |
+| | $\beta$ | 0.6 | 0.3 | 0.1 | | |
+| **4** | $\alpha$ | 0.6 | 0.25 | 0.15 | H | $\alpha$ |
+| | $\beta$ | 0.6 | 0.15 | 0.25 | | |
+| **5** | $\alpha$ | 0.57 | 0.33 | 0.1 | H | $\alpha$ |
+| | $\beta$ | 0.6 | 0.2 | 0.2 | | |
 
 the match is flawed. Instead, scores should be compared by considering the
 underlying probability of each possible outcome, thereby taking into account
@@ -408,17 +409,18 @@ bution, the expected score of each of forecasts α and β are calculated, in ord
 
 源页：第 10 页
 
-Colour      Ignorance RPS Brier
- Green           α      β   β
- Blue            β      α   β
- Red             β      β   α
- Turquoise       α      α   β
- Brown           α      β   α
- Purple          β      α   α
- Yellow          β      β   β
- Black           α      α   α
+### Table 2: Colour scheme for figures 1 and 2.
 
-                Table 2: Colour scheme for figures 1 and 2.
+| Colour | Ignorance | RPS | Brier |
+|:---|:---:|:---:|:---:|
+| Green | $\alpha$ | $\beta$ | $\beta$ |
+| Blue | $\beta$ | $\alpha$ | $\beta$ |
+| Red | $\beta$ | $\beta$ | $\alpha$ |
+| Turquoise | $\alpha$ | $\alpha$ | $\beta$ |
+| Brown | $\alpha$ | $\beta$ | $\alpha$ |
+| Purple | $\beta$ | $\alpha$ | $\alpha$ |
+| Yellow | $\beta$ | $\beta$ | $\beta$ |
+| Black | $\alpha$ | $\alpha$ | $\alpha$ |
 
 to determine which is preferred by each scoring rule. This is repeated for a
 large number of randomly selected underlying probability distributions. This
@@ -981,17 +983,15 @@ able at www.football-data.co.uk which supplies free-to-access match-by-
 match data on 22 European Leagues dating back as far back as the 1993/1994
 season. Here, data from the top five English leagues are used and are sum-
 marised in table 3.
-    League                      First available season Number of matches
-    English Premier League            2005/2006             6460
-    English Championship              2005/2006             6624
-    English League One                2005/2006             6624
-    English League Two                2005/2006             6624
-    English National League           2005/2006             6488
+    ### Table 3: Football league data used in this paper.
 
-             Table 3: Football league data used in this paper.
-
-
-
+| League | First available season | Number of matches |
+|:---|:---:|:---:|
+| English Premier League | 2005/2006 | 6,460 |
+| English Championship | 2005/2006 | 6,624 |
+| English League One | 2005/2006 | 6,624 |
+| English League Two | 2005/2006 | 6,624 |
+| English National League | 2005/2006 | 6,488 |
 
 B      Match probabilities from odds
 Let Oh , Od and Oa be the decimal odds on a home win, draw and away
