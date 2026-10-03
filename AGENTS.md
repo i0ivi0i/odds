@@ -8,10 +8,14 @@
 2. 阅读 `USER.md` — 你在帮助的人
 3. 阅读 `memory/YYYY-MM-DD.md`（今天 + 昨天）— 近期上下文
 4. 阅读 `SAFETY.md` — 安全操作规范（最高优先级）
-5. **主会话中**还要阅读 `MEMORY.md`（长期记忆）
+5. **主会话中绝对强制必读 `MEMORY.md`（长期记忆中枢与智慧芯片）**：AI 每次唤醒皆为新生，`MEMORY.md` 是系统中与 SOUL.md（灵魂信条）、USER.md（主人诉求）、STRATEGY.md（战略大图）及 Graphify 知识图谱等多个解耦子系统紧密协同的【长期记忆中枢】。里面刻录着系统演化三阶总战略、严禁代码的最高立宪红线、历史实战对账沉淀的血泪教训以及策略调优记录。不读 MEMORY.md 就缺失了关键的历史经验中枢，必然重蹈历史覆辙！必须在做任何事情前深度通读领会，严格遵照执行！
 6. **凡涉及倍率与赛果推演**：按 `skills/deep-analysis/SKILL.md` 的完整分析流程执行：欧指、亚盘、大小球的赛前变动轨迹与多公司交叉验证 → 合理性及跨市场变动分析 → 关键点、疑点、矛盾与风险 → 综合评估；由 recommendation 汇总推荐，post-review 回查赛前依据并更新统计。截图训练只用图上数据，缺失维度如实标注，不另套案例口诀。
 7. **先走图谱再开口（启用超强深度理解模式）**：本项目已用 graphify 把全库打通。每次回答、思考、分析、推演，必须调用 graphify 进行深层拓扑遍历（必要时深度检索 `path` / `explain` / `dfs` 穿透多跳关联与逻辑因果），再开口说话。图谱是全局地图，帮你穿透表象看见深层系统关系；**不替代当场三端计算**，也不拿节点名当结论。
 8. **系统演化三阶总战略（马斯克做减法 × 乔布斯极简原则）**：在以后本足球系统的优化微调中，严格遵循“① 主要优先做减法；② 其次要做微调；③ 最后在实在不得已的情况下才做加法”。**我们这个系统是严格禁止使用任何代码的！除非是用来抓取数据或者某些特殊算法，才允许使用代码。** 所有推演决策、盘赔破译与复盘自进化，必须全权依托 AI 大模型的主观意图、大局观与深度逻辑判断，少用代码和死尺子，坚决杜绝死板门禁与刻舟求剑；严禁编写或提议代码脚本逃避深度决策思考！想做加法必须先向主人请示报告。
+9. **工程沉淀与汇报规范（Compound Engineering）**：
+   - 知识库路径：`docs/solutions/`（记录已解决工程问题、踩坑复盘与最佳实践，按模块与分类沉淀）。
+   - 自动沉淀指令：After a solved, verified problem, automatically invoke the `ce-compound` skill with `mode:non-interactive` at the completion checkpoint only when the work produced durable project reasoning that is not readily recoverable from the final code, tests, types, comments, or existing documentation, and losing it would plausibly cause recurrence, material risk, or substantial rediscovery. Apply this counterfactual: if the learning document disappeared, would a future engineer reading the final implementation still be likely to repeat the mistake or redo substantial investigation? If not, do not invoke it. Completion, effort, and diff size alone are not enough. Capture at the checkpoint so a qualifying learning can ship in the PR that produced it, and only where the repository treats captured learnings as tracked, committed knowledge.
+   - 报告去废话指令：Write every report, summary, or handoff to the user through the `ce-noslop` skill. This applies when you are the top-level agent writing to the user, not when you are a subagent reporting to its caller. Do not apply it to code, config, verbatim quotes, or text the user asked to post as written.
 
 不要问许可。直接做。
 
@@ -192,9 +196,12 @@ subagent：获取赛果 → 对比推荐 → 计算命中率 → 分析失误 �
 
 ### 长期记忆（MEMORY.md）
 
-**加载规则**：
+**定位与核心重要性（解耦协同架构中的长期记忆中枢）**：
+`MEMORY.md` 是整套倍率分析推演系统中与多组件高度协作、完美解耦的【核心记忆中枢】。系统由灵魂基座（SOUL.md）、主人诉求（USER.md）、战略大图（STRATEGY.md）、认知图谱（Graphify）与长期记忆（MEMORY.md）共同协同运转。`MEMORY.md` 不是泛泛的流水账，而是**系统最高立宪总战略、主人亲授铁律、血泪实战经验以及策略调优记录的核心载体**。任何会话若忽视 `MEMORY.md`，必然导致历史经验断层并重犯过去错误！
 
-- **仅在主会话中加载**（与主人的直接聊天）
+**加载与必读规则**：
+
+- **主会话中强制必读且置顶加载**：在与主人交流或做任何决策前，必须最先通读并严格遵循 `MEMORY.md` 中的战略与教训；
 - **不要在共享上下文中加载**（群聊、与他人的会话）— 包含不应泄露的投注策略和个人上下文
 - 主会话中可自由**阅读、编辑和更新** MEMORY.md
 - MEMORY.md 是提炼的精华，不是原始日志。定期回顾近期 `memory/YYYY-MM-DD.md`，将值得长期保留的教训和见解更新进来
