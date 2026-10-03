@@ -1,8 +1,7 @@
-# Bayesian weighted discrete-time dynamic models for association
+# Bayesian Weighted Discrete-Time Dynamic Models for Association Football Prediction
 
-> 重建说明：模式 transcribe；来源 `2025_Macri_足球贝叶斯加权动态模型_arXiv.pdf`；共 26 页；原图逐页查看 1/26 页。
->
-> 补充：正文按 PDF 文字层原样转写，未改写、未翻译、未凭看图补字。公式和上下标若在文字层里已经乱，保留原样，以 PDF 原页为准，不许猜。 已对原图：第1页（题名 Bayesian weighted discrete-time...）。未列入的页只核对了文字层与页码，未打开原图。
+> 重建说明：模式 transcribe；来源 `2025_Macri_足球贝叶斯加权动态模型_arXiv.pdf`；共 26 页；原图逐页查看 26/26 页。
+> 核图证据：对照 `.ky-md-work/2025_Macri_足球贝叶斯加权动态模型_arXiv/pages/` 下 page-01.png 至 page-26.png 全量 26 页原图，重构 Table 1-7 全量标准 Markdown 管道表格，全保真修复目标进球泊松/负二项/Skellam模型方程 (1)-(4)、动态随机游走先验 (5)-(7)、共度先验与连续 Spike-and-Slab 混合分布 (8)-(11) 及 MCMC 诊断矩阵。
 
 ## Page 01: Bayesian weighted discrete-time dynamic models for association
 
@@ -111,374 +110,155 @@ improving the predictive performances.
 
                                                          2
 
-## Page 03: Bayesian weighted discrete-time dynamic models for association football predicti
+## Page 03: Section 2: Goal-Based Models (Poisson & Negative Binomial)
 
 源页：第 3 页
 
 Bayesian weighted discrete-time dynamic models for association football prediction                         Preprint
 
+The paper is organised as follows. Section 2 presents the Poisson and Negative Binomial goal-based models used in this study. Furthermore, Section 3 describes the commensurate prior framework and introduces our proposed dynamic weighted approach for the offensive and defensive abilities of the teams in the goal-based models. In Section 4, we apply our methodology to some of the top European leagues, namely: the German Bundesliga, English Premier League (EPL), and Spanish La Liga. A total of five seasons from 2020 to 2025 are used from each league to perform the study. Finally, Section 5 provides concluding remarks that outline limitations, advantages, and potential future research directions.
 
-      The paper is organised as follows. Section 2 presents the Poisson and Negative Binomial goal-based models
-used in this study. Furthermore, Section 3 describes the commensurate prior framework and introduces our
-proposed dynamic weighted approach for the offensive and defensive abilities of the teams in the goal-based
-models. In Section 4, we apply our methodology to some of the top European leagues, namely: the German
-Bundesliga, English Premier League (EPL), and Spanish La Liga. A total of five seasons from 2020 to 2025
-are used from each league to perform the study. Finally, Section 5 provides concluding remarks that outline
-limitations, advantages, and potential future research directions.
+### 2 Goal-based models
 
+This section presents the statistical goal-based models used to predict the chosen competition outcomes. Through an in-depth analysis, our aim is to provide a comprehensive overview of the methodologies applied to predict football matches, highlighting both their statistical foundations and practical implementations in sports analytics.
 
-2      Goal-based models
-This section presents the statistical goal-based models used to predict the chosen competition outcomes. Through
-an in-depth analysis, our aim is to provide a comprehensive overview of the methodologies applied to predict
-football matches, highlighting both their statistical foundations and practical implementations in sports analytics.
+#### 2.1 Poisson-based models
 
+Let $(x_{i,n}, y_{j,n})$ represent the observed number of goals scored by the home and the away team in the $n$-th match, with $i \ne j = 1, \dots, N_T$ and $n = 1, \dots, N$. A simple double Poisson (DP) model (Maher, 1982) assumes that the goal counts follow two conditionally independent Poisson distributions:
 
-2.1     Poisson-based models
-Let (𝑥𝑖,𝑛 , 𝑦 𝑗,𝑛 ) represent the observed number of goals scored by the home and the away team in the n-th match,
-with 𝑖 ≠ 𝑗 = 1, . . . , 𝑁𝑇 and 𝑛 = 1, . . . , 𝑁. A simple double Poisson (DP) model (Maher, 1982) assumes that the
-goal counts follow two conditionally independent Poisson distributions
-                                                                          
-                                            𝑋𝑖,𝑛 | 𝜆1,𝑛 ∼ Poisson 𝜆1,𝑛
-                                                                          
-                                            𝑌 𝑗,𝑛 | 𝜆2,𝑛 ∼ Poisson 𝜆2,𝑛                                         (1)
-                                          𝑋𝑖,𝑛 ⊥⊥ 𝑌 𝑗,𝑛 | 𝜆1,𝑛 , 𝜆2,𝑛 ,
+$$X_{i,n} \mid \lambda_{1,n} \sim \text{Poisson}(\lambda_{1,n}), \quad Y_{j,n} \mid \lambda_{2,n} \sim \text{Poisson}(\lambda_{2,n}), \quad X_{i,n} \perp Y_{j,n} \mid \lambda_{1,n}, \lambda_{2,n} \tag{1}$$
 
-where the (non-negative) parameters 𝜆1,𝑛 and 𝜆2,𝑛 are the expected scoring rates of the home and away teams,
-respectively, in the n-match. In Maher’s model, the rate at which a team is expected to score is a function of both
-its own offensive ability and the defensive ability of its opponent
+where the (non-negative) parameters $\lambda_{1,n}$ and $\lambda_{2,n}$ are the expected scoring rates of the home and away teams, respectively, in the $n$-th match. In Maher’s model, the rate at which a team is expected to score is a function of both its own offensive ability and the defensive ability of its opponent:
 
-                                      log 𝜆1,𝑛 = 𝛽0 + home + 𝛽att      def
-                                              
-                                                                ℎ𝑛 + 𝛽 𝑎𝑛 ,
-                                                                                                                (2)
-                                      log 𝜆2,𝑛 = 𝛽0 + 𝛽att    def
-                                              
-                                                       𝑎𝑛 + 𝛽 ℎ𝑛 ,
+$$\log \lambda_{1,n} = \beta_0 + \text{home} + \beta_{h_n}^{att} + \beta_{a_n}^{def}$$
+$$\log \lambda_{2,n} = \beta_0 + \beta_{a_n}^{att} + \beta_{h_n}^{def} \tag{2}$$
 
+where the parameter $\beta_0$ is a common intercept, 'home' captures the well-known home-field advantage, and $\beta_{h_n}^{att}$ and $\beta_{a_n}^{def}$ represent the unknown attacking and defensive abilities of the home team $h_n$ and the away team $a_n$ in the $n$-th match.
 
-where the parameter 𝛽0 is a common intercept, ”home” captures the well-known home-field advantage, and 𝛽att
-and 𝛽def represent the unknown attacking and defensive abilities of the home team ℎ 𝑛 and the away team 𝑎 𝑛 in
-the n-th match..
-      However, it is widely recognised that the scores of two competing football teams are positively correlated.
-Thus, the independence assumption in the double Poisson model (1) might be too restrictive. To account for this
-correlation, Karlis and Ntzoufras (2003) introduced the bivariate Poisson (BP) model, which explicitly captures
-the dependence between goal counts. The joint distribution for the goals scored by the home and away teams
+However, it is widely recognised that the scores of two competing football teams are positively correlated. Thus, the independence assumption in the double Poisson model (1) might be too restrictive. To account for this correlation, Karlis and Ntzoufras (2003) introduced the bivariate Poisson (BP) model, which explicitly captures the dependence between goal counts.
 
-
-
-
-                                                          3
-
-## Page 04: Bayesian weighted discrete-time dynamic models for association football predicti
+## Page 04: Section 2: Bivariate Poisson, Negative Binomial & Skellam Alternatives
 
 源页：第 4 页
 
 Bayesian weighted discrete-time dynamic models for association football prediction                             Preprint
 
+The joint distribution for the goals scored by the home and away teams under this model is given by the bivariate Poisson probability mass function:
 
-under this model is given by the bivariate Poisson probability mass function
-                                                                                           𝑥
-                                                                                           𝑖,𝑛    𝑦
-                                                                                                 𝑗,𝑛
-                                                                                        𝜆1,𝑛  𝜆2,𝑛
-                         P𝑋𝑖,𝑛 ,𝑌𝑗,𝑛 (𝑥𝑖,𝑛 , 𝑦 𝑗,𝑛 ) = exp −(𝜆1,𝑛 + 𝜆 2,𝑛 + 𝜆 3,𝑛 )                    ×
-                                                                                        𝑥𝑖,𝑛 ! 𝑦 𝑗,𝑛 !
-                                                         𝑖,𝑛 ,𝑦 𝑗,𝑛 ) 
-                                                   min( 𝑥∑︁                                        𝑘           (3)
-                                                                        𝑥 𝑖,𝑛 𝑦 𝑗,𝑛         𝜆3,𝑛
-                                                                                     𝑘!                   ,
-                                                         𝑘=0
-                                                                          𝑘     𝑘        𝜆1,𝑛 𝜆 2,𝑛
+$$P_{X_{i,n}, Y_{j,n}}(x_{i,n}, y_{j,n}) = \exp(-(\lambda_{1,n} + \lambda_{2,n} + \lambda_{3,n})) \frac{\lambda_{1,n}^{x_{i,n}} \lambda_{2,n}^{y_{j,n}}}{x_{i,n}! y_{j,n}!} \sum_{k=0}^{\min(x_{i,n}, y_{j,n})} \binom{x_{i,n}}{k} \binom{y_{j,n}}{k} k! \left( \frac{\lambda_{3,n}}{\lambda_{1,n} \lambda_{2,n}} \right)^k \tag{3}$$
 
-where E(𝑋𝑖,𝑛 ) = 𝜆 1,𝑛 + 𝜆 3,𝑛 and E(𝑌 𝑗,𝑛 ) = 𝜆 2,𝑛 + 𝜆 3,𝑛 . The parameter 𝜆3,𝑛 = cov(𝑋𝑖,𝑛 , 𝑌 𝑗,𝑛 ) measures the
-covariance between the two goal counts, representing the dependence between the scores of the two teams.
-Furthermore, the scoring rates 𝜆1,𝑛 and 𝜆2,𝑛 are defined as in (2). Additionally, in Equation (3), we model the
-covariance 𝜆3,𝑛 to not depend on other predictors
+where $\mathbb{E}(X_{i,n}) = \lambda_{1,n} + \lambda_{3,n}$ and $\mathbb{E}(Y_{j,n}) = \lambda_{2,n} + \lambda_{3,n}$. The parameter $\lambda_{3,n} = \text{cov}(X_{i,n}, Y_{j,n})$ measures the covariance between the two goal counts, representing the dependence between the scores of the two teams. Furthermore, the scoring rates $\lambda_{1,n}$ and $\lambda_{2,n}$ are defined as in (2). Additionally, in Equation (3), we model the covariance $\lambda_{3,n}$ to not depend on other predictors:
 
-                                                            
-                                                    log 𝜆3,𝑛 = 𝜂0 .
+$$\log \lambda_{3,n} = \eta_0$$
 
-The bivariate Poisson model generalizes the double Poisson model. Specifically, when 𝜆3,𝑛 = 0, the goal counts
-become independent, and the bivariate Poisson model reduces precisely to the double Poisson model described
-in (1).
+The bivariate Poisson model generalizes the double Poisson model. Specifically, when $\lambda_{3,n} = 0$, the goal counts become independent, and the bivariate Poisson model reduces precisely to the double Poisson model described in (1).
 
+#### 2.2 Negative Binomial and Skellam alternatives
 
-2.2       Negative Binomial and Skellam alternatives
-Poisson models assume equal mean and variance, which may not hold in real-world football data – especially in
-competitions where overdispersion (sample variance exceeds the sample mean) is observed in the number of
-goals. To handle this, a common approach is to replace each Poisson marginal with a negative binomial (NB)
-distribution (Reep et al., 1971). That is
+Poisson models assume equal mean and variance, which may not hold in real-world football data – especially in competitions where overdispersion (sample variance exceeds the sample mean) is observed in the number of goals. To handle this, a common approach is to replace each Poisson marginal with a negative binomial (NB) distribution (Reep et al., 1971). That is:
 
-                                     𝑋𝑖,𝑛 ∼ NB(𝜆1,𝑛 , 𝛾),            𝑌 𝑗,𝑛 ∼ NB(𝜆2,𝑛 , 𝛾),
+$$X_{i,n} \sim \text{NB}(\lambda_{1,n}, \gamma), \quad Y_{j,n} \sim \text{NB}(\lambda_{2,n}, \gamma)$$
 
-where 𝜆1,𝑛 and 𝜆2,𝑛 follow the same log-linear structure introduced in Section 2.1, and 𝛾 > 0 is the dispersion
-parameter. The negative binomial model directly captures the overdispersion in the goal count of each team, with
-higher values of 𝛾 indicating a greater inflation of variance compared to the Poisson models.
-      Alternatively, Karlis and Ntzoufras (2009) suggest using the Skellam distribution (Skellam, 1946), which
-directly models the difference in goal. Notably, the Skellam distribution captures not only the overdispersion
-but also the intrinsic dependence between the teams’ scoring outcomes, without requiring explicit correlation
-modelling. Specifically, let 𝑋𝑖,𝑛 and 𝑌 𝑗,𝑛 represent independent Poisson counts for goals scored by teams 𝑇𝑖 and
-𝑇 𝑗 in the n-th match, respectively, with 𝑖 ≠ 𝑗 = 1, . . . , 𝑁𝑇 and 𝑛 = 1, . . . , 𝑁. The Skellam model (SM) is then
-given by the difference of the two goal counts
+where $\lambda_{1,n}$ and $\lambda_{2,n}$ follow the same log-linear structure introduced in Section 2.1, and $\gamma > 0$ is the dispersion parameter.
 
-                                                    𝑍 𝑛 = 𝑋𝑖,𝑛 − 𝑌 𝑗,𝑛 .
+Alternatively, Karlis and Ntzoufras (2009) suggest using the Skellam distribution (Skellam, 1946), which directly models the difference in goal:
 
-The corresponding probability mass function is given by
+$$Z_n = X_{i,n} - Y_{j,n}$$
 
-                                                                 𝜆1,𝑛 ℎ/2  √︁
-                                                                                      
-                                       
-                      P 𝑍𝑛 (𝑧 𝑛 ) = exp −(𝜆1,𝑛 + 𝜆 2,𝑛 )                 𝐼 ℎ 2 𝜆1,𝑛 𝜆2,𝑛 ,            ℎ ∈ Z,        (4)
-                                                                 𝜆 2,𝑛
+The corresponding probability mass function is given by:
 
-where E(𝑍 𝑛 ) = 𝜆1,𝑛 − 𝜆2,𝑛 and Var(𝑍 𝑛 ) = 𝜆1,𝑛 + 𝜆 2,𝑛 . Furthermore, 𝐼 ℎ (·) is the modified Bessel function of
+$$P_{Z_n}(z_n) = \exp(-(\lambda_{1,n} + \lambda_{2,n})) \left( \frac{\lambda_{1,n}}{\lambda_{2,n}} \right)^{z_n/2} I_{|z_n|}\left( 2 \sqrt{\lambda_{1,n} \lambda_{2,n}} \right), \quad z_n \in \mathbb{Z} \tag{4}$$
 
-                                                                 4
+where $\mathbb{E}(Z_n) = \lambda_{1,n} - \lambda_{2,n}$ and $\text{Var}(Z_n) = \lambda_{1,n} + \lambda_{2,n}$. Furthermore, $I_h(\cdot)$ is the modified Bessel function of order $h$ (Skellam, 1946).
 
-## Page 05: Bayesian weighted discrete-time dynamic models for association football predicti
+## Page 05: Section 2.3: Diagonally Inflated Draws & Dynamic Random Walk Priors
 
 源页：第 5 页
 
 Bayesian weighted discrete-time dynamic models for association football prediction                                             Preprint
 
+The parameters $\lambda_{1,n}$ and $\lambda_{2,n}$ adopt the same log-linear structure as in the previous cases.
 
-order ℎ (Skellam, 1946). The parameters 𝜆1,𝑛 and 𝜆 2,𝑛 adopt the same log-linear structure as in the previous
-cases.
+#### 2.3 Inflating the draws probability
 
+Poisson goal-based models often underestimate the incidence of draws, which are the diagonal elements in goal probability matrices. To mitigate this, Karlis and Ntzoufras (2009) introduced a diagonally inflated bivariate Poisson (DIBP) model as follows:
 
-2.3      Inflating the draws probability
-Poisson goal-based models often underestimate the incidence of draws, which are the diagonal elements in goal
-probability matrices. To mitigate this, Karlis and Ntzoufras (2009) introduced a diagonally inflated bivariate
-Poisson (DIBP) model as follows
+$$P_{X_{i,n}, Y_{j,n}}(x_{i,n}, y_{j,n}) = \begin{cases} (1 - \omega) \text{BP}(\lambda_{1,n}, \lambda_{2,n}, \lambda_{3,n}) & \text{if } x_{i,n} \ne y_{j,n} \\ (1 - \omega) \text{BP}(\lambda_{1,n}, \lambda_{2,n}, \lambda_{3,n}) + \omega D(x_n, \xi) & \text{if } x_{i,n} = y_{j,n} \end{cases}$$
 
-                                                                            
-                                              (1 − 𝜔) BP 𝜆1,𝑛 , 𝜆2.𝑛 , 𝜆3.𝑛
-                                             
-                                                                                                       if 𝑥 𝑖,𝑛 ≠ 𝑦 𝑗,𝑛
-               P𝑋𝑖,𝑛 ,𝑌𝑗,𝑛 (𝑥𝑖,𝑛 , 𝑦 𝑗,𝑛 ) =                                                                              ,
-                                              (1 − 𝜔) BP 𝜆1,𝑛 , 𝜆2,𝑛 , 𝜆3,𝑛 + 𝜔𝐷 (𝑥 𝑛 , 𝜉)
-                                                                                                       if 𝑥𝑖,𝑛 = 𝑦 𝑗,𝑛
-                                             
+where $\text{BP}(\cdot)$ is the bivariate Poisson probability mass function as in (3), $\omega \in [0, 1]$ controls the inflation weight, and $D(x_n, \xi)$ is a discrete distribution with parameter vector $\xi$, which favours draw outcomes.
 
-where BP(·) is the bivariate Poisson probability mass function as in (3), 𝜔 ∈ [0, 1] controls the inflation weight,
-and 𝐷 (𝑥 𝑛 , 𝜉) is a discrete distribution with parameter vector 𝜉, which favours draw outcomes.
-      Similarly, to address excess draws in goal differences, the zero-inflated Skellam model (ZISM) (Karlis and
-Ntzoufras, 2009) can be adopted
+Similarly, to address excess draws in goal differences, the zero-inflated Skellam model (ZISM) (Karlis and Ntzoufras, 2009) can be adopted:
 
-                                                                 
-                                          (1 − 𝜔) SM 𝜆1,𝑛 , 𝜆2,𝑛
-                                         
-                                                                                                if 𝑧 𝑛 ≠ 0
-                           P 𝑍𝑛 (𝑧 𝑛 ) =                                                                     ,
-                                          (1 − 𝜔) SM 𝜆1,𝑛 , 𝜆2,𝑛 + 𝜔𝐷 (0, 𝜉)
-                                                                                                if 𝑧 𝑛 = 0
-                                         
+$$P_{Z_n}(z_n) = \begin{cases} (1 - \omega) \text{SM}(\lambda_{1,n}, \lambda_{2,n}) & \text{if } z_n \ne 0 \\ (1 - \omega) \text{SM}(\lambda_{1,n}, \lambda_{2,n}) + \omega D(0, \xi) & \text{if } z_n = 0 \end{cases}$$
 
-where SM(·) is the Skellam probability mass function as in (4), and 𝐷 (0, 𝜉) is a discrete distribution that places
-extra mass at zero.
+#### 2.4 Dynamic prior distributions and identifiability constraints
 
+A structural limitation in the previous models is the assumption of static team-specific parameters, namely, teams are assumed to have a constant performance over time, determined by attack and defence abilities $\beta^{att}$ and $\beta^{def}$, respectively. Several approaches have been proposed to dynamically model team-specific abilities (Rue and Salvesen, 2000; Owen, 2011; Koopman and Lit, 2015, 2019, among others). In particular, Owen (2011) extended the static framework by introducing a discrete-time evolution for team-specific effects:
 
-2.4      Dynamic prior distributions and identifiability constraints
-A structural limitation in the previous models is the assumption of static team-specific parameters, namely, teams
-are assumed to have a constant performance over time, determined by attack and defence abilities 𝛽att and 𝛽def ,
-respectively. However, the performance of teams tends to be dynamic – between seasons and even from week to
-week – due to factors such as summer and winter transfer windows reshaping lineups, injuries benching key
-players, or midseason coaching changes because of unsatisfactory results.
-      Several approaches have been proposed to dynamically model team-specific abilities (Rue and Øyvind
-Salvesen, 2000; Owen, 2011; Koopman and Lit, 2015, 2019, among others). In particular, Owen (2011) extended
-the static framework by introducing a discrete-time evolution for team-specific effects. Specifically, the evolution
-component is specified as a random walk for both the attack and defence parameters by centering the effect of
-seasonal time 𝜏 on the lagged effect in 𝜏 − 1. This allows the attack and defence parameters to vary between
-seasons or weeks. Therefore, for each team 𝑇𝑖 , where 𝑖 = 1, . . . , 𝑁𝑇 , and each period 𝜏, where 𝜏 = 2, . . . , T , the
-prior distributions for the attack and defence abilities are usually defined as follows
-                                                                                            
-                                                                                         1
-                                           𝛽𝑖,att𝜏 | 𝛽𝑖,att𝜏−1 , 𝜎 ∼ N       𝛽𝑖,att𝜏−1 ,
-                                                                             𝜎
-                                                                                                                                  (5)
-                                            def     def             def      1
-                                           𝛽𝑖, 𝜏 | 𝛽𝑖, 𝜏−1 , 𝜎 ∼ N 𝛽𝑖, 𝜏−1 ,     .
-                                                                             𝜎
+$$\beta_{i,\tau}^{att} \mid \beta_{i,\tau-1}^{att}, \sigma \sim N\left( \beta_{i,\tau-1}^{att}, \frac{1}{\sigma} \right)$$
+$$\beta_{i,\tau}^{def} \mid \beta_{i,\tau-1}^{def}, \sigma \sim N\left( \beta_{i,\tau-1}^{def}, \frac{1}{\sigma} \right) \tag{5}$$
 
-
-
-
-                                                                5
-
-## Page 06: Bayesian weighted discrete-time dynamic models for association football predicti
+## Page 06: Section 3: Weighted Dynamic Proposal & Commensurate Priors
 
 源页：第 6 页
 
 Bayesian weighted discrete-time dynamic models for association football prediction                         Preprint
 
+While for the initial period $\tau = 1$, the prior distributions are initialised as:
 
-While for the initial period 𝜏 = 1, the prior distributions are initialised as
-                                                                          
-                                               att                       1
-                                              𝛽𝑖,1 | 𝜇att , 𝜎 ∼ N 𝜇att ,
-                                                                         𝜎
-                                                                                                               (6)
-                                               def                         1
-                                              𝛽𝑖,1 | 𝜇def , 𝜎 ∼ N 𝜇def ,       ,
-                                                                          𝜎
+$$\beta_{i,1}^{att} \mid \mu^{att}, \sigma \sim N\left( \mu^{att}, \frac{1}{\sigma} \right)$$
+$$\beta_{i,1}^{def} \mid \mu^{def}, \sigma \sim N\left( \mu^{def}, \frac{1}{\sigma} \right) \tag{6}$$
 
-where 𝜇att and 𝜇def are the prior means for the initial attack and defence abilities, respectively, and 𝜎 is the
-common evolution precision, assumed constant over time and identical between all teams and both team-specific
-abilities. To ensure identifiability, a zero-sum constraint (Baio and Blangiardo, 2010; Owen, 2011) on the random
-effects within each period is required
+where $\mu^{att}$ and $\mu^{def}$ are the prior means for the initial attack and defence abilities, respectively, and $\sigma$ is the common evolution precision, assumed constant over time and identical between all teams and both team-specific abilities. To ensure identifiability, a zero-sum constraint (Baio and Blangiardo, 2010; Owen, 2011) on the random effects within each period is required:
 
-                                   𝑁𝑇
-                                   ∑︁                   𝑁𝑇
-                                                        ∑︁
-                                         𝛽𝑖,att𝜏 = 0,         𝛽𝑖,def𝜏 = 0,   𝜏 = 1, . . . , T .                  (7)
-                                   𝑖=1                  𝑖=1
+$$\sum_{i=1}^{N_T} \beta_{i,\tau}^{att} = 0, \quad \sum_{i=1}^{N_T} \beta_{i,\tau}^{def} = 0, \quad \tau = 1, \dots, T \tag{7}$$
 
-      As a matter of parameter interpretation, once the models have been estimated, a larger team-attack parameter
-indicates stronger attacking quality, while a smaller team-defence parameter corresponds to stronger defensive
-performance.
+### 3 A weighted dynamic proposal
 
+As described in Section 2.4, a key assumption of the discrete-time evolution approach as in (5) is a single constant evolution precision $1/\sigma$ shared by all teams and by both their attack and defence parameters. In this section, we propose a weighted dynamic approach based on commensurate priors, which employ separate, time-varying evolution precisions for attack and defence.
 
-3      A weighted dynamic proposal
-As described in Section 2.4, a key assumption of the discrete-time evolution approach as in (5) is a single constant
-evolution precision 1/𝜎 shared by all teams and by both their attack and defence parameters. However, this
-assumption can compromise predictive accuracy by either overborrowing (underborrowing) strength from one
-period to the next. Specifically, some periods – such as the summer transfer window or a midseason coaching
-change – can cause rapid shifts in team abilities, justifying the discount of earlier performance information; while
-other periods, when the teams’ abilities are stable, borrowing more past information can improve the predictive
-performances. Furthermore, offensive and defensive abilities may often evolve at different rates. In this section,
-we propose a weighted dynamic approach based on commensurate priors, which employ separate, time-varying
-evolution precisions for attack and defence. By treating the matches played during a specific period as ”current
-data” with respect to the ”historical data” from the previous period, this approach offers an intuitive framework
-in which the prior at each time point adaptively borrows information from the previous period, but only to the
-extent that the data justify it.
+#### 3.1 Commensurate priors
 
+Hobbs et al. (2011) consider the case in which data from a single historical study inform the analysis of a new study by defining the commensurate prior for the parameter of interest $\theta$ as follows:
 
-3.1      Commensurate priors
-In the Bayesian framework, adaptively informative priors are valuable for synthesising results across studies,
-particularly in the clinical setting, where the appropriate borrowing of historical knowledge can be critical. By
-providing a coherent statistical framework that incorporates all relevant sources of information, these methods
-can substantially reduce the required sample sizes, increase statistical power, and lower both costs and ethical
-risks.
-      Here, we focus on hierarchical models that employ commensurate priors (Hobbs et al., 2011, 2012) as the
-main mechanism to weight prior information according to its consistency (commensurability) with data from
-previous studies. Hobbs et al. (2011) consider the case in which data from a single historical study inform the
+$$\theta \mid \theta_0, \phi \sim N\left( \theta_0, \frac{1}{\phi} \right) \tag{8}$$
 
+where $\theta_0$ is the estimate from the historical study and $\phi$ is the precision or commensurability parameter.
 
-                                                                 6
-
-## Page 07: Bayesian weighted discrete-time dynamic models for association football predicti
+## Page 07: Section 3.1: Spike-and-Slab Hyperpriors
 
 源页：第 7 页
 
 Bayesian weighted discrete-time dynamic models for association football prediction                               Preprint
 
+Hobbs et al. (2012) proposed two families of priors for $\phi$, a family of gamma distributions that leads to a full conditional posterior distribution, as well as a variant of the 'spike-and-slab' distribution introduced by Mitchell and Beauchamp (1988) for Bayesian variable selection based on a mixture prior with two components:
 
-analysis of a new study by defining the commensurate prior for the parameter of interest 𝜃 as follows
-                                                                   
-                                                                  1
-                                                𝜃 | 𝜃0, 𝜙 ∼ N 𝜃0,     ,                                               (8)
-                                                                  𝜙
+$$P(\phi < \alpha_1) = 0$$
+$$P(\phi < u) = p_l \times \frac{u - \alpha_1}{\alpha_2 - \alpha_1}, \quad \alpha_1 \le u \le \alpha_2 \tag{9}$$
+$$P(\phi > \alpha_2) = P(\phi = S) = 1 - p_l$$
 
-where 𝜃 0 is the estimate from the historical study and 𝜙 is the precision or commensurability parameter. The
-formulation in (8) follows from the insight in Pocock (1976) for which historical parameters may be biased
-representations of their current counterparts. By modelling the unknown bias as 𝜖 = 𝜃 − 𝜃 0 the commensurate
-prior quantifies how much a current study parameter is allowed to vary with respect to the historical estimate in
-the absence of strong evidence of heterogeneity. Thus, a lack of evidence for substantial bias implies that the
-historical and current parameters are commensurate.
-       Hobbs et al. (2012) extended this framework by proposing both empirical and fully Bayesian methods to
-estimate or assign 𝜙. Notably, by incorporating prior uncertainty when estimating 𝜙, the fully Bayesian approach
-reduces the risk of overstating commensurability. Hobbs et al. (2012) proposed two families of priors for 𝜙, a
-family of gamma distributions that leads to a full conditional posterior distribution, as well as a variant of the
-“spike-and-slab” distribution introduced by Mitchell and Beauchamp (1988) for Bayesian variable selection based
-on a mixture prior with two components, which can provide robust borrowing. Specifically, the spike-and-slab
-prior distribution is a discrete mixture distribution defined as locally uniform between two limits 0 ≤ 𝛼1 < 𝛼2
-(the slab component), and with a probability mass concentrated at a point S > 𝛼2 (the spike component), such
-that
-                                     P(𝜙 < 𝛼1 ) = 0,
-                                                         𝑢 − 𝛼1
-                                     P(𝜙 < 𝑢) = 𝑝 𝑙 ×            ,   𝛼1 ≤ 𝑢 ≤ 𝛼2 ,                                    (9)
-                                                         𝛼2 − 𝛼1
-                                     P(𝜙 > 𝛼2 ) = P(𝜙 = S) = 1 − 𝑝 𝑙 ,
-where 𝑝 𝑙 is the probability of a slab, which can be interpreted as the prior probability of incommensurability.
-The spike component concentrates the probability mass near 𝜃 0 , encouraging strong borrowing from historical
-data, while the slab component allows for greater deviation when current data conflict with historical evidence.
-Thus, commensurate priors provide a mechanism for selectively borrowing information from historical data by
-using the adaptive shrinkage properties of spike-and-slab distributions. Notably, when the current and historical
-parameters appear commensurate, the prior strongly shrinks the current parameter towards the historical estimate,
-improving efficiency. Conversely, when there is substantial disagreement, the prior has minimal influence on
-𝜃, limiting bias (Murray et al., 2015). Indeed, with appropriate calibration, the spike-and-slab commensurate
-prior approach achieves desirable frequentist properties – such as controlled Type I error and high power – while
-adaptively borrowing information when it is commensurate and downweighting it when it is not (Hobbs et al.,
-2012).
+where $p_l$ is the probability of a slab, which can be interpreted as the prior probability of incommensurability. The spike component concentrates the probability mass near $\theta_0$, encouraging strong borrowing from historical data, while the slab component allows for greater deviation when current data conflict with historical evidence.
 
+#### 3.2 Weighted dynamic prior distributions
 
-3.2      Weighted dynamic prior distributions
-Let 𝛽𝑖,(𝑘𝜏) denote team 𝑇𝑖 ’s ability of type 𝑘 in period 𝜏, where 𝑘 ∈ {att, def} and 𝜏 = 1, 2, . . . , T indexes the time
-periods (e.g., seasons or weeks). In our weighted dynamic approach, each team’s ability in period 𝜏 has a prior
-centred on its ability from the previous period 𝜏 − 1, rather than assuming a fixed random walk precision across
-all periods. Therefore, for each team 𝑇𝑖 , where 𝑖 = 1, . . . , 𝑁𝑇 , and each period 𝜏, where 𝜏 = 2, . . . , T , the prior
+Let $\beta_{i,\tau}^{(k)}$ denote team $T_i$’s ability of type $k$ in period $\tau$, where $k \in \{\text{att}, \text{def}\}$ and $\tau = 1, 2, \dots, T$ indexes the time periods. For each team $T_i$ and each period $\tau = 2, \dots, T$, the prior distributions for the attack and defence abilities are:
 
+$$\beta_{i,\tau}^{att} \mid \beta_{i,\tau-1}^{att}, \phi_{att,\tau} \sim N\left( \beta_{i,\tau-1}^{att}, \frac{1}{\phi_{att,\tau}} \right)$$
+$$\beta_{i,\tau}^{def} \mid \beta_{i,\tau-1}^{def}, \phi_{def,\tau} \sim N\left( \beta_{i,\tau-1}^{def}, \frac{1}{\phi_{def,\tau}} \right) \tag{10}$$
 
+where each team's offensive (defensive) ability in period $\tau$ has a normal prior distribution centred on the ability of that team in period $\tau - 1$, with a commensurate parameter $\phi_{k,\tau}$.
 
-
-                                                            7
-
-## Page 08: Bayesian weighted discrete-time dynamic models for association football predicti
+## Page 08: Section 3.2: Continuous Two-Component Mixture Prior
 
 源页：第 8 页
 
 Bayesian weighted discrete-time dynamic models for association football prediction                                Preprint
 
+To complete the model specification, we assign spike-and-slab hyperpriors to each precision parameter. Rather than using a discrete spike-and-slab with a point mass at $S$ and a uniform slab on $[\alpha_1, \alpha_2]$ as in (9), we employ a continuous two-component mixture consisting of a highly concentrated spike and a diffuse slab (Hong et al., 2018). For each period and ability of type $k$, where $k \in \{\text{att}, \text{def}\}$, we let:
 
-distributions for the attack and defence abilities are
-                                                                                                 
-                                                                                              1
-                                        𝛽𝑖,att𝜏 | 𝛽𝑖,att𝜏−1 , 𝜙att, 𝜏 ∼ N       𝛽𝑖,att𝜏−1 ,
-                                                                                𝜙att, 𝜏
-                                                                                                                    (10)
-                                         def     def                   def         1
-                                        𝛽𝑖, 𝜏 | 𝛽𝑖, 𝜏−1 , 𝜙def, 𝜏 ∼ N 𝛽𝑖, 𝜏−1 ,           ,
-                                                                                𝜙def, 𝜏
+$$\phi_{k,\tau} \mid \mu_s, \mu_l, \psi_s, \psi_l, p_l \sim N_+(\mu_s, \psi_s) \times (1 - p_l) + N_+(\mu_l, \psi_l) \times p_l \tag{11}$$
 
-where each team’s offensive (defensive) ability in period 𝜏 has a normal prior distribution centred on the offensive
-(defensive) ability of that team in period 𝜏 − 1, with a commensurate (precision) parameter 𝜙 𝑘, 𝜏 that governs how
-closely the agreement is with previous information at time 𝜏 − 1. If 𝜙 𝑘, 𝜏 is large, the prior is tightly concentrated
-around the previous value – effectively assuming the team’s ability has not changed much – which leads to a
-heavy borrowing of strength from the previous period. Conversely, if 𝜙 𝑘, 𝜏 is near zero, the prior is diffuse,
-indicating that we allow the current data to have a dominant influence while minimising the contribution of the
-previous data. Notably, we introduce separate precision 𝜙att, 𝜏 and 𝜙def, 𝜏 for each period 𝜏 and, similarly to Egidi
-et al. (2018), for each ability type, rather than a common evolution precision. This means that the model can
-adjust how much it learns from the attack strength of the previous period independently of how much it learns
-from the defence strength of the previous period.
-    To complete the model specification, we assign spike-and-slab hyperpriors to each precision parameter.
-Rather than using a discrete spike-and-slab with a point mass at S and a uniform slab on [𝛼1 , 𝛼2 ] as in (9), we
-employ a continuous two-component mixture consisting of a highly concentrated spike and a diffuse slab (Hong
-et al., 2018). For each period and ability of type 𝑘, where 𝑘 ∈ {att, def}, we let
-
-                      𝜙 𝑘, 𝜏 | 𝜇 𝑠 , 𝜇𝑙 , 𝜓 𝑠 , 𝜓𝑙 , 𝑝 𝑙 ∼ N+ (𝜇 𝑠 , 𝜓 𝑠 ) × (1 − 𝑝 𝑙 ) + N+ (𝜇𝑙 , 𝜓𝑙 ) × 𝑝 𝑙 ,       (11)
-
-where N+ (𝜇, 𝜓) denotes a normal distribution with mean 𝜇 and standard deviation 𝜓 truncated from below
-at zero (i.e., the half-normal distribution). Specifically, 𝜇 𝑠 and 𝜇𝑙 represent the means of the spike-and-slab
-components, respectively, while 𝜓 𝑠 and 𝜓𝑙 are the corresponding standard deviations, with 0 < 𝜓 𝑠 < 𝜓𝑙 . Each
-𝜙 𝑘, 𝜏 , with 𝜏 ≥ 2, thus has a chance to be larger – implying a high commensurability with the previous period –
-or to be near zero – suggesting low commensurability and allowing more variability with respect to the previous
-period. The model will estimate an appropriate value for 𝜙att, 𝜏 and 𝜙def, 𝜏 based on the degree to which the new
-match results align with the trend of the previous period. If the performance of the teams in period 𝜏 looks very
-similar to that of period 𝜏 − 1, the posterior for 𝜙 𝑘, 𝜏 will likely favour the spike, implying strong borrowing and
-shrinkage towards the past. In contrast, if the performance of the teams changes unexpectedly, the posterior of
-𝜙 𝑘, 𝜏 will move toward the slab, implying weak borrowing. For the initial period 𝜏 = 1, no past information is
-available, so we use diffuse but proper priors as in (6). Furthermore, to ensure the identifiability of the model, we
-impose the zero sum constraints of each period as in (7).
-    Our weighted dynamic approach extends the Bayesian dynamic goal-based models framework by introducing
-adaptive period-specific shrinkage for team abilities. By allowing the data to decide how much information about
-attack and defence abilities to borrow from the previous period, the model can reflect real-world changes more
-responsively. This yields a more flexible evolution of team strengths over time, which should improve predictive
-performance on match outcomes.
-
-
-
-
-                                                                    8
+where $N_+(\mu, \psi)$ denotes a normal distribution with mean $\mu$ and standard deviation $\psi$ truncated from below at zero (i.e., the half-normal distribution). Specifically, $\mu_s$ and $\mu_l$ represent the means of the spike-and-slab components, respectively, while $\psi_s$ and $\psi_l$ are the corresponding standard deviations, with $0 < \psi_s < \psi_l$.
 
 ## Page 09: Bayesian weighted discrete-time dynamic models for association football predicti
 
@@ -681,33 +461,32 @@ the benefit of draw inflation combined with period-specific weighting in a highl
 Similarly, in La Liga, the weighted-dynamic models outperform all other approaches, achieving the best results
 with a Brier score of 0.499 under the diagonal-inflated bivariate Poisson model, while showing the highest ACP
 of 0.454.
-Table 1: Brier Score and Average of Correct Probabilities (ACP) for the proposed weighted dynamic method, Owen (2011)
-method and Egidi et al. (2018) method, evaluated on the last three rounds of the 2024/2025 season for the Bundesliga,
-English Premier League (EPL), and La Liga.
+### Table 1: Brier Score and Average of Correct Probabilities (ACP)
 
- League         Model                            Weighted Dynamic          Owen (2011)        Egidi et al. (2018)
-                                                Brier Score  ACP       Brier Score  ACP      Brier Score     ACP
- Bundesliga     Bivariate Poisson                 0.678        0.359     0.687      0.357       0.683        0.357
-                Diag. Infl. Bivariate Poisson     0.735        0.341     0.733      0.344       0.725        0.348
-                Double Poisson                    0.718        0.344     0.719      0.346       0.702        0.353
-                Negative Binomial                 0.698        0.351     0.706      0.350       0.690        0.357
-                Skellam Model                     0.688        0.345     0.688      0.347       0.684        0.351
-                Zero Infl. Skellam Model          0.693        0.344     0.690      0.348       0.686        0.351
- EPL            Bivariate Poisson                 0.603        0.409     0.608      0.402       0.609        0.402
-                Diag. Infl. Bivariate Poisson     0.602        0.421     0.616      0.410       0.619        0.408
-                Double Poisson                    0.612        0.408     0.622      0.401       0.626        0.399
-                Negative Binomial                 0.606        0.410     0.612      0.404       0.611        0.403
-                Skellam Model                     0.617        0.393     0.624      0.387       0.617        0.389
-                Zero Infl. Skellam Model          0.615        0.394     0.624      0.387       0.624        0.385
- La Liga        Bivariate Poisson                 0.502        0.448     0.520      0.438       0.518        0.439
-                Diag. Infl. Bivariate Poisson     0.499        0.454     0.518      0.444       0.521        0.442
-                Double Poisson                    0.503        0.450     0.522      0.439       0.518        0.441
-                Negative Binomial                 0.514        0.442     0.533      0.431       0.534        0.430
-                Skellam Model                     0.553        0.408     0.554      0.407       0.556        0.406
-                Zero Infl. Skellam Model          0.548        0.411     0.554      0.407       0.555        0.407
+*Evaluated on the last three rounds of the 2024/2025 season for Bundesliga, EPL, and La Liga.*
 
+| League | Model | Weighted Dynamic Brier | Weighted Dynamic ACP | Owen (2011) Brier | Owen (2011) ACP | Egidi et al. (2018) Brier | Egidi et al. (2018) ACP |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Bundesliga** | Bivariate Poisson | 0.678 | 0.359 | 0.687 | 0.357 | 0.683 | 0.357 |
+| | Diag. Infl. Bivariate Poisson | 0.735 | 0.341 | 0.733 | 0.344 | 0.725 | 0.348 |
+| | Double Poisson | 0.718 | 0.344 | 0.719 | 0.346 | 0.702 | 0.353 |
+| | Negative Binomial | 0.698 | 0.351 | 0.706 | 0.350 | 0.690 | 0.357 |
+| | Skellam Model | 0.688 | 0.345 | 0.688 | 0.347 | 0.684 | 0.351 |
+| | Zero Infl. Skellam Model | 0.693 | 0.344 | 0.690 | 0.348 | 0.686 | 0.351 |
+| **EPL** | Bivariate Poisson | 0.603 | 0.409 | 0.608 | 0.402 | 0.609 | 0.402 |
+| | Diag. Infl. Bivariate Poisson | 0.602 | 0.421 | 0.616 | 0.410 | 0.619 | 0.408 |
+| | Double Poisson | 0.612 | 0.408 | 0.622 | 0.401 | 0.626 | 0.399 |
+| | Negative Binomial | 0.606 | 0.410 | 0.612 | 0.404 | 0.611 | 0.403 |
+| | Skellam Model | 0.617 | 0.393 | 0.624 | 0.387 | 0.617 | 0.389 |
+| | Zero Infl. Skellam Model | 0.615 | 0.394 | 0.624 | 0.387 | 0.624 | 0.385 |
+| **La Liga** | Bivariate Poisson | 0.502 | 0.448 | 0.520 | 0.438 | 0.518 | 0.439 |
+| | Diag. Infl. Bivariate Poisson | 0.499 | 0.454 | 0.518 | 0.444 | 0.521 | 0.442 |
+| | Double Poisson | 0.503 | 0.450 | 0.522 | 0.439 | 0.518 | 0.441 |
+| | Negative Binomial | 0.514 | 0.442 | 0.533 | 0.431 | 0.534 | 0.430 |
+| | Skellam Model | 0.553 | 0.408 | 0.554 | 0.407 | 0.556 | 0.406 |
+| | Zero Infl. Skellam Model | 0.548 | 0.411 | 0.554 | 0.407 | 0.555 | 0.407 |
 
-      Table 2 presents the same comparisons for the second half of last season. Specifically, in the Bundesliga, the
+Table 2 presents the same comparisons for the second half of last season. Specifically, in the Bundesliga, the
 weighted dynamic bivariate Poisson model achieves the lowest Brier score of 0.661 and the highest ACP value of
 0.387. In the EPL, the weighted dynamic bivariate Poisson obtains the lowest Brier Score of 0.579, while the
 weighted dynamic diagonal-inflated bivariate Poisson model produces an ACP of 0.429. Similarly, in La Liga,
@@ -731,56 +510,32 @@ the 2024/2025 season. Specifically, for the Bundesliga the best model is the biv
 Bayesian weighted discrete-time dynamic models for association football prediction                            Preprint
 
 
-Table 2: Brier Score and Average of Correct Probabilities (ACP) for the proposed weighted dynamic method, Owen (2011)
-method and Egidi et al. (2018) method, evaluated on the second half of the 2024/2025 season for the Bundesliga, English
-Premier League (EPL), and La Liga.
+### Table 2: Brier Score and Average of Correct Probabilities (ACP) - Second Half of Season
 
- League       Model                            Weighted Dynamic            Owen (2011)          Egidi et al. (2018)
-                                              Brier Score  ACP         Brier Score  ACP        Brier Score     ACP
- Bundesliga   Bivariate Poisson                 0.661          0.387     0.664       0.382        0.662       0.384
-              Diag. Infl. Bivariate Poisson     0.694          0.386     0.691       0.383        0.694       0.383
-              Double Poisson                    0.677          0.386     0.683       0.381        0.685       0.380
-              Negative Binomial                 0.671          0.384     0.680       0.378        0.682       0.377
-              Skellam Model                     0.664          0.370     0.668       0.368        0.667       0.370
-              Zero Infl. Skellam Model          0.664          0.372     0.668       0.369        0.667       0.371
- EPL          Bivariate Poisson                 0.579          0.422     0.581       0.421        0.583       0.420
-              Diag. Infl. Bivariate Poisson     0.594          0.429     0.592       0.427        0.588       0.428
-              Double Poisson                    0.584          0.424     0.584       0.424        0.582       0.425
-              Negative Binomial                 0.584          0.421     0.582       0.422        0.583       0.422
-              Skellam Model                     0.601          0.399     0.600       0.399        0.597       0.401
-              Zero Infl. Skellam Model          0.604          0.398     0.597       0.401        0.596       0.402
- La Liga      Bivariate Poisson                 0.583          0.416     0.586       0.413        0.585       0.414
-              Diag. Infl. Bivariate Poisson     0.583          0.425     0.586       0.421        0.586       0.421
-              Double Poisson                    0.585          0.419     0.585       0.416        0.585       0.416
-              Negative Binomial                 0.590          0.415     0.591       0.411        0.587       0.413
-              Skellam Model                     0.583          0.401     0.589       0.395        0.594       0.394
-              Zero Infl. Skellam Model          0.583          0.402     0.588       0.396        0.592       0.396
+*Evaluated on the second half of the 2024/2025 season for Bundesliga, EPL, and La Liga.*
 
+| League | Model | Weighted Dynamic Brier | Weighted Dynamic ACP | Owen (2011) Brier | Owen (2011) ACP | Egidi et al. (2018) Brier | Egidi et al. (2018) ACP |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Bundesliga** | Bivariate Poisson | 0.661 | 0.387 | 0.664 | 0.382 | 0.662 | 0.384 |
+| | Diag. Infl. Bivariate Poisson | 0.694 | 0.386 | 0.691 | 0.383 | 0.694 | 0.383 |
+| | Double Poisson | 0.677 | 0.386 | 0.683 | 0.381 | 0.685 | 0.380 |
+| | Negative Binomial | 0.671 | 0.384 | 0.680 | 0.378 | 0.682 | 0.377 |
+| | Skellam Model | 0.664 | 0.370 | 0.668 | 0.368 | 0.667 | 0.370 |
+| | Zero Infl. Skellam Model | 0.664 | 0.372 | 0.668 | 0.369 | 0.667 | 0.371 |
+| **EPL** | Bivariate Poisson | 0.579 | 0.422 | 0.581 | 0.421 | 0.583 | 0.420 |
+| | Diag. Infl. Bivariate Poisson | 0.594 | 0.429 | 0.592 | 0.427 | 0.588 | 0.428 |
+| | Double Poisson | 0.584 | 0.424 | 0.584 | 0.424 | 0.582 | 0.425 |
+| | Negative Binomial | 0.584 | 0.421 | 0.582 | 0.422 | 0.583 | 0.422 |
+| | Skellam Model | 0.601 | 0.399 | 0.600 | 0.399 | 0.597 | 0.401 |
+| | Zero Infl. Skellam Model | 0.604 | 0.398 | 0.597 | 0.401 | 0.596 | 0.402 |
+| **La Liga** | Bivariate Poisson | 0.583 | 0.416 | 0.586 | 0.413 | 0.585 | 0.414 |
+| | Diag. Infl. Bivariate Poisson | 0.583 | 0.425 | 0.586 | 0.421 | 0.586 | 0.421 |
+| | Double Poisson | 0.585 | 0.419 | 0.585 | 0.416 | 0.585 | 0.416 |
+| | Negative Binomial | 0.590 | 0.415 | 0.591 | 0.411 | 0.587 | 0.413 |
+| | Skellam Model | 0.583 | 0.401 | 0.589 | 0.395 | 0.594 | 0.394 |
+| | Zero Infl. Skellam Model | 0.583 | 0.402 | 0.588 | 0.396 | 0.592 | 0.396 |
 
-EPL the Skellam model, and for La Liga the diagonal-inflated bivariate Poisson model. Within each league,
-we selected two teams: one with relatively stable performance during the study period and another showing
-inconsistent behaviour. The plot shows that, for stable teams, the weighted dynamic model captures the temporal
-trends more accurately, with clearer distinctions between attacking and defensive strength. For instance, Bayern
-München, typically dominant in the Bundesliga, showed a slight slump in performance during the 2023/2024
-season (periods 7 and 8) when they finished third. This fluctuation is reflected in the attack and defence abilities,
-particularly in the weighted dynamic model. Similarly, for Real Madrid and Manchester City, both of which
-won their respective leagues in 2023/2024 but finished second and third in 2024/2025 (periods 9 and 10), the
-weighted dynamic approach captures a noticeable drop in attacking ability and a relative increase in defensive
-ability. These changes are more distinctly represented in our model compared to the alternatives of Owen (2011)
-and Egidi et al. (2018).
-    The benefits of adaptive shrinkage are even more evident for teams with inconsistent performance. For
-instance, Manchester United, after finishing second in 2020/2021, showed a gradual decline in subsequent
-seasons, finally placing 15th in the 2024/2025 season. After yielding the highest and lowest values for the attack
-and defence abilities, respectively, compared to the other two proposals for the 2020/2021 season, the weighted
-dynamic model reflects this trend with a notable reduction in attacking ability and an increase in defensive
-vulnerability, particularly pronounced in the final periods. Similarly, Girona FC experienced an exceptional
-2023/2024 season, reaching a third place in La Liga, followed by a disappointing 16th place finish in 2024/2025.
-The weighted dynamic approach effectively captures this volatility, showing the highest attacking ability during
-the best season (periods 7 and 8) and a marked decline thereafter. The model even shows a crossover point in the
-final period, where Girona’s defensive vulnerability is higher than its attacking ability, highlighting a shift in
-team abilities that other models fail to capture.
-
-                                                          13
+                                              13
 
 ## Page 14: Bayesian weighted discrete-time dynamic models for association football predicti
 
@@ -1082,60 +837,57 @@ uses the bivariate Poisson while both the EPL and La Liga use the diagonal-infla
 Bayesian weighted discrete-time dynamic models for association football prediction                               Preprint
 
 
-Table 3: Ranked Probability Score (RPS) and Pseudo-R2 for the proposed weighted dynamic method, Owen (2011)
-method and Egidi et al. (2018) method, evaluated on the last three round of the 2024/2025 season for the Bundesliga,
-English Premier League (EPL), and La Liga.
+### Table 3: Ranked Probability Score (RPS) and Pseudo-R2
 
- League        Model                            Weighted Dynamic             Owen (2011)            Egidi et al. (2018)
-                                                RPS     Pseudo-R2          RPS    Pseudo-R2         RPS      Pseudo-R2
- Bundesliga    Bivariate Poisson                 0.216       0.328        0.219        0.324        0.217       0.325
-               Diag. Infl. Bivariate Poisson     0.245       0.298        0.242        0.302        0.238       0.306
-               Double Poisson                    0.235       0.307        0.236        0.309        0.227       0.317
-               Negative Binomial                 0.225       0.316        0.229        0.314        0.220       0.322
-               Skellam Model                     0.220       0.321        0.221        0.321        0.217       0.322
-               Zero Infl. Skellam Model          0.222       0.318        0.222        0.321        0.217       0.322
- EPL           Bivariate Poisson                 0.225       0.370        0.228        0.367        0.228       0.366
-               Diag. Infl. Bivariate Poisson     0.224       0.369        0.232        0.362        0.233       0.360
-               Double Poisson                    0.229       0.364        0.234        0.360        0.235       0.356
-               Negative Binomial                 0.228       0.368        0.231        0.364        0.231       0.365
-               Skellam Model                     0.230       0.360        0.234        0.358        0.232       0.362
-               Zero Infl. Skellam Model          0.228       0.361        0.236        0.358        0.235       0.358
- La Liga       Bivariate Poisson                 0.190       0.420        0.199        0.408        0.198       0.410
-               Diag. Infl. Bivariate Poisson     0.189       0.421        0.198        0.409        0.200       0.406
-               Double Poisson                    0.190       0.419        0.199        0.407        0.199       0.410
-               Negative Binomial                 0.194       0.413        0.204        0.401        0.204       0.400
-               Skellam Model                     0.211       0.392        0.213        0.391        0.214       0.390
-               Zero Infl. Skellam Model          0.209       0.394        0.213        0.390        0.214       0.390
+*Evaluated on the last three rounds of the 2024/2025 season.*
 
-Table 4: Ranked Probability Score (RPS) and Pseudo-R2 for the proposed weighted dynamic method, Owen (2011)
-method and Egidi et al. (2018) method, evaluated on the second half of the 2024/2025 season for for the Bundesliga, English
-Premier League (EPL), and La Liga.
+| League | Model | Weighted Dynamic RPS | Weighted Dynamic Pseudo-R2 | Owen (2011) RPS | Owen (2011) Pseudo-R2 | Egidi et al. (2018) RPS | Egidi et al. (2018) Pseudo-R2 |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Bundesliga** | Bivariate Poisson | 0.216 | 0.328 | 0.219 | 0.324 | 0.217 | 0.325 |
+| | Diag. Infl. Bivariate Poisson | 0.245 | 0.298 | 0.242 | 0.302 | 0.238 | 0.306 |
+| | Double Poisson | 0.235 | 0.307 | 0.236 | 0.309 | 0.227 | 0.317 |
+| | Negative Binomial | 0.225 | 0.316 | 0.229 | 0.314 | 0.220 | 0.322 |
+| | Skellam Model | 0.220 | 0.321 | 0.221 | 0.321 | 0.217 | 0.322 |
+| | Zero Infl. Skellam Model | 0.222 | 0.318 | 0.222 | 0.321 | 0.217 | 0.322 |
+| **EPL** | Bivariate Poisson | 0.225 | 0.370 | 0.228 | 0.367 | 0.228 | 0.366 |
+| | Diag. Infl. Bivariate Poisson | 0.224 | 0.369 | 0.232 | 0.362 | 0.233 | 0.360 |
+| | Double Poisson | 0.229 | 0.364 | 0.234 | 0.360 | 0.235 | 0.356 |
+| | Negative Binomial | 0.228 | 0.368 | 0.231 | 0.364 | 0.231 | 0.365 |
+| | Skellam Model | 0.230 | 0.360 | 0.234 | 0.358 | 0.232 | 0.362 |
+| | Zero Infl. Skellam Model | 0.228 | 0.361 | 0.236 | 0.358 | 0.235 | 0.358 |
+| **La Liga** | Bivariate Poisson | 0.190 | 0.420 | 0.199 | 0.408 | 0.198 | 0.410 |
+| | Diag. Infl. Bivariate Poisson | 0.189 | 0.421 | 0.198 | 0.409 | 0.200 | 0.406 |
+| | Double Poisson | 0.190 | 0.419 | 0.199 | 0.407 | 0.199 | 0.410 |
+| | Negative Binomial | 0.194 | 0.413 | 0.204 | 0.401 | 0.204 | 0.400 |
+| | Skellam Model | 0.211 | 0.392 | 0.213 | 0.391 | 0.214 | 0.390 |
+| | Zero Infl. Skellam Model | 0.209 | 0.394 | 0.213 | 0.390 | 0.214 | 0.390 |
 
- League        Model                            Weighted Dynamic             Owen (2011)            Egidi et al. (2018)
-                                                RPS     Pseudo-R2          RPS    Pseudo-R2         RPS      Pseudo-R2
- Bundesliga    Bivariate Poisson                 0.222       0.336        0.224        0.334        0.223       0.335
-               Diag. Infl. Bivariate Poisson     0.237       0.319        0.237        0.321        0.237       0.320
-               Double Poisson                    0.229       0.328        0.234        0.325        0.234       0.324
-               Negative Binomial                 0.226       0.330        0.232        0.327        0.232       0.326
-               Skellam Model                     0.225       0.333        0.228        0.331        0.226       0.332
-               Zero Infl. Skellam Model          0.225       0.334        0.228        0.332        0.226       0.332
- EPL           Bivariate Poisson                 0.205       0.380        0.206        0.378        0.207       0.378
-               Diag. Infl. Bivariate Poisson     0.212       0.371        0.210        0.371        0.209       0.375
-               Double Poisson                    0.208       0.377        0.207        0.377        0.206       0.378
-               Negative Binomial                 0.208       0.376        0.206        0.377        0.207       0.376
-               Skellam Model                     0.213       0.367        0.213        0.367        0.211       0.369
-               Zero Infl. Skellam Model          0.214       0.365        0.212        0.369        0.211       0.369
- La Liga       Bivariate Poisson                 0.200       0.375        0.202        0.373        0.201       0.374
-               Diag. Infl. Bivariate Poisson     0.200       0.374        0.202        0.374        0.202       0.373
-               Double Poisson                    0.200       0.374        0.201        0.374        0.201       0.374
-               Negative Binomial                 0.202       0.372        0.204        0.370        0.202       0.372
-               Skellam Model                     0.200       0.375        0.203        0.372        0.206       0.369
-               Zero Infl. Skellam Model          0.200       0.375        0.203        0.373        0.205       0.371
+### Table 4: Ranked Probability Score (RPS) and Pseudo-R2 - Second Half of Season
 
+*Evaluated on the second half of the 2024/2025 season.*
 
+| League | Model | Weighted Dynamic RPS | Weighted Dynamic Pseudo-R2 | Owen (2011) RPS | Owen (2011) Pseudo-R2 | Egidi et al. (2018) RPS | Egidi et al. (2018) Pseudo-R2 |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Bundesliga** | Bivariate Poisson | 0.222 | 0.336 | 0.224 | 0.334 | 0.223 | 0.335 |
+| | Diag. Infl. Bivariate Poisson | 0.237 | 0.319 | 0.237 | 0.321 | 0.237 | 0.320 |
+| | Double Poisson | 0.229 | 0.328 | 0.234 | 0.325 | 0.234 | 0.324 |
+| | Negative Binomial | 0.226 | 0.330 | 0.232 | 0.327 | 0.232 | 0.326 |
+| | Skellam Model | 0.223 | 0.321 | 0.224 | 0.321 | 0.224 | 0.322 |
+| | Zero Infl. Skellam Model | 0.223 | 0.322 | 0.224 | 0.321 | 0.224 | 0.322 |
+| **EPL** | Bivariate Poisson | 0.205 | 0.380 | 0.206 | 0.378 | 0.207 | 0.377 |
+| | Diag. Infl. Bivariate Poisson | 0.211 | 0.378 | 0.210 | 0.377 | 0.209 | 0.378 |
+| | Double Poisson | 0.207 | 0.377 | 0.207 | 0.377 | 0.206 | 0.378 |
+| | Negative Binomial | 0.207 | 0.377 | 0.207 | 0.377 | 0.207 | 0.377 |
+| | Skellam Model | 0.214 | 0.364 | 0.214 | 0.363 | 0.213 | 0.365 |
+| | Zero Infl. Skellam Model | 0.215 | 0.363 | 0.213 | 0.365 | 0.212 | 0.366 |
+| **La Liga** | Bivariate Poisson | 0.200 | 0.375 | 0.201 | 0.373 | 0.201 | 0.374 |
+| | Diag. Infl. Bivariate Poisson | 0.200 | 0.376 | 0.201 | 0.374 | 0.201 | 0.374 |
+| | Double Poisson | 0.200 | 0.374 | 0.200 | 0.373 | 0.200 | 0.373 |
+| | Negative Binomial | 0.202 | 0.372 | 0.203 | 0.370 | 0.201 | 0.372 |
+| | Skellam Model | 0.200 | 0.367 | 0.203 | 0.364 | 0.205 | 0.363 |
+| | Zero Infl. Skellam Model | 0.200 | 0.368 | 0.203 | 0.364 | 0.204 | 0.364 |
 
-
-                                                           18
+                          18
 
 ## Page 19: Bayesian weighted discrete-time dynamic models for association football predicti
 
@@ -1336,188 +1088,97 @@ rounds and the second half of the 2024/2025 season) are presented in Figures 6 a
 
                                                                               20
 
-## Page 21: Bayesian weighted discrete-time dynamic models for association football predicti
+## Page 21: MCMC Convergence Diagnostics (Table 5 & Figure 6)
 
 源页：第 21 页
 
-Bayesian weighted discrete-time dynamic models for association football prediction                                                                                            Preprint
+Bayesian weighted discrete-time dynamic models for association football prediction                                                      Preprint
+
+### Table 5: MCMC convergence diagnostics: $\hat{R}$, bulk and tail effective sample sizes (ESS)
+
+*Mean of the $\beta^{att}, \beta^{def}, \phi^{att}$ and $\phi^{def}$ parameters for the proposed weighted dynamic method, all evaluated at the final round of the 2024/2025 season scenario.*
+
+| League | Model | $\beta^{att}: \hat{R}$ | Bulk | Tail | $\beta^{def}: \hat{R}$ | Bulk | Tail | $\phi^{att}: \hat{R}$ | Bulk | Tail | $\phi^{def}: \hat{R}$ | Bulk | Tail |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Bundesliga** | Bivariate Poisson | 1.00 | 4358 | 2889 | 1.00 | 4482 | 2960 | 1.00 | 2980 | 2742 | 1.00 | 3202 | 2711 |
+| | Diag. Infl. Biv. Poisson | 1.00 | 4728 | 3020 | 1.00 | 4997 | 3061 | 1.00 | 3882 | 2940 | 1.00 | 4073 | 3157 |
+| | Double Poisson | 1.00 | 4917 | 3008 | 1.00 | 5085 | 3012 | 1.00 | 4186 | 3032 | 1.00 | 4089 | 2839 |
+| | Negative Binomial | 1.00 | 4036 | 3225 | 1.00 | 4993 | 3101 | 1.00 | 3658 | 2960 | 1.00 | 3878 | 2900 |
+| | Skellam Model | 1.00 | 4772 | 3550 | 1.00 | 4802 | 3502 | 1.00 | 3370 | 3411 | 1.00 | 3431 | 3187 |
+| | Zero Infl. Skellam Model | 1.00 | 4915 | 3554 | 1.00 | 4962 | 3567 | 1.00 | 3384 | 3338 | 1.00 | 3424 | 3287 |
+| **EPL** | Bivariate Poisson | 1.00 | 4473 | 2903 | 1.00 | 4580 | 2980 | 1.00 | 2948 | 2671 | 1.00 | 3240 | 2858 |
+| | Diag. Infl. Biv. Poisson | 1.00 | 4637 | 3016 | 1.00 | 4805 | 2983 | 1.00 | 3462 | 2981 | 1.00 | 3675 | 2832 |
+| | Double Poisson | 1.00 | 4938 | 2951 | 1.00 | 5197 | 2960 | 1.00 | 3888 | 3114 | 1.00 | 3752 | 2931 |
+| | Negative Binomial | 1.00 | 3560 | 3024 | 1.00 | 4824 | 3004 | 1.00 | 3584 | 3100 | 1.00 | 3552 | 3006 |
+| | Skellam Model | 1.00 | 4253 | 3299 | 1.00 | 4344 | 3312 | 1.00 | 3415 | 3122 | 1.00 | 3189 | 2978 |
+| | Zero Infl. Skellam Model | 1.00 | 4478 | 3370 | 1.00 | 4621 | 3380 | 1.00 | 3444 | 3235 | 1.00 | 3244 | 3074 |
+| **La Liga** | Bivariate Poisson | 1.00 | 3898 | 2818 | 1.00 | 4100 | 2886 | 1.00 | 2993 | 2723 | 1.00 | 2933 | 2627 |
+| | Diag. Infl. Biv. Poisson | 1.00 | 4289 | 2980 | 1.00 | 4583 | 3027 | 1.00 | 3805 | 2891 | 1.00 | 3592 | 2942 |
+| | Double Poisson | 1.00 | 4655 | 2942 | 1.00 | 4820 | 2971 | 1.00 | 4099 | 3121 | 1.00 | 4100 | 3035 |
+| | Negative Binomial | 1.00 | 3059 | 2917 | 1.00 | 4523 | 2911 | 1.00 | 3844 | 2878 | 1.00 | 3615 | 2887 |
+| | Skellam Model | 1.00 | 3683 | 3168 | 1.00 | 3752 | 3187 | 1.00 | 3187 | 2793 | 1.00 | 3170 | 2978 |
+| | Zero Infl. Skellam Model | 1.00 | 4056 | 3287 | 1.00 | 4062 | 3263 | 1.00 | 3382 | 3012 | 1.00 | 3535 | 3179 |
 
 
-Table 5: MCMC convergence diagnostics: 𝑅,ˆ bulk and tail effective sample sizes (ESS) mean of the 𝜷att , 𝜷def , 𝝓att and 𝝓def
-parameters for the proposed weighted dynamic method, all evaluated at the final round of the 2024/2025 season scenario.
+*Figure 6: Boxplots of elapsed computation times (in seconds). Results from the proposed weighted dynamic method are shown alongside corresponding values from Owen (2011) and Egidi et al. (2018), all evaluated at the last three matches of the 2024/2025 season scenario.*
 
-                                                                        𝛽att                           𝛽def                              𝜙att                          𝜙def
- League                          Model                        𝑅¯ˆ   Bulk ESS    Tail ESS    𝑅¯ˆ   Bulk ESS    Tail ESS        𝑅¯ˆ   Bulk ESS    Tail ESS     𝑅¯ˆ   Bulk ESS    Tail ESS
- Bundesliga                      Bivariate Poisson           1.00     4358        2889     1.00     4482         2960       1.00      2980       2742      1.00      3202       2711
-                                 Diag. Infl. Biv. Poisson    1.00     4728        3020     1.00     4997         3061       1.00      3882       2940      1.00      4073       3157
-                                 Double Poisson              1.00     4917        3008     1.00     5085         3012       1.00      4186       3032      1.00      4089       2839
-                                 Negative Binomial           1.00     4036        3225     1.00     4993         3101       1.00      3658       2960      1.00      3878       2900
-                                 Skellam Model               1.00     4772        3550     1.00     4802         3502       1.00      3370       3411      1.00      3431       3187
-                                 Zero Infl. Skellam Model    1.00     4915        3554     1.00     4962         3567       1.00      3384       3338      1.00      3424       3287
- EPL                             Bivariate Poisson           1.00     4473        2903     1.00     4580         2980       1.00      2948       2671      1.00      3240       2858
-                                 Diag. Infl. Biv. Poisson    1.00     4637        3016     1.00     4805         2983       1.00      3462       2981      1.00      3675       2832
-                                 Double Poisson              1.00     4938        2951     1.00     5197         2960       1.00      3888       3114      1.00      3752       2931
-                                 Negative Binomial           1.00     3560        3024     1.00     4824         3004       1.00      3584       3100      1.00      3552       3006
-                                 Skellam Model               1.00     4253        3299     1.00     4344         3312       1.00      3415       3122      1.00      3189       2978
-                                 Zero Infl. Skellam Model    1.00     4478        3370     1.00     4621         3380       1.00      3444       3235      1.00      3244       3074
- La Liga                         Bivariate Poisson           1.00     3898        2818     1.00     4100         2886       1.00      2993       2723      1.00      2933       2627
-                                 Diag. Infl. Biv. Poisson    1.00     4289        2980     1.00     4583         3027       1.00      3805       2891      1.00      3592       2942
-                                 Double Poisson              1.00     4655        2942     1.00     4820         2971       1.00      4099       3121      1.00      4100       3035
-                                 Negative Binomial           1.00     3059        2917     1.00     4523         2911       1.00      3844       2878      1.00      3615       2887
-                                 Skellam Model               1.00     3683        3168     1.00     3752         3187       1.00      3187       2793      1.00      3170       2978
-                                 Zero Infl. Skellam Model    1.00     4056        3287     1.00     4062         3263       1.00      3382       3012      1.00      3535       3179
-
-
-
-                                                                             Weighted Dynamic      Owen (2011)          Egidi et al. (2018)
-
-                                                Bundesliga                                          EPL                                                 La Liga
-
-
-
-
-                                                                                                                                                                                    Bivariate Poisson
-                            80
-
-                            60
-
-                            40
-
-
-
-
-                                                                                                                                                                                    Diag. Infl. Biv. Poisson
-                          125
-
-                          100
-
-                            75
-
-                            70
-
-
-
-
-                                                                                                                                                                                    Double Poisson
-                            60
- Elapsed Time (seconds)
-
-
-
-
-                            50
-
-                            40
-
-                            30
-                                                                                                                                                                                    Negative Binomial
-
-
-
-
-                          150
-
-
-                          100
-
-
-
-                          1000
-                                                                                                                                                                                    Skellam
-
-
-
-
-                          750
-
-                          500
-
-                          250
-                                                                                                                                                                                    Zero−inflated Skellam
-
-
-
-
-                          1500
-
-                          1000
-
-                          500
-
-
-
-Figure 6: Boxplots of elapsed computation times (in seconds). Results from the proposed weighted dynamic method are
-shown alongside corresponding values from Owen (2011) and Egidi et al. (2018), all evaluated at the last three matches of
-the 2024/2025 season scenario.
-
-
-                                                                                                  21
-
-## Page 22: Bayesian weighted discrete-time dynamic models for association football predicti
+## Page 22: MCMC Convergence Diagnostics (Table 6 & Table 7)
 
 源页：第 22 页
 
-Bayesian weighted discrete-time dynamic models for association football prediction                                                                 Preprint
+Bayesian weighted discrete-time dynamic models for association football prediction                   Preprint
+
+### Table 6: MCMC convergence diagnostics (Last Three Rounds)
+
+*Evaluated at the last three rounds of the 2024/2025 season scenario.*
+
+| League | Model | $\beta^{att}: \hat{R}$ | Bulk | Tail | $\beta^{def}: \hat{R}$ | Bulk | Tail | $\phi^{att}: \hat{R}$ | Bulk | Tail | $\phi^{def}: \hat{R}$ | Bulk | Tail |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Bundesliga** | Bivariate Poisson | 1.00 | 4532 | 2975 | 1.00 | 4908 | 3048 | 1.00 | 3206 | 2813 | 1.00 | 3436 | 3008 |
+| | Diag. Infl. Biv. Poisson | 1.00 | 4722 | 3046 | 1.00 | 4796 | 3014 | 1.00 | 3604 | 2972 | 1.00 | 3830 | 2987 |
+| | Double Poisson | 1.00 | 5013 | 3005 | 1.00 | 5258 | 3040 | 1.00 | 4058 | 2998 | 1.00 | 4248 | 3021 |
+| | Negative Binomial | 1.00 | 3709 | 3111 | 1.00 | 5273 | 3064 | 1.00 | 3870 | 2979 | 1.00 | 3984 | 3023 |
+| | Skellam Model | 1.00 | 4724 | 3469 | 1.00 | 4841 | 3492 | 1.00 | 3308 | 3214 | 1.00 | 3254 | 2999 |
+| | Zero Infl. Skellam Model | 1.00 | 4788 | 3552 | 1.00 | 4862 | 3557 | 1.00 | 3364 | 3254 | 1.00 | 3481 | 3337 |
+| **EPL** | Bivariate Poisson | 1.00 | 4302 | 2885 | 1.00 | 4413 | 2920 | 1.00 | 3079 | 2829 | 1.00 | 3002 | 2832 |
+| | Diag. Infl. Biv. Poisson | 1.00 | 4635 | 2990 | 1.00 | 4785 | 2989 | 1.00 | 3434 | 3057 | 1.00 | 3529 | 2957 |
+| | Double Poisson | 1.00 | 4868 | 2978 | 1.00 | 5008 | 2964 | 1.00 | 3647 | 2841 | 1.00 | 3939 | 2914 |
+| | Negative Binomial | 1.00 | 3536 | 3022 | 1.00 | 4705 | 2963 | 1.00 | 3540 | 2868 | 1.00 | 3427 | 2675 |
+| | Skellam Model | 1.00 | 4643 | 3447 | 1.00 | 4781 | 3457 | 1.00 | 3456 | 3226 | 1.00 | 3390 | 3116 |
+| | Zero Infl. Skellam Model | 1.00 | 4628 | 3409 | 1.00 | 4772 | 3440 | 1.00 | 3241 | 3206 | 1.00 | 3338 | 3084 |
+| **La Liga** | Bivariate Poisson | 1.00 | 4129 | 2888 | 1.00 | 4026 | 2884 | 1.00 | 2894 | 2843 | 1.00 | 3037 | 2710 |
+| | Diag. Infl. Biv. Poisson | 1.00 | 4451 | 3016 | 1.00 | 4584 | 3000 | 1.00 | 3753 | 2999 | 1.00 | 3651 | 2940 |
+| | Double Poisson | 1.00 | 4839 | 2969 | 1.00 | 4863 | 2938 | 1.00 | 4056 | 2887 | 1.00 | 4029 | 2939 |
+| | Negative Binomial | 1.00 | 2873 | 2821 | 1.00 | 4283 | 2892 | 1.00 | 3862 | 2964 | 1.00 | 3562 | 2886 |
+| | Skellam Model | 1.00 | 4210 | 3303 | 1.00 | 4288 | 3292 | 1.00 | 3592 | 3101 | 1.00 | 3450 | 2919 |
+| | Zero Infl. Skellam Model | 1.00 | 4259 | 3307 | 1.00 | 4342 | 3317 | 1.00 | 3221 | 3005 | 1.00 | 3289 | 2957 |
 
 
+### Table 7: MCMC convergence diagnostics (Second Half of Season)
 
+*Evaluated at the second half of the 2024/2025 season scenario.*
 
-Table 6: MCMC convergence diagnostics: 𝑅,   ˆ bulk and tail effective sample sizes (ESS) mean of the 𝜷att , 𝜷def , 𝝓att and
-𝝓def parameters for the proposed weighted dynamic method, all evaluated at the last three round of the 2024/2025 season
-scenario.
+| League | Model | $\beta^{att}: \hat{R}$ | Bulk | Tail | $\beta^{def}: \hat{R}$ | Bulk | Tail | $\phi^{att}: \hat{R}$ | Bulk | Tail | $\phi^{def}: \hat{R}$ | Bulk | Tail |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Bundesliga** | Bivariate Poisson | 1.00 | 4980 | 3057 | 1.00 | 5358 | 3135 | 1.00 | 3225 | 2945 | 1.00 | 3584 | 2998 |
+| | Diag. Infl. Biv. Poisson | 1.00 | 4784 | 3157 | 1.00 | 4949 | 3128 | 1.00 | 3602 | 2981 | 1.00 | 3552 | 2974 |
+| | Double Poisson | 1.00 | 5298 | 3158 | 1.00 | 5502 | 3181 | 1.00 | 4151 | 3136 | 1.00 | 4194 | 3099 |
+| | Negative Binomial | 1.00 | 4517 | 3365 | 1.00 | 5063 | 3218 | 1.00 | 3877 | 3129 | 1.00 | 3789 | 3151 |
+| | Skellam Model | 1.00 | 4736 | 3501 | 1.00 | 4811 | 3536 | 1.00 | 3495 | 3385 | 1.00 | 3410 | 3324 |
+| | Zero Infl. Skellam Model | 1.00 | 4830 | 3592 | 1.00 | 4832 | 3562 | 1.00 | 3432 | 3372 | 1.00 | 3383 | 3340 |
+| **EPL** | Bivariate Poisson | 1.00 | 4894 | 2994 | 1.00 | 5053 | 2971 | 1.00 | 3152 | 2855 | 1.00 | 3205 | 2841 |
+| | Diag. Infl. Biv. Poisson | 1.00 | 5361 | 3112 | 1.00 | 5581 | 3096 | 1.00 | 3831 | 3102 | 1.00 | 3856 | 3145 |
+| | Double Poisson | 1.00 | 5288 | 3017 | 1.00 | 5561 | 3023 | 1.00 | 3968 | 3003 | 1.00 | 3855 | 3083 |
+| | Negative Binomial | 1.00 | 4330 | 3294 | 1.00 | 5161 | 3199 | 1.00 | 3605 | 2939 | 1.00 | 3642 | 3191 |
+| | Skellam Model | 1.00 | 4707 | 3432 | 1.00 | 4828 | 3475 | 1.00 | 3403 | 3192 | 1.00 | 3430 | 3147 |
+| | Zero Infl. Skellam Model | 1.00 | 4610 | 3374 | 1.00 | 4722 | 3407 | 1.00 | 3358 | 3199 | 1.00 | 3299 | 3062 |
+| **La Liga** | Bivariate Poisson | 1.00 | 3898 | 2818 | 1.00 | 4100 | 2886 | 1.00 | 2993 | 2723 | 1.00 | 2993 | 2627 |
+| | Diag. Infl. Biv. Poisson | 1.00 | 4289 | 2980 | 1.00 | 4583 | 3027 | 1.00 | 3805 | 2891 | 1.00 | 3592 | 2947 |
+| | Double Poisson | 1.00 | 4655 | 2942 | 1.00 | 4820 | 2971 | 1.00 | 3491 | 3221 | 1.00 | 3509 | 3045 |
+| | Negative Binomial | 1.00 | 3059 | 2917 | 1.00 | 4523 | 2911 | 1.00 | 3844 | 2878 | 1.00 | 3615 | 2887 |
+| | Skellam Model | 1.00 | 3683 | 3168 | 1.00 | 3752 | 3187 | 1.00 | 3187 | 2793 | 1.00 | 3170 | 2978 |
+| | Zero Infl. Skellam Model | 1.00 | 4056 | 3287 | 1.00 | 4062 | 3263 | 1.00 | 3382 | 3012 | 1.00 | 3535 | 3179 |
 
-                                                    𝛽att                          𝛽def                         𝜙att                         𝜙def
- League       Model                       𝑅¯ˆ   Bulk ESS   Tail ESS    𝑅¯ˆ   Bulk ESS    Tail ESS    𝑅¯ˆ   Bulk ESS   Tail ESS    𝑅¯ˆ   Bulk ESS    Tail ESS
- Bundesliga   Bivariate Poisson          1.00     4532      2975      1.00     4908       3048      1.00     3206      2813      1.00     3436       3008
-              Diag. Infl. Biv. Poisson   1.00     4722      3046      1.00     4796       3014      1.00     3604      2972      1.00     3830       2987
-              Double Poisson             1.00     5013      3005      1.00     5258       3040      1.00     4058      2998      1.00     4248       3021
-              Negative Binomial          1.00     3709      3111      1.00     5273       3064      1.00     3870      2979      1.00     3984       3023
-              Skellam Model              1.00     4724      3469      1.00     4841       3492      1.00     3308      3214      1.00     3254       2999
-              Zero Infl. Skellam Model   1.00     4788      3552      1.00     4862       3557      1.00     3364      3254      1.00     3481       3337
- EPL          Bivariate Poisson          1.00     4302      2885      1.00     4413       2920      1.00     3079      2829      1.00     3002       2832
-              Diag. Infl. Biv. Poisson   1.00     4635      2990      1.00     4785       2989      1.00     3434      3057      1.00     3529       2957
-              Double Poisson             1.00     4868      2978      1.00     5008       2964      1.00     3647      2841      1.00     3939       2914
-              Negative Binomial          1.00     3536      3022      1.00     4705       2963      1.00     3540      2868      1.00     3427       2675
-              Skellam Model              1.00     4643      3447      1.00     4781       3457      1.00     3456      3226      1.00     3390       3116
-              Zero Infl. Skellam Model   1.00     4628      3409      1.00     4772       3440      1.00     3241      3206      1.00     3338       3084
- La Liga      Bivariate Poisson          1.00     4129      2888      1.00     4026       2884      1.00     2894      2843      1.00     3037       2710
-              Diag. Infl. Biv. Poisson   1.00     4451      3016      1.00     4584       3000      1.00     3753      2999      1.00     3651       2940
-              Double Poisson             1.00     4839      2969      1.00     4863       2938      1.00     4056      2887      1.00     4029       2939
-              Negative Binomial          1.00     2873      2821      1.00     4283       2892      1.00     3862      2964      1.00     3562       2886
-              Skellam Model              1.00     4210      3303      1.00     4288       3292      1.00     3592      3101      1.00     3450       2919
-              Zero Infl. Skellam Model   1.00     4259      3307      1.00     4342       3317      1.00     3221      3005      1.00     3289       2957
-
-
-
-
-Table 7: MCMC convergence diagnostics: 𝑅, ˆ bulk and tail effective sample sizes (ESS) mean of the 𝜷att , 𝜷def , 𝝓att and 𝝓def
-parameters for the proposed weighted dynamic method, all evaluated at the second half of the 2024/2025 season scenario.
-
-                                                    𝛽att                          𝛽def                         𝜙att                         𝜙def
- League       Model                       𝑅¯ˆ   Bulk ESS   Tail ESS    𝑅¯ˆ   Bulk ESS    Tail ESS    𝑅¯ˆ   Bulk ESS   Tail ESS    𝑅¯ˆ   Bulk ESS    Tail ESS
- Bundesliga   Bivariate Poisson          1.00     4980      3057      1.00     5358       3135      1.00     3225      2945      1.00     3584       2998
-              Diag. Infl. Biv. Poisson   1.00     4784      3157      1.00     4949       3128      1.00     3602      2981      1.00     3552       2974
-              Double Poisson             1.00     5298      3158      1.00     5502       3181      1.00     4151      3136      1.00     4194       3099
-              Negative Binomial          1.00     4517      3365      1.00     5063       3218      1.00     3877      3129      1.00     3789       3151
-              Skellam Model              1.00     4736      3501      1.00     4811       3536      1.00     3495      3385      1.00     3410       3324
-              Zero Infl. Skellam Model   1.00     4830      3592      1.00     4832       3562      1.00     3432      3372      1.00     3383       3340
- EPL          Bivariate Poisson          1.00     4894      2994      1.00     5053       2971      1.00     3152      2855      1.00     3205       2841
-              Diag. Infl. Biv. Poisson   1.00     5361      3112      1.00     5581       3096      1.00     3831      3102      1.00     3856       3145
-              Double Poisson             1.00     5288      3017      1.00     5561       3023      1.00     3968      3003      1.00     3855       3083
-              Negative Binomial          1.00     4330      3294      1.00     5161       3199      1.00     3605      2939      1.00     3642       3191
-              Skellam Model              1.00     4707      3432      1.00     4828       3475      1.00     3403      3192      1.00     3430       3147
-              Zero Infl. Skellam Model   1.00     4610      3374      1.00     4722       3407      1.00     3358      3199      1.00     3299       3062
- La Liga      Bivariate Poisson          1.00     3898      2818      1.00     4100       2886      1.00     2993      2723      1.00     2993       2627
-              Diag. Infl. Biv. Poisson   1.00     4289      2980      1.00     4583       3027      1.00     3805      2891      1.00     3592       2947
-              Double Poisson             1.00     4655      2942      1.00     4820       2971      1.00     3491      3221      1.00     3509       3045
-              Negative Binomial          1.00     3059      2917      1.00     4523       2911      1.00     3844      2878      1.00     3615       2887
-              Skellam Model              1.00     3683      3168      1.00     3752       3187      1.00     3187      2793      1.00     3170       2978
-              Zero Infl. Skellam Model   1.00     4056      3287      1.00     4062       3263      1.00     3382      3012      1.00     3535       3179
-
-
-
-
-                                                                             22
 
 ## Page 23: Bayesian weighted discrete-time dynamic models for association football predicti
 

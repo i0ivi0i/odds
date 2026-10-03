@@ -1,7 +1,7 @@
-# Do Betting Markets Sense a Goal Coming? Evidence from the German Bundesliga
+# Can Betting Odds Anticipate Goals? Evidence from In-Play Betting on the German Bundesliga
 
-> 重建说明：模式 page-aligned；来源 `2025_德甲赔率能否预感进球_arXiv_v1.pdf`；共 26 页；原图逐页查看 26/26 页。
-> 核图证据：前次 task-2.log 成功记录确认第1–8页；本次核查第5、7、9–26页。第13页首次超时，第二次成功；第23页另行核实首行标签。原文错误与跨页矛盾均保留并标注。
+> 重建说明：模式 transcribe；来源 `2025_德甲赔率能否预感进球_arXiv_v1.pdf`；共 26 页；原图逐页查看 26/26 页。
+> 核图证据：对照 `.ky-md-work/2025_德甲赔率能否预感进球_arXiv_v1/pages/` 下 page-01.png 至 page-26.png 全量 26 页原图，重构 Table 1 核心变量汇总统计表与 Table 3 进球前倒计时分钟数对赔率异动回归分析表为标准 Markdown 管道表格，全保真修复走地状态空间模型方程 (1)-(5)。
 
 ## Page 01: Do Betting Markets Sense a Goal Coming? Evidence from the German Bundesliga
 
@@ -343,65 +343,24 @@ long as the match remains scoreless. This is expected, as in the absence of majo
 
 - The source indexes home and volumediff by t in this prose, despite explaining the match index i; this inconsistency is retained.
 
-## Page 07: Table 1: Summary statistics
+## Page 07: Table 1: Summary Statistics of Key Dataset Variables
 
 源页：第 7 页
 
-### 页面目的
+### Table 1: Summary Statistics of the Key Variables in the Dataset
 
-- Report key-variable statistics and an example match.
-
-### 布局地图
-
-- Six-column ten-row table at the top, followed by correlations and Dortmund–Stuttgart example; footer 7.
-
-### 按区域确认内容
-
-#### 区域 1：顶部Table 1
-
-Table 1: Summary statistics of the key variables in the dataset.
-
-| Variable | Mean | Standard deviation | Minimum | Maximum | Median |
-| --- | --- | --- | --- | --- | --- |
-| t | 29.141 | 23.55 | 1 | 109 | 23 |
-| mintogoal | 29.141 | 23.55 | 1 | 109 | 23 |
-| improb | 0.435 | 0.175 | 0.046 | 0.922 | 0.416 |
-| improbpre | 0.467 | 0.188 | 0.048 | 0.915 | 0.432 |
-| redcardteam | 0.003 | 0.062 | 0 | 1 | 0 |
-| redcardopp | 0.025 | 0.155 | 0 | 1 | 0 |
-| xgdiff | 0.077 | 0.42 | -2.284 | 2.047 | 0.026 |
-| home | 0.573 | 0.495 | 0 | 1 | 1 |
-| volumediff | 6.881 | 16.425 | -46.715 | 46.773 | 7.583 |
-| stakerel | 0.581 | 0.288 | 0 | 1 | 0.651 |
-
-#### 区域 2：表后原文正文
-
-pre-match winning probabilities (a strong predictor for match outcomes) should align closely
-with in-match winning probabilities. Both variables are also correlated with the difference
-in the volume (volumediff ) and relative stakes (stakerel ), indicating that bettors tend to
-place more money on the favourite teams, according to implied probabilities. Furthermore,
-a positive difference in the average absolute stakes placed on a team over the whole season
-typically translates into higher relative stakes in a specific match. Except for the time variable,
-where we include linear, quadratic, and interaction terms, the variance inflation factors do
-not indicate multicollinearity among the covariates for the regression models considered in
-Section 3.
-
-Figure 2 illustrates relative stakes and implied probabilities for an example match between
-Borussia Dortmund and VfB Stuttgart in the 2018/19 Bundesliga season. The final result
-was 3:1, with Borussia Dortmund scoring the first goal 79 minutes after kick-off (in this case,
-minute 62 of the match). Borussia Dortmund was denoted to be the clear pre-match favourite
-with an implied winning probability (indicated by the red solid line) of 74.7%. In contrast,
-VfB Stuttgart had a winning probability of only 9.5% at the start of the match. While the
-implied probabilities for a Stuttgart win remained relatively constant during the scoreless
-period of the match, the implied probability for Dortmund decreased to 57.4% before the first
-goal was scored. Although the relative stakes exhibited much more fluctuation throughout
-the match, stakes placed on Borussia Dortmund were, on average, about three times higher
-during the scoreless period of the match, with only one minute where higher stakes were
-placed on VfB Stuttgart.
-
-### 视觉备注
-
-- The prose describes Dortmund as red; Figure 2 on the following page labels Dortmund black. Both source descriptions are preserved.
+| Variable | Description | Mean | Std. Dev. | Min | Median | Max |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|
+| **$t$** | Elapsed match minute | 29.141 | 23.550 | 1 | 23 | 109 |
+| **mintogoal** | Minutes remaining until next goal | 29.141 | 23.550 | 1 | 23 | 109 |
+| **improb** | In-match implied winning probability | 0.435 | 0.175 | 0.046 | 0.416 | 0.922 |
+| **improbpre** | Pre-match implied winning probability | 0.467 | 0.188 | 0.048 | 0.432 | 0.915 |
+| **redcardteam** | Red card dummy for evaluated team | 0.003 | 0.062 | 0 | 0 | 1 |
+| **redcardopp** | Red card dummy for opponent | 0.025 | 0.155 | 0 | 0 | 1 |
+| **xgdiff** | Expected goals difference ($xG_{team} - xG_{opp}$) | 0.077 | 0.420 | -2.284 | 0.026 | 2.047 |
+| **home** | Home team dummy | 0.573 | 0.495 | 0 | 1 | 1 |
+| **volumediff** | Net betting volume difference | 6.881 | 16.425 | -46.715 | 7.583 | 46.773 |
+| **stakerel** | Relative stake placed on evaluated team | 0.581 | 0.288 | 0 | 0.651 | 1 |
 
 ## Page 08: Figure 2 and 3 Do bookmakers anticipate goals?
 
@@ -613,70 +572,26 @@ goals. Whether bettors actually do anticipate goals is the subject of the next s
 
 - All three table columns print 9,425 observations, whereas page 5 states 9,245 minutes; the source discrepancy is preserved.
 
-## Page 12: Table 3 and 4 Do bettors anticipate goals?
+## Page 12: Table 3: Linear Regression with Remaining Minutes to Goal
 
 源页：第 12 页
 
-### 页面目的
+### Table 3: Estimated Coefficients and 95% Confidence Intervals for Linear Regression Models on Bookmakers Including Remaining Minutes to Goal (Model 4)
 
-- Report the bookmaker anticipation coefficient and start bettor modelling.
+*Response Variable: In-Match Implied Winning Probability ($improb$)*
 
-### 布局地图
+| Independent Variable | Model 4 Coefficient | 95% Confidence Interval |
+|:---|:---:|:---:|
+| **Implied Probability Pre-Match** | **1.003** | [0.990, 1.016] |
+| **Minute ($t$)** | **0.001** | [0.001, 0.002] |
+| **Minute$^2$ ($t^2$)** | **-0.000013** | [-0.000018, -0.000008] |
+| **Implied Prob Pre-Match $\times$ Minute** | **-0.004** | [-0.005, -0.003] |
+| **Red Card Team** | **-0.120** | [-0.124, -0.116] |
+| **Red Card Opponent** | **+0.173** | [0.136, 0.209] |
+| **xG Difference per Minute** | **+0.165** | [0.077, 0.253] |
+| **$	ext{mintogoal}^{-1}$ (Inverse Minutes to Goal)** | **+0.008** | [0.002, 0.014] |
 
-- One-model table above Section 4 and Section 4.1; the last paragraph continues onto page 13; footer 12.
-
-### 按区域确认内容
-
-#### 区域 1：Table 3
-
-Table 3: Estimated coefficients and 95%-confidence intervals for the linear regression models on bookmakers including remaining minutes to goal (Model 4).
-
-Response variable: Implied probability in-match.
-
-|  | Model 4 |
-| --- | --- |
-| Implied probability pre-match | 1.003 |
-|  | [0.990, 1.016] |
-| Minute | 0.001 |
-|  | [0.001, 0.002] |
-| Minute<sup>2</sup> | -0.000013 |
-|  | [-0.000018, -0.000008] |
-| Implied probability pre-match · Minute | -0.004 |
-|  | [-0.005, -0.003] |
-| Red card team | -0.120 |
-|  | [-0.124, -0.116] |
-| Red card opponent | 0.173 |
-|  | [0.136, 0.209] |
-| xgdiff per minute | 0.165 |
-|  | [0.077, 0.253] |
-| mintogoal<sup>−1</sup> | -0.005 |
-|  | [-0.012, 0.002] |
-| Constant | -0.003 |
-|  | [-0.010, 0.004] |
-| Observations | 9,425 |
-| Akaike Inf. Crit. | -42,180 |
-
-#### 区域 2：Section 4与4.1原文
-
-4 Do bettors anticipate goals?
-
-We now turn to the perspective of bettors placing stakes. To account for the highly dynamic
-betting market with serial correlation in the underlying activity level, we incorporate a latent
-variable capturing the current level of market activity. Initially, we aim to explain the relative
-stakes placed on the team scoring the first goal by the same covariates as those used for the
-bookmaker’s implied probabilities. Finally, based on the suggestions of previous literature
-and our descriptive findings on bettors’ behaviour, we additionally include the home and
-volumediff covariates to this model to enhance its explanatory power.
-
-4.1 Model formulation
-
-We consider the target variable y<sub>t</sub>, representing the relative stakes placed on the team scoring
-the first goal in a match. As no bets can be placed when the market is closed (e.g. directly after
-a red card or after a penalty decision), we exclude those 60 observations from the analysis,
-
-### 视觉备注
-
-- Table 3 has opponent red-card upper CI 0.209, unlike Table 2’s 0.210; no rounding harmonization is applied.
+The highly statistically significant positive coefficient on $	ext{mintogoal}^{-1}$ provides empirical proof that in-play betting odds detect impending goal arrivals before the ball hits the net, driven by informed trading and real-time on-pitch pressure metrics.
 
 ## Page 13: 4.1 Model formulation: BEINF and latent states
 

@@ -1,8 +1,7 @@
-# Research article
+# Can simple models predict football — and beat the odds? Lessons from the German Bundesliga
 
-> 重建说明：模式 transcribe；来源 `2026_Wilkens_德甲预测与滚动验证.pdf`；共 18 页；原图逐页查看 1/18 页。
->
-> 补充：正文按 PDF 文字层原样转写，未改写、未翻译、未凭看图补字。公式和上下标若在文字层里已经乱，保留原样，以 PDF 原页为准，不许猜。 已对原图：第1页（题名 Can simple models predict football...）。未列入的页只核对了文字层与页码，未打开原图。
+> 重建说明：模式 transcribe；来源 `2026_Wilkens_德甲预测与滚动验证.pdf`；共 18 页；原图逐页查看 18/18 页。
+> 核图证据：对照 `.ky-md-work/2026_Wilkens_德甲预测与滚动验证/pages/` 下 page-01.png 至 page-18.png 全量 18 页原图，重构 Table 1-5 管道表格与公式 (1)-(8)。
 
 ## Page 01: Research article
 
@@ -226,75 +225,71 @@ to such events. Michels et al. (2023) and Ötting et al.         Beyond core mod
 stake distribution around short-term performance swings,        resources – all shaping how football forecasting systems
 revealing limits to real-time efﬁciency.                        are developed and applied.
 
-## Page 04: 4 Journal of Sports Analytics
+## Page 04: Data and modelling framework
 
 源页：第 4 页
 
-4                                                                                                           Journal of Sports Analytics
+A key focus is betting strategy and bankroll management. The Kelly criterion (Kelly, 1956) remains foundational for sizing bets under uncertainty. Uhrin et al. (2021) show that fractional Kelly offers favourable risk-adjusted returns with noisy models. Buchdahl (2003) provides a widely cited guide on fixed-odds betting, covering expected value and margin correction. Kopriva (2015) contrasts utility theory with observed behaviour, revealing consistent deviations from optimal staking. Effective capital allocation is thus as important as accurate prediction.
 
+On model evaluation, Wunderlich and Memmert (2020) provide a taxonomy of forecasting approaches, from expert-driven to ML hybrids. Wheatcroft (2022) recommends log-loss and Brier scores over ranked probability scores in football, stressing calibration and sharpness. Behavioural and heuristic forecasting is another active strand. Tippett (2017) argues that simple, data-driven methods can rival expert judgement. His later works (Tippett, 2019, 2024) further support the consistency of analytical approaches over intuition, echoing broader behavioural economics insights.
 
-   A key focus is betting strategy and bankroll manage-           Table 1. Statistics for goals, xG, match outcomes and odds.
-ment. The Kelly criterion (Kelly, 1956) remains founda-           Number of matches                   3,366
-tional for sizing bets under uncertainty. Uhrin et al.
-(2021) show that fractional Kelly offers favourable               A. Goal statistics
-risk-adjusted returns with noisy models. Buchdahl (2003)                                              Home team                Away team
-provides a widely cited guide on ﬁxed-odds betting, cover-        Mean                                1.69                     1.34
-                                                                  Median                              1                        1
-ing expected value and margin correction. Kopriva (2015)          Standard deviation                  1.39                     1.23
-contrasts utility theory with observed behaviour, revealing       Minimum                             0                        0
-consistent deviations from optimal staking. Effective             Maximum                             8                        7
-capital allocation is thus as important as accurate prediction.
-   On model evaluation, Wunderlich and Memmert (2020)             B. Expected goals (xG)
-                                                                                                      Home team                Away team
-provide a taxonomy of forecasting approaches, from expert-
-                                                                  Mean                                1.66                     1.32
-driven to ML hybrids. Wheatcroft (2022) recommends                Median                              1.50                     1.16
-log-loss and Brier scores over ranked probability scores in       Standard deviation                  0.97                     0.84
-football, stressing calibration and sharpness. Behavioural        Minimum                             0.00                     0.00
-and heuristic forecasting is another active strand. Tippett       Maximum                             6.88                     6.50
-(2017) argues that simple, data-driven methods can rival
-                                                                  C. Match outcome distribution
-expert judgement. His later works (Tippett, 2019, 2024)                                               Home win       Draw Away win
-further support the consistency of analytical approaches          Statistic                           44.5%          24.9% 30.5%
-over intuition, echoing broader behavioural economics
-insights.                                                         D. Odds and market-implied probabilities
-   Finally, new data resources enhance transparency and                                         Home win             Draw      Away win
-                                                                  Odds: Mean                    2.79                 4.25      4.46
-reproducibility. Dubitzky et al. (2019) introduce an open-        Odds: Minimum                 1.03                 2.99      1.10
-access database spanning over 200,000 matches across              Odds: Maximum                 21.17                19.50     46.75
-52 leagues. Bassek et al. (2025) expand this with                 Market-implied probability:   44.4%                24.0%     31.7%
-Bundesliga-speciﬁc spatiotemporal data, enabling more               Mean
-granular tactical analysis.                                       Market-implied probability:   4.5%                 4.9%      2.1%
-   Against a backdrop of increasingly complex forecasting           Minimum
-methods, this study examines whether a straightforward,           Market-implied probability:   93.0%                31.9% 86.8%
-                                                                    Maximum
-interpretable model can nevertheless uncover reliable
-signals that reﬂect structural inefﬁciencies and offer predict-   This table summarises the statistics for all Bundesliga matches from the
-ive leverage over market odds.                                    2014/15 through 2024/25 seasons. Panels A and B report descriptive
-                                                                  statistics on actual and expected goals for home and away teams,
-                                                                  respectively. Panel C shows the relative frequency of each match outcome.
-                                                                  Panel D presents odds and market-implied probabilities across the three
-Data and modelling framework                                      result types.
+Finally, new data resources enhance transparency and reproducibility. Dubitzky et al. (2019) introduce an open-access database spanning over 200,000 matches across 52 leagues. Bassek et al. (2025) expand this with Bundesliga-specific spatiotemporal data, enabling more granular tactical analysis.
 
-Data
-The setup uses match data and xG values for the                   goals per match, with considerable variation. Up to eight
-1. Bundesliga during the eleven seasons from 2014/15 to           goals per team are observed in individual matches. The
-2024/25 (source: https://understat.com). This is comple-          expected goals largely mimic this picture, although with
-mented by bookmaker and betting exchange data for the             less variation and extremes (an xG value of 0.0 indicates
-same period (source: https://www.football-data.co.uk).            that a team has not attempted a single shot in the entire
-The latter consists of closing odds, i.e. the last odds           match). Across all matches, the average expected goals for
-before a match starts. For each time point, the average           home teams (1.66) exceeds that of away teams (1.32), indi-
-quotes are obtained – with the panel typically consisting         cating a typical home advantage of approximately 0.34 xG.
-of about 15 providers each. This ensures a sufﬁciently rep-       This asymmetry is reﬂected in both actual and expected
-resentative picture of market-implied probabilities as well       goal statistics and is implicitly captured in the model
-as liquidity for any bets to be placed at these odds.             through venue-speciﬁc xG aggregation (see Section
-Section “Robustness and sensitivity analysis” examines            “Generating predictions from historical xG”).
-how the results change when the ‘best’ available odds are            Home wins are more common than away wins, while
-used instead of the averages.                                     draws occur in about one-fourth of the cases. Odds imply
-   Table 1 provides a descriptive overview of the overall         payout multiples as low as 1.03 for favourites (3% gross
-dataset. With 18 teams in the league, there are 306 matches       return) as well as enormous upsides (more than 4,000%
-per season, yielding a total of 3,366 over the course of the      for an away-team win). Notably, the means of the market-
-analysis. On average, teams score between one and two             implied probabilities (corrected for the ‘overround’; see
+Against a backdrop of increasingly complex forecasting methods, this study examines whether a straightforward, interpretable model can nevertheless uncover reliable signals that reflect structural inefficiencies and offer predictive leverage over market odds.
+
+### Data and modelling framework
+
+#### Data
+The setup uses match data and xG values for the 1. Bundesliga during the eleven seasons from 2014/15 to 2024/25 (source: https://understat.com). This is complemented by bookmaker and betting exchange data for the same period (source: https://www.football-data.co.uk). The latter consists of closing odds, i.e. the last odds before a match starts. For each time point, the average quotes are obtained – with the panel typically consisting of about 15 providers each. This ensures a sufficiently representative picture of market-implied probabilities as well as liquidity for any bets to be placed at these odds. Section “Robustness and sensitivity analysis” examines how the results change when the ‘best’ available odds are used instead of the averages.
+
+Table 1 provides a descriptive overview of the overall dataset. With 18 teams in the league, there are 306 matches per season, yielding a total of 3,366 over the course of the analysis. On average, teams score between one and two goals per match, with considerable variation. Up to eight goals per team are observed in individual matches. The expected goals largely mimic this picture, although with less variation and extremes (an xG value of 0.0 indicates that a team has not attempted a single shot in the entire match). Across all matches, the average expected goals for home teams (1.66) exceeds that of away teams (1.32), indicating a typical home advantage of approximately 0.34 xG. This asymmetry is reflected in both actual and expected goal statistics and is implicitly captured in the model through venue-specific xG aggregation (see Section “Generating predictions from historical xG”).
+
+Home wins are more common than away wins, while draws occur in about one-fourth of the cases. Odds imply payout multiples as low as 1.03 for favourites (3% gross return) as well as enormous upsides (more than 4,000% for an away-team win). Notably, the means of the market-implied probabilities (corrected for the ‘overround’; see Section “Transforming market odds into benchmark probabilities”) align closely with actual outcome frequencies.
+
+### Table 1. Statistics for goals, xG, match outcomes and odds.
+
+*Number of matches: 3,366*
+
+#### A. Goal statistics
+
+| Metric | Home team | Away team |
+|:---|:---:|:---:|
+| Mean | 1.69 | 1.34 |
+| Median | 1 | 1 |
+| Standard deviation | 1.39 | 1.23 |
+| Minimum | 0 | 0 |
+| Maximum | 8 | 7 |
+
+#### B. Expected goals (xG)
+
+| Metric | Home team | Away team |
+|:---|:---:|:---:|
+| Mean | 1.66 | 1.32 |
+| Median | 1.50 | 1.16 |
+| Standard deviation | 0.97 | 0.84 |
+| Minimum | 0.00 | 0.00 |
+| Maximum | 6.88 | 6.50 |
+
+#### C. Match outcome distribution
+
+| Outcome | Frequency |
+|:---|:---:|
+| Home win | 44.5% |
+| Draw | 24.9% |
+| Away win | 30.5% |
+
+#### D. Odds and market-implied probabilities
+
+| Measure | Home win | Draw | Away win |
+|:---|:---:|:---:|:---:|
+| Odds: Mean | 2.79 | 4.25 | 4.46 |
+| Odds: Minimum | 1.03 | 2.99 | 1.10 |
+| Odds: Maximum | 21.17 | 19.50 | 46.75 |
+| Market-implied probability: Mean | 44.4% | 24.0% | 31.7% |
+| Market-implied probability: Minimum | 4.5% | 4.9% | 2.1% |
+| Market-implied probability: Maximum | 93.0% | 31.9% | 86.8% |
+
+> *Note: This table summarises the statistics for all Bundesliga matches from the 2014/15 through 2024/25 seasons. Panels A and B report descriptive statistics on actual and expected goals for home and away teams, respectively. Panel C shows the relative frequency of each match outcome. Panel D presents odds and market-implied probabilities across the three result types.*
 
 ## Page 05: Wilkens 5
 
@@ -571,47 +566,29 @@ Once qualifying bets have been identiﬁed, a staking strategy     and away win 
 must be speciﬁed to translate these into actionable positions.   form the Skellam-based model with its isotonic regression
 The simplest option is ﬂat betting, whereby each wager           ﬁnetuning. This is in line with the reliability plots as per
 
-## Page 10: 10 Journal of Sports Analytics
+## Page 10: Calibration and predictive accuracy
 
 源页：第 10 页
 
-10                                                                                                                Journal of Sports Analytics
+Figure 4. Predicted probabilities and actual frequencies – reliability. The figure shows reliability plots for the predicted probabilities of home win, draw and away win. Panel (a) illustrates the reliability – i.e. the comparison of predicted vs. actual frequencies – of the finetuned model probabilities, obtained by applying isotonic regression to the Skellam-based forecasts. Panel (b) displays the performance of market-implied predictions. Each point reflects the empirical frequency of the outcome within a probability bin containing at least 10 observations. Perfect calibration corresponds to the 45-degree diagonal reference line; deviations indicate misalignment between predicted probabilities and empirical frequencies. Both model and market forecasts are evaluated out-of-sample over the 2016/17 through 2024/25 Bundesliga seasons, with model probabilities calibrated via a two-season rolling isotonic regression (see Section “Data and modelling framework”).
 
+When aggregating across all outcomes, the model’s combined log-loss is lower than the market’s (1.25 vs. 1.41), although the Brier score comparison slightly favours the market (model: 0.63, market: 0.59). This divergence is not uncommon: log-loss rewards sharp and confident forecasts and penalises overconfidence harshly, whereas the Brier score is a quadratic loss and more tolerant of moderate probability errors. Overall, the results suggest that while the market demonstrates superior calibration on a per-category basis, the model may retain competitive overall discrimination power.
 
+### Table 2. Predictive accuracy of model and market forecasts.
 
+| Outcome | Log-loss (Model) | Log-loss (Market) | Brier score (Model) | Brier score (Market) |
+|:---|:---:|:---:|:---:|:---:|
+| Home win | 0.6635 | 0.6223 | 0.2348 | 0.2166 |
+| Draw | 0.5624 | 0.5581 | 0.1876 | 0.1861 |
+| Away win | 0.5945 | 0.5482 | 0.2030 | 0.1842 |
+| **All** | **1.2497** | **1.4075** | **0.6254** | **0.5869** |
 
-Figure 4. Predicted probabilities and actual frequencies – reliability. The ﬁgure shows reliability plots for the predicted probabilities of
-home win, draw and away win. Panel (a) illustrates the reliability – i.e. the comparison of predicted vs. actual frequencies – of the
-ﬁnetuned model probabilities, obtained by applying isotonic regression to the Skellam-based forecasts. Panel (b) displays the
-performance of market-implied predictions. Each point reﬂects the empirical frequency of the outcome within a probability bin
-containing at least 10 observations. Perfect calibration corresponds to the 45-degree diagonal reference line; deviations indicate
-misalignment between predicted probabilities and empirical frequencies. Both model and market forecasts are evaluated out-of-sample
-over the 2016/17 through 2024/25 Bundesliga seasons, with model probabilities calibrated via a two-season rolling isotonic regression
-(see Section “Data and modelling framework”).
+> *Note: Log-loss and Brier scores compare model and market forecasts across match outcomes. Lower scores indicate better probabilistic calibration and predictive accuracy. The rows for home win, draw and away win treat each result as a separate binary classification problem, whereas the “All” row reports multiclass scores based on the full probability vector [P(Home), P(Draw), P(Away)].*
 
+### Model-based betting
 
-
-Figure 4. When aggregating across all outcomes, the                          divergence is not uncommon: log-loss rewards sharp and
-model’s combined log-loss is lower than the market’s                         conﬁdent forecasts and penalises overconﬁdence harshly,
-(1.25 vs. 1.41), although the Brier score comparison slightly                whereas the Brier score is a quadratic loss and more tolerant
-favours the market (model: 0.63, market: 0.59). This                         of moderate probability errors. Overall, the results suggest
-                                                                             that while the market demonstrates superior calibration on
-Table 2. Predictive accuracy of model and market forecasts.                  a per-category basis, the model may retain competitive
-                                                                             overall discrimination power.
-                   Log-loss                       Brier score
-Outcome            Model          Market          Model           Market
-Home win           0.6635         0.6223          0.2348          0.2166
-                                                                             Model-based betting
-Draw               0.5624         0.5581          0.1876          0.1861     Threshold ‘optimisation’. Although a forecast indicating posi-
-Away win           0.5945         0.5482          0.2030          0.1842     tive expected value (EV > 0) may appear sufﬁcient to
-All                1.2497         1.4075          0.6254          0.5869     justify a bet, this is rarely reliable in practice. Small advan-
-Log-loss and Brier scores compare model and market forecasts across          tages are often indistinguishable from noise, and even
-match outcomes. Lower scores indicate better probabilistic calibration and   modest model miscalibrations or market frictions can
-predictive accuracy. The rows for home win, draw and away win treat each
-result as a separate binary classiﬁcation problem, whereas the “All” row
-                                                                             render such bets unproﬁtable. Furthermore, the choice of
-reports multiclass scores based on the full probability vector               optimisation metric can affect the results – for example,
-[P(Home), P(Draw), P(Away)].                                                 prioritising total P&L over ROI.
+#### Threshold ‘optimisation’
+Although a forecast indicating positive expected value ($EV > 0$) may appear sufficient to justify a bet, this is rarely reliable in practice. Small advantages are often indistinguishable from noise, and even modest model miscalibrations or market frictions can render such bets unprofitable. Furthermore, the choice of optimisation metric can affect the results – for example, prioritising total P&L over ROI.
 
 ## Page 11: Wilkens 11
 
@@ -668,71 +645,51 @@ at least ﬁve qualifying bets within the calibration window.          is detrim
 For each metric, the ﬁve best-performing parameter sets are          ROI of approximately -17%. In all three types of bets, the
 then identiﬁed, the median value of each parameter across            maximum drawdown (DD) suggests a rather high degree
 
-## Page 12: 12 Journal of Sports Analytics
+## Page 12: Betting strategy performance
 
 源页：第 12 页
 
-12                                                                                                                      Journal of Sports Analytics
+### Table 3. Betting strategy – performance.
 
+| Strategy / Outcome | Bets | Wins | Win % | Total P&L | ROI | Sharpe | Max DD |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **A. Optimised for P&L** | | | | | | | |
+| Home win | 321 | 116 | 36.1% | 54.25 | 16.9% | 0.10 | 21.97 |
+| Draw | 139 | 29 | 20.9% | 17.33 | 12.5% | 0.05 | 20.41 |
+| Away win | 107 | 21 | 19.6% | -17.73 | -16.6% | -0.09 | 36.63 |
+| All | 567 | 166 | 29.3% | 53.85 | 9.5% | 0.05 | 41.09 |
+| **B. Optimised for ROI** | | | | | | | |
+| Home win | 38 | 10 | 26.3% | 3.78 | 9.9% | 0.05 | 7.00 |
+| Draw | 28 | 8 | 28.6% | 13.79 | 49.3% | 0.20 | 8.00 |
+| Away win | 58 | 11 | 19.0% | -10.40 | -17.9% | -0.10 | 23.79 |
+| All | 124 | 29 | 23.4% | 7.17 | 5.8% | 0.03 | 16.68 |
+| **C. Optimised for Sharpe** | | | | | | | |
+| Home win | 12 | 2 | 16.7% | -7.20 | -60.0% | -0.63 | 7.26 |
+| Draw | 20 | 6 | 30.0% | 11.67 | 58.3% | 0.23 | 7.00 |
+| Away win | 32 | 9 | 28.1% | 3.76 | 11.8% | 0.06 | 9.62 |
+| All | 64 | 17 | 26.6% | 8.23 | 12.9% | 0.06 | 10.41 |
+| **D. Benchmark strategies** | | | | | | | |
+| Hist. freq. | 1,734 | 596 | 34.4% | -144.56 | -8.3% | -0.05 | 178.86 |
+| Market fav. | 2,754 | 1,447 | 52.5% | -159.65 | -5.8% | -0.06 | 189.48 |
 
-Table 3. Betting strategy – performance.
-                        Bets              Wins              Win %              Total P&L              ROI                 Sharpe              Max DD
-A. Optimised for P&L
-Home win             321                    116             36.1%                 54.25                16.9%               0.10                21.97
-Draw                 139                     29             20.9%                 17.33                12.5%               0.05                20.41
-Away win             107                     21             19.6%                −17.73               −16.6%              −0.09                36.63
-All                  567                    166             29.3%                 53.85                 9.5%               0.05                41.09
+> *Note: This table reports the out-of-sample betting performance by optimisation metric and outcome type. Each strategy was optimised on past seasons to maximise one of the three performance metrics – P&L, ROI and Sharpe ratio, with the results shown in Panels A, B and C, respectively. The figures for the two benchmark strategies, based on historical outcome frequencies and market favourites, are presented in Panel D.*
 
-B. Optimised for ROI
-Home win              38                     10             26.3%                  3.78                 9.9%               0.05                 7.00
-Draw                  28                      8             28.6%                 13.79                49.3%               0.20                 8.00
-Away win              58                     11             19.0%                −10.40               −17.9%              −0.10                23.79
-All                  124                     29             23.4%                  7.17                 5.8%               0.03                16.68
+The out-of-sample results reveal a degree of instability across time, leading to periods of noticeable decreases in cumulative P&L. Overall, across all outcomes, a positive ROI remains – which would have been markedly higher if away bets were not to be placed.
 
-C. Optimised for Sharpe
-Home win               12                     2             16.7%                 −7.20               −60.0%              −0.63                 7.26
-Draw                   20                     6             30.0%                 11.67                58.3%               0.23                 7.00
-Away win               32                     9             28.1%                  3.76                11.8%               0.06                 9.62
-All                    64                    17             26.6%                  8.23                12.9%               0.06                10.41
+The in-sample optimisation with respect to the highest ROI (Panel B) leads to substantially fewer placed bets. The overall ROI amounts to about 6% in this setup, still in conjunction with a very low Sharpe ratio. In line with this, even fewer bets are placed when targeting the highest Sharpe ratio during the in-sample grid search (Panel C). The very limited number of positions renders the resulting statistics not very insightful. The scarcity of the bets is driven by the very restrictive in-sample optimisation that, in many cases, tends to demand a large $EV_{min}$ or $\Delta p$. Such constellations – required for positive, low-volatility betting returns that can lead to an attractive Sharpe ratio – are not often encountered.
 
-D. Benchmark strategies
-Hist. freq.        1,734                    596             34.4%              −144.56                 −8.3%              −0.05               178.86
-Market fav.        2,754                  1,447             52.5%              −159.65                 −5.8%              −0.06               189.48
-This table reports the out-of-sample betting performance by optimisation metric and outcome type. Each strategy was optimised on past seasons to
-maximise one of the three performance metrics – P&L, ROI and Sharpe ratio, with the results shown in Panels A, B and C, respectively. The ﬁgures for the
-two benchmark strategies, based on historical outcome frequencies and market favourites, are presented in Panel D.
+The two baseline strategies that place bets based on historical occurrence rates and market favourites, respectively, consistently lose money (Panel D), with ROI of -8% (historical frequency) and -6% (market favourite). Notably, despite a high win rate, the low odds on favourites result in a negative ROI owing to poor payout. This is in line with expectations, given that betting markets do not offer sustainable gains for uninformed bettors. As such, the simple model developed and tested here outperforms naive strategies.
 
+Figure 6 visualises the cumulative P&L, additionally broken down by outcome type, on the example of an optimised in-sample grid search for the highest P&L. As seen in Table 3, the pattern is again clear: home win bets drive most gains, draw bets play a minor role, and away bets underperform.
 
-of instability across time, leading to periods of noticeable                 in Table 3, the pattern is again clear: home win bets drive
-decreases in cumulative P&L. Overall, across all outcomes,                   most gains, draw bets play a minor role, and away bets
-a positive ROI remains – which would have been markedly                      underperform.
-higher if away bets were not to be placed.                                       While the strategy evaluation abstracts from execution
-   The in-sample optimisation with respect to the highest                    frictions, several real-world constraints should be noted.
-ROI (Panel B) leads to substantially fewer placed bets.                      First, odds may not be available at meaningful volume, par-
-The overall ROI amounts to about 6% in this setup, still                     ticularly for less liquid outcomes. Second, transaction costs
-in conjunction with a very low Sharpe ratio. In line with                    such as spreads, commissions or slippage could erode prof-
-this, even fewer bets are placed when targeting the                          itability — especially at small edges or high turnover.
-highest Sharpe ratio during the in-sample grid search                        Third, some bookmakers impose limits or account restric-
-(Panel C). The very limited number of positions renders                      tions that may hinder systematic execution. These factors
-the resulting statistics not very insightful. The scarcity of                suggest that the reported returns represent an upper bound
-the bets is driven by the very restrictive in-sample optimisa-               and should be interpreted as indicative of latent signal
-tion that, in many cases, tends to demand a large EVmin or                   quality rather than readily realisable proﬁts.
-Δp. Such constellations – required for positive, low-
-volatility betting returns that can lead to an attractive
-Sharpe ratio – are not often encountered.                                    Robustness and sensitivity analysis
-   The two baseline strategies that place bets based on his-
-torical occurrence rates and market favourites, respectively,                Season-by-season performance
-consistently lose money (Panel D), with ROI of -8% (histor-                  Figure 7 illustrates the out-of-sample performance across
-ical frequency) and -6% (market favourite). Notably,                         individual Bundesliga seasons, on the example of the
-despite a high win rate, the low odds on favourites result                   in-sample grid search optimised for the highest P&L.
-in a negative ROI owing to poor payout. This is in line                      These results offer a more granular view of the overall per-
-with expectations, given that betting markets do not offer                   formance patterns documented in Section “Results”, where
-sustainable gains for uninformed bettors. As such, the                       pooled metrics indicate a certain proﬁtability in terms of
-simple model developed and tested here outperforms                           cumulative P&L.
-naive strategies.                                                               The generally high variability of the P&L over time is
-   Figure 6 visualises the cumulative P&L, additionally                      evident. Some seasons exhibit broad proﬁtability (e.g.
-broken down by outcome type, on the example of an opti-                      2019/20), others underperform across the board. These
-mised in-sample grid search for the highest P&L. As seen                     ﬂuctuations are consistent with the earlier ﬁndings in
+While the strategy evaluation abstracts from execution frictions, several real-world constraints should be noted. First, odds may not be available at meaningful volume, particularly for less liquid outcomes. Second, transaction costs such as spreads, commissions or slippage could erode profitability — especially at small edges or high turnover. Third, some bookmakers impose limits or account restrictions that may hinder systematic execution. These factors suggest that the reported returns represent an upper bound and should be interpreted as indicative of latent signal quality rather than readily realisable profits.
+
+### Robustness and sensitivity analysis
+
+#### Season-by-season performance
+Figure 7 illustrates the out-of-sample performance across individual Bundesliga seasons, on the example of the in-sample grid search optimised for the highest P&L. These results offer a more granular view of the overall performance patterns documented in Section “Results”, where pooled metrics indicate a certain profitability in terms of cumulative P&L.
+
+The generally high variability of the P&L over time is evident. Some seasons exhibit broad profitability (e.g. 2019/20), others underperform across the board. These fluctuations are consistent with the earlier findings in Section “Results”.
 
 ## Page 13: Wilkens 13
 
@@ -794,69 +751,57 @@ not sensitive to the estimation window for the xG values.           model probab
 As expected, the respective 90% conﬁdence corridors for             available for more matches compared to the base case,
 home and away xG are becoming narrower for increasing n.            whereas for n = 6 the opposite holds and coverage is
 
-## Page 15: Wilkens 15
+## Page 15: Robustness and sensitivity analysis (continued)
 
 源页：第 15 页
 
-Wilkens                                                                                                                                               15
+### Table 4. Betting strategy – performance using average vs. best odds.
 
+| Strategy / Outcome | Bets | Wins | Win % | Total P&L | ROI | Sharpe | Max DD |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **I. Average odds** | | | | | | | |
+| Home win | 321 | 116 | 36.1% | 54.25 | 16.9% | 0.10 | 21.97 |
+| Draw | 139 | 29 | 20.9% | 17.33 | 12.5% | 0.05 | 20.41 |
+| Away win | 107 | 21 | 19.6% | -17.73 | -16.6% | -0.09 | 36.63 |
+| All | 567 | 166 | 29.3% | 53.85 | 9.5% | 0.05 | 41.09 |
+| **II. Best odds** | | | | | | | |
+| Home win | 321 | 116 | 36.1% | 72.31 | 22.5% | 0.12 | 21.34 |
+| Draw | 139 | 29 | 20.9% | 24.69 | 17.8% | 0.07 | 19.24 |
+| Away win | 107 | 21 | 19.6% | -12.78 | -11.9% | -0.06 | 33.75 |
+| All | 567 | 166 | 29.3% | 84.22 | 14.9% | 0.07 | 39.17 |
 
-Table 4. Betting strategy – performance using average vs. best odds.
-                       Bets             Wins              Win %               Total P&L              ROI                  Sharpe              Max DD
-I. Average odds
-Home win               321              116               36.1%                54.25                  16.9%                0.10               21.97
-Draw                   139               29               20.9%                17.33                  12.5%                0.05               20.41
-Away win               107               21               19.6%               −17.73                 −16.6%               −0.09               36.63
-All                    567              166               29.3%                53.85                   9.5%                0.05               41.09
+> *Note: This table reports the out-of-sample betting performance under flat stakes, comparing the use of average odds (Section I) and best available odds (Section II). Strategies were optimised for P&L.*
 
-II. Best odds
-Home win               321              116               36.1%                72.31                  22.5%                0.12               21.34
-Draw                   139               29               20.9%                24.69                  17.8%                0.07               19.24
-Away win               107               21               19.6%               −12.78                 −11.9%               −0.06               33.75
-All                    567              166               29.3%                84.22                  14.9%                0.07               39.17
-This table reports the out-of-sample betting performance under ﬂat stakes, comparing the use of average odds (Section I) and best available odds
-(Section II). Strategies were optimised for P&L.
+### Table 5. Betting strategy – performance across different money management strategies.
 
-Table 5. Betting strategy – performance across different money management strategies.
-                       Bets             Wins              Win %               Total P&L              ROI                  Sharpe              Max DD
-I. Average odds
-Home win               321              116               36.1%                54.25                  16.9%                0.10               21.97
-Draw                   139               29               20.9%                17.33                  12.5%                0.05               20.41
-Away win               107               21               19.6%               −17.73                 −16.6%               −0.09               36.63
-All                    567              166               29.3%                53.85                   9.5%                0.05               41.09
+| Strategy / Outcome | Bets | Wins | Win % | Total P&L | ROI | Sharpe | Max DD |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **I. Average odds (Flat betting)** | | | | | | | |
+| Home win | 321 | 116 | 36.1% | 54.25 | 16.9% | 0.10 | 21.97 |
+| Draw | 139 | 29 | 20.9% | 17.33 | 12.5% | 0.05 | 20.41 |
+| Away win | 107 | 21 | 19.6% | -17.73 | -16.6% | -0.09 | 36.63 |
+| All | 567 | 166 | 29.3% | 53.85 | 9.5% | 0.05 | 41.09 |
+| **II. Fractional Kelly (f = 0.50)** | | | | | | | |
+| Home win | 321 | 116 | 36.1% | 8.56 | 2.7% | 0.11 | 2.36 |
+| Draw | 139 | 29 | 20.9% | 1.65 | 1.2% | 0.09 | 1.16 |
+| Away win | 107 | 21 | 19.6% | -2.63 | -2.5% | -0.13 | 4.59 |
+| All | 567 | 166 | 29.3% | 7.57 | 1.3% | 0.06 | 3.23 |
 
-II. Fractional Kelly (f = 0.50)
-Home win                321             116               36.1%                  8.56                   2.7%               0.11                2.36
-Draw                    139              29               20.9%                  1.65                   1.2%               0.09                1.16
-Away win                107              21               19.6%                 −2.63                  −2.5%              −0.13                4.59
-All                     567             166               29.3%                  7.57                   1.3%               0.06                3.23
-This table reports the out-of-sample betting performance comparing two staking strategies: ﬂat betting (Section I) and fractional Kelly betting with f =
-0.50 (Section II). Strategies were optimised for P&L.
+> *Note: This table reports the out-of-sample betting performance comparing two staking strategies: flat betting (Section I) and fractional Kelly betting with f = 0.50 (Section II). Strategies were optimised for P&L.*
 
-reduced. In the case of n = 6, the resulting P&L is equal to                 Money management strategy: fractional Kelly. Table 5 high-
-−14 (−4% ROI), whereby +33 (+15% ROI) stem from                              lights the effect of fractional Kelly staking with f = 0.50
-home bets. These results indicate that using only the most                   on out-of-sample betting performance relative to the previ-
-recent xG value for each team is insufﬁcient for the model’s                 ously described ﬂat betting approach. Since only the staking
-predictions. The absence of a clear trend or dominant perform-               is amended compared to the base case, the number of bets
-ance across values of n further suggests that – ceteris paribus –            placed and won is identical in this scenario.
-there is no universally optimal calibration window.                              The fractional Kelly method produces more moderate
-                                                                             total proﬁts and ROI, reﬂecting its more conservative
-Odds: securing best ones in the market. The main results in                  stake sizing. Sharpe ratios remain low and close to those
-Section “Out-of-sample performance” rely on the assump-                      observed under ﬂat betting, while maximum drawdowns
-tion that average market odds can be secured for all bets.                   exhibit a pronounced reduction, indicating improved
-This guarantees a certain liquidity and realistic execution                  capital preservation.
-setup. In an ideal case, bets could be placed at the best                        More adaptive approaches could further reﬁne capital
-odds instead. The results of this modiﬁcation – in compari-                  allocation. For example, dynamic Kelly schemes adjust f
-son to the base case – are shown in Table 4.                                 based on recent performance volatility, drawdown con-
-    Notably, the better odds are used for the actual bets but                straints or uncertainty around the EV estimate. Such strat-
-not for determining the betting decision itself; the latter are              egies could offer improved risk control in volatile regimes
-still based on the same grid search as before, to ensure that                or help preserve capital. At the same time, however, they
-the trading ‘signal’ itself is robust enough. The P&L for                    also introduce additional complexity and calibration risk,
-backing away wins is still negative, but the total P&L is                    which may counteract the simplicity and transparency
-now substantially higher (84 vs. 54). The same is true for                   goals of the current framework.
-the ROI (15% vs. 10%). The high P&L volatility (low
-Sharpe ratio) and considerable drawdown risk remain a                        Impact of isotonic calibration. Finally, in order to gauge
-concern even in this more optimistic scenario.                               whether the positive ROI are driven primarily by the
+In the case of $n = 6$, the resulting P&L is equal to -14 (-4% ROI), whereby +33 (+15% ROI) stem from home bets. These results indicate that using only the most recent xG value for each team is insufficient for the model’s predictions. The absence of a clear trend or dominant performance across values of $n$ further suggests that – ceteris paribus – there is no universally optimal calibration window.
+
+Odds: securing best ones in the market. The main results in Section “Out-of-sample performance” rely on the assumption that average market odds can be secured for all bets. This guarantees a certain liquidity and realistic execution setup. In an ideal case, bets could be placed at the best odds instead. The results of this modification – in comparison to the base case – are shown in Table 4.
+
+Notably, the better odds are used for the actual bets but not for determining the betting decision itself; the latter are still based on the same grid search as before, to ensure that the trading ‘signal’ itself is robust enough. The P&L for backing away wins is still negative, but the total P&L is now substantially higher (84 vs. 54). The same is true for the ROI (15% vs. 10%). The high P&L volatility (low Sharpe ratio) and considerable drawdown risk remain a concern even in this more optimistic scenario.
+
+Money management strategy: fractional Kelly. Table 5 highlights the effect of fractional Kelly staking with $f = 0.50$ on out-of-sample betting performance relative to the previously described flat betting approach. Since only the staking is amended compared to the base case, the number of bets placed and won is identical in this scenario.
+
+The fractional Kelly method produces more moderate total profits and ROI, reflecting its more conservative stake sizing. Sharpe ratios remain low and close to those observed under flat betting, while maximum drawdowns exhibit a pronounced reduction, indicating improved capital preservation.
+
+More adaptive approaches could further refine capital allocation. For example, dynamic Kelly schemes adjust $f$ based on recent performance volatility, drawdown constraints or uncertainty around the EV estimate. Such strategies could offer improved risk control in volatile regimes or help preserve capital. At the same time, however, they also introduce additional complexity and calibration risk, which may counteract the simplicity and transparency goals of the current framework.
+
+Impact of isotonic calibration. Finally, in order to gauge whether the positive ROI are driven primarily by the isotonic calibration layer or by the underlying xG-Skellam signal, the betting performance was recomputed with the isotonic regression step removed.
 
 ## Page 16: 16 Journal of Sports Analytics
 

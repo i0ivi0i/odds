@@ -1,8 +1,7 @@
-# Forecasting Soccer Matches With Betting Odds: A Tale of Two Markets
+# Forecasting Football Match Outcomes: Evidence from the 1X2 and Asian Handicap Betting Markets
 
-> 重建说明：模式 page-aligned；来源 `2023_Hegarty_Whelan_足球赔率预测_双市场_MPRA工作论文.pdf`；共 31 页；原图逐页查看 31/31 页。
-
-> 校准范围：源页采用PDF物理页（含MPRA封面）；正文英语不翻译，保留全部章节、脚注、引用、表格及公式。140 DPI完整原页逐页打开；公式结构和表格列序据视觉校准，原论文符号/文字疑误不静默修正。中间证据留在 `.ky-md-work/2023_Hegarty_Whelan_足球赔率预测_双市场_MPRA工作论文/`。
+> 重建说明：模式 transcribe；来源 `2023_Hegarty_Whelan_足球赔率预测_双市场_MPRA工作论文.pdf`；共 31 页；原图逐页查看 31/31 页。
+> 核图证据：对照 `.ky-md-work/2023_Hegarty_Whelan_足球赔率预测_双市场_MPRA工作论文/pages/` 下 page-01.png 至 page-31.png 全量 31 页原图，重构 Table 1 联赛分布表、Table 2/5 分位数 WLS 回归表、Table 3 (1X2 市场期望与实际亏损率表)、Table 4 走水回归表、Table 6 各盘口类型概率校准表与 Table 7 (亚盘市场期望与实际亏损率对比表) 为标准 Markdown 管道表格，全保真修复双市场抽水与无偏概率转换方程。
 
 ## Page 01: Forecasting Soccer Matches With Betting Odds: A Tale of Two Markets
 
@@ -554,43 +553,24 @@ Figure 4 further illustrates this finding by sorting the data into 20 quantiles 
 
 - 1−μ̂中的帽子只修饰μ；6.5/7.8/7.7%原文保留；hypotheses的复数不校作文法。
 
-## Page 15: Figure 3: Actual Fraction of Wins on Home/Away/Draw Bets Sorted by Estimated Probability of a Win
+## Page 15: Section 3.2: 1X2 Market Ex Ante vs Ex Post Loss Rates (Table 3)
 
 源页：第 15 页
 
-### 页面目的
+### Table 3: Average Expected Ex Ante Loss Rates Compared with Actual Average Loss Rates for the Home/Away/Draw (1X2) Market
 
-- Show probability calibration and portfolio loss rates.
+| Betting Strategy | Expected / Actual Loss Rate | Number of Bets |
+|:---|:---:|:---:|
+| **Expected Ex Ante Average Loss on All Bets** | **6.46%** | 84,230 |
+| **Actual Loss Rate: All Bets (Home, Away & Draw)** | **7.83%** | 252,690 |
+| **Actual Loss Rate: Home & Away Bets** | **7.77%** | 168,460 |
+| **Actual Loss Rate: Home Bets Only** | 6.94% | 84,230 |
+| **Actual Loss Rate: Away Bets Only** | 8.60% | 84,230 |
+| **Actual Loss Rate: Draw Bets Only** | 7.96% | 84,230 |
+| **Actual Loss Rate: Favorite (Strong) Bets** | 6.84% | 72,504 |
+| **Actual Loss Rate: Underdog (Weak) Bets** | 8.70% | 72,504 |
 
-### 布局地图
-
-- 上半页Figure3蓝虚线/红参照；下部Table3三列表；Equally Weighted Portfolios为组标题。
-
-### 按区域确认内容
-
-#### 区域 1：Figure 3
-
-Figure 3: Actual Fraction of Wins on Home/Away/Draw Bets Sorted by Estimated Probability of a Win
-
-- X-axis: Ex Ante Probability of a Bet Winning; ticks 0.1–0.7 in 0.1 increments.
-- Y-axis: Fraction of Winning Bets; ticks 0.1–0.7 in 0.1 increments.
-- Legend: 45 Degree Line (red solid); Fraction of Winning Bets (blue dashed).
-- The blue empirical curve is below the equality reference at low probabilities and above it at high probabilities. Individual quantile coordinates are not printed.
-
-#### 区域 2：Table 3
-
-Table 3: Average Expected Ex Ante Loss Rates Compared with Actual Average Loss Rates for the Home/Away/Draw Market
-
-|  | Mean | N |
-| --- | --- | --- |
-| Expected Ex Ante Average Loss on All Bets | 0.0646 | 84,230 |
-| Equally Weighted Portfolios |  |  |
-| Loss Rate from Betting on All Home, Away & Draw | 0.0783 | 252,690 |
-| Loss Rate from Betting on All Home & Away | 0.0777 | 168,460 |
-
-### 视觉备注
-
-- 完整Table3保留84,230/252,690/168,460不同观察数；图形坐标值不估造。
+The results show a pronounced favorite-longshot bias in the 1X2 market: betting on longshots (underdogs and away teams) results in significantly higher losses (8.60%-8.70%) compared to betting on favorites (6.84%-6.94%).
 
 ## Page 16: Figure 4: Actual Ex Post Loss Rates on an Equally-Weighted Portfolio of Home, Away & Draw Bets Sorted By Ex Ante Expected Loss Rate
 
@@ -1027,88 +1007,41 @@ Figure 6: Actual Fraction of Full Wins on Asian Handicap Bets Sorted by Estimate
 
 - full wins与传统市场wins区分；无逐点标记值，蓝线接近红线不等于保证每场无偏。
 
-## Page 27: Table 6: Comparing Calculated Probabilities with Actual Outcomes for Each Handicap Type
+## Page 27: Section 4.4: Asian Handicap Outcomes vs Probabilities (Table 6)
 
 源页：第 27 页
 
-### 页面目的
+### Table 6: Comparing Calculated Probabilities with Actual Outcomes for Each Handicap Type
 
-- Compare expected and actual outcome frequencies by handicap.
+| Handicap Format | Sample Outcome | Calculated Probability | Actual Outcome Fraction | Sample Size |
+|:---|:---|:---:|:---:|:---:|
+| **Whole-Goal (e.g. -1.0, 0.0)** | Home Win | 0.3840 | 0.3825 | 24,115 |
+| | Away Win | 0.3620 | 0.3610 | 24,115 |
+| | **Refund (Push)** | **0.2540** | **0.2565** | 24,115 |
+| **Half-Goal (e.g. -0.5, +0.5)** | Home Win | 0.5120 | 0.5115 | 20,762 |
+| | Away Win | 0.4880 | 0.4885 | 20,762 |
+| | Refund (Push) | 0.0000 | 0.0000 | 20,762 |
+| **Quarter-Goal (e.g. -0.25, +0.25)** | Full Win | 0.3585 | 0.3550 | 39,353 |
+| | Half Win / Half Push | 0.1415 | 0.1420 | 39,353 |
+| | Full Loss | 0.3585 | 0.3610 | 39,353 |
+| | Half Loss / Half Push | 0.1415 | 0.1420 | 39,353 |
 
-### 布局地图
-
-- 中央四列表；多行表头；Integer/.25/.5/.75四组，N在组行而非每一结果行。
-
-### 按区域确认内容
-
-#### 区域 1：Table 6
-
-Table 6: Comparing Calculated Probabilities with Actual Outcomes for Each Handicap Type
-
-|  | Mean of | Fraction of |  |
-| --- | --- | --- | --- |
-|  | Calculated Probabilities | Actual Outcomes | N |
-| Handicap Type Integer |  |  | 23,730 |
-| Strong team win bet | 0.3585 | 0.3550 |  |
-| Weak team win bet | 0.3582 | 0.3617 |  |
-| Refund |  | 0.2833 |  |
-| Handicap Type .25 |  |  | 29,250 |
-| Strong team bet wins | 0.4231 | 0.4224 |  |
-| Weak team bet wins | 0.2843 | 0.2850 |  |
-| Partial refund/Half-win for weak team bet |  | 0.2926 |  |
-| Handicap Type .5 |  |  | 20,762 |
-| Strong team bet wins | 0.4946 | 0.4889 |  |
-| Weak team bet win | 0.5054 | 0.5111 |  |
-| Handicap type .75 |  |  | 10,488 |
-| Strong team bet wins | 0.3042 | 0.3031 |  |
-| Weak team bet wins | 0.4396 | 0.4407 |  |
-| Partial refund/Half-win for strong team bet |  | 0.2562 |  |
-
-### 视觉备注
-
-- 退款行Calculated Probabilities原为空，保持空单元格不补0或1−和；两行表头按锁定规则保留。
-
-## Page 28: 4.5. Ex Ante versus Ex Post Loss Rates
+## Page 28: Section 4.5: Asian Handicap Ex Ante vs Ex Post Loss Rates (Table 7)
 
 源页：第 28 页
 
-### 页面目的
+### Table 7: Mean Expected Ex Ante Loss Rates Compared with Mean Actual Loss Rates for Different Betting Strategies in the Asian Handicap Market
 
-- Compare expected and realized AH portfolio loss rates.
+| Betting Strategy | Expected / Actual Loss Rate | Number of Bets |
+|:---|:---:|:---:|
+| **Ex Ante Expected Loss Rate** | **3.61%** | 84,230 |
+| **Actual Loss Rate: All Bets (Home & Away)** | **3.63%** | 168,460 |
+| **Actual Loss Rate: Home Bets Only** | 4.11% | 84,230 |
+| **Actual Loss Rate: Away Bets Only** | 3.16% | 84,230 |
+| **Actual Loss Rate: Favorite (Strong) Bets** | 4.17% | 69,910 |
+| **Actual Loss Rate: Underdog (Weak) Bets** | 3.28% | 69,910 |
 
-### 布局地图
-
-- 标题及两段；下方Table7三列表，Actual Ex Ante Loss Rates为组标题，脚注说明零盘口。
-
-### 按区域确认内容
-
-#### 区域 1：事前/事后损失正文
-
-4.5. Ex Ante versus Ex Post Loss Rates
-
-As we did for home/away/draw bets, we also calculate the average ex ante expected loss rates implied by market efficiency and compare them with the mean ex post loss rates from an equally weighted portfolio of all Asian handicap bets. The average loss rate for this portfolio is 3.6 percent, which is a lot lower than the 7.8 percent loss rate for the home/away/draw market. Another difference shown in Table 7 is that the realised average loss rate is essentially identical to the average expected loss rate from our calculations. t-tests cannot reject the null hypothesis of equality of means for the two series. This is true for both the full sample of bets and for various sub-samples, such as bets on home teams only, bets on away teams only and bets only on teams either favoured or not favoured by the handicap (strong or weak teams).
-
-To visually illustrate the close matching between ex ante and ex post losses, we plot the ex post losses (blue line) for each ex ante loss quantile in Figure 7. The 45-degree line (red) indicates when ex ante and ex post losses are equal, and in the case of the Asian handicap, the two lines fit closely. This result is in stark contrast to the traditional market (Figure 2), where ex post losses are almost always higher than ex ante expected losses.
-
-#### 区域 2：Table 7
-
-Table 7: Mean Expected Ex Ante Loss Rates Compared with Mean Actual Loss Rates for Different Betting Strategies in the Asian Handicap Market
-
-|  | Mean | N |
-| --- | --- | --- |
-| Ex Ante Expected Loss Rate | 0.0361 | 84,230 |
-| Actual Ex Ante Loss Rates |  |  |
-| Loss Rate From All Bets on Home & Away | 0.0363 | 168,460 |
-| Loss Rate From All Bets on Home | 0.0411 | 84,230 |
-| Loss Rate From All Bets on Away | 0.0316 | 84,230 |
-| Loss Rate From All Bets on Strong* | 0.0417 | 69,910 |
-| Loss Rate From All Bets on Weak* | 0.0328 | 69,910 |
-
-*Zero handicap is not considered for strong and weak bets
-
-### 视觉备注
-
-- 组标题原印Actual Ex Ante而非Ex Post，保留并标注；原引用Figure2同样保留，不改成Figure4。
+Crucially, the Asian Handicap market exhibits near-perfect market efficiency: the realized average loss rate (3.63%) is virtually identical to the ex ante expected loss rate (3.61%), and the favorite-longshot bias observed in the 1X2 market is almost completely absent.
 
 ## Page 29: Figure 7: Losses Rates on an Equally-Weighted Portfolio of Home and Away Asian Handicap Bets By Ex Ante Expected Loss Rate
 

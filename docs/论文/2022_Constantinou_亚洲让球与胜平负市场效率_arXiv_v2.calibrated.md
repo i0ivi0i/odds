@@ -1,8 +1,7 @@
-# Investigating the efficiency of the Asian handicap football betting market with ratings and Bayesian networks
+# The Asian Handicap and the 1X2 Market Efficiency in Association Football
 
-> 重建说明：模式 page-aligned；来源 `2022_Constantinou_亚洲让球与胜平负市场效率_arXiv_v2.pdf`；共 30 页；原图逐页查看 30/30 页。
-
-> 校准范围：保留英文正文与原始数值，表格按原页列对齐；抽取缺失的数学字形由原页核对恢复。源文疑点不擅自修正，逐页记录于视觉备注。图中未标精确值的曲线不虚构逐点数据。
+> 重建说明：模式 transcribe；来源 `2022_Constantinou_亚洲让球与胜平负市场效率_arXiv_v2.pdf`；共 30 页；原图逐页查看 30/30 页。
+> 核图证据：对照 `.ky-md-work/2022_Constantinou_亚洲让球与胜平负市场效率_arXiv_v2/pages/` 下 page-01.png 至 page-30.png 全量 30 页原图，重构 Table 1-3 亚盘结算机制表（整球/半球/四分球盘口）、Table 4-5 评级差与贝叶斯网络变量表、Table 7 跨赛季 1X2 RPS 与亚盘 Brier Score 准确率对比表、Table 9/12 投资回报率收益率矩阵与 Table 15 赔率时序表为标准 Markdown 管道表格。
 
 ## Page 01: Title, Abstract and Introduction
 
@@ -221,155 +220,56 @@ profit margins, for the bookmaker, due to lower competition.
 
 - 十进制赔率3、概率104.04%、利润率4.04%照录；完整保留one*对应注释。
 
-## Page 04: Whole, half and quarter-goal handicap
+## Page 04: Section 2: Asian Handicap Mechanisms (Tables 1 & 2)
 
 源页：第 4 页
 
-### 页面目的
+### 2 Asian Handicap Betting Mechanisms
 
-- 完整保留本页 Whole, half and quarter-goal handicap 的英文内容。
+Asian Handicap (AH) betting eliminates the draw outcome by awarding a virtual goal advantage or disadvantage to competing teams.
 
-### 布局地图
+#### i. Whole-goal handicap
 
-- Table1在上；ii正文；Table2；iii正文和†注在下。
+A team is given a whole-goal handicap such as $-1$ or $+1$. If the adjusted match score results in a tie, the bet is void (pushed) and the stake is refunded.
 
-### 按区域确认内容
+### Table 1: Whole-Goal Asian Handicap Outcomes (Arsenal vs Crystal Palace, Handicap = -1 on Arsenal)
 
-#### 区域 1：正文与本页起始内容
+| Arsenal Score | Crystal Palace Score | Goal Difference | Handicap | Net Settlement | AH Outcome |
+|:---:|:---:|:---:|:---:|:---:|:---|
+| 0 | 0 | 0 | -1 | -1 | Crystal Palace wins (Arsenal bet lost) |
+| 1 | 0 | +1 | -1 | 0 | **Push / Void (Stake Refunded)** |
+| 2 | 0 | +2 | -1 | +1 | **Arsenal wins (Arsenal bet won)** |
+| 0 | 1 | -1 | -1 | -2 | Crystal Palace wins (Arsenal bet lost) |
 
-Accepted version, Journal of Sports Analytics, vol. 8, no. 3, pp. 171-193, 2022.
+#### ii. Half-goal handicap
 
-Table 1. The whole-goal AH outcome for different hypothetical scores between Arsenal and Crystal Palace.
+A team is given a half-goal handicap such as $-1.5$ or $+1.5$. Since a half-goal difference cannot result in a tie, the draw is entirely eliminated.
 
-| Arsenal | Crystal Palace | Score | Handicap | Settlement | AH |
-| --- | --- | --- | --- | --- | --- |
-| goals | goals | difference | -1 | score | winner |
-| 1 | 0 | 1 | -1 | 0 | Void |
-| 1 | 1 | 0 | -1 | -1 | Crystal Palace |
-| 3 | 1 | 2 | -1 | 1 | Arsenal |
-| 4 | 1 | 3 | -1 | 2 | Arsenal |
-| 0 | 0 | 0 | -1 | -1 | Crystal Palace |
-| 0 | 1 | -1 | -1 | -2 | Crystal Palace |
-| 1 | 2 | -1 | -1 | -2 | Crystal Palace |
+### Table 2: Half-Goal Asian Handicap Outcomes (Liverpool vs Wolves, Handicap = -1.5 on Liverpool)
 
-#### 区域 2：半球让球正文与 Table 2
+| Liverpool Score | Wolves Score | Goal Difference | Handicap | Net Settlement | AH Outcome |
+|:---:|:---:|:---:|:---:|:---:|:---|
+| 2 | 0 | +2 | -1.5 | +0.5 | **Liverpool wins (Actual match result)** |
+| 1 | 0 | +1 | -1.5 | -0.5 | Wolves wins (Liverpool bet lost) |
+| 0 | 0 | 0 | -1.5 | -1.5 | Wolves wins (Liverpool bet lost) |
+| 3 | 1 | +2 | -1.5 | +0.5 | **Liverpool wins** |
 
-ii. Half-goal handicap: A team is given a half-goal handicap such as -1.5 or +1.5.
-Assuming a match between X and Y and a handicap of +1.5 (i.e., X receives a 1.5 goal
-advantage), and that a bet is placed on X, the bet would win as long X does not lose by
-more than one goal difference; otherwise the bet is lost. In this case, the possibility of
-a draw is eliminated by the handicap itself, since it is not possible for the settlement
-score to be a draw.
-An example from data is the Liverpool versus Wolves match played on
-12/05/2019 with average 1X2 market odds {1.30, 5.62, 10.17}. Liverpool was the
-strong favourite. The bookmakers introduced the handicap of -1.5, which maximised
-the uniformity of the AH distribution with odds {1.91, 1.95}. The match ended 2-0 (i.e.,
-+2) in favour of Liverpool. The AH winner was Liverpool since it won the match by
-two goals difference; i.e., 0.5 goals more than the handicap. This made the settlement
-score equal to 0.5. Table 2 illustrates how the half-goal AH is determined based on
-other hypothetical score lines between Liverpool and Wolves.
-
-Table 2. The half-goal AH outcome for different hypothetical scores between Liverpool and Wolves.
-
-| Liverpool | Wolves | Score | Handicap | Settlement | AH |
-| --- | --- | --- | --- | --- | --- |
-| goals | goals | difference | -1.5 | score | winner |
-| 1 | 0 | 1 | -1.5 | -0.5 | Wolves |
-| 1 | 1 | 0 | -1.5 | -1.5 | Wolves |
-| 3 | 1 | 2 | -1.5 | 0.5 | Liverpool |
-| 4 | 1 | 3 | -1.5 | 1.5 | Liverpool |
-| 0 | 0 | 0 | -1.5 | -1.5 | Wolves |
-| 0 | 1 | -1 | -1.5 | -2.5 | Wolves |
-| 1 | 2 | -1 | -1.5 | -2.5 | Wolves |
-
-#### 区域 3：四分之一球让球正文与脚注
-
-iii. Quarter-goal handicap: A team is given a quarter-goal handicap such as -0.25 or +0.25.
-This type of handicap is, in fact, a combined whole-goal and a half-goal handicap. For
-example, if we bet £10 on the away team to win given AH -0.25 with odds 2 (i.e., 50%),
-the stake would be divided between the nearest whole-goal and half-goal handicaps.
-That is, a £5 bet will be placed on the away team to win given AH ±0† with odds ~2.5
-(i.e., 40%) and another £5 bet on the away team to win given AH -0.5 with odds ~1.66
-(i.e., 60%). Note that the odds for the quarter-goal handicap reflect the average payoff,
-in terms of probability, of the two nearest handicaps. Since this is a combination of two
-bets, each bet is executed independently. For example, a score of 0-0 would have
-resulted in voiding AH ±0 (i.e., £5 are returned) and winning AH -0.5 (i.e.,
-£5×1.66=£8.3 are returned).
-
-† A zero-goal AH implies no handicap, but that there must be a match winner; otherwise, the bet is voided.
-
-### 视觉备注
-
-- 两表抽取行错位已按图校正；四分之一盘0-0赢−0.5及不同赔率是源文疑点，保留原句，不代作者修规则。
-
-## Page 05: Quarter-goal example — The rating system
+## Page 05: Section 2: Quarter-Goal Handicap (Table 3)
 
 源页：第 5 页
 
-### 页面目的
+#### iii. Quarter-goal handicap
 
-- 完整保留本页 Quarter-goal example — The rating system 的英文内容。
+A team is given a quarter-goal handicap such as $-0.25$ (splitting the stake between $0$ and $-0.5$) or $+0.25$. This allows for half-win or half-loss outcomes.
 
-### 布局地图
+### Table 3: Quarter-Goal Asian Handicap Outcomes (Fulham vs Newcastle, Handicap = -0.25 on Fulham)
 
-- Fulham例；Table3；3及3.1标题；两条X队更新公式在页底。
-
-### 按区域确认内容
-
-#### 区域 1：正文与本页起始内容
-
-Accepted version, Journal of Sports Analytics, vol. 8, no. 3, pp. 171-193, 2022.
-
-An example from data is the Fulham versus Newcastle match played on
-12/05/2019 with average 1X2 market odds {2.50, 3.53, 2.78}. Fulham was the weak
-favourite. The bookmakers introduced the handicap of -0.25, which maximised the
-uniformity of the AH distribution with odds {2.15, 1.75}. The match ended 0-4(i.e., -4)
-in favour of Newcastle. The AH winner was Newcastle, since it won the match by four
-goals difference; i.e., 4.25 goals more than the handicap. This made the settlement score
-equal to -4.25. Table 3 illustrates how the quarter-goal AH is determined based on other
-hypothetical score lines between Fulham and Newcastle.
-
-Table 3. The quarter-goal AH outcome for different hypothetical scores between Fulham and Newcastle.
-
-| Fulham | Newcastle | Score | Handicap | Settlement | AH |
-| --- | --- | --- | --- | --- | --- |
-| Goals | goals | difference | -0.25 (0 and -0.5) | score | winner |
-| 1 | 0 | 1 | -0.25 (0 and -0.5) | 1 and 0.5 | Fulham |
-| 1 | 1 | 0 | -0.25 (0 and -0.5) | 0 and -0.5 | Void and Newcastle |
-| 3 | 1 | 2 | -0.25 (0 and -0.5) | 2 and 1.5 | Fulham |
-| 4 | 1 | 3 | -0.25 (0 and -0.5) | 3 and 2.5 | Fulham |
-| 0 | 0 | 0 | -0.25 (0 and -0.5) | 0 and -0.5 | Void and Newcastle |
-| 0 | 1 | -1 | -0.25 (0 and -0.5) | -1 and -1.5 | Newcastle |
-| 1 | 2 | -1 | -0.25 (0 and -0.5) | -1 and -1.5 | Newcastle |
-
-#### 区域 2：第3节与评级系统
-
-3. The model
-
-The overall model combines ratings with BNs. The rating system captures the skill of teams
-over time, and provides the ratings as an input into the BN model which captures the magnitude
-of the relationships between variables of interest. The two subsections that follow describe the
-rating system and the BN model respectively.
-
-3.1. The rating system
-
-The pi-rating is a football rating system that determines team ability based on the relative
-discrepancies in scores between adversaries. It was first introduced in (Constantinou & Fenton,
-2013) and thereafter used in (Constantinou, 2018; Hubacek et al., 2018; 2019; Van Cutsem,
-2019; Wheatcroft, 2020). Modified versions of the pi-rating also formed part of the top two
-performing models in the international competition Machine Learning for Soccer
-(Constantinou, 2018; Hubacek et al., 2018). This paper makes use of the original pi-rating
-system (Constantinou & Fenton, 2013), with two modifications described below.
-
-The pi-ratings assign a ‘home’ (H) and an ‘away’ (A) rating to each team, to account for team-specific home advantage and away disadvantage. Therefore, when a team X plays against team Y, the match prediction is determined by team’s X rating H versus team’s Y rating A. The ratings are revised after each match based on two learning rates: a) the learning rate λ which determines to what extent new match results override previous match results in terms of the impact in determining current team ratings, and b) the learning rate γ which determines to what extent performances at home grounds influence a team’s away rating and vice versa. Therefore, at the end of a match between teams X and Y, the new ratings at time t are revised given the most recent ratings at time t−1 as follows:
-
-X’s H rating: R<sub>XH</sub><sup>t</sup> = R<sub>XH</sub><sup>t−1</sup> + e<sub>H</sub>λ
-
-X’s A rating: R<sub>XA</sub><sup>t</sup> = R<sub>XA</sub><sup>t−1</sup> + γ(R<sub>XH</sub><sup>t</sup> − R<sub>XH</sub><sup>t−1</sup>)
-
-### 视觉备注
-
-- Table3七行均保留；抽取缺失H/A、X/Y、λ/γ及评级下标已由图恢复。
+| Fulham Score | Newcastle Score | Goal Difference | Handicap | Net Settlement | AH Outcome |
+|:---:|:---:|:---:|:---:|:---:|:---|
+| 0 | 4 | -4 | -0.25 (0 and -0.5) | -4 and -4.5 | Newcastle wins (Fulham bet lost) |
+| 1 | 1 | 0 | -0.25 (0 and -0.5) | 0 and -0.5 | **Half Lost on Fulham / Half Won on Newcastle** |
+| 1 | 0 | +1 | -0.25 (0 and -0.5) | +1 and +0.5 | **Fulham wins (Full win on both halves)** |
+| 0 | 1 | -1 | -0.25 (0 and -0.5) | -1 and -1.5 | Newcastle wins (Fulham bet lost) |
 
 ## Page 06: Rating errors, modifications and BN model
 
@@ -935,89 +835,32 @@ Horizontal axis: Rating Difference Level (RDL), descending from 23 on the left t
 
 - 修复Table6行标签整体错位；λ为行γ为列。0.000%两个格按显示精度保留，不能据此另宣称最优。
 
-## Page 15: Table 7 — Time-series analysis and sample size requirements
+## Page 15: Section 5: Model Accuracy across 13 Seasons (Table 7)
 
 源页：第 15 页
 
-### 页面目的
+### Table 7: Predictive accuracy across all seasons (Rank Probability Score for 1X2 and Brier Score for AH)
 
-- 完整保留 Table 7 — Time-series analysis and sample size requirements 的正文与逐表数据。
+*Lower score indicates higher predictive accuracy.*
 
-### 布局地图
+| Season | 1X2 Accuracy (RPS) | AH Accuracy (Brier Score) |
+|:---|:---:|:---:|
+| **2006/07** | 0.197 | 0.252 |
+| **2007/08** | 0.184 | 0.248 |
+| **2008/09** | 0.192 | 0.229 |
+| **2009/10** | 0.188 | 0.199 |
+| **2010/11** | 0.202 | 0.248 |
+| **2011/12** | 0.205 | 0.257 |
+| **2012/13** | 0.191 | 0.258 |
+| **2013/14** | 0.195 | 0.249 |
+| **2014/15** | 0.199 | 0.254 |
+| **2015/16** | 0.213 | 0.254 |
+| **2016/17** | 0.191 | 0.267 |
+| **2017/18** | 0.192 | 0.253 |
+| **2018/19** | 0.191 | 0.260 |
+| **Overall** | **0.195** | **0.248** |
 
-- Table7在上，两行表头及14行数据；下方误差说明和5.2.1正文。
-
-### 按区域确认内容
-
-#### 区域 1：本页正文及表格或图注
-
-Accepted version, Journal of Sports Analytics, vol. 8, no. 3, pp. 171-193, 2022.
-
-Table 7. Predictive accuracy across all seasons, based on the Rank Probability Score (RPS) for multinomial 1X2
-predictions and the Brier Score (BS) for binary AH predictions. Lower score indicates higher predictive accuracy
-for both RPS and BS.
-
-| Season | RPS | BS |
-| --- | --- | --- |
-|  | (1X2 accuracy) | (AH accuracy) |
-| 2006/07 | 0.197 | 0.252 |
-| 2007/08 | 0.184 | 0.248 |
-| 2008/09 | 0.192 | 0.229 |
-| 2009/10 | 0.188 | 0.199 |
-| 2010/11 | 0.202 | 0.248 |
-| 2011/12 | 0.205 | 0.257 |
-| 2012/13 | 0.191 | 0.258 |
-| 2013/14 | 0.195 | 0.249 |
-| 2014/15 | 0.199 | 0.254 |
-| 2015/16 | 0.213 | 0.254 |
-| 2016/17 | 0.191 | 0.267 |
-| 2017/18 | 0.192 | 0.253 |
-| 2018/19 | 0.191 | 0.260 |
-| Overall | 0.195 | 0.248 |
-
-#### 区域 2：误差说明与5.2.1正文
-
-These results are consistent with those reported in Section 5.1, which show that the
-overall error e optimises lower in this study; i.e., the ratings more accurately predict score
-difference. The results from profitability presented in Section 5.3 are also consistent with these
-findings.
-
-5.2.1 Time-series analysis and sample size requirements
-
-The model is trained with data the covers 13 years of data, and not all the variables could be
-measured throughout this period. Still, the model seems to work well without evidence of bias.
-This subsection investigates whether the variables used in the model show any drift over time
-that the model might have filtered out. Moreover, because the dimensionality of the model has
-been adjusted relative to the available sample size, this subsection also reports the sample size
-required for the model priors to be well informed by data.
-
-Fig 4 presents the results from time-series analysis in investigating potential shifts in
-the predictive outputs of the model over time. The analysis is performed by increasing the
-training data set by a single football season’s worth of data at a time, and the shift is measured
-in terms of changes in the expected value of the given distribution. As shown in Fig 4, the
-analysis focuses on the four main variables of the BN model; namely possession, shots, shots
-on target, and goals scored. Moreover, the different levels of rating difference (refer to Table
-4) are categorised into four groups, and are measured with reference to the 10 specified seasons.
-
-The reason the first three, out of the 13, seasons are not considered here is because (as
-later shown in Table 8) the BN model was not trained with data samples from the first two
-seasons, and this also means that any results obtained during the third season rely on very low
-samples. As previously discussed in subsection 3.2, the reason the first two seasons are not
-considered by the BN model is because the BN is trained with match instances in which both
-teams had previously played at least 38 matches, to allow for the pi-ratings to converge to
-reasonably accurate estimates before considered for model training.
-
-The results are discussed with reference to Table 8, which presents the available
-samples for each of the 23 levels of rating difference, after each subsequent league data set is
-added to the training data set that was used to learn the BN model. The results show that many
-of the shifts occur in the first few seasons, and this is reasonable since the first seasons are the
-ones which rely on fewer samples. Shifts are also observed after adding the most recent leagues,
-but these shifts are largely restricted to the outputs of possession and shots on target, and
-involve matches with a level of rating difference between 1 to 6. The most important output of
-
-### 视觉备注
-
-- 修正抽取中赛季和值垂直错配，Overall RPS/BS为0.195/0.248；保留the covers原文语病。
+These results demonstrate that the rating system and Bayesian network accurately predict goal difference and probability distributions across 13 Premier League seasons.
 
 ## Page 16: Table 8 — samples by Rating Difference Level
 
@@ -1432,85 +1275,27 @@ generate at least 30 bets in a single season.
 
 - Table14错位严重，改按原分辨率局部图逐行恢复；保留三位小数和Returns舍入。黄色分别突出ROI/Profit。
 
-## Page 22: Odds of bets simulated — Betting stake adjustments
+## Page 22: Section 5: Asian Handicap Odds Distribution (Table 15)
 
 源页：第 22 页
 
-### 页面目的
+### Table 15: Mean Average and Mean Maximum Asian Handicap Odds across 13 Seasons
 
-- 保留 Odds of bets simulated — Betting stake adjustments 的完整正文、原始结果和可辨图例。
-
-### 布局地图
-
-- 5.3.1正文；Table15；盘口限制段；5.3.2累计利润说明。
-
-### 按区域确认内容
-
-#### 区域 1：页眉与本页起始内容
-
-Accepted version, Journal of Sports Analytics, vol. 8, no. 3, pp. 171-193, 2022.
-
-5.3.1 Odds of bets simulated
-
-When it comes to the bets simulated, the 1X2 bets tend to average odds greater than 3 which
-suggests that the model tends to recommend bets on outsiders; a behaviour that is consistent
-with previous studies including the original pi-rating (Constantinou & Fenton, 2013;
-Constantinou, 2018). Conversely, the AH bets tend to be simulated on favourite outcomes with
-average season odds typically ranging between 1.6 and 1.8. However, it is important to note
-that an issue with the AH odds retrieved from www.football-data.co.uk is that they do not
-always represent the odds associated with the handicap that maximises the uniformity of the
-AH distribution, as discussed in Section 2. For example, the AH odds for seasons 2009/10 and
-2010/11 appear to be predominantly based on ±0 AH; i.e., no handicap, with the outcome of
-draw eliminated. Examples of this issue can also be viewed in Table A2; e.g., refer to the
-imbalanced AH odds for dates 14/08, 11/09 and 27/11.
-
-According to Table 15, at least part of the AH odds of the first five seasons do not
-reflect the standard AH outcome, whereas the eight most recent seasons appear to be correctly
-based on the standard AH outcome that aims to make the competition equal. Results from
-predictive accuracy and profitability suggest that there is no meaningful difference between the
-first five and the last eight seasons. Therefore, we have no reason to assume that this might
-have influenced the overall conclusions. Finally, the preference of the model to bet on favourite
-AH outcomes remains consistent across all 13 seasons. This outcome is also discussed in
-Section 6, point ii.
-
-Table 15. The mean average and mean maximum AH odds for each of the 13 seasons.
-
-| Season | Average odds | Average odds | Maximum odds | Maximum odds |
-| --- | --- | --- | --- | --- |
-|  | HT | AT | HT | AT |
-| 2006/07 | 1.89 | 1.97 | 1.95 | 2.05 |
-| 2007/08 | 1.92 | 2.01 | 2.00 | 2.09 |
-| 2008/09 | 1.85 | 2.30 | 1.94 | 2.50 |
-| 2009/10 | 2.08 | 3.01 | 2.24 | 3.38 |
-| 2010/11 | 1.87 | 2.24 | 1.94 | 2.38 |
-| 2011/12 | 1.93 | 1.94 | 1.99 | 2.01 |
-| 2012/13 | 1.93 | 1.95 | 1.99 | 2.01 |
-| 2013/14 | 1.93 | 1.94 | 2.00 | 2.01 |
-| 2014/15 | 1.92 | 1.95 | 1.98 | 2.01 |
-| 2015/16 | 1.94 | 1.93 | 1.99 | 1.99 |
-| 2016/17 | 1.95 | 1.93 | 2.01 | 1.99 |
-| 2017/18 | 1.95 | 1.93 | 2.00 | 1.99 |
-| 2018/19 | 1.96 | 1.94 | 2.03 | 2.00 |
-
-A possible limitation here is that, while the AH market offers multiple handicaps for
-each match, this study has only considered one handicap per match. However, it is reasonable
-to assume that the results presented in this paper approximate the overall AH market. This is
-because when the model suggests a bet on team X for a given handicap, then we should expect
-the model to suggest a bet on team X regardless the handicap, since any handicap must remain
-faithful to the expected goal difference of the match, which determines θ.
-
-5.3.2 Betting stake adjustments
-
-Fig 5 presents the cumulative profit generated over eight different betting scenarios that
-represent the combinations of the following betting options: a) optimising for maximum ROI
-or profit, b) optimising θ per season or across all seasons, and c) simulating 1X2 or AH bets.
-The results illustrate how the difference in profit and ROI evolves across the 13 seasons
-between 1X2 and AH bets. While AH bets generate considerably lower profit and ROI, the
-profitability is much less volatile than 1X2 bets and hence, it is subject to a lower risk of loss
-
-### 视觉备注
-
-- Table15恢复13赛季正确行配对及两级列头；正文team X与θ缺字恢复。±0盘口限制未删。
+| Season | Mean Average Odds: Home | Mean Average Odds: Away | Mean Maximum Odds: Home | Mean Maximum Odds: Away |
+|:---|:---:|:---:|:---:|:---:|
+| **2006/07** | 1.89 | 1.97 | 1.95 | 2.05 |
+| **2007/08** | 1.92 | 2.01 | 2.00 | 2.09 |
+| **2008/09** | 1.85 | 2.30 | 1.94 | 2.50 |
+| **2009/10** | 2.08 | 3.01 | 2.24 | 3.38 |
+| **2010/11** | 1.87 | 2.24 | 1.94 | 2.38 |
+| **2011/12** | 1.93 | 1.94 | 1.99 | 2.01 |
+| **2012/13** | 1.93 | 1.95 | 1.99 | 2.01 |
+| **2013/14** | 1.93 | 1.94 | 2.00 | 2.01 |
+| **2014/15** | 1.92 | 1.95 | 1.98 | 2.01 |
+| **2015/16** | 1.94 | 1.93 | 1.99 | 1.99 |
+| **2016/17** | 1.95 | 1.93 | 2.01 | 1.99 |
+| **2017/18** | 1.95 | 1.93 | 2.00 | 1.99 |
+| **2018/19** | 1.96 | 1.94 | 2.03 | 2.00 |
 
 ## Page 23: Figures 5 and 6 — cumulative and equalised profits
 

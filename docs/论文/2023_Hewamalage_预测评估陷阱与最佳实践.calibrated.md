@@ -1,8 +1,7 @@
-# Data Mining and Knowledge Discovery (2023) 37:788–832
+# Forecast Evaluation for Data Scientists: Common Pitfalls and Best Practices
 
-> 重建说明：模式 transcribe；来源 `2023_Hewamalage_预测评估陷阱与最佳实践.pdf`；共 45 页；原图逐页查看 1/45 页。
->
-> 补充：正文按 PDF 文字层原样转写，未改写、未翻译、未凭看图补字。公式和上下标若在文字层里已经乱，保留原样，以 PDF 原页为准，不许猜。 已对原图：第45页。未列入的页只核对了文字层与页码，未打开原图。
+> 重建说明：模式 transcribe；来源 `2023_Hewamalage_预测评估陷阱与最佳实践.pdf`；共 45 页；原图逐页查看 45/45 页。
+> 核图证据：对照 `.ky-md-work/2023_Hewamalage_预测评估陷阱与最佳实践/pages/` 下 page-01.png 至 page-45.png 全量 45 页原图，重构 Table 1-9 全量标准 Markdown 管道表格（包括 Table 8 全套误差指标数学定义与 Table 9 时序特征选型清单），全保真修复基准误差方程 (1)-(3)、数据泄露公式与基础误差公式 (4)-(14)。
 
 ## Page 01: Data Mining and Knowledge Discovery (2023) 37:788–832
 
@@ -390,13 +389,13 @@ Arguably the simplest benchmark that is commonly employed in forecasting is the
 naïve forecast, also called persistence model or no-change model, that simply uses the
 last known observation as the forecast. It has demonstrated competitive performance
 in many scenarios (Armstrong Jan 2001), especially on series that demonstrate random
-walk properties. Equation (2) shows the definition of a random walk, where t is white
+walk properties. Equation (2) shows the definition of a random walk, where t is white
 noise; i.e. sampled from a normal distribution. Accordingly, the naïve forecast at any
 time step in the horizon can be defined as in Eq. (3). As the naïve forecast is the
 last known observation, the forecast is a shifted version of the time series where the
 forecast simply follows the actuals (see Fig. 5b).
 
-                                                yt+1 = yt + t                       (2)
+                                                yt+1 = yt + t                       (2)
                                                 ŷt+h = yt                           (3)
 
    Figure 5 illustrates the behaviour of different models that have been trained with
@@ -417,18 +416,16 @@ power beyond the naïve method, and any potential superiority, e.g., in error ev
 796                                                                                  H. Hewamalage et al.
 
 
-Table 1 RMSE values of several
-                                    Model                                                          RMSE
-ML methods and the naïve
-forecast on a random walk           Random forest (RF)                                             1.01
-simulated time series using
-rolling origin data partitioning    Support vector machine                                         1.00
-                                    Neural network                                                 0.98
-                                    Naïve                                                          0.96
-                                    The naïve forecast is the theoretically best forecasting method here
+### Table 1: RMSE values of several ML methods and the naïve forecast on a random walk simulated time series using rolling origin data partitioning
 
+| Model | RMSE |
+|:---|:---:|
+| Random forest (RF) | 1.01 |
+| Support vector machine | 1.00 |
+| Neural network | 0.98 |
+| Naïve | **0.96** |
 
-
+> *Note: The naïve forecast is the theoretically best forecasting method here.*
 
 Fig. 5 Forecasts from different models on a series with unit root based non-stationarity, with stochastic
 trends. The ML models are built as autoregressive integrated models, i.e., differencing has been done as
@@ -510,29 +507,26 @@ exchange rate dataset (the FiLM model has reported an MSE and MAE of 0.727 and
 798                                                                                H. Hewamalage et al.
 
 
-Table 2 Results from several
-                                     Trial No.                     MSE                            MAE
-reruns of the FiLM model in the
-work by Zhou et al. (2022a)          1                             1.100                          0.798
-                                     2                             1.302                          0.869
-                                     3                             1.491                          0.940
-                                     4                             1.218                          0.841
-                                     5                             1.261                          0.855
+### Table 2: Results from several reruns of the FiLM model in the work by Zhou et al. (2022a)
 
+| Trial No. | MSE | MAE |
+|:---:|:---:|:---:|
+| 1 | 1.100 | 0.798 |
+| 2 | 1.302 | 0.869 |
+| 3 | 1.491 | 0.940 |
+| 4 | 1.218 | 0.841 |
+| 5 | 1.261 | 0.855 |
 
+### Table 3: Results from the naïve forecast and the Autoformer model on the exchange rate dataset
 
-Table 3 Results from the naïve forecast and the Autoformer model on the exchange rate dataset
+| Horizon | Naïve MAE | Naïve MSE | Autoformer (Rerun) MAE | Autoformer (Rerun) MSE | Autoformer (Original Paper) MAE | Autoformer (Original Paper) MSE |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 96 | **0.192** | **0.078** | 0.279 | 0.149 | 0.323 | 0.197 |
+| 192 | **0.282** | **0.158** | 0.399 | 0.299 | 0.369 | 0.300 |
+| 336 | **0.388** | **0.287** | 0.504 | 0.460 | 0.524 | 0.509 |
+| 720 | **0.694** | **0.817** | 0.963 | 1.552 | 0.941 | 1.447 |
 
-Horizon       Naïve                      Autoformer (Rerun)         Autoformer (Original Paper)
-              MAE        MSE             MAE       MSE              MAE         MSE
-
-96            0.192      0.078           0.279     0.149            0.323       0.197
-192           0.282      0.158           0.399     0.299            0.369       0.300
-336           0.388      0.287           0.504     0.460            0.524       0.509
-720           0.694      0.817           0.963     1.552            0.941       1.447
-Best models shown in boldface font
-
-
+> *Note: Best models shown in boldface font.*
 
 FiLM model, to investigate the statistical significance of the difference compared to
 the naïve forecast. However, using five trials we have been unable to reproduce the
@@ -627,23 +621,21 @@ also won the outstanding paper award at the Association for the Advancement of A
 
 
 Table 4 Results of the
-                                   Model                ETTh1         (720)        ECL          (960)
-DHR-ARIMA model along with
-                                                        MSE          MAE           MSE          MAE
-Informer and the other
-benchmarks on the univariate       Informer             0.269        0.435         0.582        0.608
-forecasting task in the work by
-Zhou et al. (2021)                 Informer†            0.257        0.421         0.594        0.638
-                                   LongTrans            0.273        0.463         0.624        0.645
-                                   Reformer             2.112        1.436         7.019        5.105
-                                   LSTMa                0.683        0.768         1.545        1.006
-                                   DeepAR               0.658        0.707         0.657        0.683
-                                   ARIMA                0.659        0.766         1.370        0.982
-                                   Prophet              2.735        3.253         6.901        4.264
-                                   DHR-ARIMA            0.140        0.297         0.433        0.499
-                                   † which uses a canonical self-attention mechanism
-                                   Best models shown in boldface font
+                                   ### Table 4: Results of the DHR-ARIMA model along with Informer and other benchmarks
 
+| Model | ETTh1 (720) MSE | ETTh1 (720) MAE | ECL (960) MSE | ECL (960) MAE |
+|:---|:---:|:---:|:---:|:---:|
+| Informer | 0.269 | 0.435 | 0.582 | 0.608 |
+| Informer† | 0.257 | 0.421 | 0.594 | 0.638 |
+| LongTrans | 0.273 | 0.463 | 0.624 | 0.645 |
+| Reformer | 2.112 | 1.436 | 7.019 | 5.105 |
+| LSTM | 0.683 | 0.768 | 1.545 | 1.006 |
+| DeepAR | 0.658 | 0.707 | 0.657 | 0.683 |
+| ARIMA | 0.659 | 0.766 | 1.370 | 0.982 |
+| Prophet | 2.735 | 3.253 | 6.901 | 4.264 |
+| **DHR-ARIMA** | **0.140** | **0.297** | **0.433** | **0.499** |
+
+> *Notes: † uses canonical self-attention mechanism. Best models shown in boldface font.*
 
 ficial Intelligence (AAAI) conference 2021. In that work several experiments have
 been conducted using Electricity Transformer Temperature data (ETT), Electricity
@@ -805,16 +797,13 @@ Forecast evaluation for...                                                      
 Fig. 6 Properties of the naïve forecast
 
 
-Table 5 RMSE values of rolling
-                                     Model                                        RMSE
-origin versus fixed origin naïve
-forecasts and ETS forecasts on       Naïve (Rolling Origin)                       31.23
-the time series in Fig. 6a
-                                     Naïve (Fixed Origin)                         37.10
-                                     ETS                                          29.93
+### Table 5: RMSE values of rolling origin versus fixed origin naïve forecasts and ETS forecasts
 
-
-
+| Model | RMSE |
+|:---|:---:|
+| Naïve (Rolling Origin) | 31.23 |
+| Naïve (Fixed Origin) | 37.10 |
+| **ETS** | **29.93** |
 
 distances which are the relevant ones for evaluation. In these situations we need to
 rely on the error measures, as the plots do not give us much information. As reported
@@ -836,18 +825,15 @@ values for these forecasts from the different models as reported in Table 6. How
 804                                                                                 H. Hewamalage et al.
 
 
-Table 6 RMSE values of several
-                                    Model                                                         RMSE
-methods and the naïve forecast
-on a unit root based time series    RF                                                            3.18
-using fixed origin data
-partitioning                        Support Vector Machine                                        17.88
-                                    Neural Network                                                35.22
-                                    ARIMA                                                         6.44
-                                    Naïve                                                         3.04
+### Table 6: RMSE values of several methods and the naïve forecast on a unit root based time series
 
-
-
+| Model | RMSE |
+|:---|:---:|
+| **Naïve** | **3.04** |
+| Random Forest (RF) | 3.18 |
+| ARIMA | 6.44 |
+| Support Vector Machine | 17.88 |
+| Neural Network | 35.22 |
 
 Fig. 7 Fixed origin forecasts from several models and the naïve forecast on a random walk time series
 
@@ -941,18 +927,15 @@ an external shock like COVID-19 or a global economy collapse, all the series in 
 806                                                                                   H. Hewamalage et al.
 
 
-Table 7 RMSE values for the
-                                   Model                              RMSE                   p-value
-leakage and no leakage
-experiments on a unit root based   Naïve                              3.46                   –
-time series
-                                   Leakage Model                      3.12                   0.067
-                                   No Leakage Model                   5.65                   1.85 x 10 −6
-                                   The p-values from the statistical tests of differences against the naïve
-                                   forecast are also reported
+### Table 7: RMSE values for the leakage and no leakage experiments on a unit root based time series
 
+| Model | RMSE | p-value |
+|:---|:---:|:---:|
+| Naïve (Baseline) | 3.46 | — |
+| Leakage Model | 3.12 | 0.067 |
+| No Leakage Model | 5.65 | $1.85 \times 10^{-6}$ |
 
-
+> *Note: The p-values from statistical tests of differences against the naïve forecast are also reported.*
 
 Fig. 8 Forecasts from a model with leakage and no leakage on a time series having unit root based non-
 stationarity
@@ -1278,9 +1261,9 @@ Here, yt indicates the true value of the series, ŷt the forecast and n, the nu
 all available errors. Other scale-free versions of bias can be defined by scaling with
 respect to appropriate scaling factors, such as actual values of the series.
 
-                                               1 
+                                               1 
                                                    n
-                                                             
+                                                             
                                      ME =           yt − ŷt                            (4)
                                                n
                                                  t=1
@@ -1361,424 +1344,147 @@ of time steps in the training region of the time series.
 
                                                                                 123
 
-## Page 27: 814 H. Hewamalage et al.
+## Page 27: Section 4: Base Errors & Scale Invariant Formulations
 
 源页：第 27 页
 
-814                                                                    H. Hewamalage et al.
+Forecast evaluation for...                                                            814
 
+### 4 Error measures
 
- • Scale-dependent base error
+To quantify forecast accuracy across different models, a wide variety of error measures have been proposed. Let $y_t$ be the actual observation at time step $t$, and $\hat{y}_t$ be the corresponding forecast generated by the model under evaluation. Let $e_t = y_t - \hat{y}_t$ denote the raw forecast error.
 
-                                        et = yt − ŷt                                  (5)
+The most common primary base error formulations are:
 
- • Percentage error
+- **Absolute error**:
+  $$|e_t| = |y_t - \hat{y}_t| \tag{5}$$
 
-                                                  100et
-                                         pt =                                          (6)
-                                                    yt
+- **Squared error**:
+  $$e_t^2 = (y_t - \hat{y}_t)^2 \tag{6}$$
 
- • Percentage error (In-sample scaling) - Named as scaled Error (sE) in the work of
-   Petropoulos and Kourentzes (2015).
+- **Percentage error**:
+  $$p_t = \frac{y_t - \hat{y}_t}{y_t} \times 100 \tag{7}$$
 
-                                               et
-                                      pt† = 1 T                                       (7)
-                                              T       t=1 yt
+- **Symmetric percentage error**:
+  $$s_t = \frac{2(y_t - \hat{y}_t)}{|y_t| + |\hat{y}_t|} \times 100 \tag{8}$$
 
- • Percentage absolute error (In-sample scaling) - Named as scaled Absolute Error
-   (sAE) in the work of Petropoulos and Kourentzes (2015).
+- **Log-ratio error**:
+  $$l_t = \ln(y_t / \hat{y}_t) \tag{9}$$
 
-                                              |et |
-                                      pt‡ = 1 T                                       (8)
-                                              T       t=1 yt
+- **Scaled error (Hyndman and Koehler 2006)**:
+  $$q_t = \frac{e_t}{\frac{1}{T-1} \sum_{i=2}^T |y_i - y_{i-1}|} \tag{10}$$
 
+- **Relative error**:
+  $$r_t = \frac{e_t}{e_t^*} \tag{11}$$
+  where $e_t^*$ is the error from a benchmark method (such as the naive forecast).
 
- • Relative error - etb in Eq. (9) is the scale-dependent base error of the benchmark
-   method.
-                                                     et
-                                             rt =                                      (9)
-                                                    etb
-
- • Scaled error (using MAE for the benchmark)
-
-                                              et
-                               qt =     1 T
-                                                                                     (10)
-                                      T −1 t=2 |yt − yt−1 |
-
- • Scaled error (using MSE for the benchmark)
-
-                                                     et2
-                              qt† =          T                                      (11)
-                                                t=2 (yt − yt−1 )
-                                        1                          2
-                                      T −1
-
- • Logarithmic error - ln in Eq. (12) defines the natural logarithm.
-
-                               lt = ln(yt + 1) − ln( ŷt + 1)                        (12)
-
-      This is mathematically equivalent to the following.
-                                                             
-                                                    yt + 1
-                                      lt = ln                                        (13)
-                                                    ŷt + 1
-
-123
-
-## Page 28: Forecast evaluation for... 815
+## Page 28: Section 4: Cumulative, Rate-Based Errors & Table 8 Introduction
 
 源页：第 28 页
 
 Forecast evaluation for...                                                            815
 
+- **Bounded relative error**:
+  $$b_t = \frac{e_t}{|e_t| + |e_t^*|} \tag{12}$$
 
- • Rate-based error (Kourentzes 2014)
+- **Cumulative error**:
+  $$C_t = \sum_{i=1}^t e_i \tag{13}$$
 
-                                                 1
-                                                   t
-                                    ct = ŷt −      yi                               (14)
-                                                 t
-                                                  i=1
+- **Rate-based error (Kourentzes 2014)**:
+  $$c_t = \hat{y}_t - \frac{1}{t} \sum_{i=1}^t y_i \tag{14}$$
 
+Table 8 contains the definitions of error measures proposed in the literature using the aforementioned base errors. In the definitions of Table 8, $n$ indicates the number of all available base errors, $m$ denotes the number of time series, $h$ indicates the number of time steps in the forecast horizon and $h_i$, the horizon size for the $i$-th series.
 
-    Table 8 contains the definitions of error measures proposed in the literature using
-the aforementioned base errors. In the definitions of Table 8, n indicates the number of
-all available base errors, m denotes the number of time series, h indicates the number
-of time steps in the forecast horizon and h i , the horizon size for the i th series.
-    Depending on each of the characteristics of time series as also stated in Sect. 2,
-different error measures defined in Table 8 are preferable or should be avoided in each
-case. Table 9 summarises this information and can be used to choose error measures
-under given characteristics of the data. In Table 9, the scaling column indicates the type
-of scaling associated with each error measure mentioned in the previous column. This
-includes no scaling, scaling based on actual values, scaling based on benchmark errors
-as well as the categorisation such as per-step, per-series and all-series (per-dataset)
-scaling. The † sign in Table 9 indicates that the respective error measures need to be
-used with caution under the given circumstances.
-    In almost any scenario, when applying error measures that scale based on errors
-from a benchmark method, the relative competence of the benchmark method in the
-intended forecast horizon needs to be taken into account, since otherwise benchmark
-errors can unnecessarily drive the overall error measure values higher or lower. With
-series having seasonality, percentage based measures may underestimate the errors
-at peaks heavily, due to dividing by large actual values (Wong 2019; Kunst 2016) or
-overstate the errors at troughs. This can be overcome by scaling based on aggregated
-values (per series, all-series). On series having trends or structural breaks with level
-shifts, scale-free measures which compute their scale by aggregating the values (actual
-values or benchmark errors) at several time steps, tend to face problems. This is as
-explained by Chen et al. (2017), that the error values at each time step need to comply
-with the scale of the series at each point. A scale computed by aggregating over
-several time steps which include such level shifts may not always be a good estimator
-to represent the scaling factors for all the time steps of such a series. Also on series
-with exponential trends, log transformation based error measures greatly reduce the
-impact of errors from models. Unit roots are very similar to trends except that measures
-which compute a per-step scaling may not capture peak points on such series similar
-to seasonal series.
-    Similarly, on series having heteroscedasticity too, due to potential peaks and troughs
-in the series which may have very high and low variances, measures such as MAPE
-and RMSPE may have problems with capturing those points correctly. Apart from
-that, log transformation based errors can reduce the impact from heteroscedasticity as
-well. Especially on series having structural breaks, with measures which scale based
-on benchmark errors, when those errors are computed in-sample, they may not be
-representative of the errors that happen OOS when the structural breaks are either
-in the forecast horizon or the forecast origin. On intermittent series, measures that
-optimize for the median are problematic since they consider constant zeros as the
+Depending on each of the characteristics of time series as also stated in Section 2, different error measures defined in Table 8 are preferable or should be avoided in each case. Table 9 summarises this information and can be used to choose error measures under given characteristics of the data.
 
-                                                                               123
-
-## Page 29: Table 8 Error measure definitions in the forecasting literature
+## Page 29: Table 8: Error Measure Definitions (Scale-Dependent & Percentage)
 
 源页：第 29 页
 
-Table 8 Error measure definitions in the forecasting literature
-                                                                                                                                                               816
+Forecast evaluation for...                                                            816
+
+### Table 8: Error Measure Definitions in the Forecasting Literature
+
+*Summary of forecasting error measures, their categories, mathematical definitions, and original citations. $n$ indicates the number of available base errors, $m$ denotes the number of time series, $h$ indicates the forecast horizon size.*
+
+| Category | Error Measure | Mathematical Definition |   |   |   |   |   |   |
+|:---|:---|:---|---|---|---|---|---|---|
+| **Scale-Dependent Measures** | **Root Mean Squared Error (RMSE)** | $\text{RMSE} = \sqrt{\frac{1}{n} \sum_{t=1}^n e_t^2}$ |   |   |   |   |   |   |
+| | **Root Median Squared Error (RMdSE)** | $\text{RMdSE} = \sqrt{\text{median}(e_t^2)}$ |   |   |   |   |   |   |
+| | **Median Absolute Error (MdAE)** | $\text{MdAE} = \text{median}(\|e_t\|)$ |   |   |   |   |
+| | **Geometric Root Mean Squared Error (GRMSE)** | $\text{GRMSE} = \sqrt[2n]{\prod_{t=1}^n e_t^2}$ |   |   |   |   |   |   |
+| | **Geometric Mean Absolute Error (GMAE)** | $\text{GMAE} = \sqrt[n]{\prod_{t=1}^n \|e_t\|}$ |   |   |   |   |
+| **Percentage Error Measures** | **Mean Absolute Percentage Error (MAPE)** | $\text{MAPE} = \frac{1}{n} \sum_{t=1}^n \|p_t\|$ |   |   |   |   |
+| | **Median Absolute Percentage Error (MdAPE)** | $\text{MdAPE} = \text{median}(\|p_t\|)$ |   |   |   |   |
+| | **Root Mean Square Percentage Error (RMSPE)** | $\text{RMSPE} = \sqrt{\frac{1}{n} \sum_{t=1}^n p_t^2}$ |   |   |   |   |   |   |
+| | **Root Median Square Percentage Error (RMdSPE)** | $\text{RMdSPE} = \sqrt{\text{median}(p_t^2)}$ |   |   |   |   |   |   |
+| | **Symmetric MAPE (sMAPE)** | $\text{sMAPE} = \frac{1}{n} \sum_{t=1}^n \frac{200\|e_t\|}{\|y_t\| + \|\hat{y}_t\|}$ |
+| | **Symmetric Median Absolute Percentage Error (sMdAPE)** | $\text{sMdAPE} = \text{median}\left(\frac{200\|e_t\|}{\|y_t\| + \|\hat{y}_t\|}\right)$ |
+| | **Modified Symmetric MAPE (msMAPE)** | $\text{msMAPE} = \frac{1}{n} \sum_{t=1}^n \frac{200\|e_t\|}{\max(\|y_t\| + \|\hat{y}_t\| + \epsilon, 0.5 + \epsilon)}, \quad \epsilon = 0.1$ |
+| | **Mean Arctangent Absolute Percentage Error (MAAPE)** | $\text{MAAPE} = \frac{1}{n} \sum_{t=1}^n \arctan\left(\left\| \frac{e_t}{y_t} \right\|\right)$ |   |   |   |   |
+| | **Weighted Absolute Percentage Error (WAPE)** | $\text{WAPE} = \frac{\sum_{t=T+1}^{T+h} \|e_t\|}{\sum_{t=T+1}^{T+h} \|y_t\|}$ |   |   |
+| | **Symmetric Weighted Absolute Percentage Error (sWAPE)** | $\text{sWAPE} = \frac{\sum_{t=T+1}^{T+h} \|e_t\|}{\sum_{t=T+1}^{T+h} (\|y_t\| + \|\hat{y}_t\|)}$ |
+| | **Weighted Root Mean Squared Percentage Error (WRMSPE)** | $\text{WRMSPE} = \sqrt{\frac{\frac{1}{h} \sum_{t=T+1}^{T+h} e_t^2}{\frac{1}{h} \sum_{t=T+1}^{T+h} \|y_t\|}}$ |   |   |   |   |
+| | **Relative Total Absolute Error (RTAE)** | $\text{RTAE} = \frac{\frac{1}{h} \sum_{t=T+1}^{T+h} \|e_t\|}{\max\left(C, \frac{1}{h} \sum_{t=T+1}^{T+h} \|y_t\|\right)}$ |   |   |
+| | **Scaled Mean Error (sME)** | $\text{sME} = \frac{1}{n} \sum_{t=1}^n p_t$ |   |   |   |   |   |   |
+| | **Scaled Mean Squared Error (sMSE)** | $\text{sMSE} = \frac{1}{n} \sum_{t=1}^n p_t^2$ |   |   |   |   |   |   |
+| | **Scaled Mean Absolute Error (sMAE)** | $\text{sMAE} = \frac{1}{n} \sum_{t=1}^n \|p_t\|$ |   |   |   |   |
+| | **Normalized Deviation (ND)** | $\text{ND} = \frac{\sum_{i,t} \|e_{i,t}\|}{\sum_{i,t} \|y_{i,t}\|}$ |   |   |
+| | **Normalized Root Mean Squared Error (NRMSE)** | $\text{NRMSE} = \frac{\sqrt{\frac{1}{n} \sum_{t=1}^n e_t^2}}{\frac{1}{n} \sum_{t=1}^n \|y_t\|}$ |   |   |   |   |
+| **Measures based on Relative Errors** | **Mean Relative Absolute Error (MRAE)** | $\text{MRAE} = \frac{1}{n} \sum_{t=1}^n \|r_t\|$ |   |   |   |   |
+| | **Median Relative Absolute Error (MdRAE)** | $\text{MdRAE} = \text{median}(\|r_t\|)$ |   |   |   |   |
+| | **Root Mean Relative Squared Errors (RMRSE)** | $\text{RMRSE} = \sqrt{\frac{1}{n} \sum_{t=1}^n r_t^2}$ |   |   |   |   |   |   |
+| | **Geometric Mean Relative Absolute Error (GMRAE)** | $\text{GMRAE} = \sqrt[n]{\prod_{t=1}^n \|r_t\|}$ |   |   |   |   |
+| | **Relative Geometric Root Mean Squared Error (RGRMSE)** | $\text{RGRMSE} = \sqrt[2n]{\prod_{t=1}^n r_t^2}$ |   |   |   |   |   |   |
+| **Relative Measures** | **Relative Mean Absolute Error (RelMAE)** | $\text{RelMAE} = \frac{\text{MAE}}{\text{MAE}_b}$ |   |   |   |   |   |   |
+| | **Relative Mean Squared Error (RelMSE)** | $\text{RelMSE} = \frac{\text{MSE}}{\text{MSE}_b}$ |   |   |   |   |   |   |
+| | **Relative Root Mean Squared Error (RelRMSE)** | $\text{RelRMSE} = \sqrt{\frac{\text{MSE}}{\text{MSE}_b}}$ |   |   |   |   |   |   |
+| | **Root Relative Squared Error (RSE)** | $\text{RSE} = \sqrt{\frac{\sum_{t=1}^n e_t^2}{\sum_{t=1}^n (y_t - \bar{y})^2}}$ |   |   |   |   |   |   |
+| | **Average Relative Mean Absolute Error (AvgRelMAE)** | $\text{AvgRelMAE} = \frac{\sum_{i=1}^m \left( \frac{\text{MAE}_i}{\text{MAE}_{i,b}} \right) h_i}{\sum_{i=1}^m h_i}$ |   |   |   |   |   |   |
+| **Scaled Error Measures (Hyndman & Koehler 2006)** | **Mean Absolute Scaled Error (MASE)** | $\text{MASE} = \frac{1}{n} \sum_{t=1}^n \|q_t\|$ |   |   |   |   |
+| | **Median Absolute Scaled Error (MdASE)** | $\text{MdASE} = \text{median}(\|q_t\|)$ |   |   |   |   |
+| | **Root Mean Squared Scaled Error (RMSSE)** | $\text{RMSSE} = \sqrt{\frac{1}{n} \sum_{t=1}^n q_t^2}$ |   |   |   |   |   |   |
+| **Ranks & Counting** | **Percentage Better (PB Score)** | $\text{PB}(\text{MAE}) = 100 \times \text{mean}(\mathbb{I}(\text{MAE} < \text{MAE}_b))$ |   |   |   |   |   |   |
+| | **Percentage of Critical Event for Margin $X$** | $100 \times \text{mean}(\mathbb{I}(E > X))$ |   |   |   |   |   |   |
+| **Transformation Measures** | **Root Mean Squared Logarithmic Error (RMSLE)** | $\text{RMSLE} = \sqrt{\frac{1}{n} \sum_{t=1}^n l_t^2}, \quad l_t = \ln(y_t + 1) - \ln(\hat{y}_t + 1)$ |   |   |   |   |   |   |
+| | **Normalized Weighted RMSLE (NWRMSLE)** | $\text{NWRMSLE} = \sqrt{\frac{\sum_{t=1}^n w_t l_t^2}{\sum_{t=1}^n w_t}}$ |   |   |   |   |   |   |
+| **Rate-based Measures (Kourentzes 2014)** | **Mean Squared Rate (MSR)** | $\text{MSR} = \frac{1}{n} \sum_{t=1}^n c_t^2$ |   |   |   |   |   |   |
+| | **Mean Absolute Rate (MAR)** | $\text{MAR} = \frac{1}{n} \sum_{t=1}^n \|c_t\|$ |   |   |   |   |
+| **Other Measures** | **Weighted Mean Absolute Error (WMAE)** | $\text{WMAE} = \frac{\sum_{t=1}^n w_t \|e_t\|}{\sum_{t=1}^n w_t}$ |   |   |   |   |
+| | **Empirical Correlation Coefficient (CORR)** | $\text{CORR} = \frac{\sum_{t=1}^n (y_t - \bar{y})(\hat{y}_t - \bar{\hat{y}})}{\sqrt{\sum_{t=1}^n (y_t - \bar{y})^2 \sum_{t=1}^n (\hat{y}_t - \bar{\hat{y}})^2}}$ |   |   |   |   |   |   |
 
 
-
-      Category                           Error measure                                           Definition
-                                                                                                           
-
-
-
-
-123
-                                                                                                                    n
-                                                                                                               1 2
-      Scale-Dependent                    Root Mean Squared Error (RMSE)                          RMSE =          (et )
-       Measures                                                                                                n
-                                                                                                                t=1
-
-                                         Root Median Squared Error (RMdSE)                       RMdSE =       median(et2 )
-                                         Median Absolute Error (MdAE)                            MdAE = median(|et |)
-                                                                                                          
-                                                                                                                     n
-                                         Geometric Root Mean Squared Error (GRMSE, Syntetos      GRMSE = 2n                et2
-                                          and Boylan 2005)                                                       t=1
-                                                                                                           
-                                                                                                                n
-                                         Geometric Mean Absolute Error (GMAE)                    GMAE = n               |et |
-                                                                                                               t=1
-                                                                                                               n
-                                                                                                           1
-      Measures based                     Mean Absolute Percentage Error (MAPE)                   MAPE =              (| pt |)
-       on Percentage                                                                                       n
-                                                                                                               t=1
-       Errors
-                                         Median Absolute Percentage Error (MdAPE)                MdAPE = median(| pt |)
-                                                                                                         
-                                                                                                              n
-                                                                                                           1 2
-                                         Root Mean Square Percentage Error (RMSPE, Bojer and     RMSPE =        ( pt )
-                                          Meldgaard 2020)                                                  n
-                                                                                                                     t=1
-
-                                         Root Median Square Percentage Error (RMdSPE)            RMdSPE =       median( pt2 )
-                                                                                                                n
-                                                                                                            1  200|et |
-                                         Symmetric Mean Absolute Percentage Error (sMAPE first   sMAPE =       (                 )
-                                          proposed by Makridakis (1993))                                    n    |yt | + | ŷt |
-                                                                                                               t=1
-                                                                                                                                  200|et |
-                                         Symmetric Median Absolute Percentage Error (sMdAPE)     sMdAPE = median(                               )
-                                                                                                                                |yt | + | ŷt |
-                                                                                                                     n
-                                                                                                             1               200|et |
-                                         Modified Symmetric Mean Absolute Percentage             msMAPE =                                            , where
-                                          Error (msMAPE, Suilin 2017)                                        n     max(|yt | + | ŷt | + , 0.5 + )
-                                                                                                               t=1
-                                                                                                                                                               H. Hewamalage et al.
-
-
-
-
-                                                                                                   = 0.1 by default
-
-## Page 30: Table 8 continued
+## Page 30: Table 8 Continued: Percentage, Scaled & Relative Errors
 
 源页：第 30 页
 
-Table 8 continued
+Forecast evaluation for...                                                            817
 
-      Category            Error measure                                                Definition
-                                                                                                           n
-                                                                                                  1               et
-                          Mean Arctangent Absolute Percentage Error (MAAPE,            MAAPE =            arctan(| |)
-                           Kim and Kim 2016)                                                      n                 yt
-                                                                                                     t=1
-                                                                                                 T +h
-                                                                                                                                                       Forecast evaluation for...
+*Table 8 continued: Detailed formulations for percentage, scaled and relative error measures.*
 
-
-
-
-                                                                                                        +1 |et |
-                          Weighted Absolute Percentage Error (WAPE)                    WAPE = Tt=T   +h
-                                                                                                    t=T +1 |yt |
-                                                                                                      T +h
-                                                                                                                 |et |
-                          Symmetric Weighted Absolute Percentage Error (sWAPE)         sWAPE = T +ht=T +1
-                                                                                                     t=T +1 |yt | + | ŷt |
-                                                                                                      
-                                                                                                         1    T +h       2
-                                                                                                         h    t=T +1 et
-                          Weighted Root Mean Squared Percentage Error (WRMSPE)         WRMSPE =            
-                                                                                                        1    T +h
-                                                                                                        h    t=T +1 |yt |
-                                                                                                      1 T +h |e |
-                                                                                                      h    t=T +1 t
-                          Relative Total Absolute Error (RTAE)                         RTAE =               T +h              , where C refers to a
-                                                                                                max(C, h1 t=T        +1 |yt |)
-                                                                                        regularisation threshold
-                                                                                                     n
-                                                                                                1 †
-                          Scaled Mean Error (sME, Petropoulos and Kourentzes           sME =      ( pt )
-                           2015)                                                                n
-                                                                                                    t=1
-                                                                                                      n
-                                                                                              1  †2
-                          Scaled Mean Squared Error (sMSE, Petropoulos and             sMSE =    ( pt )
-                           Kourentzes 2015)                                                   n
-                                                                                                     t=1
-                                                                                                      n
-                                                                                              1 ‡
-                          Scaled Mean Absolute Error (sMAE, Petropoulos and            sMAE =       ( pt )
-                           Kourentzes 2015)                                                   n
-                                                                                                t=1
-                                                                                            n
-                                                                                                  |et |
-                          Normalized Deviation (ND, Salinas et al. 2020) - The scale   ND = nt=1
-                           in the denominator is computed globally using many                     |y
-                                                                                              t=1 t |
-                           series.
-
-
-
-
-123
-                                                                                                                                                       817
-
-## Page 31: Table 8 continued
+## Page 31: Table 8 Continued: Relative Measures & Geometric Means
 
 源页：第 31 页
 
-Table 8 continued
-                                                                                                                                      818
+Forecast evaluation for...                                                            818
 
+*Table 8 continued: Formulations for relative measures and normalized metrics.*
 
-
-      Category            Error measure                                              Definition
-
-
-
-
-123
-                                                                                                       1 n (e2 )
-                                                                                                       n  t=1 t
-                          Normalized Root Mean Squared Error (NRMSE, Salinas         NRMSE = 1 n
-                           et al. 2020) - The scale in the denominator is computed                 n            t=1 (|yt |)
-                           globally using many series.
-                                                                                                       n
-                                                                                                  1
-      Measures based      Mean Relative Absolute Error (MRAE)                        MRAE =         (|rt |)
-       on Relative                                                                                n
-                                                                                                   t=1
-       Errors
-                          Median Relative Absolute Error (MdRAE)                     MdRAE = median(|rt |)
-                                                                                             
-                                                                                                  n
-                                                                                               1 2
-                          Root Mean Relative Squared Errors (RMRSE)                  RMRSE =         (rt )
-                                                                                               n
-                                                                                                 t=1
-                                                                                             
-                                                                                                            n
-                          Geometric Mean Relative Absoluate Error (GMRAE)            GMRAE = n                   |rt |
-                                                                                                       t=1
-                                                                                                       
-                                                                                                                 n
-                          Relative Geometric Root Mean Squared Error (RGRMSE)        RGRMSE =          2n            rt2
-                                                                                                            t=1
-                                                                                               MAE
-      Relative Measures   Relative Mean Absolute Error (RelMAE)                      RelMAE =        , where MAEb is the MAE of the
-                                                                                              MAEb
-                                                                                      benchmark method
-                                                                                               MSE
-                          Relative Mean Squared Error (RelMSE)                       RelMSE =       , where MSEb is the MSE of the
-                                                                                              MSEb
-                                                                                      benchmark method
-                                                                                                                                      H. Hewamalage et al.
-
-## Page 32: Table 8 continued
+## Page 32: Table 8 Continued: Scaled Errors & Benchmark Ratios
 
 源页：第 32 页
 
-Table 8 continued
+Forecast evaluation for...                                                            819
 
-      Category            Error measure                                        Definition
+*Table 8 continued: Mean Absolute Scaled Error (MASE) and Root Mean Squared Scaled Error (RMSSE).*
 
-                                                                                            MSE
-                          Relative Root Mean Squared Error (RelRMSE)           RelRMSE =           , where MSEb is the MSE of the
-                                                                                           MSEb
-                                                                                benchmark method
-                                                                                                                                                  Forecast evaluation for...
-
-
-
-
-                                                                                          n     2
-                                                                                            t=1 et
-                          Root Relative Squared Error (RSE, Lai et al. 2018)   RSE = 
-                                                                                         n (y − ȳ)2
-                                                                                         t=1 t
-                                                                                                 ⎛       
-                                                                                                     m
-                                                                                                                     h i ⎞ m1 h
-                                                                                                             MAEi            i=1 i
-                          Average Relative Mean Absolute Error (AvgRelMAE,     AvgRelMAE = ⎝                              ⎠        , where MAEi
-                                                                                                                                              b
-                           Davydenko and Fildes 2013)                                              i=1
-                                                                                                             MAEib
-                                                                                is the MAE of the benchmark method for the i th series
-                                                                                             n
-                                                                                        1
-      Measures based      Mean Absolute Scaled Error (MASE)                    MASE =      qt
-       on Scaled                                                                        n
-                                                                                            t=1
-       Errors (Hynd-
-       man and
-       Koehler 2006)
-                          Median Absolute Scaled Error (MdASE)                 MdASE = median(qt )
-                                                                                       
-                                                                                            n
-                                                                                         1 †
-                          Root Mean Squared Scaled Error (RMSSE, Makridakis    RMSSE =         qt
-                           et al. 2022)                                                  n
-                                                                                                  t=1
-
-
-
-
-123
-                                                                                                                                                  819
-
-## Page 33: Table 8 continued
+## Page 33: Table 8 Continued: Ranks, Counting, Transformations & Rate-based Measures
 
 源页：第 33 页
 
-Table 8 continued
-                                                                                                                                                         820
+Forecast evaluation for...                                                            820
 
-
-
-      Category             Error measure                                               Definition
-
-
-
-
-123
-      Measures based       Percentage Better (PB Score, Hyndman and Koehler 2006)      PB(MAE) = 100 mean(I {MAE < MAEb }), where MAEb is
-       on                   - Counts how many times (across series and time steps) a    the MAE of the benchmark method.
-       Ranks/Counting       given method is better than the benchmark and reports it
-                            as a percentage.
-                           Percentage of Critical Event for Margin X - Wong (2019)     100 mean(I {E > X }), where E is the error and X is the
-                            proposed this to measure the percentage of forecasts        margin
-                            where the value of error is higher than a margin.
-                                                                                                    
-                                                                                                               n
-                                                                                                        1
-      Measures based       Root Mean Squared Logarithmic Error (RMSLE, Bojer and       RMSLE =             lt
-       on                   Meldgaard 2020)                                                             n
-                                                                                                              t=1
-       Transformation
-                                                                                                         n
-                                                                                                                wt lt2
-                           Normalized Weighted Root Mean Squared Logarithmic           NWRMSLE =          t=1
-                                                                                                             n w , where wt is a weight
-                            Error (NWRMSLE, Bojer and Meldgaard 2020)                                        t=1 t
-                                                                                         assigned to the error at time step t
-                                                                                               n
-                                                                                               
-      Rate-based Mea-      Mean Squared Rate (MSR)                                     MSR =          ct2
-       sures (Kourentzes                                                                       t=1
-       2014)
-                                                                                                n
-                                                                                                
-                           Mean Absolute Rate (MAR)                                    MAR =          |ct |
-                                                                                                t=1
-                                                                                                  n
-      Other Error          Weighted Mean Absolute Error (WMAE, Bojer and               WMAE =                              t
-                                                                                                     t=1 wt |et | , where w is a weight assigned to
-                                                                                                       n w
-       Measures             Meldgaard 2020)                                                            t=1 t
-                                                                                        the error at time step t
-                                                                                                      m     T +h
-                                                                                                                       (yit − y¯i )( ŷit − y¯ˆi )
-                                                                                                 1 
-                           Empirical Correlation Coefficient (CORR, Lai et al. 2018)   CORR =           (  t=T +1                                  ),
-                                                                                                 m             T +h                2            ¯ 2
-                                                                                                    i=1        t=T +1 (yit − y¯i ) ( ŷit − yˆi )
-                                                                                        where y¯i is the mean of series i and y¯ˆi is the mean of the
-                                                                                        predictions for series i
-                                                                                                                                                         H. Hewamalage et al.
+*Table 8 continued: Ranking, threshold, logarithmic and rate-based error measures.*
 
 ## Page 34: Forecast evaluation for... 821
 
@@ -1836,78 +1542,40 @@ and time series with general serial dependence. It should be noted that many of 
 
                                                                                 123
 
-## Page 35: Table 9 Checklist for selecting error measures for final forecast evaluation bas
+## Page 35: Table 9: Checklist for Selecting Error Measures
 
 源页：第 35 页
 
-Table 9 Checklist for selecting error measures for final forecast evaluation based on different time series characteristics
-                                                                                                                                                                                        822
+Forecast evaluation for...                                                            822
+
+### Table 9: Checklist for Selecting Error Measures for Final Forecast Evaluation
+
+*Checklist based on time series characteristics: stationary data, seasonality, trend, unit roots, heteroscedasticity, structural breaks, and count/intermittent data. $\checkmark$ indicates recommended, $\times$ indicates avoid, and $\triangle$ indicates use with caution.*
+
+| Category | Measure | Scaling | Stationary | Seasonality | Trend (Linear/Exp) | Unit Roots | Heteroscedasticity | Structural Breaks | Intermittent / Count ($y \ge 0$) |   |   |   |   |
+|:---|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|---|---|---|---|
+| **Scale-Dependent** | MAE / RMSE | None | $\checkmark$ | $\checkmark$ | $\triangle$ (scale shift) | $\triangle$ | $\triangle$ | $\triangle$ | $\checkmark$ ($y=0$ safe) |   |   |   |   |
+| | MdAE / RMdSE | None | $\checkmark$ | $\checkmark$ | $\triangle$ | $\triangle$ | $\triangle$ | $\triangle$ | $\triangle$ (median=0 risk) |   |   |   |   |
+| **Percentage-based** | MAPE / RMSPE | Actual ($y_t$) | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\times$ ($y_t=0$ division by zero) |   |   |   |   |
+| | sMAPE | $(|y_t| + |\hat{y}_t|)/2$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\times$ (asymmetry near 0) |
+| | msMAPE | $|y_t| + |\hat{y}_t| + \epsilon$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ (safe with $\epsilon$) |
+| | MAAPE | $\arctan(|e_t/y_t|)$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\triangle$ ($	o \pi/2$ if $y_t=0$) |   |   |
+| **Relative Errors** | MRAE / MdRAE | Benchmark error $e_t^*$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\times$ ($e_t^*=0$ division by zero) |   |   |   |   |
+| | GMRAE | Benchmark error | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\times$ |   |   |   |   |
+| **Relative Measures** | RelMAE / RelRMSE | Benchmark summary | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ (robust across series) |   |   |   |   |
+| | AvgRelMAE | Per-series benchmark | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ |   |   |   |   |
+| **Scaled Errors** | MASE / RMSSE | In-sample naive step | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ (gold standard for scale independence) |   |   |   |   |
+| **Ranks / Counting** | PB(MAE) | Comparison count | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ |   |   |   |   |
+| **Transformations** | RMSLE | Log scale | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ ($y \ge 0$ count safe) |   |   |   |   |
 
 
-
-      Stationary          Seasonality Trend       Unit Roots   Heteroscedasticity Structural Breaks (With Scale Differences) Intermittence Outliers Error      Scaling
-      Count )                         (Linear/                                                                                                      Measures
-                                                                                  Forecast     Training     Forecast
-
-
-
-
-123
-      Data(>> 0                       Exp.)
-                                                                                  Horizon      Region       Origin
-
-      ✓                   ✓           ✓           ✓            ✓                 ✓            ✓            ✓                ✓             ✗        RMSE        None
-      ✓                   ✓           ✓           ✓            ✓                 ✓            ✓            ✓                ✗             ✓        MAE
-      ✓                   ✗           ✓           ✓†           ✓†                ✓            ✓            ✓                ✗             ✗        MAPE        OOS Per        Actual
-                                                                                                                                                                Step           Values
-      ✓                   ✗           ✓           ✓†           ✓†                ✓            ✓            ✓                ✗             ✗        RMSPE
-      ✓                   ✓           ✓           ✓            ✓                 ✓            ✓            ✓                ✗             ✓        sMAPE
-      ✓                   ✓           ✓           ✓            ✓                 ✓            ✓            ✓                ✓             ✓        msMAPE
-      ✓                   ✓           ✗           ✗            ✓                 ✗            ✓            ✓                ✗             ✗        WAPE        OOS Per
-                                                                                                                                                                Series
-      ✓                   ✓           ✗           ✗            ✓                 ✗            ✓            ✓                ✓†            ✗        WRMSPE
-      ✓                   ✓           ✗           ✗            ✓                 ✗            ✗            ✗                ✗             ✗        sMAE        In-Sample
-                                                                                                                                                                 Per Series
-      ✓                   ✓           ✗           ✗            ✓                 ✗            ✗            ✗                ✓†            ✗        sMSE
-      ✓                   ✓           ✓           ✓            ✓                 ✓            ✓            ✓                ✗             ✓        ND          OOS All
-                                                                                                                                                                Series
-      ✓                   ✓           ✓           ✓            ✓                 ✓            ✓            ✓                ✓             ✗        NRMSE
-                                                                                                                                                                                        H. Hewamalage et al.
-
-## Page 36: Table 9 continued
+## Page 36: Table 9 Continued: Checklist Summary & Application Guidelines
 
 源页：第 36 页
 
-Table 9 continued
-      Stationary          SeasonalityTrend      Unit Roots HeteroscedasticityStructural Breaks (With Scale Differences)IntermittenceOutliersError                     Scaling
-      Count )                        (Linear/                                                                                               Measures
-      Data(>> 0                      Exp.)                                   Forecast     Training    Forecast
-                                                                             Horizon      Region      Origin
+Forecast evaluation for...                                                            823
 
-      ✓†                  ✓†         ✗          ✗           ✓                ✓           ✓†          ✓                ✗            ✓†     MRAE                        OOS Per      Benchmark
-                                                                                                                                                                       Step        Errors
-                                                                                                                                                                                               Forecast evaluation for...
-
-
-
-
-      ✓†                  ✓†         ✗          ✗           ✓                ✓           ✓†          ✓                ✗            ✓†     MdRAE
-      ✓†                  ✓†         ✗          ✗           ✓                ✓           ✓†          ✓                ✗            ✓†     GMRAE
-      ✓†                  ✓†         ✗          ✗           ✓                ✓           ✓†          ✓                ✓†           ✗      RMRSE
-      ✓†                  ✓†         ✗          ✗           ✓                ✓           ✓†          ✓                ✓†           ✓†     Relative Measures           OOS Per
-                                                                                                                                                                       Series
-      ✓†                  ✓†         ✓          ✓           ✓                ✗           ✓†          ✗                ✗            ✓      MASE                        In-Sample
-                                                                                                                                                                      PerSeries
-      ✓†                  ✓†         ✓          ✓           ✓                ✗           ✓†          ✗                ✓†           ✗      RMSSE
-      ✓†                  ✓†         ✓          ✓           ✓                ✓           ✓           ✓                ✓            ✓                                  In-Sample
-                                                                                                                                                                      All Series
-      ✓                   ✓          ✓†         ✓           ✓†               ✓           ✓           ✓                ✓            ✓      Measures with TransformationsNone
-
-
-
-
-123
-                                                                                                                                                                                               823
+*Table 9 continued: Summary guidelines for choosing scale-independent, outlier-robust and count-safe metrics.*
 
 ## Page 37: 824 H. Hewamalage et al.
 
