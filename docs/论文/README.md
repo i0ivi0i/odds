@@ -30,11 +30,11 @@ Shin（1993）期刊原文需订阅，未放入。隔壁 `足球预测/温故而
 
 同目录 `*.calibrated.md` 是按页对齐的文字层转写（工具检查已通过）。引用论文时优先打开对应 calibrated 文件的 `## Page NN`，不要用本表「一句话」代替原文。公式若在文字层里已经乱，以 PDF 原页为准，不许猜。
 
-## 十五篇的执行落点与原文锚点
+## 十九篇的执行落点与原文锚点
 
 下表页码都是 **PDF物理页**，对应同名 `*.calibrated.md` 的 `## Page NN`。短句为原文片段，不是另造规则。研究动作已写入各技能，索引只导航；公式需原页核实，不推测转写乱码。
 
-**当前执行：paper-application-v2。** 以主人撤回后版本为基线，只嵌入研究动作与记录。让球防守优先、RLM、初盘和诱阻继续作为胜平负推演主线；无实际注额仍能推演有方向的资金假设，不把“不能证明唯一机制”误当“不能推演”。论文不替代三端落槌，也不凭缺项增加观望门槛。下表的动作分别落实在四个现有分析技能，赛程抓取职责不变。
+**当前执行：paper-application-v2。** 以主人撤回后版本为基线，只嵌入研究动作与记录。以各市场全维度原始初盘（欧指、亚盘、让球、大小球、波胆等初盘）为基准坐标系，紧密结合各盘口在变动过程中的时序轨迹与资金流向动态交叉验证，诱阻、RLM与三端裁决继续作为胜平负推演主线，绝不搞任何死板一刀切；无实际注额仍能推演有方向的资金假设，不把“不能证明唯一机制”误当“不能推演”。论文不替代三端落槌，也不凭缺项增加观望门槛。下表的动作分别落实在四个现有分析技能，赛程抓取职责不变。
 
 | 论文／页 | 可回查原文短句 | 现有流程中实际怎么用 | 适用边界／尚不能做什么 |
 | --- | --- | --- | --- |
@@ -53,6 +53,10 @@ Shin（1993）期刊原文需订阅，未放入。隔壁 `足球预测/温故而
 | Macri，p1 | “allows rapid adjustments when teams experience substantial changes” | 深度第3步稳定时借用历史，核实换帅、转会、伤停变化才调整并留时点；复盘检查长期λ残差 | 足球动态模型不是固定慢衰减；不复制未核公式，不因单场Top6不中就重设模型 |
 | Wilkens，p7 | “all results and reliability plots are strictly out-of-sample with respect to their calibration window” | 推荐优先胜平负证据；复盘用旧窗拟合后窗评价，新增复杂条款须有后续配对改善 | 德甲模型／模拟研究不能外推实盘收益；两季、裁剪区间等是研究设定，不作本项目门禁 |
 | Levitt，p2 | “choosing prices that deviate from the market clearing price.” | 深度第7/8步保留主动定价与偏见解释，同时核对竞争解释；复盘不从赛果倒证账本 | NFL不是足球，原研究有价格与注额。本项目没有真实注额／已接受赔率／对冲，净赔付只能声明假设，不能识别唯一赛果 |
+| Goto (2026)，p1、3 | “we propose an odds-only model based on equal profit for confidence (OO-EPC)... achieving state-of-the-art predictive performance” | 深度第4/9步提取无偏胜平负客观发生率，首选遵从无偏胜率最高项 (argmax P) 死磕命中率 | 纯赔率模型依赖做市商定价有效性；不保证单场必中，9万场实证胜在长期校准与Log-Loss最优 |
+| Winkelmann (2026)，p1、12 | “identifying abnormal betting patterns... distinguishing between transient liquidity shocks and persistent information shifts” | 深度第4/8步识别微观做市假摔 (Head-Fake)，区分中途瞬态跳水与临盘持久性大资金位移 | 状态空间模型侧重盘口异动识别，不能证明当场踢出特定比分；需与三盘几何交叉验证 |
+| Egidi (2018)，p1、7 | “the scoring rates of the teams are convex combinations of parameters estimated from historical data and the additional source of the betting odds.” | 深度第3步泊松进球期望建模，将历史攻防均值与盘口隐含期望做凸组合融合 (Convex Combination) | 凸组合权重取决于赛事样本与盘口成熟度；杯赛或阵容巨变时需提高即时盘口权重 |
+| Mandadapu (2024)，p1、6 | “A Machine Learning Approach to Match Outcome Forecasting and Bookmaker Odds Estimation... investigating the significance of various features” | 深度第7/8步结合多维动态特征检验庄家开盘合理性，破译做市商风险对冲与引流杠杆 | 机器学习特征工程不能替代当场临盘资金博弈；模型特征需赛前冻结 |
 
 ## 预测 → 推荐 → 复盘的实际闭环
 
@@ -62,6 +66,6 @@ Shin（1993）期刊原文需订阅，未放入。隔壁 `足球预测/温故而
 4. **逐场复盘**：新研究记录按比赛取最终有效赛前版，另列首选命中与备选覆盖、只评分赛前点概率，按场次／版本／指标去重。现有历史累计口径不改、不混入新研究账，不把覆盖提升当首选能力提升。
 5. **滚动学习**：新假设与旧方法在相同后续比赛和资料时点留预测，比较配对概率损失、首选及观望变化；按类别检查校准。无正式检验只称观察改善／恶化，不用单场、八场或引用数量证明准确率提升。
 
-完整技能入口：`skills/match-screening/SKILL.md` 阶段5、`skills/deep-analysis/SKILL.md` 研究应用入口及第4–9步、`skills/recommendation/SKILL.md` 推荐留存、`skills/post-review/SKILL.md` 概率评分／方法比较。不新增技能，不改抓取脚本；本次落实的是可执行分析和记录方法，不声称已训练或验证十五套模型。
+完整技能入口：`skills/match-screening/SKILL.md` 阶段5、`skills/deep-analysis/SKILL.md` 研究应用入口及第4–9步、`skills/recommendation/SKILL.md` 推荐留存、`skills/post-review/SKILL.md` 概率评分／方法比较。不新增技能，不改抓取脚本；本次落实的是可执行分析和记录方法，不声称已训练或验证十九套模型。
 
-图谱检索先 `graphify query`，再回当前原文核对；`source_location` 带文件页码／行号。旧图谱节点不替代当前正文。不要求每场十五篇打卡，不能把论文一句话变成新门禁。旧九篇的转写图表核查覆盖以各文件头部和 `核对记录.md` 为准，本次原句回检不是重新完整校准。
+图谱检索先 `graphify query`，再回当前原文核对；`source_location` 带文件页码／行号。旧图谱节点不替代当前正文。不要求每场十九篇打卡，不能把论文一句话变成新门禁。旧九篇的转写图表核查覆盖以各文件头部和 `核对记录.md` 为准，本次原句回检不是重新完整校准。
