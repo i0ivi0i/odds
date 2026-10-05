@@ -54,11 +54,14 @@
 - **本地凭证**：已预配于项目通用配置 `config/api_keys.json`（含主备两条 Token，模板见 `config/api_keys.example.json`）。
 
 ### 2. The Odds API (`the-odds-api.com`)
-- **定位**：国际顶级做市商（Pinnacle 平博、Bet365、Betfair 必发）无偏赔率与历史变动查询。
-- **免费配额**：Starter 方案每月 500 次免费请求（无需绑卡）。
+- **定位**：欧美顶级做市商（Pinnacle 平博、Bet365、Betfair 必发）无偏赔率与尖锐盘口验真辅轨。
+- **免费配额**：Starter 方案每月 500 次免费请求（已配置活跃 Key 至 `config/api_keys.json`）。
 - **决策架构**：详见 `docs/adr/0012-professional-odds-api-time-series-integration.md`。
 
-### 3. Sofascore 手机免密钥数据流
+### 3. BrowserOS neo 真实浏览器直连通道
+- **定位**：球探网全维度真实数据采集主通道（当纯代码 Node/Python 遇到连接掐断阻断时直接接管），提取 14 大机构逐笔时序、亚盘大小球及 Crown 波胆全指数并保存为本地数据快照（`data/`）。
+
+### 4. Sofascore 手机免密钥数据流
 - **定位**：免注册、免密钥、零成本获取实时比赛的进球期望值（xG）、首发站位与全场攻防技统数据。
 
 ---

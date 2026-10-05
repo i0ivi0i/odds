@@ -54,14 +54,14 @@ Shin（1993）期刊原文需订阅，未放入。隔壁 `足球预测/温故而
 | Wilkens，p7 | “all results and reliability plots are strictly out-of-sample with respect to their calibration window” | 推荐优先胜平负证据；复盘用旧窗拟合后窗评价，新增复杂条款须有后续配对改善 | 德甲模型／模拟研究不能外推实盘收益；两季、裁剪区间等是研究设定，不作本项目门禁 |
 | Levitt，p2 | “choosing prices that deviate from the market clearing price.” | 深度第7/8步保留主动定价与偏见解释，同时核对竞争解释；复盘不从赛果倒证账本 | NFL不是足球，原研究有价格与注额。本项目没有真实注额／已接受赔率／对冲，净赔付只能声明假设，不能识别唯一赛果 |
 | Goto (2026)，p1、3 | “we propose an odds-only model based on equal profit for confidence (OO-EPC)... achieving state-of-the-art predictive performance” | 深度第4/9步提取无偏胜平负客观发生率，首选遵从无偏胜率最高项 (argmax P) 死磕命中率 | 纯赔率模型依赖做市商定价有效性；不保证单场必中，9万场实证胜在长期校准与Log-Loss最优 |
-| Winkelmann (2026)，p1、12 | “identifying abnormal betting patterns... distinguishing between transient liquidity shocks and persistent information shifts” | 深度第4/8步识别微观做市假摔 (Head-Fake)，区分中途瞬态跳水与临盘持久性大资金位移 | 状态空间模型侧重盘口异动识别，不能证明当场踢出特定比分；需与三盘几何交叉验证 |
+| Winkelmann (2026)，p1、12 | “identifying abnormal betting patterns... distinguishing between transient liquidity shocks and persistent information shifts” | 深度第4/8步识别微观做市假摔 (Head-Fake)，区分中途瞬态跳水与临盘持久性大资金位移；强制执行五阶段全周期时序分析（T0初盘→T1早盘→T2中盘拉扯→T3临盘洗盘→T4终局出清），严禁只看初终两端 | 状态空间模型侧重盘口异动识别，不能证明当场踢出特定比分；需与三盘几何交叉验证 |
 | Egidi (2018)，p1、7 | “the scoring rates of the teams are convex combinations of parameters estimated from historical data and the additional source of the betting odds.” | 深度第3步泊松进球期望建模，将历史攻防均值与盘口隐含期望做凸组合融合 (Convex Combination) | 凸组合权重取决于赛事样本与盘口成熟度；杯赛或阵容巨变时需提高即时盘口权重 |
 | Mandadapu (2024)，p1、6 | “A Machine Learning Approach to Match Outcome Forecasting and Bookmaker Odds Estimation... investigating the significance of various features” | 深度第7/8步结合多维动态特征检验庄家开盘合理性，破译做市商风险对冲与引流杠杆 | 机器学习特征工程不能替代当场临盘资金博弈；模型特征需赛前冻结 |
 
 ## 预测 → 推荐 → 复盘的实际闭环
 
 1. **初筛**：离群和矛盾表示值得深挖，不直接表示冷门或能赚；保留公司、市场、真实时点及缺失。
-2. **十步分析**：先独立泊松，再各公司逐项去水及三市场时序；区分胜者、净胜球、总进球，复核消息与结算；第9步三端比较落首选，替代解释与可推翻条件一并保留。报价同步不自动扣分，固定数值不一票裁决。
+2. **十步分析**：先独立泊松，再各公司（多机构横向交叉对账）逐项无偏去水（Goto OO-EPC）及跨市场（欧指1X2 × 亚盘AH × 大小球OU × Crown波胆）全周期五阶段时序动态（T0~T4，结合Winkelmann状态空间识别微观做市假摔与持久位移）；必须严格区分胜者、净胜球、总进球，复核消息与结算，严格执行跨市场几何相容性校验；第9步三端比较落首选，替代解释与可推翻条件一并保留。报价同步不自动扣分，固定数值不一票裁决。
 3. **推荐留存**：`paper-application-v2`、matchId、发布时点、引用分析版本、赔率截至时点、公司／方法、最终主平客点概率与独立基准、首选／次选、精选／候补／观望。已发布版不覆盖。Polymarket地址按现有教程核验，研究价不等于成交价。
 4. **逐场复盘**：新研究记录按比赛取最终有效赛前版，另列首选命中与备选覆盖、只评分赛前点概率，按场次／版本／指标去重。现有历史累计口径不改、不混入新研究账，不把覆盖提升当首选能力提升。
 5. **滚动学习**：新假设与旧方法在相同后续比赛和资料时点留预测，比较配对概率损失、首选及观望变化；按类别检查校准。无正式检验只称观察改善／恶化，不用单场、八场或引用数量证明准确率提升。

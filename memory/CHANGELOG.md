@@ -1,5 +1,19 @@
 # 变更日志
 
+## 2026-10-06 同步 BrowserOS neo 官方最新 Skill
+
+- **操作类型**：更新 Skill（已获主人明确确认「需要」）
+- **目标文件**：`C:\Users\home\AppData\Local\hermes\skills\browseros-neo\SKILL.md`
+- **风险级别**：🟡 中危
+- **修改原因**：官方 upstream 发布 0.0.167 正式版，同步更新官方 Skill 说明书
+- **修改内容**：引入 `request_human_help` / `await_human_help` 人机协同接管机制、`act diff` 防刷屏截断控制、30s 运行时沙箱上限与多标签页借用规范
+- **备份路径**：`C:\Users\home\AppData\Local\hermes\skills\browseros-neo\SKILL.md.20261006.001.bak`（已通过 MD5 完整性校验）
+- **执行者**：Agent
+- **回滚命令**：
+  ```bash
+  cp /c/Users/home/AppData/Local/hermes/skills/browseros-neo/SKILL.md.20261006.001.bak /c/Users/home/AppData/Local/hermes/skills/browseros-neo/SKILL.md
+  ```
+
 ## 2026-10-02 自动流程断点修复（主人确认修复）
 
 - 范围：HEARTBEAT、AGENTS、deep-analysis/recommendation/post-review 三个现有技能；default 三个足球 Cron。未改抓取程序、Hermes 核心、预测公式、历史战绩；未提交推送。
