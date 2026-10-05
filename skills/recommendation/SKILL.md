@@ -175,9 +175,9 @@ metadata: { "emoji": "🎯" }
 ━━━ 🌟 精选推荐（{N} 场）━━━
 
 > **推演终审 6 列表格（全局硬性规范）**：
-> | 场次/时间 | 对阵双方 | 终审人话指令 | 真实赛果剧本 | 庄家诱盘破译 | Polymarket 真实链接 |
+> | 场次/时间 | 对阵双方 | <span style="white-space:nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;胜负平&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接 |
 > |---|---|---|---|---|---|
-> | {编号/时间} | {主队 vs 客队} | {直接可执行的买入指令} | {剧本推演与比分} | {庄家引流与对冲底牌破译} | {可点击 URL，查找见 docs/Polymarket链接查找教程.md} |
+> | {编号/时间} | {主队 vs 客队} | <span style="white-space:nowrap">首选：**{胜/平/负}**&nbsp;｜&nbsp;次选：**{胜/平/负}**</span> | 胜 {XX.X%}<br>平 {XX.X%}<br>负 {XX.X%} | {庄家引流与对冲底牌破译} | {可点击 URL，查找见 docs/Polymarket链接查找教程.md} |
 
 ### {编号} {联赛} {主队} vs {客队}
 **比赛 ID**: {matchId} | **开球**: {YYYY-MM-DD HH:MM}

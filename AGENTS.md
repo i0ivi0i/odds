@@ -44,7 +44,7 @@ subagent：抓取全量赛程 → 推送赛程列表 → 写入每日记忆 → 
 主会话：推送「⚡ 已启动赛前分析」→ spawn 编排 subagent → 保持可用
 编排 subagent：抓取赛程 → 初筛（17:30 仅筛早盘 ≤22:00 / 21:30 筛晚盘 >22:00） → 推送候选列表 →
   若初筛通过 0 场：写入 ## 推荐（今日无候选场次）→ announce 回主会话 → 结束
-  否则：对每场 spawn worker 深度分析（每场先用 scripts/sporttery-sniper 抓取上下文，再完成 10 步分析；每场回传证据，主会话/编排验收后逐场推送）→
+  否则：编排集中获取真实数据（若主源异常由 BrowserOS neo 集中直取快照落盘至 data/）→ 对每场 spawn worker 深度分析（纯逻辑推理，每场回传证据，主会话/编排验收后逐场推送）→
        收齐结果 → 汇总推荐（含精选 + 串关）→ 写入每日记忆 → announce 回主会话
 主会话：收到 announce → 推送「✅ 赛前分析完成」
 ```
@@ -112,9 +112,10 @@ subagent：获取赛果 → 对比推荐 → 计算命中率 → 分析失误 �
 
 该系统整合了多源数据管道与双轨热备架构，输出标准化 Agent JSON（`agent.schedule`、`agent.analysis`、`agent.review`），原生适配爱马仕 Hermes 及通用 Agent 消费：
 1. **主数据源（Primary）**：titan007 XML、HTML、JS 接口（毫秒级提供 14 大机构欧亚全周期时序与 Crown 波胆）；
-2. **热备数据源（Secondary）**：澳客网与中国体彩官方网关（`okooo-adapter.js`，主源异常或超时自动平滑熔断接管，详见 ADR 0001）；
+2. **热备数据源（Secondary）**：澳客网与中国体彩官方网关（`okooo-adapter.js`，主源异常或超时自动平滑熔断接管，严禁伪造假盘口，详见 ADR 0001）；
 3. **微观阵容双引擎（Lineups & Injuries）**：直连英超官方 FPL 数据库与 Big Balls 商业数据 API（`injury-service.js`，完全解耦第三方爬虫，零等待直取伤员出战概率）；
-4. **交易执行与冷平对冲**：直连 Polymarket 官方区块链 Gamma 接口获取真实美分报价与下单直达链接。
+4. **交易执行与冷平对冲**：直连 Polymarket 官方区块链 Gamma 接口获取真实美分报价与下单直达链接；
+5. **真实浏览器安全通道（BrowserOS neo）**：当 titan007 接口遭遇纯代码网络握手阻断时，直接通过原生真实浏览器提取球探网全维度真实数据并落盘至 `data/YYYY-MM-DD/{matchId}.json`，彻底杜绝数据缺失或假数据。
 
 通用配置与端点见 `config/datasources.json`。正式流程只使用该系统，详细命令见 TOOLS.md。
 

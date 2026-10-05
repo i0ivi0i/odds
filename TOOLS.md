@@ -122,7 +122,20 @@ npm test
 
 ### 3. 海外免费开放 API 矩阵储备
 - **Football-Data.org**：免费提供欧洲主要联赛赛程、积分榜、H2H 交锋与阵容（凭证读取自 `~/.gemini/config/football_data_tokens.json`）。
-- **The Odds API (the-odds-api.com)**：免费 Starter 方案支持平博、365、威廉等做市商标准 1X2 与盘口查询（详见 ADR 0012）。
+- **The Odds API (the-odds-api.com)**：免费 Starter 方案支持平博、365、威廉等做市商标准 1X2 与盘口查询（作为 Pinnacle / Betfair 尖锐欧指去水验真辅轨，详见 ADR 0012）。
+
+## 核心安全通道：BrowserOS neo 真实浏览器直取与数据快照留底
+
+当 titan007 接口对普通代码请求（Node/Python/curl）触发 TLS 指纹拦截（`socket hang up` / `ECONNRESET`）时，系统自动切入真实浏览器直取通道：
+
+1. **零代码拦截直连**：调用 `browseros-neo` 打开球探网 5 大核心页面（`analysis` 分析页、`AsianOdds_n` 亚盘、`OverDown_n` 大小球、`changeDetail` 分钟级变盘流水、`oddslist` 百家欧赔）；
+2. **全维度多机构时序提取规约**：
+   - **多机构欧指 1X2**：提取威廉、365、立博、Interwetten、澳彩、平博等巨头的初盘与即时盘（`1x2/oddslist/{id}.htm`）；
+   - **亚盘让球分钟流水**：提取核心机构（澳彩 companyID=1、皇冠 companyID=3、365 companyID=8、易胜博 companyID=12）全周期变盘记录（`changeDetail/handicap.aspx`）；
+   - **大小球进球数流水**：提取核心机构（皇冠 companyID=3、澳彩 companyID=1、365 companyID=8）全周期进球数升降流水（`changeDetail/overunder.aspx`）；
+   - **Crown 皇冠波胆全指数**：提取分析页 `#analy_sbAllOdds` 中 0:0～4:4 比分、半全场与总进球数精确赔率矩阵；
+3. **本地快照原子化存盘**：将提取到的全维度数据规范保存为 `data/YYYY-MM-DD/{matchId}.json`（必须包含 `fiveStageTimeFlow` 五阶段时序转折数据：T0初盘骨架/T1早盘试探/T2中盘假摔/T3临盘洗盘/T4终盘出清），作为赛前不可篡改的证据底账；
+4. **推演引擎秒级消费**：AI 大模型与推演引擎直接读取该真实数据快照，实现 0 延迟无感推演，彻底根除网络报错与假数据隐患。
 
 ## Subagent 工具
 

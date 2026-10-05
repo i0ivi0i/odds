@@ -119,7 +119,7 @@ def run_deep_graphify():
     all_md_files = list(root.glob('**/*.md'))
     print(f"Deep semantic cross-linking for all {len(all_md_files)} markdown files...")
     for md_path in all_md_files:
-        if 'graphify-out' in str(md_path):
+        if 'graphify-out' in str(md_path) or 'node_modules' in str(md_path) or '.git' in str(md_path):
             continue
         rel_str = str(md_path.relative_to(root)).replace('\\', '/')
         file_nodes = [n for n, d in G.nodes(data=True) if d.get('source_file') and Path(d['source_file']).resolve() == md_path.resolve()]

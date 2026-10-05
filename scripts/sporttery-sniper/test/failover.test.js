@@ -20,10 +20,10 @@ test("fetchOkoooMatchData 构造合规的备用推演数据结构", async () => 
   assert.equal(data.matchId, "1313446");
   assert.equal(data.source, "secondary:okooo");
   assert.ok(data.failoverNotice.includes("数据源提示"));
-  assert.ok(data.markets.asianCompanies.length >= 4);
-  assert.ok(data.markets.europeCompanies.length >= 2);
-  assert.equal(data.markets.asianCompanies[0].company, "皇冠");
-  assert.equal(data.markets.europeCompanies[0].company, "威廉");
+  assert.equal(data.markets.asianCompanies.length, 0);
+  assert.equal(data.markets.europeCompanies.length, 0);
+  assert.ok(data.dataWarnings.length > 0);
+  assert.equal(data.analysisReady, false);
 });
 
 test("fetchOkoooSchedule 返回规范的备用赛程结构", async () => {
@@ -58,7 +58,8 @@ test("fetchMatchDataWithFailover 主源超时或异常时自动无缝切入备�
   });
   assert.equal(data.source, "secondary:okooo");
   assert.ok(data.failoverNotice.includes("数据源提示"));
-  assert.equal(data.markets.asianCompanies.length, 4);
+  assert.equal(data.markets.asianCompanies.length, 0);
+  assert.equal(data.analysisReady, false);
 });
 
 test("fetchScheduleWithFailover 主源失败时切入备用赛程", async () => {

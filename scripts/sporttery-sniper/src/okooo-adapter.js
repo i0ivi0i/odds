@@ -59,7 +59,7 @@ export async function fetchOkoooMatchData(matchId) {
     injuries = await fetchFallbackInjuries({ league: "备用源", homeTeam: "", awayTeam: "" });
   } catch {}
 
-  // 2. 构造标准规范的 agent-json 兼容结构
+  // 2. 构造标准规范的 agent-json 兼容结构（严禁伪造任何亚盘、大小球与欧赔）
   return {
     matchId: String(matchId),
     detail: {
@@ -71,63 +71,30 @@ export async function fetchOkoooMatchData(matchId) {
         matchTime: new Date().toISOString().slice(0, 16).replace("T", " "),
         venue: "备用主场"
       },
-      teamStats: [
-        { name: "进球数", home: "1.5", away: "1.2" },
-        { name: "失球数", home: "1.1", away: "1.4" }
-      ],
+      teamStats: [],
       leagueStandings: {
-        home: { rank: "5", points: "15", matches: "10" },
-        away: { rank: "8", points: "12", matches: "10" }
+        home: { rank: "", points: "", matches: "" },
+        away: { rank: "", points: "", matches: "" }
       },
       headToHead: [],
       lineupInjuries: injuries
     },
     markets: {
-      asianCompanies: [
-        { companyId: "3", company: "皇冠", handicap: "0.5", homeWater: "0.95", awayWater: "0.91" },
-        { companyId: "1", company: "澳门", handicap: "0.5", homeWater: "0.92", awayWater: "0.94" },
-        { companyId: "8", company: "Bet365", handicap: "0.5", homeWater: "0.94", awayWater: "0.92" },
-        { companyId: "12", company: "易胜博", handicap: "0.5", homeWater: "0.96", awayWater: "0.90" }
-      ],
-      asianHistories: [
-        {
-          companyId: "3",
-          company: "皇冠",
-          records: [
-            { time: "初盘", handicap: "0.5", homeWater: "0.90", awayWater: "0.96" },
-            { time: "即时", handicap: "0.5", homeWater: "0.95", awayWater: "0.91" }
-          ]
-        }
-      ],
-      overUnderCompanies: [
-        { companyId: "3", company: "皇冠", line: "2.5", overWater: "0.92", underWater: "0.94" },
-        { companyId: "1", company: "澳门", line: "2.5", overWater: "0.90", underWater: "0.96" },
-        { companyId: "8", company: "Bet365", line: "2.5", overWater: "0.93", underWater: "0.93" },
-        { companyId: "12", company: "易胜博", line: "2.5", overWater: "0.95", underWater: "0.91" }
-      ],
+      asianCompanies: [],
+      asianHistories: [],
+      overUnderCompanies: [],
       overUnderHistories: [],
-      europeCompanies: [
-        {
-          companyId: "115",
-          company: "威廉",
-          opening: { home: "2.10", draw: "3.30", away: "3.40", returnRate: "92.5" },
-          current: { home: "2.05", draw: "3.35", away: "3.50", returnRate: "92.8" },
-          kelly: { home: "0.92", draw: "0.94", away: "0.93" }
-        },
-        {
-          companyId: "281",
-          company: "365bet",
-          opening: { home: "2.08", draw: "3.35", away: "3.45", returnRate: "93.0" },
-          current: { home: "2.05", draw: "3.40", away: "3.55", returnRate: "93.2" },
-          kelly: { home: "0.91", draw: "0.95", away: "0.94" }
-        }
-      ],
+      europeCompanies: [],
       europeHistories: {},
       jcOdds: null,
       crowFullIndex: null
     },
+    dataWarnings: [
+      "⚠️【严重数据缺口：主数据源连接阻断，备用源未取得真实亚盘四家(澳彩/皇冠/365/易胜博)与Crown波胆时序，禁止直接用于推演！】"
+    ],
+    analysisReady: false,
     source: "secondary:okooo",
     sourceUrl: `${OKOOO_MOBILE_BASE}/soccer/match/${matchId}/`,
-    failoverNotice: "⚠️【数据源提示：主源(007)响应异常，已由备用热备数据源(澳客/官方镜像)无缝接管保障推演】"
+    failoverNotice: "⚠️【数据源提示：主源(007)响应异常，备用热备源未包含真实盘赔时序，请使用 BrowserOS neo 浏览器直取真实数据快照！】"
   };
 }
