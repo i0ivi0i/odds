@@ -66,3 +66,6 @@ graphify-out/
 # Compound Engineering 本地覆盖与临时工作区
 .compound-engineering/*.local.yaml
 .context/compound-engineering/
+
+# 规划方案文档，不纳入版本管理
+docs/plans/

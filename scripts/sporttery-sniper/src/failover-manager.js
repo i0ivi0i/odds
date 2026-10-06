@@ -1,5 +1,4 @@
 import { fetchMatchData as fetchTitanMatchData, fetchJcSchedule as fetchTitanSchedule } from "./titan007.js";
-import { fetchOkoooMatchData, fetchOkoooSchedule } from "./okooo-adapter.js";
 
 const DEFAULT_TIMEOUT_MS = 30000;
 
@@ -13,15 +12,14 @@ export async function fetchWithTimeout(fn, timeoutMs = DEFAULT_TIMEOUT_MS) {
 }
 
 /**
- * 具备双轨热备与自动熔断的单场数据提取
+ * 单场数据提取：脚本通道只打球探；失败重试后抛错，由分析流程补抓。缺资料不能硬推。
  */
 export async function fetchMatchDataWithFailover(input, options = {}) {
   const timeoutMs = options.timeoutMs || DEFAULT_TIMEOUT_MS;
   const maxAttempts = options.maxAttempts ?? 2;
   const primaryFn = options.primaryFetcher || (() => fetchTitanMatchData(input));
-  const backupFn = options.backupFetcher || (() => fetchOkoooMatchData(input));
+  let lastError;
 
-  // 1. 尝试主数据源 (titan007)
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       const data = await fetchWithTimeout(primaryFn, timeoutMs);
@@ -30,29 +28,28 @@ export async function fetchMatchDataWithFailover(input, options = {}) {
         source: data.source || "primary:titan007"
       };
     } catch (err) {
+      lastError = err;
       if (attempt < maxAttempts) {
         await new Promise((r) => setTimeout(r, 200));
         continue;
       }
       console.error(
-        `[failover] 主数据源 (titan007) 尝试 ${attempt} 次失败 (${err.message})，正在无缝启动备用热备源 (澳客网)...`
+        `[failover] 主数据源 (titan007) 尝试 ${attempt} 次失败 (${err.message})。脚本通道未再抓其他网站；分析流程须补齐伤停与时序，缺、错、少不能硬推。`
       );
     }
   }
 
-  // 2. 主源失败，无缝切入备用数据源 (澳客网 / 官方镜像)
-  const backupData = await backupFn();
-  return backupData;
+  throw lastError;
 }
 
 /**
- * 具备双轨热备的赛程列表同步
+ * 赛程列表同步：脚本通道只打球探；失败重试后抛错，由分析流程补抓。
  */
 export async function fetchScheduleWithFailover(options = {}) {
   const timeoutMs = options.timeoutMs || DEFAULT_TIMEOUT_MS;
   const maxAttempts = options.maxAttempts ?? 2;
   const primaryFn = options.primaryFetcher || (() => fetchTitanSchedule(globalThis.fetch, options));
-  const backupFn = options.backupFetcher || (() => fetchOkoooSchedule(options));
+  let lastError;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
@@ -62,15 +59,16 @@ export async function fetchScheduleWithFailover(options = {}) {
         source: data.source || "primary:titan007"
       };
     } catch (err) {
+      lastError = err;
       if (attempt < maxAttempts) {
         await new Promise((r) => setTimeout(r, 200));
         continue;
       }
       console.error(
-        `[failover] 主赛程源 (titan007) 失败 (${err.message})，正在无缝切至备用赛程源...`
+        `[failover] 主赛程源 (titan007) 失败 (${err.message})。脚本通道未再抓其他网站；分析流程须补齐赛程后再推。`
       );
     }
   }
 
-  return await backupFn();
+  throw lastError;
 }

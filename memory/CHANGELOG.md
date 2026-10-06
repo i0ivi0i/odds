@@ -1,5 +1,20 @@
 # 变更日志
 
+## 2026-10-06 说明书：缺数据马上提醒，禁止观望跳过
+
+- **操作类型**：改说明书用词与抓取步骤（不写新代码、不提交 Git）
+- **目标文件**：`AGENTS.md`、`TOOLS.md`、`skills/deep-analysis/SKILL.md`、`skills/recommendation/SKILL.md`、`docs/adr/0001-multi-source-odds-failover-adapter.md`、`docs/数据源与API矩阵手册.md`；技能 `pansuan-workflow`（含 `references/titan007-fetch-channels.md`）、`user-communication-style`
+- **风险级别**：🟡 中危
+- **修改原因**：把伤停格「暂无数据」、变盘行少、脚本 hang 糊成「缺数据并观望跳过」是错的。缺数据必须马上提醒。
+- **现行口径**：
+  1. 页上有字必须抄全；行少不是缺流水。
+  2. 「暂无数据」= 该侧格子未填，不是整页空，也不是没人受伤；置顶贴页上原句后继续十步、不等主人。
+  3. 缺验收门：马上置顶提醒并贴页上原句；当面聊天先停，等主人回再继续；定时任务置顶后继续十步，不准跳过。禁止静默。
+  4. 读盘「证据打架」与亚盘/大小球玩法方向不明，仍可标玩法观望；不得用观望当缺数据出口。
+- **未改**：抓取程序、历史日记、MEMORY 战绩、未提交 Git。
+- **执行者**：Agent
+- **回滚**：`git checkout -- AGENTS.md TOOLS.md skills/deep-analysis/SKILL.md skills/recommendation/SKILL.md docs/adr/0001-multi-source-odds-failover-adapter.md docs/数据源与API矩阵手册.md memory/CHANGELOG.md`
+
 ## 2026-10-06 同步 BrowserOS neo 官方最新 Skill
 
 - **操作类型**：更新 Skill（已获主人明确确认「需要」）

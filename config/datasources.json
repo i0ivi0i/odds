@@ -32,18 +32,6 @@
         { "id": "976", "name": "188", "role": "亚洲做市商辅助" }
       ]
     },
-    "secondary_odds_failover": {
-      "name": "澳客网 / 体彩官方镜像网关",
-      "type": "failover_backup",
-      "status": "hot_standby",
-      "failover_timeout_ms": 30000,
-      "max_retries": 1,
-      "base_urls": {
-        "okooo_mobile": "https://m.okooo.com/jczq/",
-        "okooo_match": "https://m.okooo.com/soccer/match/",
-        "sporttery_official": "https://webapi.sporttery.cn/gateway/jc/football/getMatchCalculatorV1.qry"
-      }
-    },
     "injuries_and_lineups": {
       "fpl_premier_league": {
         "name": "英超官方数据库 (Fantasy Premier League API)",
@@ -60,6 +48,14 @@
         "cost": "free_tier",
         "credentials_ref": "config/api_keys.json#bigballs"
       }
+    },
+    "sporttery_match_codes": {
+      "name": "中国体彩官方网关（场次编号 / 开售窗口 / 节假日休市）",
+      "type": "official_lottery_lookup",
+      "status": "active",
+      "role": "核对竞彩场次代号、当日是否开售、节假日休市。三项静态赔不是完整盘口资料。",
+      "url": "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry?channel=c",
+      "referer": "https://www.lottery.gov.cn/"
     },
     "prediction_market_execution": {
       "polymarket": {

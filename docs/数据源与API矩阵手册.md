@@ -1,19 +1,19 @@
 # 数据源与全网 API 矩阵手册 (Data Sources & API Matrix Manual)
 
-> 本手册记录「倍率分析推演」系统中所有已接入、热备中以及储备的多元足球数据源与免费开放 API，彻底杜绝单点依赖。
+> 本手册记录「倍率分析推演」系统已接入的数据源。盘口主源是球探网；其他来源齐全且对得上才能代，缺、错、少就不能代。
 
 ---
 
 ## 一、系统多源数据架构总览
 
-系统采用统一接口契约设计（输出标准 `agent.analysis` / `agent.schedule`），底层以“插座式适配器”链接多方数据，互为热备：
+系统采用统一接口契约（输出标准 `agent.analysis` / `agent.schedule`）。盘口主源是球探；伤停辅源、交易接口、体彩三项静态赔。验收门看亚盘/欧指流水与主客场近6，不把伤停空表当成整场缺数据：
 
-| 数据类别 | 主用数据源（Primary） | 热备数据源（Secondary） | 官方/开放 API 直连（Direct API） |
+| 数据类别 | 主用数据源（Primary） | 补抓路径（齐全且对得上才能代） | 官方/开放 API 直连（Direct API） |
 | :--- | :--- | :--- | :--- |
-| **盘口与赔率时序** | 球探网 (titan007) - 14 家机构逐笔时序 | 澳客网 (Okooo) + 体彩官方网关 | The Odds API (`the-odds-api.com`) |
-| **微观伤停与阵容** | 英超官方 FPL API | Big Balls Sports Data API | Football-Data.org |
+| **盘口与赔率时序** | 球探网 (titan007) - 14 家机构逐笔时序 | 线上一律 `/browseros-neo` 直开球探页；其他来源齐全且对得上才能代 | The Odds API（仅尖锐验真，缺亚洲机构与波胆时不能单用） |
+| **微观伤停与阵容** | 球探分析页「阵容情况」 | 英超官方 FPL API / Big Balls（仅部分俱乐部联赛） | Football-Data.org |
 | **实战交易与对冲** | Polymarket Gamma 官方接口 | — | CLOB 原生订单簿 |
-| **体彩排期与结算** | 球探 `odds_jc.txt` 镜像 | 澳客移动版 `m.okooo.com/jczq` | 中国体彩官方网关 `webapi.sporttery.cn` |
+| **体彩场次编号与休市** | 球探 `odds_jc.txt`（镜像竞彩编号） | — | 中国体彩官方网关 `webapi.sporttery.cn`（核对场次代号、开售窗口、节假日休市；三项静态赔不是完整盘口资料） |
 
 ---
 
@@ -22,13 +22,13 @@
 ### 1. 赔率时序与全盘指数（主源：titan007）
 - **特点**：全网唯一免费、免密钥、免登录提供 14 大主流机构（威廉、立博、伟德、平博、Bwin、SNAI、必发等）分钟级升降盘历史的信道。
 - **获取内容**：亚盘盘水变化表、大小球盘水变化表、欧赔逐笔时序、皇冠全比分波胆、进球区间倍率。
-- **调度模块**：`scripts/sporttery-sniper/src/titan007.js`。
+- **抓取通道**：爱马仕 `/browseros-neo` 直开球探页。`scripts/sporttery-sniper/src/titan007.js` 仅离线解析与单测。
 
-### 2. 双轨自动熔断热备（备源：澳客网 + 体彩官方网关）
-- **触发机制**：由 `scripts/sporttery-sniper/src/failover-manager.js` 统一监管。主源超时或异常时自动重试 1 次，若依然打不开，**1 秒内平滑切换至备用源**。
-- **数据保障**：通过 `scripts/sporttery-sniper/src/okooo-adapter.js` 无缝接管基础赛程、澳彩/皇冠/365/易胜博亚让盘口与欧指骨架。
-- **透明声明**：切换后自动在输出中附带透明通知：`⚠️【数据源提示：主源响应异常，已由备用热备数据源(澳客/官方镜像)无缝接管保障推演】`。
-- **决策架构**：详见 `docs/adr/0001-multi-source-odds-failover-adapter.md`。
+### 2. 主源失败怎么办
+- **线上不先跑脚本**：禁止 `npm run schedule` / `analyze` / `review`。
+- **打不开页或缺资料**：重试 `/browseros-neo` 同一家球探页并落盘。仍缺验收门：置顶提醒并贴页上原句；当面聊天先停，等主人回再继续；定时任务置顶后继续十步，不准跳过。
+- **其他来源**：亚盘/欧指流水、机构盘口、主客场/近6数字齐全、没错、对得上 → 可以代。错了、空了、少了一截 → 不能代。伤停格「暂无数据」不是缺数据，贴原句后继续十步。
+- **体彩官方网关**：核对竞彩场次编号、当日是否开售、节假日休市。三项静态赔不是完整盘口资料。接口：`https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry?channel=c`（须带浏览器头与 `Referer: https://www.lottery.gov.cn/`）。开售为 0 场即休市/未开售。
 
 ### 3. 微观阵容与伤停双引擎
 - **英超官方 FPL API**：
@@ -59,7 +59,7 @@
 - **决策架构**：详见 `docs/adr/0012-professional-odds-api-time-series-integration.md`。
 
 ### 3. BrowserOS neo 真实浏览器直连通道
-- **定位**：球探网全维度真实数据采集主通道（当纯代码 Node/Python 遇到连接掐断阻断时直接接管），提取 14 大机构逐笔时序、亚盘大小球及 Crown 波胆全指数并保存为本地数据快照（`data/`）。
+- **定位**：球探网全维度真实数据采集正式入口（不是脚本失败后的备胎），提取 14 大机构逐笔时序、亚盘大小球及 Crown 波胆全指数并保存为本地数据快照（`data/`）。
 
 ### 4. Sofascore 手机免密钥数据流
 - **定位**：免注册、免密钥、零成本获取实时比赛的进球期望值（xG）、首发站位与全场攻防技统数据。
