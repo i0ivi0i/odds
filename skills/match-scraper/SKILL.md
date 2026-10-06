@@ -6,14 +6,14 @@ metadata: { "emoji": "📆" }
 
 # 赛程抓取（match-scraper）
 
-通过仓库内 `scripts/sporttery-sniper` 脚本抓取当日竞彩足球全量赛程数据。
+用爱马仕 `/browseros-neo` 打开球探竞足页，抓取当日竞彩足球全量赛程。禁止先跑 `npm run schedule`。
 
 ## 前提条件
 
-- `sporttery-sniper` 位于当前仓库的 `scripts/sporttery-sniper` 目录。
-- `sporttery-sniper` 使用 titan007 的 XML/文本数据源。
-- 脚本失败时直接报告失败原因，不改用其它抓取方式。
-- **每次执行都必须实时运行脚本抓取最新数据**，不得复用之前抓取的旧数据。
+- 已装 `/browseros-neo`（智能体专用浏览器，不是让主人自己开网页）。
+- 打开 `https://jc.titan007.com/index.aspx` 抽编号、比赛 ID、开球、对阵、分析页。
+- 抓不到或场次不全：置顶报告，结束流程，不写残缺赛程进 memory。
+- **每次必须实时重开页面**，不得复用之前抓取的旧数据。
 
 ## 销售窗口检查（定时任务触发时必须执行）
 
@@ -28,22 +28,17 @@ metadata: { "emoji": "📆" }
 
 ## 执行步骤
 
-### 步骤 1：检查脚本目录
+### 步骤 1：打开球探竞足页
 
-确认 `scripts/sporttery-sniper/package.json` 存在。若不存在，直接报告「scripts/sporttery-sniper 不存在，无法同步赛程」，结束流程，不写 memory。
+用 `/browseros-neo` 打开 `https://jc.titan007.com/index.aspx`。打不开则报告「球探赛程页无法打开」，结束流程，不写 memory。
 
-### 步骤 2：运行脚本同步赛程
+### 步骤 2：抽出当日赛程
 
-销售日期使用当前自然日（`YYYY-MM-DD`）。手动查询非当天赛程时，将目标日期传给 `--date`。
+销售日期使用当前自然日（`YYYY-MM-DD`）。手动查询非当天赛程时，在页面上切到该日。抽出后落盘 `data/{YYYY-MM-DD}/schedule.json`，结构对齐 `agent.schedule`。
 
-```bash
-cd scripts/sporttery-sniper
-npm run schedule -- --date {YYYY-MM-DD} --format agent-json
-```
+`matches` 必须为数组且含场次。失败、空表、编号对不上：直接报告，结束流程，不写 memory。禁止先跑 `npm run schedule`。
 
-脚本输出必须是 JSON，且 `kind` 必须为 `agent.schedule`。若脚本失败、JSON 无法解析、`kind` 不匹配，或 `matches` 字段缺失，直接报告失败原因，结束流程，不写 memory。
-
-### 步骤 3：解析脚本输出
+### 步骤 3：解析抽出结果
 
 从 `agent.schedule` JSON 中读取：
 
@@ -60,13 +55,13 @@ npm run schedule -- --date {YYYY-MM-DD} --format agent-json
 | `matches[].awayTeam` | 客队 |
 | `matches[].analysisUrl` | 分析页 |
 
-同时读取 `summary.total/notStarted/inProgress/finished` 作为汇总计数。若脚本输出中某些字段为空，用「无数据」或 `-` 标记，不要臆造。
+同时读取 `summary.total/notStarted/inProgress/finished` 作为汇总计数。若某些字段为空，用「无数据」或 `-` 标记，不要臆造。
 
 ### 步骤 4：格式化输出并写入 memory
 
 按「结构化输出」和「写入每日记忆」章节格式生成赛程摘要，追加写入 `memory/{今天日期}.md`。
 
-脚本输出中已按销售日过滤；若命令指定 `--date`，以该日期作为销售日。若 `matches.length = 0`，执行「当日无比赛」流程。
+抽出结果已按销售日过滤；指定日期以页面当日为准。若 `matches.length = 0`，执行「当日无比赛」流程。
 
 ### 步骤 5：结构化输出
 
@@ -133,14 +128,14 @@ npm run schedule -- --date {YYYY-MM-DD} --format agent-json
 
 如果需要查看非当天的赛程（如主人说「看看昨天的比赛」，或复盘需要查历史赛程）：
 
-1. 运行脚本：`cd scripts/sporttery-sniper && npm run schedule -- --date {目标日期} --format agent-json`
-2. 解析 `agent.schedule` JSON 并按步骤 3～4 输出。
+1. 用 `/browseros-neo` 打开球探竞足页并切到目标日期，落盘 `data/{目标日期}/schedule.json`
+2. 解析对齐 `agent.schedule` 的结构并按步骤 3～4 输出。
 
 ## 异常处理
 
-- 脚本目录不存在：报告 `scripts/sporttery-sniper` 不存在，结束流程。
-- 脚本执行失败：记录错误信息，重试 1 次；仍失败则结束流程，不写 memory。
-- JSON 解析失败或 `kind` 不匹配：记录原始错误，结束流程，不写 memory。
+- `/browseros-neo` 打不开：报告失败，结束流程。
+- 页面打开失败：记录错误，重试 1 次；仍失败则结束流程，不写 memory。
+- 抽出结构对不上或场次缺失：记录原始错误，结束流程，不写 memory。
 - 部分数据缺失：正常记录已有数据，缺失字段标记为「无数据」。
 - **当日无比赛**：如果抓取结果为 0 场比赛：
   1. 告知主人「今日无竞彩足球赛事」

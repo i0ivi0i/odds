@@ -4,81 +4,53 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 ---
 
-## 核心系统：sporttery-sniper
+## 核心系统：球探数据一律走 BrowserOS neo
 
-所有多源数据与盘口抓取均通过仓库内核心系统 `scripts/sporttery-sniper` 完成。正式工作流只使用该系统。通用配置与接口端点已集中收录于 `config/datasources.json`。
+正式赛程、单场盘口、伤停、变盘流水、赛后赛果：**默认用 `/browseros-neo` 打开球探页提取**，落盘 `data/YYYY-MM-DD/{matchId}.json`（赛程可落 `data/YYYY-MM-DD/schedule.json`）。禁止先跑 `npm run schedule` / `analyze` / `review` 当入口。`scripts/sporttery-sniper` 只保留解析、样例单测、手工诊断；定时任务与赛前/赛后流程不得再先跑它。通用端点见 `config/datasources.json`。
 
 ### 运行环境
 
-- Node.js 20 或更新版本
+- 爱马仕已装 `/browseros-neo`（智能体专用浏览器，不是让主人自己开网页）
 - 当前工作目录为仓库根目录
-- 脚本目录：`scripts/sporttery-sniper`
-
-若脚本目录不存在、命令失败、输出不是合法 JSON，当前流程应直接报告失败原因，不改用其它抓取方式。
+- `scripts/sporttery-sniper` 仅作离线解析与 `npm test`，不是线上抓取入口
 
 ### 赛程同步
 
-同步当前销售日赛程（标准格式 `--format agent-json`）：
-
-```bash
-cd scripts/sporttery-sniper
-npm run schedule -- --format agent-json
-```
-
-同步指定销售日：
-
-```bash
-cd scripts/sporttery-sniper
-npm run schedule -- --date 2026-06-11 --format agent-json
-```
+用 `/browseros-neo` 打开 `https://jc.titan007.com/index.aspx`（或同场 `odds_jc.txt` 对应页面），抽出当日竞彩编号、比赛 ID、开球、对阵、分析页链接；落盘后再写 memory。
 
 输出要求：
 
-- JSON 顶层 `kind` 为通用规范 `agent.schedule`
+- 落盘后可供流程消费的结构对齐 `agent.schedule`
 - `matches` 必须为数组
 - 每场至少读取 `no`、`matchId`、`league`、`leagueLevel`、`kickoffTime`、`status`、`homeTeam`、`awayTeam`、`analysisUrl`
 
 ### 单场深度分析数据抓取
 
-按比赛 ID 抓取：
-
-```bash
-cd scripts/sporttery-sniper
-npm run analyze -- 2990354 --history-window all --format agent-json
-```
-
-按 titan007 分析页 URL 抓取：
-
-```bash
-cd scripts/sporttery-sniper
-npm run analyze -- https://zq.titan007.com/analysis/2990354cn.htm --history-window all --format agent-json
-```
+用 `/browseros-neo` 打开该场球探 5 页（分析页含阵容、亚盘、大小球、变盘流水、百家欧赔），落盘 `data/{销售日}/{matchId}.json` 后再十步。禁止先 `npm run analyze`。
 
 输出要求：
 
-- JSON 顶层 `kind` 为通用规范 `agent.analysis`
+- 快照可映射为 `agent.analysis`
 - `match` 必须包含 `matchId`、`league`、`kickoffTime`、`homeTeam`、`awayTeam`、`analysisUrl`
-- `context` 是给 agent 阅读和分析的 Markdown 上下文
-- `detail` / `markets` 是结构化原始数据，供写 memory、推荐和复盘使用
+- **落盘验收门（页上有字必须抄全；行少不是缺流水）**：
+  1. 亚盘四家（澳彩 companyID=1、皇冠 3、365 8、易胜博 12）变盘页**每一行**（初盘+即时两行 ≠ 全量流水）
+  2. 大小球上述四家变盘页**每一行**
+  3. 欧指**分析依据公司**流水（欧洲赛事：威廉、365、立博、伟德、平博；德国联赛：威廉、365、Interwetten；亚洲联赛：澳彩、皇冠、365、易胜博、马会）
+  4. 主客场 / 近 6 进失球数字：优先分析页「联赛积分排名」全场「总 / 主 / 客 / 近6」的赛、胜、平、负、得、失。该表格子为空时，用同一分析页「数据对比」的**同主客**进/失，加上「近期战绩」近 6 场比分算出场均。页上有数字却没写进 json = 抄漏，先补抓。
+- 分析页「阵容情况」两侧或一侧印「暂无数据」= 该侧格子未填，**不是**整页没数据，也**不是**「没人受伤」。置顶提醒并**贴页上原句**，写入快照后**继续十步、不等主人**；禁止写成无伤停 / 全主力。只有页上印出「无伤停球员」这类明确名单，才可写无人缺阵。一侧空、对侧有姓名，按两侧分别记账。
 
 ### 赛后复盘数据抓取
 
-按比赛 ID 抓取完场赛果及复盘上下文：
-
-```bash
-cd scripts/sporttery-sniper
-npm run review -- 2990354 --format agent-json
-```
+用 `/browseros-neo` 打开该场即时详情页 `https://live.titan007.com/detail/{matchId}cn.htm` 抽全场/半场比分与事件。禁止先 `npm run review`。
 
 输出要求：
 
-- JSON 顶层 `kind` 为通用规范 `agent.review`
-- `context` 包含已完场全场比分、半场比分及比赛事件
-- `detail` 包含主客队与完场比分结构化数据
+- 快照可映射为 `agent.review`
+- 含已完场全场比分、半场比分及比赛事件
 
 ### 数据范围
 
-sporttery-sniper 会抓取并输出：
+`/browseros-neo` 从球探页抽出：
 
 - 赛程：竞彩编号、比赛 ID、销售日、开球时间、赛事、状态、对阵、让球、竞彩胜平负指数
 - 基本面：比赛信息、技术统计、联赛积分、对赛往绩
@@ -89,8 +61,8 @@ sporttery-sniper 会抓取并输出：
 
 ### 数据安全规则
 
-- **赔率必须实时抓取**：每次分析都重新运行 sporttery-sniper，不复用 memory 中旧赔率。
-- **只用赛前赔率**：sporttery-sniper 会过滤状态为“滚”的记录，并按开赛时间截断赛前变化历史。
+- **赔率必须实时抓取**：每次分析都用 `/browseros-neo` 重开球探页，不复用 memory 中旧赔率。
+- **只用赛前赔率**：过滤状态为“滚”的记录，并按开赛时间截断赛前变化历史。
 - **缺失不臆造**：如果某家公司或某类市场缺失，报告中必须标注数据缺口，并降低对应维度权重。
 - **平博用途**：平博可作为主流公司交叉验证参考，不单独用于决策依据。
 
@@ -107,14 +79,15 @@ npm test
 
 6 列表最后一格的查找步骤见 `docs/Polymarket链接查找教程.md`。读盘不改图上数字；找链接用体彩现价对场次，再用接口核实体，禁止瞎拼地址。
 
-## 多数据源与双轨热备系统 (Failover System)
+## 数据源与主源失败处理
 
-为彻底杜绝单一第三方网站依赖与关站停摆风险，系统底层实现了统一数据插座规范（详见 ADR 0001）：
+盘口主源是球探网。资料齐不齐、对不对，不看网站姓什么（详见 ADR 0001）。**线上抓取默认 `/browseros-neo`，不再先跑脚本。**
 
-### 1. 赔率与赛程双轨热备
-- **主数据源（Primary）**：titan007，支持 14 大机构（含威廉、立博、伟德、平博、Bwin、SNAI、必发等）全时序与 Crown 波胆。
-- **备用热备（Secondary）**：澳客网 + 中国体彩官方网关（`okooo-adapter.js`）。
-- **自动熔断策略**：由 `failover-manager.js` 统一调度，主源异常或超时自动重试 1 次，若依然打不开，1 秒内平滑切换至备用源，并在最终输出中添加透明通知。
+### 1. 赔率与赛程
+- **主数据源（Primary）**：titan007 球探页，支持 14 大机构全时序与 Crown 波胆。
+- **抓取通道**：`/browseros-neo` 直开同一家球探页。禁止先 `npm run schedule` / `analyze` / `review`。脚本通道已被握手拦截。残页/空流水必须马上置顶提醒并贴页上原句，然后继续十步；禁止静默、禁止跳过。
+- **其他来源**：亚盘/欧指流水、机构盘口、主客场/近6数字齐全、没错、对得上 → 可以代。错了、空了、少了一截 → 不能代。缺验收门：置顶提醒并贴页上原句；当面聊天先停，等主人回再继续；定时任务置顶后继续十步，不准跳过。伤停格「暂无数据」不是缺数据，不挡十步。
+- **体彩官方网关**：核对场次编号、开售窗口、节假日休市（见 `config/datasources.json` 的 `sporttery_match_codes`）。三项静态赔本身不是完整盘口资料。找 6 列表链接时用它对照现价对场次。
 
 ### 2. 阵容伤停独立双引擎 (Lineup & Injury Engine)
 - **英超官方 FPL 数据库**：通过 `injury-service.js` 直连英超官方数据，零等待获取主力伤情与出战概率。
@@ -124,18 +97,20 @@ npm test
 - **Football-Data.org**：免费提供欧洲主要联赛赛程、积分榜、H2H 交锋与阵容（凭证读取自 `~/.gemini/config/football_data_tokens.json`）。
 - **The Odds API (the-odds-api.com)**：免费 Starter 方案支持平博、365、威廉等做市商标准 1X2 与盘口查询（作为 Pinnacle / Betfair 尖锐欧指去水验真辅轨，详见 ADR 0012）。
 
-## 核心安全通道：BrowserOS neo 真实浏览器直取与数据快照留底
+## 核心安全通道：`/browseros-neo` 真实浏览器直取与数据快照留底
 
-当 titan007 接口对普通代码请求（Node/Python/curl）触发 TLS 指纹拦截（`socket hang up` / `ECONNRESET`）时，系统自动切入真实浏览器直取通道：
+这是正式抓取入口，不是脚本失败后的备胎。调用的是爱马仕 `/browseros-neo`（智能体专用浏览器），不是让主人自己开网页，也不是另装爬虫。
 
-1. **零代码拦截直连**：调用 `browseros-neo` 打开球探网 5 大核心页面（`analysis` 分析页、`AsianOdds_n` 亚盘、`OverDown_n` 大小球、`changeDetail` 分钟级变盘流水、`oddslist` 百家欧赔）；
+1. **直开球探 5 页**：`analysis` 分析页、`AsianOdds_n` 亚盘、`OverDown_n` 大小球、`changeDetail` 分钟级变盘流水、`oddslist` 百家欧赔；赛程开竞足首页；复盘开即时详情页。
 2. **全维度多机构时序提取规约**：
-   - **多机构欧指 1X2**：提取威廉、365、立博、Interwetten、澳彩、平博等巨头的初盘与即时盘（`1x2/oddslist/{id}.htm`）；
-   - **亚盘让球分钟流水**：提取核心机构（澳彩 companyID=1、皇冠 companyID=3、365 companyID=8、易胜博 companyID=12）全周期变盘记录（`changeDetail/handicap.aspx`）；
-   - **大小球进球数流水**：提取核心机构（皇冠 companyID=3、澳彩 companyID=1、365 companyID=8）全周期进球数升降流水（`changeDetail/overunder.aspx`）；
-   - **Crown 皇冠波胆全指数**：提取分析页 `#analy_sbAllOdds` 中 0:0～4:4 比分、半全场与总进球数精确赔率矩阵；
-3. **本地快照原子化存盘**：将提取到的全维度数据规范保存为 `data/YYYY-MM-DD/{matchId}.json`（必须包含 `fiveStageTimeFlow` 五阶段时序转折数据：T0初盘骨架/T1早盘试探/T2中盘假摔/T3临盘洗盘/T4终盘出清），作为赛前不可篡改的证据底账；
-4. **推演引擎秒级消费**：AI 大模型与推演引擎直接读取该真实数据快照，实现 0 延迟无感推演，彻底根除网络报错与假数据隐患。
+   - **多机构欧指 1X2**：提取分析依据公司的初盘、即时盘与变盘页**每一行**（`1x2/oddslist/{id}.htm` + `changeDetail/1x2.aspx`）；只抄现价或表头 ≠ 流水。
+   - **亚盘让球分钟流水**：澳彩 companyID=1、皇冠 3、365 8、易胜博 12 的变盘页**每一行**（`changeDetail/handicap.aspx`）；初盘+即时两行 ≠ 全量。
+   - **大小球进球数流水**：上述四家变盘页**每一行**（`changeDetail/overunder.aspx`）。
+   - **主客场 / 近 6 进失球**：分析页「联赛积分排名」全场「总 / 主 / 客 / 近6」。该表空则抽同一页「数据对比·同主客」与「近期战绩」近 6 场比分。
+   - **Crown 皇冠波胆全指数**：分析页 `#analy_sbAllOdds` 中 0:0～4:4 比分、半全场与总进球；有则写入，缺了不挡验收门。
+3. **本地快照原子化存盘**：将提取到的数据保存为 `data/YYYY-MM-DD/{matchId}.json`（含 `fiveStageTimeFlow`：T0初盘骨架/T1早盘试探/T2中盘假摔/T3临盘洗盘/T4终盘出清），作为赛前证据底账。
+4. **推演引擎消费**：读取该快照。验收门四项（亚盘四家全行、大小球四家全行、欧指依据公司流水、主客场/近6数字）缺一门：置顶提醒并贴页上原句；当面聊天先停，等主人回再继续；定时任务置顶后继续十步，不准跳过。页上有多少变盘行抄多少行；行少不是缺流水。不得拿残页硬推。
+5. **伤停空表不挡十步**：分析页必须抽出双方伤停/停赛表。空表记下「该侧暂无数据 / 伤停未核实」，置顶贴页上原句，**继续十步、不等主人**。禁止写成无伤停。不得只存体彩三项交差。
 
 ## Subagent 工具
 
@@ -159,12 +134,12 @@ npm test
 ```
 # 赛程同步（单个 subagent）
 sessions_spawn:
-  task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，使用 scripts/sporttery-sniper 抓取今日全量赛程，通过 messaging 推送赛程列表给主人，写入 memory/{今天日期}.md。"
+  task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，用 /browseros-neo 打开球探竞足页抓今日全量赛程，禁止先跑 npm run schedule。通过 messaging 推送赛程列表给主人，写入 memory/{今天日期}.md。"
   label: "match-sync"
 
 # 深度分析（编排 subagent 内部 spawn worker）
 sessions_spawn:
-  task: "深度分析 [英超] 阿森纳 vs 曼城（ID: 2950977）。读取 skills/deep-analysis/SKILL.md。严格按照模板，先使用 scripts/sporttery-sniper 抓取上下文，再完成全部 10 步分析；超 4000 字须分段。通过 messaging 推送分析报告给主人。返回结构化综合评估结果（JSON 格式）。"
+  task: "深度分析 [英超] 阿森纳 vs 曼城（ID: 2950977）。读取 skills/deep-analysis/SKILL.md。严格按照模板，先用 /browseros-neo 打开该场球探 5 页落盘，禁止先跑 npm run analyze，再完成全部 10 步分析；超 4000 字须分段。通过 messaging 推送分析报告给主人。返回结构化综合评估结果（JSON 格式）。"
   label: "deep-analysis-2950977"
   runTimeoutSeconds: 900
 ```
