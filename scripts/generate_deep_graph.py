@@ -115,6 +115,21 @@ def run_deep_graphify():
     add_inferred(hub_map['post_review'], hub_map['sniper'], "fetches_verified_match_results", 0.95)
     add_inferred(hub_map['tools'], hub_map['sniper'], "documents_cli_tooling", 0.95)
 
+    # 算法/ 纯数学 OO-EPC 领域模块与 CLI 绑定
+    algo_cli_node = "code_算法_src_adapter_cli"
+    algo_domain_node = "code_算法_src_domain_calculator"
+    if not G.has_node(algo_cli_node):
+        G.add_node(algo_cli_node, label="cli.py (OO-EPC去水CLI)", file_type="code", source_file=str(root / "算法/src/adapter/cli.py"))
+    if not G.has_node(algo_domain_node):
+        G.add_node(algo_domain_node, label="OoEpcCalculator (Goto 2026)", file_type="code", source_file=str(root / "算法/src/domain/calculator.py"))
+
+    add_inferred(algo_cli_node, algo_domain_node, "dispatches_to_domain_calculator", 0.95)
+    add_inferred(hub_map['analysis'], algo_cli_node, "executes_cli_for_unbiased_probabilities", 0.95)
+    add_inferred(hub_map['recommendation'], algo_cli_node, "populates_column_4_oo_epc_probabilities", 0.95)
+    add_inferred(hub_map['tools'], algo_cli_node, "documents_pure_math_cli_tool", 0.95)
+    if 'concept_oo_epc_unbiased_normalization' in G:
+        add_inferred(algo_domain_node, 'concept_oo_epc_unbiased_normalization', "realizes_mathematical_concept", 0.95)
+
     # 4b. Thoroughly cross-link EVERY single markdown file in the workspace
     all_md_files = list(root.glob('**/*.md'))
     print(f"Deep semantic cross-linking for all {len(all_md_files)} markdown files...")
@@ -139,6 +154,11 @@ def run_deep_graphify():
 
             elif '水位' in name_lower or '盘赔' in name_lower or '比较' in name_lower:
                 add_inferred(hub_map['analysis'], main_doc_node, "executes_step_6_water_level_risk_pricing", 0.95)
+
+            elif '去水' in name_lower or 'epc' in name_lower or 'oo-epc' in name_lower:
+                add_inferred(hub_map['analysis'], main_doc_node, "executes_step_4_unbiased_oo_epc_probabilities", 0.95)
+                add_inferred(hub_map['recommendation'], main_doc_node, "formats_six_column_column_4", 0.95)
+                add_inferred(algo_cli_node, main_doc_node, "implements_cli_workflow", 0.95)
 
             elif '比分' in name_lower or '泊松' in name_lower:
                 add_inferred(hub_map['analysis'], main_doc_node, "executes_step_10_poisson_scoreline_modeling", 0.95)

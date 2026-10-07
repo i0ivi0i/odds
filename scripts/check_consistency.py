@@ -131,9 +131,23 @@ def main() -> int:
             print(f"图谱解析异常: {e}", file=sys.stderr)
             return 3
 
+    # 算法/ 纯数学 DDD 模块健康自检
+    algo_dir = repo_root / "算法"
+    if algo_dir.exists():
+        import subprocess
+        res = subprocess.run(
+            [sys.executable, "-m", "unittest", "discover", "-s", "算法/测试"],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True
+        )
+        if res.returncode != 0:
+            print(f"算法/ 纯数学单测异常:\n{res.stderr}", file=sys.stderr)
+            return 4
+
     if not all_findings:
         if args.print_ok:
-            print("OK: 未发现口径回退且图谱0孤岛100%连通（skills/docs/scripts/graphify）")
+            print("OK: 未发现口径回退且图谱0孤岛100%连通且算法单测通过（skills/docs/scripts/graphify/算法）")
         return 0
 
     # 以 path + line_no 排序，方便定位

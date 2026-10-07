@@ -75,6 +75,19 @@ npm test
 
 测试不需要真实网络请求，主要验证解析器、JSON 输出和本地样例。
 
+### 纯数学去水算法工具（算法/src/adapter/cli.py）
+
+标准东京大学 Shota Goto (2026) OO-EPC 官方原版去水计算器。
+用于欧指分析第 4 步、四项论文质问之二及六列表第 4 列的点概率计算。杜绝大模型心算与概率失真。
+
+```bash
+# 标准计算（文本输出）
+python 算法/src/adapter/cli.py 2.10 3.40 3.55
+
+# 结构化计算（JSON输出，供程序与 Worker 消费）
+python 算法/src/adapter/cli.py 2.10 3.40 3.55 --json
+```
+
 ## Polymarket 下单链接
 
 6 列表最后一格的查找步骤见 `docs/Polymarket链接查找教程.md`。读盘不改图上数字；找链接用体彩现价对场次，再用接口核实体，禁止瞎拼地址。
