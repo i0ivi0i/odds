@@ -38,7 +38,7 @@ curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" -H "Referer: https://www.lottery.g
 curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" "https://gamma-api.polymarket.com/events?slug=联赛缩写-主队三字-客队三字-年-月-日"
 ```
 
-返回 `[]` 或报错 = **这场没开或缩写错了**，进入第 2 步。不要把空结果说成「已验证」。
+返回 `[]` 只表示该 slug 未找到实体；报错表示访问失败。两者都进入第 2 步查找，不直接写成未开盘。不要把空结果说成「已验证」。
 
 常见联赛缩写：欧国联 `unl`，英超 `epl`，欧冠 `ucl`，西甲 `lal`，友谊赛可能是 `fif`（以搜到的为准）。
 
@@ -50,13 +50,15 @@ curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" "https://gamma-api.polymarket.com/
 curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" --get "https://gamma-api.polymarket.com/public-search" --data-urlencode "q=队名 队名 年-月-日"
 ```
 
-从结果里抄 `slug`、`title`。搜不到就标【Polymarket 未开盘】。
+从结果里抄 `slug`、`title`，核对阵、开球与市场规则。搜不到写【未找到市场】；访问失败写【核验失败】；只有实体及开放状态确已核实，才写【Polymarket 未开盘】。
 
 ### 3）读价钱
 
-市场列表里问题含 `win` / `draw`。`outcomePrices` 第一个数是「是」的价格，用美分说：`0.295` = **29.5¢**，约 **3.4 倍**（1÷0.295）。
+市场列表里问题含 `win` / `draw`。先将 `outcomes`、`outcomePrices` 与 `clobTokenIds` 同位置对齐，确认 Yes 项，不能默认第一项就是 Yes。`outcomePrices` 是 Gamma 展示价，不是保证可成交的买入价。用美分说：`0.295` = **29.5¢**，约 **3.4 倍**（1÷0.295）。该倍数未扣费用，也不保证有卖单。
 
-分析胜负平仍以球探/体彩为准，**不要用这个市场的价钱当庄家底牌**。
+要核可买报价：查 CLOB 对应 Yes 合约的最佳卖价、可买数量、买卖差与报价时间。无卖单写当前无可买报价。实际成交价需成交记录。
+
+分析胜负平仍以球探/体彩为准，**不要用这个市场的价钱当庄家底牌，也不进入十步去水基准**。
 
 ## 四、怎么写成可点的链接
 
@@ -79,7 +81,7 @@ curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" --get "https://gamma-api.polymarke
 - 先写体彩代号；对不上就写【体彩未开售/无场次代号】。
 - 推平：链到该场页面，并写明平局现价。
 - 推比分：告诉主人点队名下的 **Exact Score（准确比分）**，不要假装页面一打开就是波胆。
-- 接口里没有这场实体，就写未开盘，**禁止拼一个 200 也打不开的地址**。
+- 接口未找到实体写「未找到市场」，访问失败写「核验失败」；只有核实实体及开放状态后才写「未开盘」。**禁止拼一个 200 也打不开的地址**。
 
 ## 五、换 AI 时最少要做的
 
