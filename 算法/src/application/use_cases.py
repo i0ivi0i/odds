@@ -5,9 +5,10 @@
 - OddsConversionResult: 纯数据传输对象 (DTO)
 """
 
-from typing import Sequence, Dict, Any, Type, Tuple
+from typing import Sequence, Dict, Any, Type, Tuple, Optional
 from ..domain.model import OddsVector, ImpliedProbabilities
 from ..domain.calculator import OoEpcCalculator, MarginCalculatorStrategy
+from ..domain.poisson import PoissonEngine, PoissonParams, PoissonResult
 
 
 class OddsConversionResult:
@@ -112,3 +113,24 @@ class ConvertOddsUseCase:
             margin=odds_vector.margin,
             algorithm=algo_name
         )
+
+
+class CalculatePoissonUseCase:
+    """泊松进球期望值与比分概率计算用例 (Application Service)"""
+
+    def __init__(self, engine: Optional[PoissonEngine] = None):
+        self._engine = engine or PoissonEngine()
+
+    def execute(
+        self,
+        lambda_home: float,
+        lambda_away: float,
+        top_n: int = 6,
+        apply_low_score_factors: bool = True,
+    ) -> Dict[str, Any]:
+        result: PoissonResult = self._engine.calculate(
+            lambda_home=lambda_home,
+            lambda_away=lambda_away,
+            apply_low_score_factors=apply_low_score_factors,
+        )
+        return result.to_dict(top_n=top_n)

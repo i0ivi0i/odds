@@ -88,6 +88,22 @@ python 算法/src/adapter/cli.py 2.10 3.40 3.55
 python 算法/src/adapter/cli.py 2.10 3.40 3.55 --json
 ```
 
+### 数据完整性质量守门人（校验/src/adapter/cli.py）
+
+标准 10/10 纯 DDD 洋葱六边形架构质量守门人模块。
+用于深度分析步骤 1.5、Worker 派发安检与全库一致性防回退巡检。对 6 大黄金维度实现物理硬熔断，彻底阻断大模型在数据残缺时偷懒说谎或脑补盘赔。
+
+```bash
+# 单场比赛快照 6 维度物理安检（核心数据缺失返回 exit 1 物理熔断）
+python 校验/src/adapter/cli.py --match data/2026-10-07/2981506.json
+
+# 结构化输出快照安检法定收据（JSON格式）
+python 校验/src/adapter/cli.py --match data/2026-10-07/2981506.json --json
+
+# 全系统一致性、图谱连通性与算法单测联合健康巡检
+python 校验/src/adapter/cli.py --system
+```
+
 ## Polymarket 下单链接
 
 6 列表最后一格的查找步骤见 `docs/Polymarket链接查找教程.md`。读盘不改图上数字；找链接用体彩现价对场次，再用接口核实体，禁止瞎拼地址。

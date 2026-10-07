@@ -38,15 +38,19 @@ def run_deep_graphify():
     
 
     # 3. Resolve Hub Nodes across subsystems
-    def resolve_hub(fallback_keyword):
+    def resolve_hub(fallback_keyword, exact_candidates=None):
+        if exact_candidates:
+            for c in exact_candidates:
+                if G.has_node(c):
+                    return c
         for n in G.nodes:
             if fallback_keyword in n:
                 return n
         return None
 
     hub_map = {
-        'agents': resolve_hub('agents_agents_md'),
-        'soul': resolve_hub('soul_soul_md'),
+        'agents': resolve_hub('agents_agents_md', ['d_100_工作_200_交易_倍率分析推演_agents_agents_md_足彩分析工作流操作手册', 'agents_agents_md']),
+        'soul': resolve_hub('soul_soul_md', ['d_100_工作_200_交易_倍率分析推演_soul_soul_md_你是谁', 'soul_soul_md']),
         'identity': resolve_hub('identity'),
         'user': resolve_hub('user'),
         'safety': resolve_hub('safety'),
@@ -55,11 +59,11 @@ def run_deep_graphify():
         'memory': resolve_hub('memory_累计战绩') or resolve_hub('memory'),
 
         'template': resolve_hub('赛前赛后分析模板') or resolve_hub('template'),
-        'scraper': resolve_hub('match_scraper'),
-        'screening': resolve_hub('match_screening'),
-        'analysis': resolve_hub('deep_analysis'),
-        'recommendation': resolve_hub('recommendation'),
-        'post_review': resolve_hub('post_review'),
+        'scraper': resolve_hub('match_scraper', ['skills_match_scraper_skill', 'skills_match_scraper_skill_赛程抓取_match_scraper']),
+        'screening': resolve_hub('match_screening', ['d_100_工作_200_交易_倍率分析推演_skills_match_screening_skill_赛事初筛_match_screening']),
+        'analysis': resolve_hub('deep_analysis', ['d_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_深度分析_deep_analysis']),
+        'recommendation': resolve_hub('recommendation', ['d_100_工作_200_交易_倍率分析推演_skills_recommendation_skill_推荐输出_recommendation']),
+        'post_review': resolve_hub('post_review', ['d_100_工作_200_交易_倍率分析推演_skills_post_review_skill_赛后复盘_post_review']),
         'sniper': resolve_hub('sporttery_sniper_src_titan007') or resolve_hub('sniper'),
         'poisson': resolve_hub('poisson_lib') or resolve_hub('poisson')
     }
@@ -126,9 +130,43 @@ def run_deep_graphify():
     add_inferred(algo_cli_node, algo_domain_node, "dispatches_to_domain_calculator", 0.95)
     add_inferred(hub_map['analysis'], algo_cli_node, "executes_cli_for_unbiased_probabilities", 0.95)
     add_inferred(hub_map['recommendation'], algo_cli_node, "populates_column_4_oo_epc_probabilities", 0.95)
+    add_inferred(hub_map['post_review'], algo_cli_node, "audits_and_scores_oo_epc_probabilities", 0.95)
     add_inferred(hub_map['tools'], algo_cli_node, "documents_pure_math_cli_tool", 0.95)
     if 'concept_oo_epc_unbiased_normalization' in G:
         add_inferred(algo_domain_node, 'concept_oo_epc_unbiased_normalization', "realizes_mathematical_concept", 0.95)
+
+    # 校验/ 领域驱动洋葱六边形数据完整性守门人与 CLI 绑定
+    verify_cli_node = "code_校验_src_adapter_cli"
+    verify_domain_node = "code_校验_src_domain_verifier"
+    if not G.has_node(verify_cli_node):
+        G.add_node(verify_cli_node, label="cli.py (校验数据完整性守门人CLI)", file_type="code", source_file=str(root / "校验/src/adapter/cli.py"))
+    if not G.has_node(verify_domain_node):
+        G.add_node(verify_domain_node, label="SnapshotVerifier (6大黄金维度安检聚合)", file_type="code", source_file=str(root / "校验/src/domain/verifier.py"))
+
+    add_inferred(verify_cli_node, verify_domain_node, "dispatches_to_snapshot_verifier", 0.95)
+    add_inferred(hub_map['analysis'], verify_cli_node, "physically_blocks_analysis_on_corrupted_snapshot", 0.98)
+    add_inferred(hub_map['tools'], verify_cli_node, "documents_data_integrity_gatekeeper_cli", 0.95)
+    add_inferred(hub_map['agents'], verify_cli_node, "mandates_worker_pre_flight_check", 0.98)
+
+    # 4a-2. 接入全局智能体技能 pansuan-workflow 与 odds-1x2-sniper
+    pansuan_path = Path.home() / "AppData/Local/hermes/skills/pansuan-workflow/SKILL.md"
+    odds_sniper_path = Path.home() / "AppData/Local/hermes/skills/odds-1x2-sniper/SKILL.md"
+    node_pansuan = "skill_pansuan_workflow"
+    node_odds_sniper = "skill_odds_1x2_sniper"
+
+    if pansuan_path.exists():
+        if not G.has_node(node_pansuan):
+            G.add_node(node_pansuan, label="pansuan-workflow (全局工作流)", file_type="skill", source_file=str(pansuan_path))
+        add_inferred(node_pansuan, hub_map['agents'], "orchestrates_entire_agent_system", 0.98)
+        add_inferred(node_pansuan, hub_map['analysis'], "governs_deep_analysis_methodology", 0.98)
+        add_inferred(node_pansuan, hub_map['recommendation'], "enforces_six_column_table_delivery", 0.98)
+        add_inferred(node_pansuan, algo_cli_node, "mandates_pure_math_cli_usage", 0.98)
+
+    if odds_sniper_path.exists():
+        if not G.has_node(node_odds_sniper):
+            G.add_node(node_odds_sniper, label="odds-1x2-sniper (时序破盘狙击手)", file_type="skill", source_file=str(odds_sniper_path))
+        add_inferred(node_odds_sniper, hub_map['analysis'], "shares_dual_line_time_series_logic", 0.95)
+        add_inferred(node_odds_sniper, algo_cli_node, "queries_unbiased_probabilities_for_minimax", 0.95)
 
     # 4b. Thoroughly cross-link EVERY single markdown file in the workspace
     all_md_files = list(root.glob('**/*.md'))
