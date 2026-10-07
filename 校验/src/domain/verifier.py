@@ -49,6 +49,13 @@ class SnapshotVerifier:
         # 8. Polymarket 真实流动性与链接真实性核验
         results.append(self._check_polymarket(snapshot))
 
+        tactics = snapshot.get("tactics") or {}
+        profiling = snapshot.get("profiling") or {}
+        has_dual_track = bool(
+            tactics.get("technicalStats")
+            and (profiling.get("identicalOddsHistory") or profiling.get("handicapTrends"))
+        )
+
         return VerificationReceipt(
             match_id=match_id,
             results=results,
@@ -56,6 +63,9 @@ class SnapshotVerifier:
                 "source": snapshot.get("source", "unknown"),
                 "fetchedAt": snapshot.get("fetchedAt", "unknown"),
                 "league": snapshot.get("match", {}).get("league", "unknown"),
+                "has_dual_track": has_dual_track,
+                "tactics_present": bool(tactics),
+                "profiling_present": bool(profiling),
             },
         )
 
@@ -80,8 +90,10 @@ class SnapshotVerifier:
         basic_text = snapshot.get("basicStatsText") or ""
         goals_stats = snapshot.get("goalsStats") or match_info.get("goalsStats")
         correct_score = snapshot.get("correctScoreOdds") or ""
+        tactics = snapshot.get("tactics") or {}
+        tech_stats = tactics.get("technicalStats") or {}
 
-        if (home_goals and away_goals) or goals_stats:
+        if (home_goals and away_goals) or goals_stats or tech_stats:
             has_goals = True
         elif basic_text:
             if re.search(r"(?:进|失|得)\s*\d+", basic_text):
@@ -93,15 +105,21 @@ class SnapshotVerifier:
             return DimensionResult(
                 dimension=DimensionType.BASIC_STATS,
                 status=CheckStatus.FAIL,
-                message="对阵基础战绩残缺: 缺少攻防进失球物理统计数字 (近6场/主客场进失球)",
+                message="对阵基础战绩残缺: 缺少攻防进失球物理统计数字 (近6场/主客场进失球或真实战术技统)",
                 detail={"home": home, "away": away, "league": league},
             )
+
+        detail_data: Dict[str, Any] = {"home": home, "away": away, "league": league}
+        msg = "对阵基础战绩与攻防进失球信息完整"
+        if tactics:
+            detail_data["tactics"] = tactics
+            msg += " (含真实场上压制力技统与时段赛程)"
 
         return DimensionResult(
             dimension=DimensionType.BASIC_STATS,
             status=CheckStatus.PASS,
-            message="对阵基础战绩与攻防进失球信息完整",
-            detail={"home": home, "away": away, "league": league},
+            message=msg,
+            detail=detail_data,
         )
 
     def _check_europe_1x2(self, snapshot: Dict[str, Any]) -> DimensionResult:
@@ -118,18 +136,48 @@ class SnapshotVerifier:
                 message="欧洲指数(1X2)数据缺失，未检测到百家欧指初即盘文本或历史",
             )
 
+        # 强化质检: 必须包含机构已算好的返还率与凯利指数，严禁偷懒只抄3项主平客静态赔率
+        has_kelly_and_return = False
+
+        # 1. 结构化 europeCompanies 校验
+        if companies:
+            for c in companies:
+                init_data = c.get("initial") or {}
+                latest_data = c.get("latest") or {}
+                has_ret = "return_rate" in init_data or "returnRate" in init_data or "return_rate" in latest_data or "returnRate" in latest_data
+                has_k = "kelly" in init_data or "kelly" in latest_data
+                if has_ret and has_k:
+                    has_kelly_and_return = True
+                    break
+
+        # 2. 文本表格校验 (匹配返还率与凯利指数关键词或百分比)
+        if not has_kelly_and_return and text:
+            has_ret_word = bool(re.search(r"(?:返还|返还率|\b\d{2}(?:\.\d+)?%)", text, re.I))
+            has_kelly_word = bool(re.search(r"(?:凯利|kelly)", text, re.I))
+            if has_ret_word and has_kelly_word:
+                has_kelly_and_return = True
+
+        if not has_kelly_and_return:
+            return DimensionResult(
+                dimension=DimensionType.EUROPE_1X2,
+                status=CheckStatus.FAIL,
+                message="欧洲指数(1X2)残缺: 缺少主流机构返还率与凯利指数数据 (平台已算好，严禁偷懒漏抄)",
+            )
+
         return DimensionResult(
             dimension=DimensionType.EUROPE_1X2,
             status=CheckStatus.PASS,
-            message="欧洲指数(1X2)主流机构初即盘完整",
+            message="欧洲指数(1X2)主流机构初即盘与返还率/凯利指数完整",
         )
 
     def _check_asian_handicap(self, snapshot: Dict[str, Any]) -> DimensionResult:
         text = snapshot.get("asianOddsText") or ""
         markets = snapshot.get("markets") or {}
         histories = markets.get("asianHistories") or []
+        profiling = snapshot.get("profiling") or {}
+        half_time = markets.get("halfTime") or {}
 
-        has_data = len(text.strip()) > 20 or len(histories) > 0
+        has_data = len(text.strip()) > 20 or len(histories) > 0 or bool(profiling)
         if not has_data:
             return DimensionResult(
                 dimension=DimensionType.ASIAN_HANDICAP,
@@ -137,10 +185,20 @@ class SnapshotVerifier:
                 message="亚洲让球盘(AH)主流机构盘口水位缺失",
             )
 
+        detail_data: Dict[str, Any] = {}
+        msg = "亚洲让球盘主流机构盘口与水位完整"
+        if profiling:
+            detail_data["profiling"] = profiling
+            msg += " (含相同初盘画像与盘路形态)"
+        if half_time:
+            detail_data["halfTime"] = half_time
+            msg += " (含半场双盘联动)"
+
         return DimensionResult(
             dimension=DimensionType.ASIAN_HANDICAP,
             status=CheckStatus.PASS,
-            message="亚洲让球盘主流机构盘口与水位完整",
+            message=msg,
+            detail=detail_data,
         )
 
     def _check_over_under(self, snapshot: Dict[str, Any]) -> DimensionResult:
