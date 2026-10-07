@@ -38,7 +38,10 @@ def format_receipt_console(receipt) -> str:
 
     lines.append(f"------------------------------------------------------------")
     if receipt.is_valid:
-        lines.append(f"🎉 状态: 验收全部通过 ({receipt.overall_status.value}) - 允许启动 10 步深度推演！")
+        msg = f"🎉 状态: 验收全部通过 ({receipt.overall_status.value}) - 允许启动 10 步深度推演！"
+        if receipt.metadata.get("has_dual_track"):
+            msg += "\n🔥 进阶: 已装载【物理客观底牌】与【散户偏见镜像】双轨实战数据，支持站在庄家视角反向破译！"
+        lines.append(msg)
     else:
         lines.append(f"🚫 状态: 验收失败 ({receipt.overall_status.value}) - 存在核心数据缺口，物理熔断禁止推演！")
     lines.append(f"============================================================")
