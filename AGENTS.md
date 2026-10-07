@@ -11,7 +11,11 @@
 5. **主会话中绝对强制必读 `MEMORY.md`（长期记忆中枢与智慧芯片）**：AI 每次唤醒皆为新生，`MEMORY.md` 是系统中与 SOUL.md（灵魂信条）、USER.md（主人诉求）、STRATEGY.md（战略大图）及 Graphify 知识图谱等多个解耦子系统紧密协同的【长期记忆中枢】。里面刻录着系统演化三阶总战略、严禁代码的最高立宪红线、历史实战对账沉淀的血泪教训以及策略调优记录。不读 MEMORY.md 就缺失了关键的历史经验中枢，必然重蹈历史覆辙！必须在做任何事情前深度通读领会，严格遵照执行！
 6. **凡涉及倍率与赛果推演**：按 `skills/deep-analysis/SKILL.md` 的完整分析流程执行：欧指、亚盘、大小球的赛前变动轨迹与多公司交叉验证 → 合理性及跨市场变动分析 → 关键点、疑点、矛盾与风险 → 综合评估；由 recommendation 汇总推荐，post-review 回查赛前依据并更新统计。截图训练只用图上数据，缺失维度如实标注，不另套案例口诀。
 7. **先走图谱再开口（高频深广检索与自愈自进化推演大脑）**：本项目已用 graphify 把全库打通。每次回答、思考、分析、推演，必须调用 graphify 进行深层拓扑遍历（贯穿战前初诊 BFS 广搜、物理基准 DFS 进球穿透、博弈时序多跳假摔穿透三大战区），再开口说话。检索遭遇脱靶自动语义升维，理论矛盾严格以庄家“极小化最大损失”第一性原理收敛自愈；赛前冻结认知基因埋点，赛后复盘经 Aiyer 决策审计验真后将教训回流至 `MEMORY.md` 驱动系统实战自进化。图谱是全局地图，帮你穿透表象看见深层系统关系；**不替代当场三端计算**，也不拿节点名当结论。
-8. **系统演化三阶总战略（马斯克做减法 × 乔布斯极简原则）**：在以后本足球系统的优化微调中，严格遵循“① 主要优先做减法；② 其次要做微调；③ 最后在实在不得已的情况下才做加法”。**我们这个系统是严格禁止使用任何代码的！除非是用来抓取数据或者某些特殊算法，才允许使用代码。** 所有推演决策、盘赔破译与复盘自进化，必须全权依托 AI 大模型的主观意图、大局观与深度逻辑判断，少用代码和死尺子，坚决杜绝死板门禁与刻舟求剑；严禁编写或提议代码脚本逃避深度决策思考！想做加法必须先向主人请示报告。
+8. **系统演化三阶总战略与 deep-analysis 封顶铁律（马斯克做减法 × 乔布斯极简原则 × 保魂去腐）**：
+   - **演化三阶原则**：在以后本足球系统的优化微调中，严格遵循“① 主要优先做减法；② 其次要做微调；③ 最后在实在不得已的情况下才做加法”。想做加法必须先向主人请示报告。
+   - **`skills/deep-analysis/SKILL.md` 刚性封顶纪律**：该技能行数与字数已达物理上限，**严禁任何 AI 或维护者继续往里增加行数、字数或堆砌新规则**！未来方向仅限精炼优化、做减法或调整结构排序。
+   - **保魂去腐底线**：做减法只准剔除形式主义冗余、重复格式与死板表格约束；**绝对严禁大幅减少其中的博弈智慧、哲学思考、实战手感与习惯塑形**！核心心法与认知精髓寸步不让。
+   - **严禁代码逻辑**：**系统严格禁止使用任何代码编写业务推演逻辑！** 除非抓取数据或纯数学算法才允许代码。所有决策与盘赔破译全权依托大模型主观意图与大局观，坚决杜绝死尺子与一票否决。
 9. **工程沉淀与汇报规范（Compound Engineering）**：
    - 知识库路径：`docs/solutions/`（记录已解决工程问题、踩坑复盘与最佳实践，按模块与分类沉淀）。
    - 自动沉淀指令：After a solved, verified problem, automatically invoke the `ce-compound` skill with `mode:non-interactive` at the completion checkpoint only when the work produced durable project reasoning that is not readily recoverable from the final code, tests, types, comments, or existing documentation, and losing it would plausibly cause recurrence, material risk, or substantial rediscovery. Apply this counterfactual: if the learning document disappeared, would a future engineer reading the final implementation still be likely to repeat the mistake or redo substantial investigation? If not, do not invoke it. Completion, effort, and diff size alone are not enough. Capture at the checkpoint so a qualifying learning can ship in the PR that produced it, and only where the repository treats captured learnings as tracked, committed knowledge.
