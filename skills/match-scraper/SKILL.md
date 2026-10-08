@@ -131,6 +131,39 @@ metadata: { "emoji": "📆" }
 1. 用 `/browseros-neo` 打开球探竞足页并切到目标日期，落盘 `data/{目标日期}/schedule.json`
 2. 解析对齐 `agent.schedule` 的结构并按步骤 3～4 输出。
 
+---
+
+## 单场盘赔与多做市商时序采集规范（match-odds-scraper 专职规约）
+
+凡涉及单场比赛盘赔抓取与快照组装，必须在此严格执行多做市商并发直取，**严禁凭习惯只抓 1~2 家机构偷懒作弊**：
+
+### 1. 亚盘与大小球 7 大法定机构并发直取
+调用 Scrapling `bulk_get` 单次并发拉取 7 大法定做市商的分钟级变盘流水：
+- 法定做市商完整名单：
+  - `cid=1`: 澳彩 (Macau)
+  - `cid=3`: 皇冠 (Crown)
+  - `cid=8`: 365bet (Bet365)
+  - `cid=12`: 易胜博 (Easybet)
+  - `cid=47`: 平博 (Pinnacle)
+  - `cid=42`: 188 (188bet)
+  - `cid=48`: 香港马会 (HKJC)
+- 请求端点：
+  - 亚盘：`https://vip.titan007.com/changeDetail/handicap.aspx?id={matchId}&companyID={cid}&l=0`
+  - 大小球：`https://vip.titan007.com/changeDetail/overunder.aspx?id={matchId}&companyID={cid}&l=0`
+- 编码与过滤：解码使用 `gb18030`；严格过滤掉开球后的滚球记录，仅保留赛前连续变动流水。
+
+### 2. 欧洲指数 14 家做市商全时序解构
+- 请求端点：`https://1x2d.titan007.com/{matchId}.js`
+- 从 `var gameDetail=Array(...)` 中解构出包含时间戳与赔率的 `recordsText`；
+- 必须覆盖 14 家主流做市商（澳彩 80、Crown 545、365 281、易胜博 90、平博 177、威廉 115、立博 82、伟德 81、Interwetten 104、Bwin 255、SNAI 110、香港马会 432、188 976、必发 2）。
+
+### 3. 落盘安检与物理门禁核验
+- 组装写入 `data/{销售日}/{matchId}.json`；
+- 执行门禁物理命令：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.json`
+- 若返回 `FAIL`（如机构流水少于 3 家或缺少时序），物理熔断停止推演，必须补齐后方可放行。
+
+---
+
 ## 异常处理
 
 - `/browseros-neo` 打不开：**必须立即向主人置顶发出严重警报提示「🚨 抓取浏览器启动失败或无法打开目标页！」**。报告失败，结束流程。在当日 memory 留下请求范围、失败时点、工具错误、已取得部分、未完成项和恢复条件。已取得片段标未验收，不作为完整有效赛程交接。
