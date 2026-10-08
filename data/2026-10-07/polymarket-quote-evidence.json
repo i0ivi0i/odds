@@ -1,0 +1,44 @@
+{
+  "purpose": "足球交易交付通路验收，不是赛果推演或下注建议",
+  "event": "Arsenal FC vs. Leeds United FC",
+  "slug": "epl-ars-lee-2026-10-10",
+  "question": "Will Arsenal FC vs. Leeds United FC end in a draw?",
+  "gammaSource": "https://gamma-api.polymarket.com/events?slug=epl-ars-lee-2026-10-10",
+  "bookSource": "https://clob.polymarket.com/book",
+  "url": "https://polymarket.com/zh/sports/epl/epl-ars-lee-2026-10-10",
+  "capturedAt": "2026-10-07T10:41:25.093291+08:00",
+  "bookTimestamp": "1791340806346",
+  "outcome": "Yes",
+  "outcomeMapping": "从Gamma outcomes中找到Yes，使用相同索引的clobTokenIds请求订单簿；不保存合约ID值",
+  "assetMatches": true,
+  "acceptingOrders": true,
+  "closed": false,
+  "bestAsk": {"price": "0.19", "size": "4387.52"},
+  "bestBid": {"price": "0.18", "size": "7041.42"},
+  "spread": "0.01",
+  "conditionalGrossMultiple": "5.2631578947368425",
+  "settlementRules": {
+    "scope": "90分钟常规时间及补时，不含加时",
+    "draw": "Yes",
+    "otherwise": "No",
+    "postponed": "保持开放直到补赛完成",
+    "cancelledWithoutMakeup": "Yes",
+    "noAcceptableResultWithin24Hours": "按页面规则50-50或Draw适用处理"
+  },
+  "browserVerification": {
+    "method": "BrowserOS neo实时DOM",
+    "title": "阿森纳足球俱乐部与利兹联足球俱乐部的比赛 赔率与预测 (Oct. 10, 2026) | Polymarket",
+    "matchedTeams": true,
+    "matchedDate": "October 10, 2026",
+    "regularTimeMoneylineVisible": true,
+    "drawDisplayCents": "19",
+    "notFound": false
+  },
+  "limits": [
+    "这是当时报价快照，后续可变；卖单数量与报价不保证实际成交",
+    "条件总回收倍数不扣费用且不代表盈利保证",
+    "未执行买入或任何交易",
+    "体彩场次代号未核验，本文件为通路验收非正式推荐",
+    "不能用该市场价格进入足球十步推演或冒称已验证全部球队市场"
+  ]
+}

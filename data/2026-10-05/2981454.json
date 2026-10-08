@@ -1,0 +1,45 @@
+{
+  "kind": "agent.analysis",
+  "matchId": "2981454",
+  "source": "titan007:browseros-neo",
+  "matchTime": "2026-10-06 02:45",
+  "match": {
+    "league": "欧国联",
+    "homeTeam": "意大利",
+    "awayTeam": "土耳其"
+  },
+  "markets": {
+    "asianHandicap": {
+      "macao": { "opening": { "handicap": "1/1.5", "home": "0.95", "away": "0.89" }, "current": { "handicap": "1.5", "home": "1.04", "away": "0.80" } },
+      "bet365": { "opening": { "handicap": "1/1.5", "home": "1.03", "away": "0.83" }, "current": { "handicap": "1/1.5", "home": "0.80", "away": "1.05" } },
+      "crown": { "opening": { "handicap": "1/1.5", "home": "1.04", "away": "0.84" }, "current": { "handicap": "1/1.5", "home": "0.82", "away": "1.07" } },
+      "yishengbo": { "opening": { "handicap": "1/1.5", "home": "1.02", "away": "0.81" }, "current": { "handicap": "1/1.5", "home": "0.83", "away": "1.05" } }
+    },
+    "overUnder": {
+      "macao": { "opening": { "line": "3/3.5", "over": "1.00", "under": "0.80" }, "current": { "line": "3.0", "over": "0.90", "under": "0.90" } },
+      "crown": { "opening": { "line": "3.0", "over": "0.95", "under": "0.95" }, "current": { "line": "3.0", "over": "0.91", "under": "0.97" } }
+    },
+    "crownFullIndex": {
+      "1x2": { "home": "1.37", "draw": "5.10", "away": "8.50" },
+      "handicap": { "line": "1/1.5", "home": "0.82", "away": "1.07" },
+      "overUnder": { "line": "3.0", "over": "0.91", "under": "0.97" },
+      "correctScore": {
+        "1:0": 6.9, "2:0": 6.2, "2:1": 7.3, "3:0": 8.7, "3:1": 9.5,
+        "0:0": 16.0, "1:1": 8.7, "2:2": 18.0,
+        "0:1": 22.0, "1:2": 22.0, "0:2": 55.0
+      }
+    }
+  },
+  "timelineSample": [
+    "0.82 一球/球半 1.07 10-6 01:17",
+    "1.07 球半 0.82 10-6 00:08",
+    "1.06 球半 0.83 10-5 20:59",
+    "0.82 一球/球半 1.07 10-5 19:14",
+    "0.89 一球/球半 0.99 10-5 05:11"
+  ],
+  "verification": {
+    "liveCheckTime": "2026-10-06 01:46 CST",
+    "status": "PASS",
+    "note": "现场浏览器双重核验：澳彩强升球半(1.14高水)，皇冠/365即时一球/球半(0.82~0.93超低水阻上)，两队深盘差距巨大，绝非备用源半一假盘！"
+  }
+}

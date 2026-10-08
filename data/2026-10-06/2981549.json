@@ -1,0 +1,163 @@
+{
+  "kind": "agent.analysis",
+  "matchId": "2981549",
+  "sportteryCode": "周二003",
+  "source": "titan007:browseros-neo",
+  "fetchedAt": "2026-10-06 18:15 CST",
+  "previousSnapshot": "2026-10-06 17:36 CST 旧稿把空伤停表写成无伤停、把初即两行写成全量流水，本文件覆盖。",
+  "matchTime": "2026-10-06 22:00",
+  "kickoffStatus": "pre-match",
+  "match": {
+    "league": "欧国联",
+    "homeTeam": "哈萨克斯坦",
+    "awayTeam": "法罗群岛",
+    "round": "小组赛C联赛第4轮",
+    "venue": "阿斯塔纳竞技场",
+    "weather": "多云 9℃～10℃"
+  },
+  "pagesOpened": [
+    "https://zq.titan007.com/analysis/2981549cn.htm",
+    "https://vip.titan007.com/AsianOdds_n.aspx?id=2981549",
+    "https://vip.titan007.com/OverDown_n.aspx?id=2981549",
+    "https://1x2.titan007.com/oddslist/2981549.htm",
+    "https://vip.titan007.com/changeDetail/handicap.aspx?id=2981549&companyID=1",
+    "https://vip.titan007.com/changeDetail/handicap.aspx?id=2981549&companyID=3",
+    "https://vip.titan007.com/changeDetail/handicap.aspx?id=2981549&companyID=8",
+    "https://vip.titan007.com/changeDetail/handicap.aspx?id=2981549&companyID=12",
+    "https://vip.titan007.com/changeDetail/overunder.aspx?id=2981549&companyID=1",
+    "https://vip.titan007.com/changeDetail/overunder.aspx?id=2981549&companyID=3",
+    "https://vip.titan007.com/changeDetail/1x2.aspx?id=2981549&companyID=3",
+    "https://vip.titan007.com/changeDetail/1x2.aspx?id=2981549&companyID=8",
+    "https://vip.titan007.com/changeDetail/1x2.aspx?id=2981549&companyID=9",
+    "https://vip.titan007.com/changeDetail/1x2.aspx?id=2981549&companyID=31",
+    "https://vip.titan007.com/changeDetail/1x2.aspx?id=2981549&companyID=47"
+  ],
+  "standings": {
+    "home": { "rank": 4, "played": 3, "won": 0, "draw": 1, "lost": 2, "gf": 3, "ga": 5, "pts": 1 },
+    "away": { "rank": 3, "played": 3, "won": 0, "draw": 3, "lost": 0, "gf": 3, "ga": 3, "pts": 3 }
+  },
+  "recentForm": {
+    "home": "分析页近10场：胜20% 平40% 负40%，进10失12，场均进1.0；同主客进5失3，胜50% 平25% 负25%",
+    "away": "分析页近10场：胜50% 平30% 负20%，进14失9，场均进1.4；同主客进5失6，胜40% 平20% 负40%"
+  },
+  "h2h": [
+    { "date": "2026-09-27", "comp": "欧国联", "home": "法罗群岛", "score": "1-1", "away": "哈萨克斯坦" },
+    { "date": "2025-11-19", "comp": "国际友谊", "home": "法罗群岛(中)", "score": "1-0", "away": "哈萨克斯坦" },
+    { "date": "2013-10-12", "comp": "欧洲预选", "home": "法罗群岛", "score": "1-1", "away": "哈萨克斯坦" },
+    { "date": "2013-09-06", "comp": "欧洲预选", "home": "哈萨克斯坦", "score": "2-1", "away": "法罗群岛" }
+  ],
+  "lineups": {
+    "status": "ANALYSIS_PAGE_EMPTY_INJURY_TABLE",
+    "injuryTableAsPrinted": {
+      "home": "暂无数据",
+      "away": "暂无数据",
+      "meaning": "球探分析页「阵容情况」伤停表两侧都是空表。空表不等于已核实无人缺阵。"
+    },
+    "lastMatchRatingsNote": "上一场出场评分，不是本场已公布首发。主队上一场首发含祖特斯、沃罗戈夫斯基、努拉尔.阿里、T.埃兰、A·姆林斯基、卡拉曼、奥拉佐夫、肯哲贝克、伊斯拉坎、阿斯塔诺夫、卡里莫夫。客队上一场首发含拉姆豪格、阿格纳森、埃德蒙森、瓦特哈马、O.法罗、丹尼尔森、索伦森、巴尔塔利特、图里、卡尔斯伯格、克努森。"
+  },
+  "markets": {
+    "asianHandicap": {
+      "macao": { "opening": { "handicap": "平手/半球", "home": "1.04", "away": "0.80" }, "current": { "handicap": "平手/半球", "home": "1.10", "away": "0.74" } },
+      "crown": { "opening": { "handicap": "平手/半球", "home": "1.01", "away": "0.81" }, "current": { "handicap": "平手", "home": "0.77", "away": "1.13" } },
+      "bet365": { "opening": { "handicap": "平手", "home": "0.75", "away": "1.05" }, "current": { "handicap": "平手", "home": "0.73", "away": "1.08" } },
+      "yishengbo": { "opening": { "handicap": "平手/半球", "home": "1.03", "away": "0.78" }, "current": { "handicap": "平手/半球", "home": "1.17", "away": "0.71" } },
+      "hkjc": { "opening": { "handicap": "平手", "home": "0.74", "away": "1.05" }, "current": { "handicap": "平手", "home": "0.75", "away": "1.03" } },
+      "pinnacle": { "opening": { "handicap": "平手", "home": "0.83", "away": "1.01" }, "current": { "handicap": "平手", "home": "0.79", "away": "1.12" } }
+    },
+    "overUnder": {
+      "macao": { "opening": { "line": "2.0", "over": "0.77", "under": "1.03" }, "current": { "line": "2.0", "over": "0.88", "under": "0.92" } },
+      "crown": { "opening": { "line": "2.0", "over": "0.88", "under": "0.92" }, "current": { "line": "2.0", "over": "1.05", "under": "0.83" } },
+      "bet365": { "opening": { "line": "2/2.5", "over": "0.80", "under": "1.00" }, "current": { "line": "2.0", "over": "1.00", "under": "0.80" } },
+      "yishengbo": { "opening": { "line": "2.0", "over": "0.84", "under": "0.94" }, "current": { "line": "2.0", "over": "1.01", "under": "0.83" } }
+    },
+    "crownFullIndex": {
+      "asOf": "2026-10-06 18:11 CST analysis page",
+      "1x2": { "home": "2.49", "draw": "3.00", "away": "3.15" },
+      "handicap": { "line": "平手", "home": "0.77", "away": "1.13" },
+      "overUnder": { "line": "2.0", "over": "1.05", "under": "0.83" },
+      "correctScore": { "1:0": 4.8, "2:0": 10.5, "2:1": 9.5, "0:0": 4.8, "1:1": 4.9, "0:1": 5.6, "0:2": 13.5, "1:2": 11 }
+    },
+    "european1x2": {
+      "sporttery": { "home": "2.34", "draw": "2.80", "away": "2.90", "time": "10-06 17:41", "hhad": { "goalLine": "-1", "h": "5.90", "d": "3.70", "a": "1.45", "time": "10-06 17:44" } },
+      "macao": { "current": { "home": "2.40", "draw": "3.07", "away": "2.72" }, "time": "10-06 14:09" },
+      "crown": { "opening": { "home": "2.28", "draw": "3.10", "away": "2.97", "time": "10-04 23:39" }, "current": { "home": "2.49", "draw": "3.00", "away": "3.15", "time": "10-06 17:44" } },
+      "bet365": { "current": { "home": "2.55", "draw": "3.00", "away": "3.10", "time": "10-06 18:03" } },
+      "william": { "opening": { "home": "2.40", "draw": "3.10", "away": "2.80", "time": "10-03 16:39" }, "current": { "home": "2.50", "draw": "2.80", "away": "2.90", "time": "10-06 17:50" } },
+      "ladbrokes": { "current": { "home": "2.50", "draw": "3.00", "away": "3.00", "time": "10-06 13:20" } },
+      "pinnacle": { "current": { "home": "2.64", "draw": "2.93", "away": "3.15", "time": "10-06 18:06" } },
+      "hkjc": { "current": { "home": "2.40", "draw": "2.80", "away": "2.78", "time": "10-06 16:14" } },
+      "yishengbo": { "current": { "home": "2.60", "draw": "3.00", "away": "3.00", "time": "10-06 15:01" } }
+    }
+  },
+  "changeDetail": {
+    "asianHandicap": {
+      "macao_cid1": [
+        { "home": "1.10", "line": "平手/半球", "away": "0.74", "time": "10-6 14:08", "state": "即" },
+        { "home": "1.14", "line": "平手/半球", "away": "0.70", "time": "10-6 13:45", "state": "即" },
+        { "home": "1.04", "line": "平手/半球", "away": "0.80", "time": "10-4 20:43", "state": "即" }
+      ],
+      "crown_cid3": [
+        { "home": "0.77", "line": "平手", "away": "1.13", "time": "10-6 16:42", "state": "即" },
+        { "home": "0.80", "line": "平手", "away": "1.09", "time": "10-6 16:18", "state": "即" },
+        { "home": "0.78", "line": "平手", "away": "1.12", "time": "10-6 13:38", "state": "即" },
+        { "home": "1.19", "line": "平手/半球", "away": "0.73", "time": "10-6 13:38", "state": "即" },
+        { "home": "1.01", "line": "平手/半球", "away": "0.81", "time": "10-4 23:39", "state": "早" }
+      ],
+      "bet365_cid8_head": [
+        { "home": "0.73", "line": "平手", "away": "1.08", "time": "10-6 18:05", "state": "即" },
+        { "home": "1.08", "line": "平手/半球", "away": "0.73", "time": "10-6 17:49", "state": "即" },
+        { "home": "0.73", "line": "平手", "away": "1.08", "time": "10-6 17:35", "state": "即" }
+      ],
+      "yishengbo_cid12": [
+        { "home": "1.17", "line": "平手/半球", "away": "0.71", "time": "10-6 18:02", "state": "即" },
+        { "home": "1.16", "line": "平手/半球", "away": "0.72", "time": "10-6 17:31", "state": "即" },
+        { "home": "1.03", "line": "平手/半球", "away": "0.78", "time": "10-4 22:53", "state": "早" }
+      ]
+    },
+    "overUnder": {
+      "macao_cid1": [
+        { "over": "0.88", "line": "2", "under": "0.92", "time": "10-5 07:19", "state": "即" },
+        { "over": "0.77", "line": "2", "under": "1.03", "time": "10-4 20:43", "state": "即" }
+      ],
+      "crown_cid3": [
+        { "over": "1.05", "line": "2", "under": "0.83", "time": "10-6 17:43", "state": "即" },
+        { "over": "0.91", "line": "2", "under": "0.97", "time": "10-6 17:30", "state": "即" },
+        { "over": "0.88", "line": "2", "under": "0.92", "time": "10-4 23:39", "state": "早" }
+      ]
+    },
+    "european1x2": {
+      "crown_cid3": [
+        { "home": "2.49", "draw": "3.00", "away": "3.15", "time": "10-06 17:44", "state": "即" },
+        { "home": "2.28", "draw": "3.10", "away": "2.97", "time": "10-04 23:39", "state": "初盘" }
+      ],
+      "william_cid9": [
+        { "home": "2.50", "draw": "2.80", "away": "2.90", "time": "10-06 17:50", "state": "即" },
+        { "home": "2.45", "draw": "2.80", "away": "3.00", "time": "10-06 17:33", "state": "即" },
+        { "home": "2.40", "draw": "3.10", "away": "2.80", "time": "10-03 16:39", "state": "初盘" }
+      ],
+      "pinnacle_cid47_head": [
+        { "home": "2.64", "draw": "2.93", "away": "3.15", "time": "10-06 18:06", "state": "即" },
+        { "home": "2.67", "draw": "2.93", "away": "3.11", "time": "10-06 17:35", "state": "即" }
+      ]
+    }
+  },
+  "fiveStageTimeFlow": [
+    { "stage": "T0 初盘骨架", "time": "10-04 23:39", "note": "皇冠亚盘初开平/半 1.01/0.81；欧指 2.28/3.10/2.97。澳彩亚盘一直停在平/半。" },
+    { "stage": "T1 早盘试探", "time": "10-05～10-06 上午", "note": "皇冠平/半主水约 1.01→1.11；威廉平赔从 3.10 压到 2.90～2.80。" },
+    { "stage": "T2 中盘拉扯", "time": "10-06 13:38", "note": "皇冠同一分钟从平/半 1.19/0.73 退到平手 0.78/1.12。" },
+    { "stage": "T3 临盘洗盘", "time": "10-06 16:18～17:50", "note": "皇冠钉在平手 0.77/1.13；威廉平赔 2.80；365 亚盘在平手与平/半之间来回切。" },
+    { "stage": "T4 截至抓取", "time": "10-06 18:15", "note": "澳彩仍平/半 1.10/0.74；易胜博平/半 1.17/0.71；皇冠平手 0.77/1.13；大小球 2.0，皇冠大球水已抬到 1.05。" }
+  ],
+  "gaps": [
+    "分析页伤停表两侧均为「暂无数据」，未核实本场伤停/停赛名单。",
+    "澳彩亚盘变盘页只有 3 行；澳彩大小球变盘页只有 2 行。",
+    "365/平博亚盘变盘页行数很多，快照只留了表头若干行，完整行在浏览器变盘页。"
+  ],
+  "verification": {
+    "liveCheckTime": "2026-10-06 18:15 CST",
+    "status": "PAGES_OPENED_WITH_GAPS",
+    "injuryVerifiedNoAbsence": false,
+    "changeDetailPresent": true,
+    "note": "5 页已用 /browseros-neo 打开。伤停空表如实记录。不得把空表写成无伤停。"
+  }
+}

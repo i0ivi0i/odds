@@ -1,0 +1,52 @@
+{
+  "kind": "agent.analysis",
+  "matchId": "2981453",
+  "source": "titan007:browseros-neo",
+  "matchTime": "2026-10-06 02:45",
+  "match": {
+    "league": "欧国联",
+    "homeTeam": "法国",
+    "awayTeam": "比利时"
+  },
+  "markets": {
+    "asianHandicap": {
+      "macao": { "opening": { "handicap": "1.0", "home": "0.92", "away": "0.92" }, "current": { "handicap": "1/1.5", "home": "1.00", "away": "0.84" } },
+      "bet365": { "opening": { "handicap": "1.0", "home": "0.90", "away": "0.95" }, "current": { "handicap": "1/1.5", "home": "1.03", "away": "0.83" } },
+      "crown": { "opening": { "handicap": "1.0", "home": "0.93", "away": "0.95" }, "current": { "handicap": "1/1.5", "home": "1.03", "away": "0.86" } },
+      "yishengbo": { "opening": { "handicap": "1.0", "home": "0.82", "away": "0.99" }, "current": { "handicap": "1/1.5", "home": "1.01", "away": "0.87" } }
+    },
+    "overUnder": {
+      "macao": { "opening": { "line": "3.0", "over": "0.90", "under": "0.90" }, "current": { "line": "3/3.5", "over": "1.10", "under": "0.70" } },
+      "crown": { "opening": { "line": "3.0", "over": "0.89", "under": "0.99" }, "current": { "line": "3.0", "over": "0.90", "under": "1.00" } }
+    },
+    "crownFullIndex": {
+      "1x2": { "home": "1.45", "draw": "4.80", "away": "6.90" },
+      "handicap": { "line": "1/1.5", "home": "1.03", "away": "0.86" },
+      "overUnder": { "line": "3.0", "over": "0.89", "under": "0.99" },
+      "correctScore": {
+        "1:0": 7.3, "2:0": 6.9, "2:1": 7.1, "3:0": 10.0, "3:1": 10.0,
+        "0:0": 16.5, "1:1": 8.1, "2:2": 15.5,
+        "0:1": 19.0, "1:2": 18.5, "0:2": 45.0
+      }
+    }
+  },
+  "timelineSample": [
+    "1.03 一球/球半 0.86 10-6 01:25",
+    "1.06 一球/球半 0.83 10-6 00:26",
+    "1.05 一球/球半 0.84 10-5 21:28",
+    "1.00 一球/球半 0.89 10-5 18:46",
+    "0.83 一球 1.05 10-5 09:34"
+  ],
+  "fiveStageTimeFlow": [
+    { "stage": "T0 初盘骨架", "time": "10-02 19:28", "line": "一球 (1.0)", "homeWater": "0.93", "awayWater": "0.95", "morphology": "精算师初始物理基准", "note": "两队纯实力对比法国稳让一球" },
+    { "stage": "T1 早盘试探", "time": "10-05 09:34", "line": "一球 (1.0)", "homeWater": "0.83", "awayWater": "1.05", "morphology": "台阶下压防守", "note": "主水打穿0.85低水警戒线，法国受追捧" },
+    { "stage": "T2 中盘拉扯", "time": "10-05 18:46", "line": "一球/球半 (1/1.5)", "homeWater": "1.00", "awayWater": "0.89", "morphology": "Winkelmann假摔冲高(Head-Fake)", "note": "机构借散户进场强升一球球半高水诱买穿盘" },
+    { "stage": "T3 临盘洗盘", "time": "10-06 00:26", "line": "一球/球半 (1/1.5)", "homeWater": "1.06", "awayWater": "0.83", "morphology": "极限顶高水阻穿", "note": "最高顶至1.12恶性高水，彻底压制买上盘穿盘冲动" },
+    { "stage": "T4 终盘出清", "time": "10-06 01:34", "line": "一球 (1.0)", "homeWater": "0.83", "awayWater": "1.06", "morphology": "假摔出清/关门防守", "note": "大资金进场假摔出清！闪退回一球低水，死守1球小胜走水与赢球" }
+  ],
+  "verification": {
+    "liveCheckTime": "2026-10-06 01:46 CST",
+    "status": "PASS",
+    "note": "现场浏览器双重核验：澳彩即时一球/球半(1.00)，皇冠初盘一球(0.93)降至一球低水(0.87)，真实防守底线在一球/一球球半之间，绝非备用源半一假盘！"
+  }
+}

@@ -52,7 +52,7 @@ config/credentials.json
 *.pyc
 __pycache__/
 
-data/
+# data/已解除屏蔽，纳入 Git 版本管理
 analysis/
 report/
 
