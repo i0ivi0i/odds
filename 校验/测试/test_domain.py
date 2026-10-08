@@ -345,6 +345,37 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertEqual(receipt.failed_count, 0)
         self.assertTrue(receipt.metadata.get("has_dual_track"))
 
+    def test_clean_a11y_noise(self):
+        from 校验.src.domain.verifier import clean_a11y_noise
+        raw = '- cell "4.50" [ref=e1365]\n- link "新球体育" [ref=e1]\n- listitem [level=1]\n- list'
+        cleaned = clean_a11y_noise(raw)
+        self.assertNotIn("[ref=", cleaned)
+        self.assertNotIn("- cell", cleaned)
+        self.assertIn("4.50", cleaned)
+        self.assertIn("新球体育", cleaned)
+
+    def test_get_match_property(self):
+        from 校验.src.domain.verifier import get_match_property
+        snap_flat = {"homeTeam": "巴西国际", "match": {"awayTeam": "科林蒂安"}}
+        self.assertEqual(get_match_property(snap_flat, "homeTeam"), "巴西国际")
+        self.assertEqual(get_match_property(snap_flat, "awayTeam"), "科林蒂安")
+        self.assertIsNone(get_match_property(snap_flat, "league"))
+        self.assertEqual(get_match_property(snap_flat, "league", "巴甲"), "巴甲")
+
+    def test_verify_cleans_a11y_and_enriches_profiling(self):
+        snap = dict(self.valid_snapshot)
+        snap["european1x2Text"] = snap["european1x2Text"] + '\n- cell "4.50" [ref=e999]'
+        snap["profiling"] = {
+            "identicalOddsHistory": {
+                "raw": "巴西国际\n初盘:平手/半球\t赢\t走\t输\t赢盘率\n总\t10\t0\t5\t66.7%\n近6场盘路走势: 赢 输 赢 输 赢 输"
+            }
+        }
+        receipt = self.verifier.verify(snap)
+        self.assertTrue(receipt.is_valid)
+        self.assertNotIn("[ref=", snap["european1x2Text"])
+        self.assertIn("items", snap["profiling"]["identicalOddsHistory"])
+        self.assertEqual(len(snap["profiling"]["identicalOddsHistory"]["items"]), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
