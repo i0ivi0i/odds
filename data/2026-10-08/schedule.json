@@ -1,0 +1,171 @@
+{
+  "kind": "agent.schedule",
+  "generatedAt": "2026-10-08 11:14:01",
+  "sourceUrl": "https://jc.titan007.com/index.aspx",
+  "oddsUrl": "https://jc.titan007.com/xml/odds_jc.txt",
+  "saleDate": "2026-10-08",
+  "summary": {
+    "total": 6,
+    "notStarted": 6,
+    "inProgress": 0,
+    "finished": 0
+  },
+  "matches": [
+    {
+      "no": "周四001",
+      "matchId": "3085211",
+      "league": "芬超冠",
+      "leagueLevel": "低",
+      "kickoffTime": "2026-10-08 23:00",
+      "status": "未开场",
+      "homeTeam": "赫尔辛基",
+      "score": "-",
+      "awayTeam": "瓦萨",
+      "analysisUrl": "https://zq.titan007.com/analysis/3085211cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.41",
+          "draw": "4.25",
+          "away": "5.40"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "2.38",
+          "draw": "3.28",
+          "away": "2.47"
+        }
+      }
+    },
+    {
+      "no": "周四002",
+      "matchId": "3085212",
+      "league": "芬超冠",
+      "leagueLevel": "低",
+      "kickoffTime": "2026-10-09 00:00",
+      "status": "未开场",
+      "homeTeam": "库奥皮奥",
+      "score": "-",
+      "awayTeam": "AC奥卢",
+      "analysisUrl": "https://zq.titan007.com/analysis/3085212cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.41",
+          "draw": "3.95",
+          "away": "6.00"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "2.43",
+          "draw": "3.18",
+          "away": "2.48"
+        }
+      }
+    },
+    {
+      "no": "周四003",
+      "matchId": "2910915",
+      "league": "巴西甲",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-09 06:30",
+      "status": "未开场",
+      "homeTeam": "桑托斯",
+      "score": "-",
+      "awayTeam": "弗拉门戈",
+      "analysisUrl": "https://zq.titan007.com/analysis/2910915cn.htm",
+      "handicap": "+1",
+      "jcOdds": {
+        "had": {
+          "home": "4.08",
+          "draw": "3.60",
+          "away": "1.65"
+        },
+        "hhad": {
+          "goal": "+1",
+          "home": "1.98",
+          "draw": "3.30",
+          "away": "3.11"
+        }
+      }
+    },
+    {
+      "no": "周四004",
+      "matchId": "2910907",
+      "league": "巴西甲",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-09 07:00",
+      "status": "未开场",
+      "homeTeam": "巴竞技",
+      "score": "-",
+      "awayTeam": "米竞技",
+      "analysisUrl": "https://zq.titan007.com/analysis/2910907cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.95",
+          "draw": "3.05",
+          "away": "3.46"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "4.30",
+          "draw": "3.45",
+          "away": "1.65"
+        }
+      }
+    },
+    {
+      "no": "周四005",
+      "matchId": "2910911",
+      "league": "巴西甲",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-09 08:30",
+      "status": "未开场",
+      "homeTeam": "弗鲁米嫩",
+      "score": "-",
+      "awayTeam": "科里蒂巴",
+      "analysisUrl": "https://zq.titan007.com/analysis/2910911cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.33",
+          "draw": "4.25",
+          "away": "7.05"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "2.15",
+          "draw": "3.33",
+          "away": "2.75"
+        }
+      }
+    },
+    {
+      "no": "周四006",
+      "matchId": "2910913",
+      "league": "巴西甲",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-09 08:30",
+      "status": "未开场",
+      "homeTeam": "帕梅拉斯",
+      "score": "-",
+      "awayTeam": "巴伊亚",
+      "analysisUrl": "https://zq.titan007.com/analysis/2910913cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.42",
+          "draw": "4.00",
+          "away": "5.70"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "2.40",
+          "draw": "3.28",
+          "away": "2.45"
+        }
+      }
+    }
+  ]
+}
