@@ -92,6 +92,24 @@ class TestPoissonCli(unittest.TestCase):
         self.assertIn("top_scores", out_json)
         self.assertEqual(len(out_json["top_scores"]), 6)
 
+    def test_cli_poisson_match_snapshot(self):
+        stdout = io.StringIO()
+        old_stdout = sys.stdout
+        sys.stdout = stdout
+        try:
+            exit_code = cli_main(["--match", "data/2026-10-07/2910912.json", "--json"])
+        finally:
+            sys.stdout = old_stdout
+
+        self.assertEqual(exit_code, 0)
+        out_json = json.loads(stdout.getvalue())
+        self.assertIn("top_scores", out_json)
+        self.assertIn("lambda_home", out_json)
+        self.assertIn("lambda_away", out_json)
+        # 验证 Crown 波胆已自动对账到比分中
+        top1 = out_json["top_scores"][0]
+        self.assertIn("crown_odds", top1)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -62,7 +62,7 @@ class OddsConversionResult:
         return self._algorithm
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        data = {
             "algorithm": self._algorithm,
             "odds": list(self._odds),
             "probabilities": [round(p, 6) for p in self._probabilities],
@@ -71,6 +71,18 @@ class OddsConversionResult:
             "booksum": round(self._booksum, 4),
             "margin": round(self._margin, 4)
         }
+        if len(self._odds) == 3:
+            data["prob_1x2"] = {
+                "home": round(self._probabilities[0], 6),
+                "draw": round(self._probabilities[1], 6),
+                "away": round(self._probabilities[2], 6)
+            }
+            data["percentages_1x2"] = {
+                "home": self._percentages[0],
+                "draw": self._percentages[1],
+                "away": self._percentages[2]
+            }
+        return data
 
 
 class ConvertOddsUseCase:

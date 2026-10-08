@@ -138,15 +138,58 @@ def run_deep_graphify():
     # 校验/ 领域驱动洋葱六边形数据完整性守门人与 CLI 绑定
     verify_cli_node = "code_校验_src_adapter_cli"
     verify_domain_node = "code_校验_src_domain_verifier"
+    profiling_parser_node = "code_校验_src_domain_profiling_parser"
+    correct_score_parser_node = "code_校验_src_domain_correct_score_parser"
+    tactics_parser_node = "code_校验_src_domain_tactics_parser"
     if not G.has_node(verify_cli_node):
         G.add_node(verify_cli_node, label="cli.py (校验数据完整性守门人CLI)", file_type="code", source_file=str(root / "校验/src/adapter/cli.py"))
     if not G.has_node(verify_domain_node):
         G.add_node(verify_domain_node, label="SnapshotVerifier (6大黄金维度安检聚合)", file_type="code", source_file=str(root / "校验/src/domain/verifier.py"))
+    if not G.has_node(profiling_parser_node):
+        G.add_node(profiling_parser_node, label="ProfilingParser (相同初盘/盘路走势解析)", file_type="code", source_file=str(root / "校验/src/domain/profiling_parser.py"))
+    if not G.has_node(correct_score_parser_node):
+        G.add_node(correct_score_parser_node, label="CorrectScoreParser (Crown波胆比分矩阵解析)", file_type="code", source_file=str(root / "校验/src/domain/correct_score_parser.py"))
+    if not G.has_node(tactics_parser_node):
+        G.add_node(tactics_parser_node, label="TacticsParser (场上压制力技统与进球时段解析)", file_type="code", source_file=str(root / "校验/src/domain/tactics_parser.py"))
 
     add_inferred(verify_cli_node, verify_domain_node, "dispatches_to_snapshot_verifier", 0.95)
+    add_inferred(verify_domain_node, profiling_parser_node, "delegates_profiling_extraction", 0.95)
+    add_inferred(verify_domain_node, correct_score_parser_node, "delegates_correct_score_extraction", 0.95)
+    add_inferred(verify_domain_node, tactics_parser_node, "delegates_tactics_extraction", 0.95)
     add_inferred(hub_map['analysis'], verify_cli_node, "physically_blocks_analysis_on_corrupted_snapshot", 0.98)
     add_inferred(hub_map['tools'], verify_cli_node, "documents_data_integrity_gatekeeper_cli", 0.95)
     add_inferred(hub_map['agents'], verify_cli_node, "mandates_worker_pre_flight_check", 0.98)
+
+    # 双轨敏捷数据采集层：Scrapling 极速通道 × BrowserOS neo 真实渲染
+    scrapling_node = "tool_scrapling_protocol_stream"
+    browseros_node = "tool_browseros_neo_dom_render"
+    scrapling_skill_node = "skill_scrapling_official"
+    browseros_skill_node = "skill_browseros_neo"
+    schema_hygiene_node = "concept_strict_schema_placement_hygiene"
+
+    if not G.has_node(scrapling_node):
+        G.add_node(scrapling_node, label="Scrapling MCP (极速协议流/1x2d/时序流水)", file_type="tool", source_file=str(root / "TOOLS.md"))
+    if not G.has_node(browseros_node):
+        G.add_node(browseros_node, label="BrowserOS neo MCP (真实Chromium渲染/微观阵容)", file_type="tool", source_file=str(root / "TOOLS.md"))
+    if not G.has_node(scrapling_skill_node):
+        G.add_node(scrapling_skill_node, label="scrapling-official (官方Skill)", file_type="skill", source_file=str(root / "TOOLS.md"))
+    if not G.has_node(browseros_skill_node):
+        G.add_node(browseros_skill_node, label="browseros-neo (爱马仕浏览器Skill)", file_type="skill", source_file=str(root / "TOOLS.md"))
+    if not G.has_node(schema_hygiene_node):
+        G.add_node(schema_hygiene_node, label="数据纯净与防错位红线 (Schema Hygiene)", file_type="concept", source_file=str(root / "TOOLS.md"))
+
+    add_inferred(scrapling_skill_node, scrapling_node, "operates_via_mcp", 0.98)
+    add_inferred(browseros_skill_node, browseros_node, "operates_via_mcp", 0.98)
+    add_inferred(hub_map['tools'], scrapling_node, "defines_fast_lane_scraping_tool", 0.95)
+    add_inferred(hub_map['tools'], browseros_node, "defines_visual_dom_rendering_tool", 0.95)
+    add_inferred(hub_map['tools'], schema_hygiene_node, "mandates_strict_schema_placement", 0.98)
+    add_inferred(schema_hygiene_node, verify_cli_node, "physically_enforced_by_verifier", 0.98)
+    add_inferred(hub_map['scraper'], scrapling_skill_node, "leverages_fast_lane_protocol_stream", 0.95)
+    add_inferred(hub_map['scraper'], browseros_skill_node, "leverages_real_dom_inspection", 0.95)
+    add_inferred(hub_map['analysis'], scrapling_skill_node, "sources_high_frequency_odds_history", 0.95)
+    add_inferred(hub_map['analysis'], browseros_skill_node, "sources_lineup_and_visual_dom", 0.95)
+    add_inferred(scrapling_node, verify_cli_node, "snapshot_must_pass_physical_gate", 0.98)
+    add_inferred(browseros_node, verify_cli_node, "snapshot_must_pass_physical_gate", 0.98)
 
     # 4a-2. 接入全局智能体技能 pansuan-workflow 与 odds-1x2-sniper
     pansuan_path = Path.home() / "AppData/Local/hermes/skills/pansuan-workflow/SKILL.md"
@@ -169,18 +212,32 @@ def run_deep_graphify():
         add_inferred(node_odds_sniper, algo_cli_node, "queries_unbiased_probabilities_for_minimax", 0.95)
 
     # 4b. Thoroughly cross-link EVERY single markdown file in the workspace
-    all_md_files = list(root.glob('**/*.md'))
+    all_md_files = [p for p in root.glob('**/*.md') if not any(x in str(p) for x in ['graphify-out', 'node_modules', '.git'])]
     print(f"Deep semantic cross-linking for all {len(all_md_files)} markdown files...")
+    
+    # Precompute resolved node source files for O(1) matching instead of O(N*M) disk I/O
+    node_source_map = {}
+    for n, d in G.nodes(data=True):
+        sf = d.get('source_file')
+        if sf:
+            try:
+                sf_res = str(Path(sf).resolve())
+                node_source_map.setdefault(sf_res, []).append(n)
+            except Exception:
+                pass
+
     for md_path in all_md_files:
-        if 'graphify-out' in str(md_path) or 'node_modules' in str(md_path) or '.git' in str(md_path):
-            continue
         rel_str = str(md_path.relative_to(root)).replace('\\', '/')
-        file_nodes = [n for n, d in G.nodes(data=True) if d.get('source_file') and Path(d['source_file']).resolve() == md_path.resolve()]
+        try:
+            md_res = str(md_path.resolve())
+        except Exception:
+            md_res = str(md_path)
+        file_nodes = node_source_map.get(md_res, [])
         if not file_nodes:
             slug = re.sub(r'[^\w\u4e00-\u9fff]', '_', md_path.stem).strip('_').lower()
             doc_id = f"doc_{slug[:40]}"
             if not G.has_node(doc_id):
-                G.add_node(doc_id, label=md_path.name, file_type="document", source_file=str(md_path.resolve()))
+                G.add_node(doc_id, label=md_path.name, file_type="document", source_file=md_res)
             file_nodes = [doc_id]
         
         main_doc_node = max(file_nodes, key=lambda x: G.degree(x))

@@ -34,6 +34,19 @@ class TestApplicationUseCases(unittest.TestCase):
         self.assertIn('margin', d)
         self.assertIn('algorithm', d)
         self.assertEqual(d['algorithm'], 'Goto-OO-EPC')
+        self.assertIn('prob_1x2', d)
+        self.assertIn('home', d['prob_1x2'])
+        self.assertIn('draw', d['prob_1x2'])
+        self.assertIn('away', d['prob_1x2'])
+        self.assertAlmostEqual(d['prob_1x2']['home'], 0.460584, places=5)
+        self.assertIn('percentages_1x2', d)
+        self.assertEqual(d['percentages_1x2']['home'], '46.06%')
+
+    def test_two_way_does_not_have_prob_1x2(self):
+        result = self.use_case.execute([1.90, 1.95])
+        d = result.to_dict()
+        self.assertNotIn('prob_1x2', d)
+        self.assertNotIn('percentages_1x2', d)
 
     def test_unknown_strategy_raises_error(self):
         with self.assertRaises(ValueError):

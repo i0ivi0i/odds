@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from 校验.src.domain.model import (
     CheckStatus,
@@ -13,6 +13,60 @@ from 校验.src.domain.model import (
     DimensionResult,
     VerificationReceipt,
 )
+from 校验.src.domain.profiling_parser import ProfilingParser
+from 校验.src.domain.correct_score_parser import CorrectScoreParser
+from 校验.src.domain.tactics_parser import TacticsParser
+
+
+def convert_a11y_table_to_tsv(text: str) -> str:
+    """若文本包含 LayoutTableRow / LayoutTableCell 无障碍树表格，转换为制表符 TSV 文本"""
+    if not text or "LayoutTableCell" not in text:
+        return text
+    rows = []
+    current_cells = []
+    for line in text.splitlines():
+        line = line.strip()
+        if "LayoutTableRow" in line and not "LayoutTableCell" in line:
+            if current_cells:
+                rows.append("\t".join(current_cells))
+                current_cells = []
+        m = re.search(r'LayoutTableCell\s+"([^"]*)"', line)
+        if m:
+            current_cells.append(m.group(1))
+    if current_cells:
+        rows.append("\t".join(current_cells))
+    return "\n".join(rows)
+
+
+def clean_a11y_noise(text: Optional[str]) -> str:
+    """清洗从 Chromium AXTree / BrowserOS 页面快照中残留的无障碍树标记杂质"""
+    if not text or not isinstance(text, str):
+        return ""
+    # 优先转换可能存在的 LayoutTable 无障碍树表格
+    text = convert_a11y_table_to_tsv(text)
+    # 替换 - cell "xxx" [ref=yyy] 或 - link "xxx" [ref=yyy] 等标记为纯文本 xxx
+    cleaned = re.sub(r'-\s*(?:cell|row|table|heading|link|listitem|image)\s+"([^"]*)"\s*\[ref=[^\]]+\]', r'\1', text)
+    # 替换剩余的独立 [ref=xxx] 标签
+    cleaned = re.sub(r'\[ref=[^\]]+\]', '', cleaned)
+    # 替换 - listitem [level=\d+]
+    cleaned = re.sub(r'-\s*listitem\s*\[level=\d+\]', '', cleaned)
+    # 替换 - list
+    cleaned = re.sub(r'-\s*list\b', '', cleaned)
+    # 替换残留的 [cursor=pointer] 等属性
+    cleaned = re.sub(r'\[cursor=[^\]]+\]', '', cleaned)
+    return cleaned.strip()
+
+
+def get_match_property(snapshot: Dict[str, Any], key: str, default: Any = None) -> Any:
+    """平铺标准访问器：优先读取根层级，其次读取 d["match"] 嵌套层级"""
+    if not snapshot or not isinstance(snapshot, dict):
+        return default
+    if key in snapshot and snapshot[key] is not None:
+        return snapshot[key]
+    match_dict = snapshot.get("match")
+    if isinstance(match_dict, dict) and key in match_dict and match_dict[key] is not None:
+        return match_dict[key]
+    return default
 
 
 class SnapshotVerifier:
@@ -22,7 +76,25 @@ class SnapshotVerifier:
     """
 
     def verify(self, snapshot: Dict[str, Any]) -> VerificationReceipt:
-        match_id = str(snapshot.get("matchId") or snapshot.get("id") or "unknown")
+        match_id = str(get_match_property(snapshot, "matchId") or snapshot.get("id") or "unknown")
+
+        # 0. 自动清洗可能残余的 AXTree 标记
+        for field in ("european1x2Text", "asianOddsText", "overUnderOddsText", "basicStatsText", "lineupData", "correctScoreOdds"):
+            if field in snapshot and isinstance(snapshot[field], str):
+                snapshot[field] = clean_a11y_noise(snapshot[field])
+
+        # 0.1 结构化增强操盘画像
+        if "profiling" in snapshot and isinstance(snapshot["profiling"], dict):
+            ProfilingParser().enrich_profiling(snapshot["profiling"])
+
+        # 0.2 结构化增强波胆赔率与半全场
+        if "correctScoreOdds" in snapshot and snapshot["correctScoreOdds"]:
+            CorrectScoreParser().enrich_snapshot(snapshot)
+
+        # 0.3 结构化增强战术技统与攻防压制力
+        if "tactics" in snapshot and isinstance(snapshot["tactics"], dict):
+            TacticsParser().enrich_tactics(snapshot["tactics"])
+
         results: List[DimensionResult] = []
 
         # 1. 基础战绩与攻防数据
@@ -62,7 +134,7 @@ class SnapshotVerifier:
             metadata={
                 "source": snapshot.get("source", "unknown"),
                 "fetchedAt": snapshot.get("fetchedAt", "unknown"),
-                "league": snapshot.get("match", {}).get("league", "unknown"),
+                "league": get_match_property(snapshot, "league", "unknown"),
                 "has_dual_track": has_dual_track,
                 "tactics_present": bool(tactics),
                 "profiling_present": bool(profiling),
@@ -70,10 +142,9 @@ class SnapshotVerifier:
         )
 
     def _check_basic_stats(self, snapshot: Dict[str, Any]) -> DimensionResult:
-        match_info = snapshot.get("match") or {}
-        home = match_info.get("homeTeam") or snapshot.get("homeTeam")
-        away = match_info.get("awayTeam") or snapshot.get("awayTeam")
-        league = match_info.get("league") or snapshot.get("league")
+        home = get_match_property(snapshot, "homeTeam")
+        away = get_match_property(snapshot, "awayTeam")
+        league = get_match_property(snapshot, "league")
 
         if not (home and away and league):
             return DimensionResult(
@@ -85,10 +156,10 @@ class SnapshotVerifier:
 
         # 检查攻防进失球物理数据 (近6场进失球、主客场进失球等)
         has_goals = False
-        home_goals = match_info.get("homeGoals") or snapshot.get("homeGoals")
-        away_goals = match_info.get("awayGoals") or snapshot.get("awayGoals")
+        home_goals = get_match_property(snapshot, "homeGoals")
+        away_goals = get_match_property(snapshot, "awayGoals")
         basic_text = snapshot.get("basicStatsText") or ""
-        goals_stats = snapshot.get("goalsStats") or match_info.get("goalsStats")
+        goals_stats = get_match_property(snapshot, "goalsStats")
         correct_score = snapshot.get("correctScoreOdds") or ""
         tactics = snapshot.get("tactics") or {}
         tech_stats = tactics.get("technicalStats") or {}
