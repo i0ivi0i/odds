@@ -95,12 +95,22 @@ text_history = res_history.body.decode("utf-8", errors="ignore")
 
 - 统一落盘路径：`data/YYYY-MM-DD/{matchId}.json`。
 - 输出结构严格遵循 `agent.analysis` 契约规范。
+- **杜绝低级排版与骨架抓取错误（刚性规范）**：
+  1. **结构化原生存储**：百家欧指必须通过 `1x2d.js` 解析后，结构化写入 `markets.europeCompanies` 数组（包含各公司初即盘、返还率与凯利独立对象），**严禁将百家数据挤入单行转义长文本**导致 JSON 仅有几十行假象！
+  2. **精准容器提取（严禁全页乱倒）**：BrowserOS neo 抓取阵容或赔率时，必须使用精准 CSS 选择器（如 `#analy_sbAllOdds`、阵容表格）或 `clean_dom_text` 过滤，**严禁将包含“首页/足球直播”的整页导航栏文本塞入快照**。
+  3. **等待异步渲染**：对需浏览器渲染的 DOM 元素必须设置 `wait-selector` 等待数据真实装载，严禁保存未渲染的静态 HTML 空骨架（`<!DOCTYPE...`）。
+  4. **法定 23 家白名单精准提纯（严禁算术平均陷阱）**：
+     - **严禁算术平均**：系统严禁计算百家赔率的算术平均数！不同机构抽水率完全不同，直接平均违背概率公理且抹杀做市商意图。基准对账一律遵循「同公司三项去水（OO-EPC）后才聚合」；
+     - **直接过滤落盘**：`1x2d.js` 流入后，直接按法定 23 家白名单（核心 14 家做市商 + 2 家终端 + 2 家老庄 + 5 家论文样本）切片写入 `markets.europeCompanies`；
+     - **彻底抛弃垃圾小庄**：其余 140+ 家抄盘跟风小白标直接丢弃，不存明细，不折算伪平均，保持快照纯净与高信噪比。
 - 无论通过 Scrapling 提取还是 BrowserOS neo 渲染，均必须包含：
-  1. `european1x2Text`：主流机构百家初即盘、返还率与凯利指数；
+  1. `european1x2Text` 与 `markets.europeCompanies`：主流机构百家初即盘、返还率与凯利指数（法定 23 家提纯，严禁算术平均）；
   2. `asianOddsText` / `overUnderOddsText`：主流四大机构（澳彩、Crown、Bet365、易胜博）分钟级变盘流水；
   3. `trendComparison`：带时间戳的变盘时序流水（供安检门禁核验）；
   4. `lineupData`：首发球员评分、伤停原句；
-  5. `tactics` 与 `profiling`：真实场上压制力技统、进球时段、未来赛程、相同初盘画像与盘路走势。
+  5. `tactics`（含攻防进失球/场均进球物理数字）与 `profiling`（相同初盘画像与盘路走势）。
+
+- **自愈机制（Self-healing）**：门禁 `verifier.py` 已打通攻防物理数据的多通道智能识别（无论是 `match.homeGoals/awayGoals`、`basicStatsText` 还是 `tactics.home/away` 结构化进失球，均可直接识别放行），彻底消灭因字段命名差异导致的拦截误报。
 
 ### 数据安全规则
 

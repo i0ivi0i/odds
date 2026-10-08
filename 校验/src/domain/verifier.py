@@ -4,6 +4,7 @@
 """
 
 from __future__ import annotations
+import json
 import re
 from typing import Any, Dict, List, Optional
 
@@ -171,6 +172,8 @@ class SnapshotVerifier:
                 has_goals = True
         elif "联赛积分排名" in correct_score and "得" in correct_score and "失" in correct_score:
             has_goals = True
+        elif tactics and re.search(r"(?:进|失|得)\s*\d+|avgGoals", json.dumps(tactics, ensure_ascii=False)):
+            has_goals = True
 
         if not has_goals:
             return DimensionResult(
@@ -199,6 +202,14 @@ class SnapshotVerifier:
         histories = markets.get("europeHistories") or []
         companies = markets.get("europeCompanies") or []
 
+        # 0. 严禁算术平均伪数据
+        if "marketConsensus" in snapshot or "marketConsensus" in markets or "百家平均" in text:
+            return DimensionResult(
+                dimension=DimensionType.EUROPE_1X2,
+                status=CheckStatus.FAIL,
+                message="严禁百家赔率算术平均伪数据！不同机构抽水率各异，必须遵循单家去水(OO-EPC)后聚合",
+            )
+
         has_data = len(text.strip()) > 20 or len(histories) > 0 or len(companies) > 0
         if not has_data:
             return DimensionResult(
@@ -212,6 +223,22 @@ class SnapshotVerifier:
 
         # 1. 结构化 europeCompanies 校验
         if companies:
+            core_keywords = [
+                "macau", "crown", "bet 365", "bet365", "easybet", "pinnacle", "william", "ladbroke",
+                "interwetten", "bwin", "snai", "betfair", "jockey club", "188bet",
+                "澳门", "澳彩", "皇冠", "易胜博", "平博", "威廉", "立博", "伟德", "马会", "必发"
+            ]
+            matched_core = [
+                c for c in companies
+                if any(k in str(c.get("company") or c.get("name") or "").lower() for k in core_keywords)
+            ]
+            if len(companies) >= 3 and len(matched_core) < 2:
+                return DimensionResult(
+                    dimension=DimensionType.EUROPE_1X2,
+                    status=CheckStatus.FAIL,
+                    message=f"核心做市商覆盖不足: 法定核心机构仅匹配到 {len(matched_core)} 家 (至少需 2 家主流做市商)",
+                )
+
             for c in companies:
                 init_data = c.get("initial") or {}
                 latest_data = c.get("latest") or {}
@@ -254,6 +281,20 @@ class SnapshotVerifier:
                 dimension=DimensionType.ASIAN_HANDICAP,
                 status=CheckStatus.FAIL,
                 message="亚洲让球盘(AH)主流机构盘口水位缺失",
+            )
+
+        # 负面清单: 严禁包含 HTML 骨架或导航栏垃圾
+        if re.search(r"<!DOCTYPE|<html\b|<body\b", text, re.I):
+            return DimensionResult(
+                dimension=DimensionType.ASIAN_HANDICAP,
+                status=CheckStatus.FAIL,
+                message="亚洲让球盘数据未解析: 包含未清洗的 HTML 空骨架标签，严禁保存空骨架",
+            )
+        if re.search(r"首页\s*\n\s*足球直播|分析师\s*\n\s*新\s*\n\s*V计划", text):
+            return DimensionResult(
+                dimension=DimensionType.ASIAN_HANDICAP,
+                status=CheckStatus.FAIL,
+                message="亚洲让球盘包含整页导航栏垃圾文本，必须使用精准 CSS 容器提取",
             )
 
         detail_data: Dict[str, Any] = {}
@@ -330,6 +371,15 @@ class SnapshotVerifier:
                 detail={"timestamps": ts_count, "histories": hist_count},
             )
 
+        # 铁律3 (负面清单): 严禁混入赛后“滚”球时序数据（必须是赛前赔率）
+        if re.search(r"\t滚\b|\s+滚\s+|\t滚$", trend):
+            return DimensionResult(
+                dimension=DimensionType.TREND_HISTORY,
+                status=CheckStatus.FAIL,
+                message="变盘时序流水混入赛中‘滚’球盘口！系统法定只准使用赛前赔率时序",
+                detail={"trend": trend[:100]},
+            )
+
         return DimensionResult(
             dimension=DimensionType.TREND_HISTORY,
             status=CheckStatus.PASS,
@@ -362,6 +412,23 @@ class SnapshotVerifier:
 
     def _check_lineup_injury(self, snapshot: Dict[str, Any]) -> DimensionResult:
         lineup = (snapshot.get("lineupData") or "").strip()
+
+        # 负面清单: 严禁全页导航栏垃圾与 HTML 骨架标签
+        if re.search(r"首页\s*\n\s*足球直播|分析师\s*\n\s*新\s*\n\s*V计划", lineup):
+            return DimensionResult(
+                dimension=DimensionType.LINEUP_INJURY,
+                status=CheckStatus.FAIL,
+                message="阵容数据污染: 包含全页导航栏垃圾文本，必须使用精准 CSS 容器选择器提取！",
+                detail={"raw_preview": lineup[:80]},
+            )
+        if re.search(r"<!DOCTYPE|<html\b|<body\b", lineup, re.I):
+            return DimensionResult(
+                dimension=DimensionType.LINEUP_INJURY,
+                status=CheckStatus.FAIL,
+                message="阵容数据未解析: 包含未清洗的 HTML 骨架标签",
+                detail={"raw_preview": lineup[:80]},
+            )
+
         if not lineup or "暂无数据" in lineup:
             return DimensionResult(
                 dimension=DimensionType.LINEUP_INJURY,

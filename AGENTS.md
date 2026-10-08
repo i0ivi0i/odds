@@ -130,7 +130,12 @@ subagent：获取赛果 → 对比推荐 → 计算命中率 → 分析失误 �
 球探数据抓取采用**大模型自主调度的双轨敏捷架构**：**Skill `/scrapling-official` ↔ MCP `scrapling`**（毫秒级直取 163 家百家欧指 `1x2d.js` 与四大机构分钟级变盘流水，原生 TLS 伪装抗封锁）+ **Skill `/browseros-neo` ↔ MCP `browseros_neo`**（真实 Chromium 渲染环境，专攻「阵容情况」微观首发/伤停原句、球员评分与复杂大盘兜底）。禁止先跑旧版 `npm run schedule` / `analyze` / `review`。大模型拥有完全自主、聪明智慧的决断权，可根据页面与网络状况自主选择使用哪一个工具。
 
 **最高数据铁律（数据纯净与严禁错位）**：**数据一定要抓取正确，不要乱抓乱获取，绝对禁止把不对的数据放进不应该在的位置！**
-数据采集必须实事求是、精准归位，严禁为了应付门禁而猜测脑补、拼凑假数据或把无关字段错位塞入快照。时序归 `trendComparison`、欧指归 `european1x2Text`、亚盘归 `asianOddsText`、大小球归 `overUnderOddsText`、阵容归 `lineupData`、技统归 `tactics`、画像归 `profiling`。快照组装必须通过 `python 校验/src/adapter/cli.py --match ...` 物理安检门禁，若出现字段错位或数据不准，物理门禁立即拦截，必须纠偏归位。
+数据采集必须实事求是、精准归位，严禁为了应付门禁而猜测脑补、拼凑假数据或把无关字段错位塞入快照。时序归 `trendComparison`、欧指归 `european1x2Text`、亚盘归 `asianOddsText`、大小球归 `overUnderOddsText`、阵容归 `lineupData`、技统归 `tactics`、画像归 `profiling`。
+**杜绝低级排版与骨架抓取错误（刚性联动 TOOLS.md 规范）**：
+1. **结构化原生展开**：百家欧指必须通过 `1x2d.js` 直取并解构写入 `markets.europeCompanies` 数组（呈现清晰的多行缩进），严禁将百家数据挤入单行转义长文本导致 JSON 仅有几十行假象！
+2. **精准容器提取**：BrowserOS neo 抓取时必须使用精确选择器（如阵容表格、`#odds`）或过滤工具，严禁把包含“首页/足球直播”的整页导航栏文本塞入快照！
+3. **等待异步渲染**：动态加载页面必须使用 `wait-selector` 确保真实数据加载完毕，严禁保存只有标签没有数据的静态 HTML 空骨架（`<!DOCTYPE...`）！
+快照组装必须通过 `python 校验/src/adapter/cli.py --match ...` 物理安检门禁，若出现字段错位或数据不准，物理门禁立即拦截，必须纠偏归位。
 
 以球探网为盘口主源，落盘后对齐 `agent.schedule` / `agent.analysis` / `agent.review`：
 1. **主数据源（Primary）**：titan007 球探页（14 大机构欧亚全周期时序与 Crown 波胆）；

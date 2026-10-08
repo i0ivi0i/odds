@@ -376,6 +376,84 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertIn("items", snap["profiling"]["identicalOddsHistory"])
         self.assertEqual(len(snap["profiling"]["identicalOddsHistory"]["items"]), 1)
 
+    def test_negative_market_consensus_blocked(self):
+        """测试负面清单：包含 marketConsensus 或 百家平均 判定 FAIL 熔断"""
+        snap = dict(self.valid_snapshot)
+        snap["marketConsensus"] = {"h": 2.10, "d": 3.20, "a": 3.40}
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        euro_res = [r for r in receipt.results if r.dimension == DimensionType.EUROPE_1X2][0]
+        self.assertEqual(euro_res.status, CheckStatus.FAIL)
+        self.assertIn("算术平均", euro_res.message)
+
+    def test_negative_navigation_garbage_blocked(self):
+        """测试负面清单：包含全页导航栏垃圾 判定 FAIL 熔断"""
+        snap = dict(self.valid_snapshot)
+        snap["lineupData"] = "首页\n足球直播\n分析师\n新\nV计划\n暂无数据"
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        lineup_res = [r for r in receipt.results if r.dimension == DimensionType.LINEUP_INJURY][0]
+        self.assertEqual(lineup_res.status, CheckStatus.FAIL)
+        self.assertIn("导航栏垃圾文本", lineup_res.message)
+
+    def test_negative_html_skeleton_blocked(self):
+        """测试负面清单：包含未清洗 HTML 骨架标签 判定 FAIL 熔断"""
+        snap = dict(self.valid_snapshot)
+        snap["asianOddsText"] = "<!DOCTYPE html><html><body>公司\t盘口\t水位</body></html>"
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        asia_res = [r for r in receipt.results if r.dimension == DimensionType.ASIAN_HANDICAP][0]
+        self.assertEqual(asia_res.status, CheckStatus.FAIL)
+        self.assertIn("HTML 空骨架标签", asia_res.message)
+
+    def test_negative_gun_inplay_trend_blocked(self):
+        """测试负面清单：变盘时序混入滚球盘口 判定 FAIL 熔断"""
+        snap = dict(self.valid_snapshot)
+        snap["trendComparison"] = (
+            "Crown\t\t\t0.80\t半球\t1.05\t10-07 20:00\t即\n"
+            "Crown\t\t\t0.85\t半球\t1.00\t10-07 19:30\t早\n"
+            "Crown\t\t\t0.90\t半球\t0.95\t10-07 18:00\t滚\n"
+            "Crown\t\t\t0.95\t半球\t0.90\t10-07 17:00\t早\n"
+            "Crown\t\t\t1.00\t半球\t0.85\t10-07 16:00\t早\n"
+            "Crown\t\t\t1.05\t半球\t0.80\t10-07 15:00\t早"
+        )
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        trend_res = [r for r in receipt.results if r.dimension == DimensionType.TREND_HISTORY][0]
+        self.assertEqual(trend_res.status, CheckStatus.FAIL)
+        self.assertIn("滚", trend_res.message)
+
+    def test_negative_missing_core_bookmakers_blocked(self):
+        """测试负面清单：核心做市商覆盖不足判定 FAIL 熔断"""
+        snap = dict(self.valid_snapshot)
+        snap["european1x2Text"] = ""
+        snap["markets"] = {
+            "europeCompanies": [
+                {"company": "野鸡小庄A", "initial": {"return_rate": 0.9, "kelly": [0.9, 0.9, 0.9]}},
+                {"company": "野鸡小庄B", "initial": {"return_rate": 0.9, "kelly": [0.9, 0.9, 0.9]}},
+                {"company": "野鸡小庄C", "initial": {"return_rate": 0.9, "kelly": [0.9, 0.9, 0.9]}},
+            ]
+        }
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        euro_res = [r for r in receipt.results if r.dimension == DimensionType.EUROPE_1X2][0]
+        self.assertEqual(euro_res.status, CheckStatus.FAIL)
+        self.assertIn("核心做市商覆盖不足", euro_res.message)
+
+    def test_self_healing_tactics_physical_goals_passes(self):
+        """测试自愈机制：攻防进失球在 tactics.home/away 结构体中自愈通过"""
+        snap = dict(self.valid_snapshot)
+        snap["match"] = {"homeTeam": "主队", "awayTeam": "客队", "league": "芬超"}
+        snap.pop("basicStatsText", None)
+        snap["tactics"] = {
+            "home": {"name": "主队", "recent6": "得8失5", "avgGoalsScored": 1.5},
+            "away": {"name": "客队", "recent6": "得4失7", "avgGoalsConceded": 1.2},
+        }
+        receipt = self.verifier.verify(snap)
+        self.assertTrue(receipt.is_valid)
+        basic_res = [r for r in receipt.results if r.dimension == DimensionType.BASIC_STATS][0]
+        self.assertEqual(basic_res.status, CheckStatus.PASS)
+
 
 if __name__ == "__main__":
     unittest.main()
