@@ -1,0 +1,865 @@
+{
+  "kind": "football-match-snapshot",
+  "matchId": 3085212,
+  "sportteryCode": "周四002",
+  "source": "titan007-hybrid",
+  "fetchedAt": "2026-10-08 16:41:12",
+  "matchTime": "2026-10-09 00:00",
+  "kickoffStatus": "未开场",
+  "match": {
+    "id": 3085212,
+    "matchId": 3085212,
+    "homeTeam": "古比斯",
+    "awayTeam": "奥卢",
+    "league": "芬超冠",
+    "kickoffTime": "2026-10-09 00:00",
+    "analysisUrl": "https://zq.titan007.com/analysis/3085212cn.htm"
+  },
+  "european1x2Text": "欧洲指数主流机构初即盘与返还率/凯利指数完整，样本覆盖31家核心法定机构（含竞彩官方、澳门彩票、Bet365、威廉希尔、立博、平博等）。",
+  "asianOddsText": "公司\t多盘\t初盘(主/盘/客)\t即时盘(主/盘/客)\n澳彩\t\t1.00\t一球\t0.78\t0.77\t一球\t1.01\nCrown\t\t0.83\t半球/一球\t0.99\t0.79\t一球\t1.11\nBet365\t\t1.03\t一球\t0.78\t0.95\t一球\t0.85\n易胜博\t\t0.79\t半球/一球\t1.02\t0.79\t一球\t1.05\n平博\t\t0.89\t半球/一球\t0.93\t0.81\t一球\t1.11\n香港马会\t0.90\t一球\t0.86\t0.81\t一球\t0.96",
+  "overUnderText": "公司\t多盘\t初盘(大/球/小)\t即时盘(大/球/小)\n澳彩\t\t0.84\t2.5\t0.88\t0.97\t2.5/3\t0.75\nCrown\t\t0.90\t2.5\t0.90\t1.03\t2.5/3\t0.84\nBet365\t\t0.83\t2.5\t0.98\t1.00\t2.5/3\t0.80\n易胜博\t\t0.89\t2.5\t0.91\t0.81\t2.5\t1.03\n平博\t\t0.89\t2.5\t0.91\t1.05\t2.5/3\t0.85",
+  "trendComparison": "Crown\t\t\t0.79\t一球\t1.11\t10-8 16:16\t即\nCrown\t\t\t0.81\t一球\t1.08\t10-8 16:10\t即\nCrown\t\t\t0.83\t一球\t1.06\t10-8 16:01\t即\nCrown\t\t\t0.85\t一球\t1.04\t10-8 15:49\t即\nCrown\t\t\t0.87\t一球\t1.02\t10-8 15:33\t即\n澳彩\t\t\t0.77\t一球\t1.01\t10-8 16:23\t即\n澳彩\t\t\t0.80\t一球\t0.98\t10-8 16:09\t即\n澳彩\t\t\t0.82\t一球\t0.96\t10-8 15:49\t即\n澳彩\t\t\t0.88\t一球\t0.90\t10-8 14:57\t即\n澳彩\t\t\t0.93\t一球\t0.85\t10-8 14:46\t即\nBet365\t\t\t0.95\t一球\t0.85\t10-8 15:24\t即\nBet365\t\t\t1.03\t一球/球半\t0.78\t10-8 13:45\t即\nBet365\t\t\t0.90\t一球\t0.90\t10-8 13:05\t即\n易胜博\t\t\t0.79\t一球\t1.05\t10-8 16:29\t即\n易胜博\t\t\t0.81\t一球\t1.03\t10-8 16:23\t即\n易胜博\t\t\t0.83\t一球\t1.01\t10-8 15:58\t即",
+  "correctScoreOdds": "Crow*全指数 独赢亚让进球数单双全场1.474.355.900.7911.111.032.5/30.84单0.94双0.93半场2.062.275.701.060.50.820.8011.07波胆1:02:02:13:03:13:24:04:14:24:30:01:12:23:34:4主5.65.77911281922501401271885200客14.535181006060200180180200入球数0~12~34~67+2.60.892.0520半全场主/主主/和主/客和/主和/和和/客客/主客/和客/客1.1616.5403.45.611.522189.5",
+  "lineupData": "【暂无数据】",
+  "tactics": {
+    "home": {
+      "name": "古比斯",
+      "standing": 1,
+      "points": 48,
+      "homeForm": "11场6胜4平1负 得21失14 积分22 (胜率54.5%)",
+      "recent6": "3胜1平2负 得9失8 (胜率50.0%)",
+      "avgGoalsScored": 1.91,
+      "avgGoalsConceded": 1.27
+    },
+    "away": {
+      "name": "奥卢",
+      "standing": 5,
+      "points": 34,
+      "awayForm": "11场4胜2平5负 得13失16 积分14 (胜率36.4%)",
+      "recent6": "2胜2平2负 得5失5 (胜率33.3%)",
+      "avgGoalsScored": 1.18,
+      "avgGoalsConceded": 1.45
+    }
+  },
+  "profiling": {
+    "initialHandicap": "一球 / 半球/一球",
+    "latestHandicap": "一球 (主水降至 0.77~0.79 超低水防范)",
+    "handicapTrend": "强设障防范主胜净胜两球，临盘澳彩与Crown坚决维持一球盘且大幅压低主水至0.77",
+    "marketDivergence": "无明显分歧，主流机构全部升至一球低水设障防守"
+  },
+  "markets": {
+    "halfTime": {
+      "handicap": "半球",
+      "homeWater": 1.06,
+      "awayWater": 0.82
+    },
+    "europeCompanies": [
+      {
+        "company": "Lottery Official",
+        "cid": 1129,
+        "initial": {
+          "home": 1.41,
+          "draw": 3.95,
+          "away": 6.0,
+          "return_rate": 88.57,
+          "kelly": [
+            62.82,
+            22.42,
+            14.76
+          ]
+        },
+        "latest": {
+          "home": 1.36,
+          "draw": 4.15,
+          "away": 6.55,
+          "return_rate": 88.58,
+          "kelly": [
+            65.13,
+            21.34,
+            13.52
+          ]
+        }
+      },
+      {
+        "company": "Bet 365",
+        "cid": 281,
+        "initial": {
+          "home": 1.57,
+          "draw": 3.75,
+          "away": 5.0,
+          "return_rate": 90.61,
+          "kelly": [
+            57.71,
+            24.16,
+            18.12
+          ]
+        },
+        "latest": {
+          "home": 1.5,
+          "draw": 3.9,
+          "away": 5.5,
+          "return_rate": 90.51,
+          "kelly": [
+            60.34,
+            23.21,
+            16.46
+          ]
+        }
+      },
+      {
+        "company": "Macauslot",
+        "cid": 80,
+        "initial": {
+          "home": 1.51,
+          "draw": 3.75,
+          "away": 5.2,
+          "return_rate": 89.19,
+          "kelly": [
+            59.06,
+            23.78,
+            17.15
+          ]
+        },
+        "latest": {
+          "home": 1.38,
+          "draw": 4.3,
+          "away": 6.0,
+          "return_rate": 88.98,
+          "kelly": [
+            64.48,
+            20.69,
+            14.83
+          ]
+        }
+      },
+      {
+        "company": "HK Jockey Club",
+        "cid": 432,
+        "initial": {
+          "home": 1.42,
+          "draw": 3.85,
+          "away": 5.8,
+          "return_rate": 88.0,
+          "kelly": [
+            61.97,
+            22.86,
+            15.17
+          ]
+        },
+        "latest": {
+          "home": 1.38,
+          "draw": 4.05,
+          "away": 6.1,
+          "return_rate": 88.07,
+          "kelly": [
+            63.82,
+            21.75,
+            14.44
+          ]
+        }
+      },
+      {
+        "company": "William Hill",
+        "cid": 115,
+        "initial": {
+          "home": 1.6,
+          "draw": 3.7,
+          "away": 5.0,
+          "return_rate": 91.3,
+          "kelly": [
+            57.06,
+            24.68,
+            18.26
+          ]
+        },
+        "latest": {
+          "home": 1.44,
+          "draw": 4.2,
+          "away": 6.0,
+          "return_rate": 90.97,
+          "kelly": [
+            63.18,
+            21.66,
+            15.16
+          ]
+        }
+      },
+      {
+        "company": "Ladbrokes",
+        "cid": 82,
+        "initial": {
+          "home": 1.55,
+          "draw": 3.7,
+          "away": 4.8,
+          "return_rate": 88.99,
+          "kelly": [
+            57.41,
+            24.05,
+            18.54
+          ]
+        },
+        "latest": {
+          "home": 1.48,
+          "draw": 3.9,
+          "away": 5.75,
+          "return_rate": 90.42,
+          "kelly": [
+            61.09,
+            23.18,
+            15.72
+          ]
+        }
+      },
+      {
+        "company": "Vcbet",
+        "cid": 81,
+        "initial": {
+          "home": 1.55,
+          "draw": 3.75,
+          "away": 5.5,
+          "return_rate": 91.44,
+          "kelly": [
+            58.99,
+            24.38,
+            16.62
+          ]
+        },
+        "latest": {
+          "home": 1.44,
+          "draw": 4.1,
+          "away": 6.5,
+          "return_rate": 91.56,
+          "kelly": [
+            63.58,
+            22.33,
+            14.09
+          ]
+        }
+      },
+      {
+        "company": "Easybets",
+        "cid": 90,
+        "initial": {
+          "home": 1.57,
+          "draw": 3.8,
+          "away": 5.0,
+          "return_rate": 90.9,
+          "kelly": [
+            57.9,
+            23.92,
+            18.18
+          ]
+        },
+        "latest": {
+          "home": 1.44,
+          "draw": 4.2,
+          "away": 6.0,
+          "return_rate": 90.97,
+          "kelly": [
+            63.18,
+            21.66,
+            15.16
+          ]
+        }
+      },
+      {
+        "company": "Interwetten",
+        "cid": 104,
+        "initial": {
+          "home": 1.63,
+          "draw": 3.7,
+          "away": 5.25,
+          "return_rate": 93.09,
+          "kelly": [
+            57.11,
+            25.16,
+            17.73
+          ]
+        },
+        "latest": {
+          "home": 1.5,
+          "draw": 4.1,
+          "away": 6.25,
+          "return_rate": 93.41,
+          "kelly": [
+            62.27,
+            22.78,
+            14.95
+          ]
+        }
+      },
+      {
+        "company": "10BET",
+        "cid": 16,
+        "initial": {
+          "home": 1.58,
+          "draw": 3.7,
+          "away": 5.0,
+          "return_rate": 90.65,
+          "kelly": [
+            57.37,
+            24.5,
+            18.13
+          ]
+        },
+        "latest": {
+          "home": 1.47,
+          "draw": 4.4,
+          "away": 6.2,
+          "return_rate": 93.56,
+          "kelly": [
+            63.65,
+            21.26,
+            15.09
+          ]
+        }
+      },
+      {
+        "company": "Bwin",
+        "cid": 255,
+        "initial": {
+          "home": 1.6,
+          "draw": 3.9,
+          "away": 5.25,
+          "return_rate": 93.29,
+          "kelly": [
+            58.31,
+            23.92,
+            17.77
+          ]
+        },
+        "latest": {
+          "home": 1.5,
+          "draw": 4.1,
+          "away": 6.25,
+          "return_rate": 93.41,
+          "kelly": [
+            62.27,
+            22.78,
+            14.95
+          ]
+        }
+      },
+      {
+        "company": "Crown",
+        "cid": 545,
+        "initial": {
+          "home": 1.64,
+          "draw": 3.9,
+          "away": 4.7,
+          "return_rate": 92.68,
+          "kelly": [
+            56.51,
+            23.77,
+            19.72
+          ]
+        },
+        "latest": {
+          "home": 1.47,
+          "draw": 4.35,
+          "away": 5.9,
+          "return_rate": 92.62,
+          "kelly": [
+            63.01,
+            21.29,
+            15.7
+          ]
+        }
+      },
+      {
+        "company": "IBCBET",
+        "cid": 649,
+        "initial": {
+          "home": 1.64,
+          "draw": 3.8,
+          "away": 4.85,
+          "return_rate": 92.67,
+          "kelly": [
+            56.51,
+            24.39,
+            19.11
+          ]
+        },
+        "latest": {
+          "home": 1.52,
+          "draw": 4.15,
+          "away": 6.6,
+          "return_rate": 95.2,
+          "kelly": [
+            62.63,
+            22.94,
+            14.42
+          ]
+        }
+      },
+      {
+        "company": "Pinnacle",
+        "cid": 177,
+        "initial": {
+          "home": 1.68,
+          "draw": 3.8,
+          "away": 4.82,
+          "return_rate": 93.82,
+          "kelly": [
+            55.85,
+            24.69,
+            19.46
+          ]
+        },
+        "latest": {
+          "home": 1.48,
+          "draw": 4.6,
+          "away": 6.88,
+          "return_rate": 96.3,
+          "kelly": [
+            65.07,
+            20.93,
+            14.0
+          ]
+        }
+      },
+      {
+        "company": "Sbobet",
+        "cid": 474,
+        "initial": {
+          "home": 1.6,
+          "draw": 3.54,
+          "away": 4.65,
+          "return_rate": 89.08,
+          "kelly": [
+            55.68,
+            25.16,
+            19.16
+          ]
+        },
+        "latest": {
+          "home": 1.46,
+          "draw": 4.12,
+          "away": 6.3,
+          "return_rate": 92.05,
+          "kelly": [
+            63.05,
+            22.34,
+            14.61
+          ]
+        }
+      },
+      {
+        "company": "SNAI",
+        "cid": 110,
+        "initial": {
+          "home": 1.57,
+          "draw": 3.75,
+          "away": 5.25,
+          "return_rate": 91.4,
+          "kelly": [
+            58.22,
+            24.37,
+            17.41
+          ]
+        },
+        "latest": {
+          "home": 1.52,
+          "draw": 4.0,
+          "away": 6.0,
+          "return_rate": 93.06,
+          "kelly": [
+            61.22,
+            23.27,
+            15.51
+          ]
+        }
+      },
+      {
+        "company": "Betfair",
+        "cid": 2,
+        "initial": {
+          "home": 1.58,
+          "draw": 4.0,
+          "away": 6.0,
+          "return_rate": 95.28,
+          "kelly": [
+            60.3,
+            23.82,
+            15.88
+          ]
+        },
+        "latest": {
+          "home": 1.56,
+          "draw": 4.4,
+          "away": 6.8,
+          "return_rate": 98.49,
+          "kelly": [
+            63.13,
+            22.38,
+            14.48
+          ]
+        }
+      },
+      {
+        "company": "Marathon",
+        "cid": 800,
+        "initial": {
+          "home": 1.63,
+          "draw": 3.84,
+          "away": 5.0,
+          "return_rate": 93.12,
+          "kelly": [
+            57.13,
+            24.25,
+            18.62
+          ]
+        },
+        "latest": {
+          "home": 1.45,
+          "draw": 4.35,
+          "away": 6.4,
+          "return_rate": 92.95,
+          "kelly": [
+            64.11,
+            21.37,
+            14.52
+          ]
+        }
+      },
+      {
+        "company": "Unibet",
+        "cid": 386,
+        "initial": {
+          "home": 1.64,
+          "draw": 3.7,
+          "away": 4.5,
+          "return_rate": 90.72,
+          "kelly": [
+            55.32,
+            24.52,
+            20.16
+          ]
+        },
+        "latest": {
+          "home": 1.5,
+          "draw": 3.95,
+          "away": 5.6,
+          "return_rate": 91.04,
+          "kelly": [
+            60.69,
+            23.05,
+            16.26
+          ]
+        }
+      },
+      {
+        "company": "Betfair AUS",
+        "cid": 1036,
+        "initial": {
+          "home": 1.58,
+          "draw": 4.0,
+          "away": 6.0,
+          "return_rate": 95.28,
+          "kelly": [
+            60.3,
+            23.82,
+            15.88
+          ]
+        },
+        "latest": {
+          "home": 1.56,
+          "draw": 4.4,
+          "away": 6.8,
+          "return_rate": 98.49,
+          "kelly": [
+            63.13,
+            22.38,
+            14.48
+          ]
+        }
+      },
+      {
+        "company": "Betfair Exchange",
+        "cid": 1055,
+        "initial": {
+          "home": 1.58,
+          "draw": 4.0,
+          "away": 6.0,
+          "return_rate": 95.28,
+          "kelly": [
+            60.3,
+            23.82,
+            15.88
+          ]
+        },
+        "latest": {
+          "home": 1.66,
+          "draw": 4.1,
+          "away": 5.9,
+          "return_rate": 98.44,
+          "kelly": [
+            59.3,
+            24.01,
+            16.69
+          ]
+        }
+      },
+      {
+        "company": "Betfair SB",
+        "cid": 988,
+        "initial": {
+          "home": 1.53,
+          "draw": 3.8,
+          "away": 5.0,
+          "return_rate": 89.55,
+          "kelly": [
+            58.53,
+            23.56,
+            17.91
+          ]
+        },
+        "latest": {
+          "home": 1.55,
+          "draw": 3.8,
+          "away": 5.0,
+          "return_rate": 90.23,
+          "kelly": [
+            58.21,
+            23.74,
+            18.05
+          ]
+        }
+      },
+      {
+        "company": "Betway",
+        "cid": 482,
+        "initial": {
+          "home": 1.55,
+          "draw": 3.8,
+          "away": 4.75,
+          "return_rate": 89.38,
+          "kelly": [
+            57.66,
+            23.52,
+            18.82
+          ]
+        },
+        "latest": {
+          "home": 1.45,
+          "draw": 4.5,
+          "away": 6.0,
+          "return_rate": 92.72,
+          "kelly": [
+            63.94,
+            20.6,
+            15.45
+          ]
+        }
+      },
+      {
+        "company": "Bwin.fr",
+        "cid": 723,
+        "initial": {
+          "home": 1.49,
+          "draw": 3.4,
+          "away": 4.4,
+          "return_rate": 83.86,
+          "kelly": [
+            56.28,
+            24.66,
+            19.06
+          ]
+        },
+        "latest": {
+          "home": 1.44,
+          "draw": 3.5,
+          "away": 4.75,
+          "return_rate": 83.99,
+          "kelly": [
+            58.32,
+            24.0,
+            17.68
+          ]
+        }
+      },
+      {
+        "company": "BWin.it",
+        "cid": 686,
+        "initial": {
+          "home": 1.6,
+          "draw": 3.9,
+          "away": 5.25,
+          "return_rate": 93.29,
+          "kelly": [
+            58.31,
+            23.92,
+            17.77
+          ]
+        },
+        "latest": {
+          "home": 1.6,
+          "draw": 3.8,
+          "away": 5.5,
+          "return_rate": 93.46,
+          "kelly": [
+            58.41,
+            24.59,
+            16.99
+          ]
+        }
+      },
+      {
+        "company": "Ladbrokes.au",
+        "cid": 1135,
+        "initial": {
+          "home": 1.55,
+          "draw": 3.7,
+          "away": 4.8,
+          "return_rate": 88.99,
+          "kelly": [
+            57.41,
+            24.05,
+            18.54
+          ]
+        },
+        "latest": {
+          "home": 1.5,
+          "draw": 3.8,
+          "away": 5.25,
+          "return_rate": 89.26,
+          "kelly": [
+            59.51,
+            23.49,
+            17.0
+          ]
+        }
+      },
+      {
+        "company": "Ladbrokes.be",
+        "cid": 1350,
+        "initial": {
+          "home": 1.57,
+          "draw": 3.9,
+          "away": 5.4,
+          "return_rate": 92.72,
+          "kelly": [
+            59.06,
+            23.77,
+            17.17
+          ]
+        },
+        "latest": {
+          "home": 1.48,
+          "draw": 4.2,
+          "away": 6.0,
+          "return_rate": 92.56,
+          "kelly": [
+            62.54,
+            22.04,
+            15.43
+          ]
+        }
+      },
+      {
+        "company": "Marathonbet.ru",
+        "cid": 1258,
+        "initial": {
+          "home": 1.61,
+          "draw": 3.88,
+          "away": 5.1,
+          "return_rate": 93.03,
+          "kelly": [
+            57.78,
+            23.98,
+            18.24
+          ]
+        },
+        "latest": {
+          "home": 1.45,
+          "draw": 4.35,
+          "away": 6.4,
+          "return_rate": 92.95,
+          "kelly": [
+            64.11,
+            21.37,
+            14.52
+          ]
+        }
+      },
+      {
+        "company": "Marathonbet",
+        "cid": 816,
+        "initial": {
+          "home": 1.63,
+          "draw": 3.84,
+          "away": 5.0,
+          "return_rate": 93.12,
+          "kelly": [
+            57.13,
+            24.25,
+            18.62
+          ]
+        },
+        "latest": {
+          "home": 1.45,
+          "draw": 4.35,
+          "away": 6.4,
+          "return_rate": 92.95,
+          "kelly": [
+            64.11,
+            21.37,
+            14.52
+          ]
+        }
+      },
+      {
+        "company": "Paddy Power",
+        "cid": 826,
+        "initial": {
+          "home": 1.53,
+          "draw": 3.8,
+          "away": 5.0,
+          "return_rate": 89.55,
+          "kelly": [
+            58.53,
+            23.56,
+            17.91
+          ]
+        },
+        "latest": {
+          "home": 1.44,
+          "draw": 4.0,
+          "away": 6.0,
+          "return_rate": 90.0,
+          "kelly": [
+            62.5,
+            22.5,
+            15.0
+          ]
+        }
+      },
+      {
+        "company": "Unibet.se",
+        "cid": 1349,
+        "initial": {
+          "home": 1.64,
+          "draw": 3.7,
+          "away": 4.5,
+          "return_rate": 90.72,
+          "kelly": [
+            55.32,
+            24.52,
+            20.16
+          ]
+        },
+        "latest": {
+          "home": 1.5,
+          "draw": 3.9,
+          "away": 5.75,
+          "return_rate": 91.16,
+          "kelly": [
+            60.77,
+            23.37,
+            15.85
+          ]
+        }
+      }
+    ]
+  }
+}
