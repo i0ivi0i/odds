@@ -61,7 +61,9 @@
       "polymarket": {
         "name": "Polymarket 预测市场",
         "type": "web3_prediction_market",
-        "gamma_api": "https://gamma-api.polymarket.com/events",
+        "gamma_search_api": "https://gamma-api.polymarket.com/public-search",
+        "gamma_events_api": "https://gamma-api.polymarket.com/events",
+        "gamma_sports_api": "https://gamma-api.polymarket.com/sports",
         "clob_api": "https://clob.polymarket.com",
         "web_base": "https://polymarket.com/zh/sports"
       }

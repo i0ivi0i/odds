@@ -89,13 +89,15 @@ class TestSnapshotVerifier(unittest.TestCase):
             },
             "lineupData": "苏格兰\n球员 缺阵原因\n1 (中场) 肯尼·麦克莱恩 十字韧带扭伤\n2 (后卫) 罗伯逊 肌肉拉伤",
             "trendComparison": (
-                "半球 0.94 0.86 10-07 21:33\n"
-                "半球 1.00 0.90 10-07 21:30\n"
-                "半球 0.98 0.88 10-07 21:29\n"
-                "半球 0.96 0.87 10-07 21:28\n"
-                "半球 0.97 0.92 10-07 21:21\n"
-                "半球 0.99 0.91 10-07 21:16\n"
-                "半球 0.92 0.86 10-07 20:48\n"
+                "澳彩\t半球 0.94 0.86 10-07 21:33\n"
+                "Crown\t半球 1.00 0.90 10-07 21:30\n"
+                "Bet365\t半球 0.98 0.88 10-07 21:29\n"
+                "易胜博\t半球 0.96 0.87 10-07 21:28\n"
+                "平博\t半球 0.95 0.89 10-07 21:25\n"
+                "188\t半球 0.93 0.87 10-07 21:23\n"
+                "澳彩\t半球 0.97 0.92 10-07 21:21\n"
+                "Crown\t半球 0.99 0.91 10-07 21:16\n"
+                "Bet365\t半球 0.92 0.86 10-07 20:48\n"
             ),
             "correctScoreOdds": "波胆1:0 2:0 2:1 3:0 0:0 1:1 主3.75 6.2 8.1 5.1 客8.2 25",
             "asianOddsText": "澳彩 半球/一球 0.85 皇冠 半球/一球 0.88 365 半球/一球 0.86 易胜博 半球/一球 0.84",
@@ -111,6 +113,19 @@ class TestSnapshotVerifier(unittest.TestCase):
             "polymarket": {
                 "slug": "unl-sco-cro-2026-10-07",
                 "url": "https://polymarket.com/zh/sports/uefa-nations-league/unl-sco-cro-2026-10-07",
+            },
+            "markets": {
+                "europeHistories": [
+                    {
+                        "company": "澳彩",
+                        "timeline": [
+                            {"h": 1.48, "d": 3.93, "a": 5.00, "timestamp": "10-04 20:40", "status": "初盘"},
+                            {"h": 1.45, "d": 4.20, "a": 5.00, "timestamp": "10-04 22:32", "status": "即"},
+                            {"h": 1.47, "d": 4.15, "a": 4.90, "timestamp": "10-08 00:26", "status": "即"},
+                            {"h": 1.42, "d": 4.30, "a": 5.35, "timestamp": "10-08 15:40", "status": "即"},
+                        ],
+                    }
+                ]
             },
         }
 
@@ -243,20 +258,19 @@ class TestSnapshotVerifier(unittest.TestCase):
         """测试欧洲指数包含结构化 europeCompanies 且含凯利和返还率时判定 PASS"""
         good_snapshot = dict(self.valid_snapshot)
         good_snapshot["european1x2Text"] = ""
-        good_snapshot["markets"] = {
-            "europeCompanies": [
-                {
-                    "name": "威廉希尔",
-                    "initial": {"h": 2.50, "d": 3.10, "a": 2.63, "return_rate": 0.941, "kelly": [0.96, 0.92, 0.94]},
-                    "latest": {"h": 1.91, "d": 3.40, "a": 3.60, "return_rate": 0.942, "kelly": [0.93, 0.95, 0.95]},
-                },
-                {
-                    "name": "立博",
-                    "initial": {"h": 2.50, "d": 3.30, "a": 2.70, "return_rate": 0.940, "kelly": [0.96, 0.98, 0.90]},
-                    "latest": {"h": 2.00, "d": 3.50, "a": 3.60, "return_rate": 0.945, "kelly": [0.95, 0.96, 0.92]},
-                },
-            ]
-        }
+        good_snapshot["markets"] = dict(good_snapshot.get("markets", {}))
+        good_snapshot["markets"]["europeCompanies"] = [
+            {
+                "name": "威廉希尔",
+                "initial": {"h": 2.50, "d": 3.10, "a": 2.63, "return_rate": 0.941, "kelly": [0.96, 0.92, 0.94]},
+                "latest": {"h": 1.91, "d": 3.40, "a": 3.60, "return_rate": 0.942, "kelly": [0.93, 0.95, 0.95]},
+            },
+            {
+                "name": "立博",
+                "initial": {"h": 2.50, "d": 3.30, "a": 2.70, "return_rate": 0.940, "kelly": [0.96, 0.98, 0.90]},
+                "latest": {"h": 2.00, "d": 3.50, "a": 3.60, "return_rate": 0.945, "kelly": [0.95, 0.96, 0.92]},
+            },
+        ]
         receipt = self.verifier.verify(good_snapshot)
         self.assertTrue(receipt.is_valid)
         euro_res = [r for r in receipt.results if r.dimension == DimensionType.EUROPE_1X2][0]
@@ -333,11 +347,10 @@ class TestSnapshotVerifier(unittest.TestCase):
                 "awayRecent10": {"cover": 3, "push": 1, "lose": 6},
             }
         }
-        full_snapshot["markets"] = {
-            "halfTime": {
-                "crown": {"ahInitial": "平/半 0.85", "ahLatest": "半球 1.02", "ouInitial": "1 0.90", "ouLatest": "1 0.88"},
-                "macau": {"ahInitial": "平/半 0.82", "ahLatest": "平/半 0.95", "ouInitial": "1 0.85", "ouLatest": "1 0.92"},
-            }
+        full_snapshot["markets"] = dict(full_snapshot.get("markets", {}))
+        full_snapshot["markets"]["halfTime"] = {
+            "crown": {"ahInitial": "平/半 0.85", "ahLatest": "半球 1.02", "ouInitial": "1 0.90", "ouLatest": "1 0.88"},
+            "macau": {"ahInitial": "平/半 0.82", "ahLatest": "平/半 0.95", "ouInitial": "1 0.85", "ouLatest": "1 0.92"},
         }
         receipt = self.verifier.verify(full_snapshot)
         self.assertTrue(receipt.is_valid)
@@ -453,6 +466,59 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertTrue(receipt.is_valid)
         basic_res = [r for r in receipt.results if r.dimension == DimensionType.BASIC_STATS][0]
         self.assertEqual(basic_res.status, CheckStatus.PASS)
+
+    def test_verify_europe_1x2_missing_timeline_blocked(self):
+        """测试负面清单硬拦截：欧指仅有初即盘切片而缺少连续变盘时序流水时判定 FAIL"""
+        snap = dict(self.valid_snapshot)
+        snap["markets"] = dict(snap.get("markets", {}))
+        snap["markets"]["europeHistories"] = []
+        snap["trendComparison"] = "半球 0.94 0.86 10-07 21:33\n半球 1.00 0.90 10-07 21:30\n半球 0.98 0.88 10-07 21:29"
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        euro_res = [r for r in receipt.results if r.dimension == DimensionType.EUROPE_1X2][0]
+        self.assertEqual(euro_res.status, CheckStatus.FAIL)
+        self.assertIn("缺少连续变盘时序流水", euro_res.message)
+        self.assertIn("严禁仅用初即盘切片偷懒", euro_res.message)
+
+    def test_verify_europe_1x2_with_timeline_passes(self):
+        """测试欧指包含4条以上带时间戳变盘流水判定 PASS"""
+        snap = dict(self.valid_snapshot)
+        receipt = self.verifier.verify(snap)
+        self.assertTrue(receipt.is_valid)
+        euro_res = [r for r in receipt.results if r.dimension == DimensionType.EUROPE_1X2][0]
+        self.assertEqual(euro_res.status, CheckStatus.PASS)
+        self.assertIn("分钟级时序完整", euro_res.message)
+
+    def test_verify_trend_history_insufficient_companies_blocked(self):
+        """测试防偷懒硬门禁：时序流水中核心做市商少于3家（如仅抓澳彩和Crown）判定 FAIL 熔断"""
+        snap = dict(self.valid_snapshot)
+        # 虽有6行时间戳，但仅有澳彩和Crown 2家公司
+        snap["trendComparison"] = (
+            "澳彩\t半球 0.94 0.86 10-07 21:33\n"
+            "澳彩\t半球 1.00 0.90 10-07 21:30\n"
+            "澳彩\t半球 0.98 0.88 10-07 21:29\n"
+            "Crown\t半球 0.96 0.87 10-07 21:28\n"
+            "Crown\t半球 0.97 0.92 10-07 21:21\n"
+            "Crown\t半球 0.99 0.91 10-07 21:16\n"
+        )
+        snap["markets"] = dict(snap.get("markets", {}))
+        snap["markets"]["asianHistories"] = []
+        snap["markets"]["europeHistories"] = []
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        trend_res = [r for r in receipt.results if r.dimension == DimensionType.TREND_HISTORY][0]
+        self.assertEqual(trend_res.status, CheckStatus.FAIL)
+        self.assertIn("核心做市商覆盖不足", trend_res.message)
+        self.assertIn("严禁偷懒漏抓做市商", trend_res.message)
+
+    def test_verify_trend_history_multi_companies_passes(self):
+        """测试时序流水覆盖5家以上主流做市商判定 PASS"""
+        snap = dict(self.valid_snapshot)
+        receipt = self.verifier.verify(snap)
+        self.assertTrue(receipt.is_valid)
+        trend_res = [r for r in receipt.results if r.dimension == DimensionType.TREND_HISTORY][0]
+        self.assertEqual(trend_res.status, CheckStatus.PASS)
+        self.assertIn("涵盖核心做市商", trend_res.message)
 
 
 if __name__ == "__main__":

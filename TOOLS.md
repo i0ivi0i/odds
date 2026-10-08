@@ -11,7 +11,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 ### 1. 技能与 MCP 双轨绑定及分工
 - **Skill `/scrapling-official` ↔ MCP `scrapling`（极速协议流通道）**：
   - 原生集成 TLS 浏览器指纹伪装与抗封锁能力；
-  - 毫秒级直取 163 家百家欧指数据流（`1x2d.titan007.com/{id}.js`）与四大机构分钟级变盘流水（`changeDetail`）；
+  - 毫秒级直取 163 家百家欧指数据流（`1x2d.titan007.com/{id}.js`）与 7 大法定机构分钟级变盘流水（`changeDetail`）；
   - 作为赛前高频盘赔时序数据提取的**首选高速通道**。
 - **Skill `/browseros-neo` ↔ MCP `browseros_neo`（真实渲染通道）**：
   - 真实 Chromium 渲染环境，专攻球探单场分析页的「阵容情况」微观伤停原句、首发球员评分、积分榜战术技统与竞足全开大盘；
@@ -61,21 +61,27 @@ import re
 res_1x2 = Fetcher.get(f"https://1x2d.titan007.com/{match_id}.js", impersonate="chrome")
 text_1x2 = res_1x2.body.decode("utf-8", errors="ignore")
 
-# 2. 抓取四大机构亚盘/大小球变盘流水（注意：必须使用 gb18030 解码，防中文乱码）
-url_asia = f"https://vip.titan007.com/changeDetail/handicap.aspx?id={match_id}&companyID={cid}&l=0"
+# 2. 抓取 7 大法定做市商亚盘/大小球变盘流水（注意：必须使用 gb18030 解码，防中文乱码）
+# 7 大法定做市商：澳彩 cid=1, Crown cid=3, Bet365 cid=8, 易胜博 cid=12, 平博 cid=47, 188 cid=42, 香港马会 cid=48
+# 亚盘: url_asia = f"https://vip.titan007.com/changeDetail/handicap.aspx?id={match_id}&companyID={cid}&l=0"
+# 大小球: url_ou = f"https://vip.titan007.com/changeDetail/overunder.aspx?id={match_id}&companyID={cid}&l=0"
 res_asia = Fetcher.get(url_asia, impersonate="chrome")
 text_asia = res_asia.body.decode("gb18030", errors="ignore")
 
-# 3. 抓取欧指分钟级流水（注意：必须携带从 1x2d 中解析到的 odds_id）
-url_history = f"https://1x2.titan007.com/OddsHistory.aspx?id={odds_id}&sid={match_id}&cid={cid}&l=0"
-res_history = Fetcher.get(url_history, impersonate="chrome")
+# 3. 抓取欧指分钟级全量时序（拒绝仅有初即盘切片偷懒！）
+# 14 家做市商欧指流水直接从 1x2d.js 的 gameDetail 数组解构，无需单页逐个请求！
+# 主流做市商 (澳彩 cid=80, Crown cid=545, Bet365 cid=281, 易胜博 cid=90, 平博 cid=177, 威廉 cid=115, 立博 cid=82 等)
+url_vip = f"https://vip.titan007.com/changeDetail/1x2.aspx?id={match_id}&companyid={cid}&l=0"
+res_history = Fetcher.get(url_jc, impersonate="chrome")
 text_history = res_history.body.decode("utf-8", errors="ignore")
 ```
 
 #### 实战踩坑必记
 1. **编码陷阱**：球探二级页面（`changeDetail/*.aspx`）为旧版编码，默认 UTF-8 会导致队名和盘口乱码，必须使用 `gb18030` 解码；
 2. **欧指百家非 SSR**：`oddslist/{id}.htm` 为空骨架，真实 163 家公司数据存储在 `https://1x2d.titan007.com/{id}.js` 中，直接抓 JS 文件效率最高且最全；
-3. **欧指历史流水参数**：`OddsHistory.aspx` 若只传 `sid` 和 `cid` 会返回空表，必须传 `id={odds_id}` 参数方可提取分钟级变盘流水。
+3. **欧指历史流水参数与并发直取**：`OddsHistory.aspx` 若只传 `sid` 和 `cid` 会返回空表，必须传 `id={odds_id}` 参数方可提取分钟级变盘流水；核心做市商（澳彩 1、Crown 3、Bet365 8）可直接请求 `vip.titan007.com/changeDetail/1x2.aspx` 直取全量时序；
+4. **剔除滚球盘口**：调赔时序必须严格截断至比赛开球前，状态标记为“滚”或比分非 0:0 的记录必须物理剔除；
+5. **体彩数据隔离铁律**：中国体彩仅用于核对场次代号（如周四001）、开售状态与节假日休市，其静态赔率绝不进入 AI 十步深度推演与概率计算！
 
 ---
 
@@ -105,10 +111,11 @@ text_history = res_history.body.decode("utf-8", errors="ignore")
      - **彻底抛弃垃圾小庄**：其余 140+ 家抄盘跟风小白标直接丢弃，不存明细，不折算伪平均，保持快照纯净与高信噪比。
 - 无论通过 Scrapling 提取还是 BrowserOS neo 渲染，均必须包含：
   1. `european1x2Text` 与 `markets.europeCompanies`：主流机构百家初即盘、返还率与凯利指数（法定 23 家提纯，严禁算术平均）；
-  2. `asianOddsText` / `overUnderOddsText`：主流四大机构（澳彩、Crown、Bet365、易胜博）分钟级变盘流水；
-  3. `trendComparison`：带时间戳的变盘时序流水（供安检门禁核验）；
-  4. `lineupData`：首发球员评分、伤停原句；
-  5. `tactics`（含攻防进失球/场均进球物理数字）与 `profiling`（相同初盘画像与盘路走势）。
+  2. `markets.europeHistories`：包含核心做市商（澳彩、Crown、Bet365、易胜博等）完整的分钟级调赔时序（带时间戳、胜平负赔率、初/即状态），严禁仅有初即两点切片偷懒；
+  3. `asianOddsText` / `overUnderOddsText`：7 大法定做市商（澳彩、Crown、Bet365、易胜博、平博、188、香港马会）分钟级变盘流水；
+  4. `trendComparison`：带时间戳的变盘时序流水（包含亚盘与欧赔调水流水，供安检门禁核验）；
+  5. `lineupData`：首发球员评分、伤停原句；
+  6. `tactics`（含攻防进失球/场均进球物理数字）与 `profiling`（相同初盘画像与盘路走势）。
 
 - **自愈机制（Self-healing）**：门禁 `verifier.py` 已打通攻防物理数据的多通道智能识别（无论是 `match.homeGoals/awayGoals`、`basicStatsText` 还是 `tactics.home/away` 结构化进失球，均可直接识别放行），彻底消灭因字段命名差异导致的拦截误报。
 
@@ -159,7 +166,10 @@ python 校验/src/adapter/cli.py --system
 
 ## Polymarket 下单链接
 
-6 列表最后一格的查找步骤见 `docs/Polymarket链接查找教程.md`。读盘不改图上数字；找链接用体彩现价对场次，再用接口核实体，禁止瞎拼地址。
+7 列表最后一格必须物理调用 Gamma API 核查（严禁脑补与跳过）：
+1. 关键词快查：`curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/public-search?q={球队名}"`
+2. 联赛全量查：`curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/events?series_slug={series_slug}&active=true&closed=false"`
+3. 直达链接规则：`https://polymarket.com/zh/sports/{series_slug}/{event_slug}`，附带实时价格（¢）。查无结果方可标注“确认未开盘”。详细步骤见 `docs/Polymarket链接查找教程.md`。
 
 ## 数据源与主源失败处理
 

@@ -9,18 +9,19 @@
 3. 阅读 `memory/YYYY-MM-DD.md`（今天 + 昨天）— 近期上下文
 4. 阅读 `SAFETY.md` — 安全操作规范（最高优先级）
 5. **主会话中绝对强制必读 `MEMORY.md`（长期记忆中枢与智慧芯片）**：AI 每次唤醒皆为新生，`MEMORY.md` 是系统中与 SOUL.md（灵魂信条）、USER.md（主人诉求）、STRATEGY.md（战略大图）及 Graphify 知识图谱等多个解耦子系统紧密协同的【长期记忆中枢】。里面刻录着系统演化三阶总战略、严禁代码的最高立宪红线、历史实战对账沉淀的血泪教训以及策略调优记录。不读 MEMORY.md 就缺失了关键的历史经验中枢，必然重蹈历史覆辙！必须在做任何事情前深度通读领会，严格遵照执行！
-6. **凡涉及倍率与赛果推演**：按 `skills/deep-analysis/SKILL.md` 的完整分析流程执行：欧指、亚盘、大小球的赛前变动轨迹与多公司交叉验证 → 合理性及跨市场变动分析 → 关键点、疑点、矛盾与风险 → 综合评估；由 recommendation 汇总推荐，post-review 回查赛前依据并更新统计。截图训练只用图上数据，缺失维度如实标注，不另套案例口诀。
-7. **先走图谱再开口（高频深广检索与自愈自进化推演大脑）**：本项目已用 graphify 把全库打通。每次回答、思考、分析、推演，必须调用 graphify 进行深层拓扑遍历（贯穿战前初诊 BFS 广搜、物理基准 DFS 进球穿透、博弈时序多跳假摔穿透三大战区），再开口说话。检索遭遇脱靶自动语义升维，理论矛盾严格以庄家“极小化最大损失”第一性原理收敛自愈；赛前冻结认知基因埋点，赛后复盘经 Aiyer 决策审计验真后将教训回流至 `MEMORY.md` 驱动系统实战自进化。图谱是全局地图，帮你穿透表象看见深层系统关系；**不替代当场三端计算**，也不拿节点名当结论。
+6. **全流程绝对强制必读 `TOOLS.md`（数据采集宪法与双轨工具武器库）**：`TOOLS.md` 是系统中多源数据采集、分钟级时序抓取规约、法定 23 家机构白名单与双轨工具（Scrapling 极速协议流 ↔ BrowserOS neo 真实渲染）调度的最高操作指南与数据纯净宪法。凡涉及赛程同步、赔率抓取、时序获取、字段归位与快照落盘，必须在动工具前强制对照 `TOOLS.md` 执行，严禁凭旧习惯只抓两点切片、严禁算术平均伪数据、严禁漏抓法定机构、严禁字段错位与保存空骨架！
+7. **凡涉及倍率与赛果推演**：按 `skills/deep-analysis/SKILL.md` 的完整分析流程执行：欧指、亚盘、大小球的赛前变动轨迹与多公司交叉验证 → 合理性及跨市场变动分析 → 关键点、疑点、矛盾与风险 → 综合评估；由 recommendation 汇总推荐，post-review 回查赛前依据并更新统计。截图训练只用图上数据，缺失维度如实标注，不另套案例口诀。
+8. **先走图谱再开口（高频深广检索与自愈自进化推演大脑）**：本项目已用 graphify 把全库打通。每次回答、思考、分析、推演，必须调用 graphify 进行深层拓扑遍历（贯穿战前初诊 BFS 广搜、物理基准 DFS 进球穿透、博弈时序多跳假摔穿透三大战区），再开口说话。检索遭遇脱靶自动语义升维，理论矛盾严格以庄家“极小化最大损失”第一性原理收敛自愈；赛前冻结认知基因埋点，赛后复盘经 Aiyer 决策审计验真后将教训回流至 `MEMORY.md` 驱动系统实战自进化。图谱是全局地图，帮你穿透表象看见深层系统关系；**不替代当场三端计算**，也不拿节点名当结论。
    - **三大战区标准化检索规范**：
      - **战区一（战前初诊 BFS 广搜）**：锚定博弈第一性原理与盘口不变量，调用 `mcp__graphify__query_graph(question="赔率分析推演十大公理 四大物理不变量 散户羊群心理", mode="bfs", depth=2)`；
      - **战区二（物理基准 DFS 进球穿透）**：穿透真实攻防压制力（控球/射正/角球/进球时段）对泊松 $\lambda$ 的修正，调用 `mcp__graphify__query_graph(question="结合历史数据与庄家赔率预测足球比分 Egidi 攻防参数凸组合", mode="dfs", depth=2)`，剥离比分运气；
      - **战区三（博弈时序多跳穿透）**：穿透中盘假摔震仓与半全场双盘背离，调用 `mcp__graphify__query_graph(question="Winkelmann 异常赔率波动 假摔震仓识别 双盘联动速查表", mode="bfs", depth=2)`，识别主力诱筹与防守底线。
-8. **系统演化三阶总战略与 deep-analysis 封顶铁律（马斯克做减法 × 乔布斯极简原则 × 保魂去腐）**：
+9. **系统演化三阶总战略与 deep-analysis 封顶铁律（马斯克做减法 × 乔布斯极简原则 × 保魂去腐）**：
    - **演化三阶原则**：在以后本足球系统的优化微调中，严格遵循“① 主要优先做减法；② 其次要做微调；③ 最后在实在不得已的情况下才做加法”。想做加法必须先向主人请示报告。
    - **`skills/deep-analysis/SKILL.md` 刚性封顶纪律**：该技能行数与字数已达物理上限，**严禁任何 AI 或维护者继续往里增加行数、字数或堆砌新规则**！未来方向仅限精炼优化、做减法或调整结构排序。
    - **保魂去腐底线**：做减法只准剔除形式主义冗余、重复格式与死板表格约束；**绝对严禁大幅减少其中的博弈智慧、哲学思考、实战手感与习惯塑形**！核心心法与认知精髓寸步不让。
    - **严禁代码逻辑**：**系统严格禁止使用任何代码编写业务推演逻辑！** 除非抓取数据或纯数学算法才允许代码。所有决策与盘赔破译全权依托大模型主观意图与大局观，坚决杜绝死尺子与一票否决。
-9. **工程沉淀与汇报规范（Compound Engineering）**：
+10. **工程沉淀与汇报规范（Compound Engineering）**：
    - 知识库路径：`docs/solutions/`（记录已解决工程问题、踩坑复盘与最佳实践，按模块与分类沉淀）。
    - 自动沉淀指令：After a solved, verified problem, automatically invoke the `ce-compound` skill with `mode:non-interactive` at the completion checkpoint only when the work produced durable project reasoning that is not readily recoverable from the final code, tests, types, comments, or existing documentation, and losing it would plausibly cause recurrence, material risk, or substantial rediscovery. Apply this counterfactual: if the learning document disappeared, would a future engineer reading the final implementation still be likely to repeat the mistake or redo substantial investigation? If not, do not invoke it. Completion, effort, and diff size alone are not enough. Capture at the checkpoint so a qualifying learning can ship in the PR that produced it, and only where the repository treats captured learnings as tracked, committed knowledge.
    - 报告去废话指令：Write every report, summary, or handoff to the user through the `ce-noslop` skill. This applies when you are the top-level agent writing to the user, not when you are a subagent reporting to its caller. Do not apply it to code, config, verbatim quotes, or text the user asked to post as written.
@@ -52,7 +53,7 @@ subagent：抓取全量赛程 → 推送赛程列表 → 写入每日记忆 → 
 主会话：推送「⚡ 已启动赛前分析」→ spawn 编排 subagent → 保持可用
 - **初筛（17:00 仅筛早盘 ≤22:00 / 21:00 筛晚盘 >22:00）** → 推送候选列表 →
   若初筛通过 0 场：写入 ## 推荐（今日无候选场次）→ announce 回主会话 → 结束
-  否则：编排集中获取真实数据（若主源异常由 BrowserOS neo 集中直取快照落盘至 data/；**验收门：亚盘四家变盘全行 + 大小球四家变盘全行 + 欧指依据公司流水 + 主客场/近6进失球数字**。页上有字必须抄全；行少不是缺流水。缺一门：置顶提醒并贴页上原句。当面聊天先停，等主人回再继续；定时任务置顶后继续十步，不准跳过。伤停格「暂无数据」只写未核实、贴原句、不挡十步，禁止写成无伤停）→ 对每场 spawn worker 深度分析（纯逻辑推理，每场回传证据，主会话/编排验收后逐场推送）→
+  否则：编排集中获取真实数据（若主源异常由 BrowserOS neo 集中直取快照落盘至 data/；**验收门：亚盘七家变盘全行 + 大小球七家变盘全行（澳彩/皇冠/365/易胜博/平博/188/香港马会） + 欧指依据公司流水 + 主客场/近6进失球数字**。页上有字必须抄全；行少不是缺流水。缺一门：置顶提醒并贴页上原句。当面聊天先停，等主人回再继续；定时任务置顶后继续十步，不准跳过。伤停格「暂无数据」只写未核实、贴原句、不挡十步，禁止写成无伤停）→ 对每场 spawn worker 深度分析（纯逻辑推理，每场回传证据，主会话/编排验收后逐场推送）→
        收齐结果 → 胜平负汇总推荐（默认附带胜负平 2 串 1 优质组合建议）→ 写入每日记忆 → announce 回主会话
 主会话：收到 announce → 推送「✅ 赛前分析完成」
 ```
@@ -127,7 +128,7 @@ subagent：获取赛果 → 对比推荐 → 计算命中率 → 分析失误 �
 
 ## 二、数据来源
 
-球探数据抓取采用**大模型自主调度的双轨敏捷架构**：**Skill `/scrapling-official` ↔ MCP `scrapling`**（毫秒级直取 163 家百家欧指 `1x2d.js` 与四大机构分钟级变盘流水，原生 TLS 伪装抗封锁）+ **Skill `/browseros-neo` ↔ MCP `browseros_neo`**（真实 Chromium 渲染环境，专攻「阵容情况」微观首发/伤停原句、球员评分与复杂大盘兜底）。禁止先跑旧版 `npm run schedule` / `analyze` / `review`。大模型拥有完全自主、聪明智慧的决断权，可根据页面与网络状况自主选择使用哪一个工具。
+球探数据抓取采用**大模型自主调度的双轨敏捷架构**：**Skill `/scrapling-official` ↔ MCP `scrapling`**（毫秒级直取 163 家百家欧指 `1x2d.js` 与 7 大法定机构分钟级变盘流水，原生 TLS 伪装抗封锁）+ **Skill `/browseros-neo` ↔ MCP `browseros_neo`**（真实 Chromium 渲染环境，专攻「阵容情况」微观首发/伤停原句、球员评分与复杂大盘兜底）。禁止先跑旧版 `npm run schedule` / `analyze` / `review`。大模型拥有完全自主、聪明智慧的决断权，可根据页面与网络状况自主选择使用哪一个工具。
 
 **最高数据铁律（数据纯净与严禁错位）**：**数据一定要抓取正确，不要乱抓乱获取，绝对禁止把不对的数据放进不应该在的位置！**
 数据采集必须实事求是、精准归位，严禁为了应付门禁而猜测脑补、拼凑假数据或把无关字段错位塞入快照。时序归 `trendComparison`、欧指归 `european1x2Text`、亚盘归 `asianOddsText`、大小球归 `overUnderOddsText`、阵容归 `lineupData`、技统归 `tactics`、画像归 `profiling`。
@@ -139,7 +140,7 @@ subagent：获取赛果 → 对比推荐 → 计算命中率 → 分析失误 �
 
 以球探网为盘口主源，落盘后对齐 `agent.schedule` / `agent.analysis` / `agent.review`：
 1. **主数据源（Primary）**：titan007 球探页（14 大机构欧亚全周期时序与 Crown 波胆）；
-2. **抓取通道**：Skill `/scrapling-official` 与 `/browseros-neo` 协同直取，组装落盘至 `data/YYYY-MM-DD/{matchId}.json`。验收门为亚盘/大小球四家变盘全行、欧指依据公司流水、主客场/近6数字。页上有字必须抄全；行少不是缺流水。若遇网络波动或数据残缺，大模型自主调用另一通道补齐；若仍缺，置顶如实提示并贴出原因。伤停格「暂无数据」如实标注未核实，不挡十步推演。
+2. **抓取通道**：Skill `/scrapling-official` 与 `/browseros-neo` 协同直取，组装落盘至 `data/YYYY-MM-DD/{matchId}.json`。验收门为亚盘/大小球七家变盘全行（澳彩/皇冠/365/易胜博/平博/188/香港马会）、欧指依据公司流水、主客场/近6数字。页上有字必须抄全；行少不是缺流水。若遇网络波动或数据残缺，大模型自主调用另一通道补齐；若仍缺，置顶如实提示并贴出原因。伤停格「暂无数据」如实标注未核实，不挡十步推演。
 3. **体彩官方网关**：核对竞彩场次编号（如周二001）、当日是否开售、节假日休市。三项静态赔本身不是完整盘口资料。
 4. **微观阵容**：球探分析页「阵容情况」为正式分析的伤停主来源。英超 FPL / Big Balls 仅覆盖部分俱乐部联赛，**不覆盖欧国联等国家队赛事**，空返回不得写成无伤停；
 5. **交易执行与冷平对冲**：Polymarket Gamma 核实体；CLOB 核可买报价参考。Gamma 展示价不是真实买入价。价格不进入十步推演。
@@ -331,14 +332,14 @@ MEMORY.md 维护规则：
 
 **worker sub-subagent（depth 2）**：
 
-1. 读取 `skills/deep-analysis/SKILL.md`
+1. 读取 `skills/deep-analysis/SKILL.md` 与 `TOOLS.md`（严格对照数据源规约、时序规范与法定23家机构覆盖）
 2. 对单场比赛执行完整 10 步深度分析，主观判断必须经过四项论文质问（Levitt/Goto/Winkelmann/Constantinou）反审纠偏并写入认知契约卡
 3. 完成全部10步后回传待验收报告和执行证据；由主会话/编排核验后逐场发布，不自行对外推送，主人要求详细过程时才展开
 4. 回传结构化评估结果（综合评估 + 泊松概率表 + memory 摘要内容）给编排 subagent
 
 **并行约束**：
 
-- 同时最多 3 个 worker（`maxChildrenPerAgent: 3`，受大模型 API 并发限制），初筛超过 3 场时排队执行
+- 同时最多 3 个 worker 并行（`maxChildrenPerAgent: 3`，受大模型 API 并发限制）；当期开售比赛超过 3 场时，必须严格排队分批执行全部场次，直到所有比赛分析完毕，严禁擅自截断或只推第一批！
 - 数据抓取由编排阶段选用 Scrapling 或 BrowserOS neo 完成并落盘；快照必须通过物理安检门禁，若出现缺口由 AI 自主调度补齐，无法补齐时置顶如实标注并如实披露。伤停空表不挡十步。
 - 如果 worker 超时（15 分钟），编排 subagent 跳过该场，在汇总中标注「分析超时」
 
@@ -448,9 +449,9 @@ MEMORY.md 维护规则：
 | SALES_CUTOFF_WEEKEND     | 23:00           | 周六、周日竞彩销售截止时间                     |
 | SCHEDULE_PUBLISH_TIME    | 11:00           | 每日比赛场次公布时间                           |
 | MIN_HOURS_BEFORE_KICKOFF | 1               | 定时任务开球前最少预留小时数（手动触发无限制） |
-| MAX_DAILY_ANALYSIS       | 8               | 每日初筛最多进入深度分析的场次数               |
-| SCREENING_DAILY          | 3-5             | 建议初筛推荐场次数（进入深度分析）             |
-| ELITE_DAILY              | 2-3             | 精选推荐场次数（实际投注核心推荐，最多 4 场）  |
+| MAX_DAILY_ANALYSIS       | ALL             | 每日当期开售场次全量深度分析（不设死上限，全覆盖） |
+| SCREENING_DAILY          | ALL             | 当期开售场次全量进入分析（不偷懒、不作弊）     |
+| ELITE_DAILY              | ALL             | 推荐交付覆盖当期全部已分析场次（全量呈现）     |
 | RECENT_FORM_WINDOW       | 5               | 近期战绩窗口（场数）                           |
 | LEAGUE_PRIORITY          | 见初筛 SKILL.md | 联赛层级配置                                   |
 
@@ -461,6 +462,7 @@ MEMORY.md 维护规则：
 
 ## 七、红线与安全
 
+- 严禁偷懒作弊：严禁主观臆测无交易池，必须物理调用真实 API 检索，未查绝不准落笔。
 - 不泄露私人数据。永远不要。
 - 不在未询问的情况下运行破坏性命令。`trash` > `rm`。
 - 有疑问时，先问。

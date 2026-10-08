@@ -160,6 +160,20 @@ class SnapshotVerifier:
         home_goals = get_match_property(snapshot, "homeGoals")
         away_goals = get_match_property(snapshot, "awayGoals")
         basic_text = snapshot.get("basicStatsText") or ""
+        # 负面清单: 严禁包含 HTML 骨架或导航栏垃圾
+        if re.search(r"<!DOCTYPE|<html\b|<body\b", basic_text, re.I):
+            return DimensionResult(
+                dimension=DimensionType.BASIC_STATS,
+                status=CheckStatus.FAIL,
+                message="基础战绩数据未解析: 包含未清洗的 HTML 空骨架标签，严禁保存空骨架",
+            )
+        if re.search(r"首页\s*\n\s*足球直播|分析师\s*\n\s*新\s*\n\s*V计划", basic_text):
+            return DimensionResult(
+                dimension=DimensionType.BASIC_STATS,
+                status=CheckStatus.FAIL,
+                message="基础战绩包含整页导航栏垃圾文本，必须使用精准 CSS 容器提取",
+            )
+
         goals_stats = get_match_property(snapshot, "goalsStats")
         correct_score = snapshot.get("correctScoreOdds") or ""
         tactics = snapshot.get("tactics") or {}
@@ -208,6 +222,20 @@ class SnapshotVerifier:
                 dimension=DimensionType.EUROPE_1X2,
                 status=CheckStatus.FAIL,
                 message="严禁百家赔率算术平均伪数据！不同机构抽水率各异，必须遵循单家去水(OO-EPC)后聚合",
+            )
+
+        # 负面清单: 严禁包含 HTML 骨架或导航栏垃圾
+        if re.search(r"<!DOCTYPE|<html\b|<body\b", text, re.I):
+            return DimensionResult(
+                dimension=DimensionType.EUROPE_1X2,
+                status=CheckStatus.FAIL,
+                message="欧洲指数数据未解析: 包含未清洗的 HTML 空骨架标签，严禁保存空骨架",
+            )
+        if re.search(r"首页\s*\n\s*足球直播|分析师\s*\n\s*新\s*\n\s*V计划", text):
+            return DimensionResult(
+                dimension=DimensionType.EUROPE_1X2,
+                status=CheckStatus.FAIL,
+                message="欧洲指数包含整页导航栏垃圾文本，必须使用精准 CSS 容器提取",
             )
 
         has_data = len(text.strip()) > 20 or len(histories) > 0 or len(companies) > 0
@@ -262,10 +290,25 @@ class SnapshotVerifier:
                 message="欧洲指数(1X2)残缺: 缺少主流机构返还率与凯利指数数据 (平台已算好，严禁偷懒漏抄)",
             )
 
+        # 3. 欧指连续变盘时序流水校验：严禁仅有初即盘两点切片偷懒 (至少需包含竞彩官方或主流做市商带时间戳变盘记录)
+        europe_histories = markets.get("europeHistories") or []
+        trend_text = snapshot.get("trendComparison") or ""
+
+        timeline_count = sum(len(h.get("timeline", [])) for h in europe_histories)
+        if timeline_count == 0:
+            timeline_count = len(re.findall(r"(?:\(欧\)|欧指|1X2|标准走势).*?\d{1,2}-\d{1,2}\s+\d{1,2}:\d{2}", trend_text))
+
+        if timeline_count < 4:
+            return DimensionResult(
+                dimension=DimensionType.EUROPE_1X2,
+                status=CheckStatus.FAIL,
+                message=f"欧洲指数(1X2)缺少连续变盘时序流水！严禁仅用初即盘切片偷懒 (有效欧指变盘记录={timeline_count}项，至少需4项带时间戳流水)",
+            )
+
         return DimensionResult(
             dimension=DimensionType.EUROPE_1X2,
             status=CheckStatus.PASS,
-            message="欧洲指数(1X2)主流机构初即盘与返还率/凯利指数完整",
+            message="欧洲指数(1X2)主流机构初即盘、返还率/凯利指数与分钟级时序完整",
         )
 
     def _check_asian_handicap(self, snapshot: Dict[str, Any]) -> DimensionResult:
@@ -314,7 +357,7 @@ class SnapshotVerifier:
         )
 
     def _check_over_under(self, snapshot: Dict[str, Any]) -> DimensionResult:
-        text = snapshot.get("overUnderText") or ""
+        text = snapshot.get("overUnderOddsText") or snapshot.get("overUnderText") or ""
         markets = snapshot.get("markets") or {}
         histories = markets.get("overUnderHistories") or []
 
@@ -324,6 +367,20 @@ class SnapshotVerifier:
                 dimension=DimensionType.OVER_UNDER,
                 status=CheckStatus.FAIL,
                 message="大小球进球数(OU)主流机构盘口水位缺失",
+            )
+
+        # 负面清单: 严禁包含 HTML 骨架或导航栏垃圾
+        if re.search(r"<!DOCTYPE|<html\b|<body\b", text, re.I):
+            return DimensionResult(
+                dimension=DimensionType.OVER_UNDER,
+                status=CheckStatus.FAIL,
+                message="大小球数据未解析: 包含未清洗的 HTML 空骨架标签，严禁保存空骨架",
+            )
+        if re.search(r"首页\s*\n\s*足球直播|分析师\s*\n\s*新\s*\n\s*V计划", text):
+            return DimensionResult(
+                dimension=DimensionType.OVER_UNDER,
+                status=CheckStatus.FAIL,
+                message="大小球包含整页导航栏垃圾文本，必须使用精准 CSS 容器提取",
             )
 
         return DimensionResult(
@@ -380,11 +437,43 @@ class SnapshotVerifier:
                 detail={"trend": trend[:100]},
             )
 
+        # 铁律4 (防偷懒硬门禁): 变盘时序流水核心做市商覆盖必须 >= 3 家 (覆盖范围：澳彩/皇冠/365/易胜博/平博/188/香港马会)
+        matched_core_companies = set()
+        core_keys = {
+            "澳彩": ["澳彩", "澳门", "澳*"],
+            "Crown": ["皇冠", "crown", "crow*"],
+            "Bet365": ["bet365", "365", "36*"],
+            "易胜博": ["易胜博", "易*"],
+            "平博": ["平博", "pinnacle"],
+            "188": ["188", "188bet"],
+            "香港马会": ["香港马会", "马会", "hkjc"],
+        }
+        for cname, aliases in core_keys.items():
+            for a in aliases:
+                pattern = rf"{re.escape(a)}[^\n]*?(\d{{1,2}}-\d{{1,2}}\s+\d{{1,2}}:\d{{2}}|\d{{1,2}}:\d{{2}})"
+                if re.search(pattern, combined_text, re.I):
+                    matched_core_companies.add(cname)
+                    break
+        for h in (markets.get("asianHistories") or []) + (markets.get("europeHistories") or []):
+            c_name = str(h.get("company") or h.get("companyId") or "")
+            for cname, aliases in core_keys.items():
+                if any(a.lower() in c_name.lower() for a in aliases):
+                    if len(h.get("records") or h.get("timeline") or []) > 0:
+                        matched_core_companies.add(cname)
+
+        if len(matched_core_companies) < 5:
+            return DimensionResult(
+                dimension=DimensionType.TREND_HISTORY,
+                status=CheckStatus.FAIL,
+                message=f"变盘时序流水核心做市商覆盖不足！至少需包含 5 家核心做市商时序流水（澳彩/Crown/Bet365/易胜博/平博/188/香港马会），严禁偷懒漏抓做市商 (当前仅匹配到: {', '.join(sorted(matched_core_companies)) if matched_core_companies else '0家'})",
+                detail={"matched_companies": list(matched_core_companies)},
+            )
+
         return DimensionResult(
             dimension=DimensionType.TREND_HISTORY,
             status=CheckStatus.PASS,
-            message=f"变盘时序流水完整 (有效时间戳变盘记录={effective_count}项)",
-            detail={"timestamps": ts_count, "histories": hist_count},
+            message=f"变盘时序流水完整 (有效时间戳变盘记录={effective_count}项，涵盖核心做市商={', '.join(sorted(matched_core_companies))})",
+            detail={"timestamps": ts_count, "histories": hist_count, "companies": list(matched_core_companies)},
         )
 
     def _check_crown_correct_score(self, snapshot: Dict[str, Any]) -> DimensionResult:
