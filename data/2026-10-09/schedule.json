@@ -1,0 +1,323 @@
+{
+  "kind": "agent.schedule",
+  "generatedAt": "2026-10-09 11:10:44",
+  "sourceUrl": "https://jc.titan007.com/index.aspx",
+  "oddsUrl": "https://jc.titan007.com/xml/odds_jc.txt",
+  "saleDate": "2026-10-09",
+  "summary": {
+    "total": 12,
+    "notStarted": 12,
+    "inProgress": 0,
+    "finished": 0
+  },
+  "matches": [
+    {
+      "no": "周五001",
+      "matchId": "2929737",
+      "league": "韩K联",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-09 15:30",
+      "status": "未开场",
+      "homeTeam": "仁川联",
+      "score": "-",
+      "awayTeam": "浦项制铁",
+      "analysisUrl": "https://zq.titan007.com/analysis/2929737cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "2.26",
+          "draw": "2.85",
+          "away": "2.98"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "5.70",
+          "draw": "3.60",
+          "away": "1.48"
+        }
+      }
+    },
+    {
+      "no": "周五002",
+      "matchId": "3000478",
+      "league": "日职联",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-09 18:00",
+      "status": "未开场",
+      "homeTeam": "柏太阳神",
+      "score": "-",
+      "awayTeam": "神户胜利",
+      "analysisUrl": "https://zq.titan007.com/analysis/3000478cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "2.15",
+          "draw": "3.22",
+          "away": "2.83"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "4.80",
+          "draw": "3.80",
+          "away": "1.52"
+        }
+      }
+    },
+    {
+      "no": "周五003",
+      "matchId": "3019149",
+      "league": "德乙",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-10 00:30",
+      "status": "未开场",
+      "homeTeam": "海登海姆",
+      "score": "-",
+      "awayTeam": "凯泽",
+      "analysisUrl": "https://zq.titan007.com/analysis/3019149cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.78",
+          "draw": "3.55",
+          "away": "3.50"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "3.25",
+          "draw": "3.75",
+          "away": "1.80"
+        }
+      }
+    },
+    {
+      "no": "周五004",
+      "matchId": "2912286",
+      "league": "瑞典超",
+      "leagueLevel": "低",
+      "kickoffTime": "2026-10-10 01:00",
+      "status": "未开场",
+      "homeTeam": "哥德堡",
+      "score": "-",
+      "awayTeam": "韦斯特罗",
+      "analysisUrl": "https://zq.titan007.com/analysis/2912286cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.48",
+          "draw": "4.10",
+          "away": "4.80"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "2.51",
+          "draw": "3.50",
+          "away": "2.25"
+        }
+      }
+    },
+    {
+      "no": "周五005",
+      "matchId": "2912908",
+      "league": "挪超",
+      "leagueLevel": "低",
+      "kickoffTime": "2026-10-10 01:00",
+      "status": "未开场",
+      "homeTeam": "布兰",
+      "score": "-",
+      "awayTeam": "维京",
+      "analysisUrl": "https://zq.titan007.com/analysis/2912908cn.htm",
+      "handicap": "+1",
+      "jcOdds": {
+        "had": {
+          "home": "2.84",
+          "draw": "3.90",
+          "away": "1.92"
+        },
+        "hhad": {
+          "goal": "+1",
+          "home": "1.67",
+          "draw": "3.95",
+          "away": "3.60"
+        }
+      }
+    },
+    {
+      "no": "周五006",
+      "matchId": "2996161",
+      "league": "荷甲",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-10 02:00",
+      "status": "未开场",
+      "homeTeam": "埃因霍温",
+      "score": "-",
+      "awayTeam": "海伦芬",
+      "analysisUrl": "https://zq.titan007.com/analysis/2996161cn.htm",
+      "handicap": "-2",
+      "jcOdds": {
+        "had": null,
+        "hhad": {
+          "goal": "-2",
+          "home": "2.11",
+          "draw": "4.55",
+          "away": "2.30"
+        }
+      }
+    },
+    {
+      "no": "周五007",
+      "matchId": "2996498",
+      "league": "荷乙",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-10 02:00",
+      "status": "未开场",
+      "homeTeam": "赫拉克勒",
+      "score": "-",
+      "awayTeam": "瓦尔韦克",
+      "analysisUrl": "https://zq.titan007.com/analysis/2996498cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.35",
+          "draw": "4.65",
+          "away": "5.75"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "2.05",
+          "draw": "3.80",
+          "away": "2.64"
+        }
+      }
+    },
+    {
+      "no": "周五008",
+      "matchId": "3018823",
+      "league": "德甲",
+      "leagueLevel": "高",
+      "kickoffTime": "2026-10-10 02:30",
+      "status": "未开场",
+      "homeTeam": "多特蒙德",
+      "score": "-",
+      "awayTeam": "不来梅",
+      "analysisUrl": "https://zq.titan007.com/analysis/3018823cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.21",
+          "draw": "5.50",
+          "away": "8.25"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "1.72",
+          "draw": "4.00",
+          "away": "3.36"
+        }
+      }
+    },
+    {
+      "no": "周五009",
+      "matchId": "2995354",
+      "league": "法甲",
+      "leagueLevel": "高",
+      "kickoffTime": "2026-10-10 02:45",
+      "status": "未开场",
+      "homeTeam": "朗斯",
+      "score": "-",
+      "awayTeam": "里昂",
+      "analysisUrl": "https://zq.titan007.com/analysis/2995354cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "2.12",
+          "draw": "3.55",
+          "away": "2.66"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "4.08",
+          "draw": "4.20",
+          "away": "1.55"
+        }
+      }
+    },
+    {
+      "no": "周五010",
+      "matchId": "3008256",
+      "league": "英冠",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-10 03:00",
+      "status": "未开场",
+      "homeTeam": "西汉姆联",
+      "score": "-",
+      "awayTeam": "女王巡游",
+      "analysisUrl": "https://zq.titan007.com/analysis/3008256cn.htm",
+      "handicap": "-1",
+      "jcOdds": {
+        "had": {
+          "home": "1.37",
+          "draw": "4.45",
+          "away": "5.75"
+        },
+        "hhad": {
+          "goal": "-1",
+          "home": "2.20",
+          "draw": "3.55",
+          "away": "2.55"
+        }
+      }
+    },
+    {
+      "no": "周五011",
+      "matchId": "3013717",
+      "league": "西甲",
+      "leagueLevel": "高",
+      "kickoffTime": "2026-10-10 03:00",
+      "status": "未开场",
+      "homeTeam": "马拉加",
+      "score": "-",
+      "awayTeam": "西班牙人",
+      "analysisUrl": "https://zq.titan007.com/analysis/3013717cn.htm",
+      "handicap": "+1",
+      "jcOdds": {
+        "had": {
+          "home": "2.62",
+          "draw": "3.12",
+          "away": "2.35"
+        },
+        "hhad": {
+          "goal": "+1",
+          "home": "1.45",
+          "draw": "4.10",
+          "away": "5.10"
+        }
+      }
+    },
+    {
+      "no": "周五012",
+      "matchId": "3023497",
+      "league": "葡超",
+      "leagueLevel": "中",
+      "kickoffTime": "2026-10-10 03:15",
+      "status": "未开场",
+      "homeTeam": "布拉加",
+      "score": "-",
+      "awayTeam": "里斯本",
+      "analysisUrl": "https://zq.titan007.com/analysis/3023497cn.htm",
+      "handicap": "+1",
+      "jcOdds": {
+        "had": {
+          "home": "3.43",
+          "draw": "3.30",
+          "away": "1.87"
+        },
+        "hhad": {
+          "goal": "+1",
+          "home": "1.72",
+          "draw": "3.55",
+          "away": "3.75"
+        }
+      }
+    }
+  ]
+}
