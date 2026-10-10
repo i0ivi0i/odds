@@ -70,28 +70,26 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 4. **自适应元素记忆 (Adaptive Relocation)**：
    - 在解析微观首发或动态表格时，启用 `auto_save=True` 记忆元素指纹，改版时启用 `adaptive=True` 自动寻回。
 
-#### Python 极速提取核心范式
-```python
-from scrapling.fetchers import Fetcher
-import re
+#### Scrapling MCP 官方原生工具调用范式（严禁自写散装 Python 脚本）
+```json
+// 1. 抓取百家欧指数据流（163家机构初即盘与时序，毫秒级直取）
+mcp__scrapling__make_request({
+  "url": "https://1x2d.titan007.com/3000474.js",
+  "impersonate": "chrome",
+  "main_content_only": false
+})
 
-# 1. 抓取百家欧指数据流（163家机构初即盘与底层 odds_id，0.3秒直取）
-res_1x2 = Fetcher.get(f"https://1x2d.titan007.com/{match_id}.js", impersonate="chrome")
-text_1x2 = res_1x2.body.decode("utf-8", errors="ignore")
-
-# 2. 抓取 7 大法定做市商亚盘/大小球变盘流水（注意：必须使用 gb18030 解码，防中文乱码）
-# 7 大法定做市商：澳彩 cid=1, Crown cid=3, Bet365 cid=8, 易胜博 cid=12, 平博 cid=47, 188 cid=42, 香港马会 cid=48
-# 亚盘: url_asia = f"https://vip.titan007.com/changeDetail/handicap.aspx?id={match_id}&companyID={cid}&l=0"
-# 大小球: url_ou = f"https://vip.titan007.com/changeDetail/overunder.aspx?id={match_id}&companyID={cid}&l=0"
-res_asia = Fetcher.get(url_asia, impersonate="chrome")
-text_asia = res_asia.body.decode("gb18030", errors="ignore")
-
-# 3. 抓取欧指分钟级全量时序（拒绝仅有初即盘切片偷懒！）
-# 14 家做市商欧指流水直接从 1x2d.js 的 gameDetail 数组解构，无需单页逐个请求！
-# 主流做市商 (澳彩 cid=80, Crown cid=545, Bet365 cid=281, 易胜博 cid=90, 平博 cid=177, 威廉 cid=115, 立博 cid=82 等)
-url_vip = f"https://vip.titan007.com/changeDetail/1x2.aspx?id={match_id}&companyid={cid}&l=0"
-res_history = Fetcher.get(url_jc, impersonate="chrome")
-text_history = res_history.body.decode("utf-8", errors="ignore")
+// 2. 7 大法定做市商亚盘/大小球变盘流水（bulk_get 并发矩阵秒取，绝不循环单拉）
+mcp__scrapling__bulk_get({
+  "urls": [
+    "https://vip.titan007.com/changeDetail/handicap.aspx?id=3000474&companyID=1&l=0",
+    "https://vip.titan007.com/changeDetail/overunder.aspx?id=3000474&companyID=1&l=0",
+    "https://vip.titan007.com/changeDetail/handicap.aspx?id=3000474&companyID=3&l=0",
+    "https://vip.titan007.com/changeDetail/overunder.aspx?id=3000474&companyID=3&l=0"
+  ],
+  "impersonate": "chrome",
+  "main_content_only": false
+})
 ```
 
 #### 实战踩坑必记
