@@ -122,7 +122,9 @@ mcp__scrapling__bulk_get({
 
 - 统一落盘路径：工整单文件 `data/YYYY-MM-DD/{matchId}.md`（全天赛程总览与元数据汇总于 `data/YYYY-MM-DD/meta.md`）。彻底废除单体大 JSON 与多级子目录。
 
-#### 法定单场 Markdown 快照黄金基准模板（Golden Baseline Template，以 3000474.md 为物理标杆）
+#### 法定单场 Markdown 快照黄金契约规范（Golden Baseline Contract）
+
+任何单场比赛数据抓取与落盘必须严格遵守以下五大黄金模块契约结构，绝不依赖具体某一临时场次，规则永久自洽独立：
 ```markdown
 # 【竞彩编号】联赛 主队 vs 客队
 - **比赛 ID**：{matchId}
