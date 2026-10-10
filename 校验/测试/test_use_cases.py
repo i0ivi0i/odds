@@ -58,6 +58,31 @@ class TestUseCases(unittest.TestCase):
         self.assertTrue(result["graph_connected"])
         self.assertTrue(result["algo_tests_passed"])
 
+    def test_verify_snapshot_binds_content_hash_and_metadata(self):
+        """测试U3: 用例层在读取快照时必须绑定 content_hash (SHA256) 与文件元数据"""
+        real_file = self.repo_root / "data" / "2026-10-06" / "2981506.json"
+        if not real_file.exists():
+            self.skipTest("真实快照不存在")
+        receipt = self.verify_use_case.execute(str(real_file))
+        self.assertIn("content_hash", receipt.metadata)
+        self.assertEqual(len(receipt.metadata["content_hash"]), 64)
+        self.assertIn("file_path", receipt.metadata)
+        self.assertIn("fetchedAt", receipt.metadata)
+
+    def test_verify_snapshot_match_id_mismatch_fails(self):
+        """测试U3: 快照内 matchId 与文件名 stem 不符时判定 FAIL 阻断"""
+        temp_file = self.repo_root / "data" / "temp_mismatch_test_999999.json"
+        content = json.dumps({"matchId": "888888", "match": {"league": "英超"}}, ensure_ascii=False)
+        temp_file.write_text(content, encoding="utf-8")
+        try:
+            receipt = self.verify_use_case.execute(str(temp_file))
+            self.assertFalse(receipt.is_valid)
+            self.assertEqual(receipt.overall_status, CheckStatus.FAIL)
+            self.assertIn("比赛ID不一致", receipt.results[0].message)
+        finally:
+            if temp_file.exists():
+                temp_file.unlink()
+
 
 if __name__ == "__main__":
     unittest.main()

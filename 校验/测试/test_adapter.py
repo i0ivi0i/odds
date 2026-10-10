@@ -47,6 +47,25 @@ class TestAdapterCli(unittest.TestCase):
         self.assertEqual(res.returncode, 0)
         self.assertIn("全库一致性与图谱连通性正常", res.stdout)
 
+    def test_cli_console_output_warn_status_shows_warning_not_all_pass(self):
+        """测试U2: 当收据为 WARN 状态时，控制台明确输出‘验收存在警告 (WARN)’而不是‘验收全部通过’"""
+        from 校验.src.domain.model import CheckStatus, DimensionType, DimensionResult, VerificationReceipt
+        from 校验.src.adapter.cli import format_receipt_console
+
+        results = [
+            DimensionResult(DimensionType.BASIC_STATS, CheckStatus.PASS, "战绩齐全"),
+            DimensionResult(DimensionType.EUROPE_1X2, CheckStatus.PASS, "欧指齐全"),
+            DimensionResult(DimensionType.ASIAN_HANDICAP, CheckStatus.PASS, "亚盘齐全"),
+            DimensionResult(DimensionType.OVER_UNDER, CheckStatus.PASS, "大小球齐全"),
+            DimensionResult(DimensionType.TREND_HISTORY, CheckStatus.PASS, "时序完整"),
+            DimensionResult(DimensionType.CROWN_CORRECT_SCORE, CheckStatus.PASS, "波胆齐全"),
+            DimensionResult(DimensionType.LINEUP_INJURY, CheckStatus.WARN, "伤停未核实(暂无数据)"),
+        ]
+        receipt = VerificationReceipt(match_id="999999", results=results)
+        output = format_receipt_console(receipt)
+        self.assertIn("验收存在警告 (WARN)", output)
+        self.assertNotIn("验收全部通过", output)
+
 
 if __name__ == "__main__":
     unittest.main()

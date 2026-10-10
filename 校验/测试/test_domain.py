@@ -520,6 +520,113 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertEqual(trend_res.status, CheckStatus.PASS)
         self.assertIn("涵盖核心做市商", trend_res.message)
 
+    def test_asian_handicap_profiling_alone_cannot_pass(self):
+        """测试U2: 只有 profiling 叙述不能替代真实盘口，无AH盘口与水位必须 FAIL"""
+        snap = dict(self.valid_snapshot)
+        snap["asianOddsText"] = ""
+        snap["markets"] = dict(snap.get("markets", {}))
+        snap["markets"]["asianHistories"] = []
+        snap["profiling"] = {"identicalOddsHistory": {"sampleCount": 15, "winRate": 0.6}}
+        receipt = self.verifier.verify(snap)
+        ah_res = [r for r in receipt.results if r.dimension == DimensionType.ASIAN_HANDICAP][0]
+        self.assertEqual(ah_res.status, CheckStatus.FAIL)
+        self.assertIn("缺失", ah_res.message)
+
+    def test_asian_handicap_empty_containers_fail(self):
+        """测试U2: 六个空历史容器和只有名称的公司不能通过AH验收"""
+        snap = dict(self.valid_snapshot)
+        snap["asianOddsText"] = ""
+        snap["markets"] = dict(snap.get("markets", {}))
+        snap["markets"]["asianHistories"] = [
+            {"company": "澳彩", "records": []},
+            {"company": "皇冠", "records": []},
+        ]
+        receipt = self.verifier.verify(snap)
+        ah_res = [r for r in receipt.results if r.dimension == DimensionType.ASIAN_HANDICAP][0]
+        self.assertEqual(ah_res.status, CheckStatus.FAIL)
+
+    def test_over_under_empty_containers_fail(self):
+        """测试U2: 空历史容器不能通过大小球验收"""
+        snap = dict(self.valid_snapshot)
+        snap["overUnderText"] = ""
+        snap["overUnderOddsText"] = ""
+        snap["markets"] = dict(snap.get("markets", {}))
+        snap["markets"]["overUnderHistories"] = [
+            {"company": "澳彩", "records": []}
+        ]
+        receipt = self.verifier.verify(snap)
+        ou_res = [r for r in receipt.results if r.dimension == DimensionType.OVER_UNDER][0]
+        self.assertEqual(ou_res.status, CheckStatus.FAIL)
+
+    def test_europe_histories_cannot_satisfy_over_under(self):
+        """测试U2: 欧指流水不能抵消大小球缺口，OU必须单独报缺口"""
+        snap = dict(self.valid_snapshot)
+        snap["overUnderText"] = ""
+        snap["overUnderOddsText"] = ""
+        snap["markets"] = dict(snap.get("markets", {}))
+        snap["markets"]["overUnderHistories"] = []
+        # 虽然 europeHistories 有完整流水，但 OU 为空
+        receipt = self.verifier.verify(snap)
+        ou_res = [r for r in receipt.results if r.dimension == DimensionType.OVER_UNDER][0]
+        self.assertEqual(ou_res.status, CheckStatus.FAIL)
+
+    def test_trend_history_empty_containers_do_not_count_as_records(self):
+        """测试U2: 空历史容器不能伪充变盘记录行数"""
+        snap = dict(self.valid_snapshot)
+        snap["trendComparison"] = "澳彩\t半球 0.94 0.86 10-07 21:33\nCrown\t半球 1.00 0.90 10-07 21:30"
+        snap["asianOddsText"] = ""
+        snap["markets"] = dict(snap.get("markets", {}))
+        snap["markets"]["asianHistories"] = [{}, {}, {}, {}, {}, {}]  # 6个空容器
+        snap["markets"]["europeHistories"] = []
+        receipt = self.verifier.verify(snap)
+        trend_res = [r for r in receipt.results if r.dimension == DimensionType.TREND_HISTORY][0]
+        self.assertEqual(trend_res.status, CheckStatus.FAIL)
+        self.assertIn("记录不足", trend_res.message)
+
+    def test_trend_history_fetched_at_earlier_than_trend_timestamps_fails(self):
+        """测试U2: 抓取时间早于嵌入报价时间（混批次/时点倒挂）时判定 FAIL 阻断"""
+        snap = dict(self.valid_snapshot)
+        snap["fetchedAt"] = "2026-10-07 16:00:00"  # 早盘 16:00
+        snap["trendComparison"] = (
+            "澳彩\t半球 0.94 0.86 10-07 21:33\n"
+            "Crown\t半球 1.00 0.90 10-07 21:30\n"
+            "Bet365\t半球 0.98 0.88 10-07 21:29\n"
+            "易胜博\t半球 0.96 0.87 10-07 21:28\n"
+            "平博\t半球 0.95 0.89 10-07 21:25\n"
+            "188\t半球 0.93 0.87 10-07 21:23\n"
+        )
+        receipt = self.verifier.verify(snap)
+        trend_res = [r for r in receipt.results if r.dimension == DimensionType.TREND_HISTORY][0]
+        self.assertEqual(trend_res.status, CheckStatus.FAIL)
+        self.assertIn("冲突", trend_res.message)
+
+    def test_europe_1x2_null_return_rate_fails(self):
+        """测试U2: 缺客赔、return_rate 为 null 时不能被认作有效数字"""
+        snap = dict(self.valid_snapshot)
+        snap["european1x2Text"] = ""
+        snap["markets"] = dict(snap.get("markets", {}))
+        snap["markets"]["europeCompanies"] = [
+            {
+                "company": "澳彩",
+                "initial": {"h": 2.10, "d": 3.10, "a": 3.20, "return_rate": None, "kelly": [0.9, 0.9, 0.9]},
+                "latest": {"h": 2.00, "d": 3.20, "a": 3.40, "return_rate": None, "kelly": [0.9, 0.9, 0.9]},
+            },
+            {
+                "company": "Crown",
+                "initial": {"h": 2.10, "d": 3.10, "a": 3.20, "return_rate": False, "kelly": [0.9, 0.9, 0.9]},
+                "latest": {"h": 2.00, "d": 3.20, "a": 3.40, "return_rate": False, "kelly": [0.9, 0.9, 0.9]},
+            },
+            {
+                "company": "Bet365",
+                "initial": {"h": 2.10, "d": 3.10, "a": 3.20, "return_rate": "", "kelly": [0.9, 0.9, 0.9]},
+                "latest": {"h": 2.00, "d": 3.20, "a": 3.40, "return_rate": "", "kelly": [0.9, 0.9, 0.9]},
+            },
+        ]
+        receipt = self.verifier.verify(snap)
+        euro_res = [r for r in receipt.results if r.dimension == DimensionType.EUROPE_1X2][0]
+        self.assertEqual(euro_res.status, CheckStatus.FAIL)
+        self.assertIn("缺少主流机构返还率与凯利指数", euro_res.message)
+
 
 if __name__ == "__main__":
     unittest.main()
