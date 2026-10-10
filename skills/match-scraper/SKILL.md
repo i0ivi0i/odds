@@ -34,7 +34,7 @@ metadata: { "emoji": "📆" }
 
 ### 步骤 2：抽出当日赛程
 
-销售日期使用当前自然日（`YYYY-MM-DD`）。手动查询非当天赛程时，在页面上切到该日。抽出后落盘 `data/{YYYY-MM-DD}/schedule.json`，结构对齐 `agent.schedule`。
+销售日期使用当前自然日（`YYYY-MM-DD`）。手动查询非当天赛程时，在页面上切到该日。抽出后落盘赛程索引汇总文件 `data/{YYYY-MM-DD}/meta.md`，结构对齐 `agent.schedule`。
 
 `matches` 必须为数组。仅在成功完整读取并核实当日确无场次时允许空数组，进入后文有效零场分支。失败、未读完整或编号对不上：报告具体错误，留失败状态与恢复待办，不写有效赛程或覆盖旧记录；不把失败空返回当零场。禁止先跑 `npm run schedule`。
 
@@ -128,7 +128,7 @@ metadata: { "emoji": "📆" }
 
 如果需要查看非当天的赛程（如主人说「看看昨天的比赛」，或复盘需要查历史赛程）：
 
-1. 用 `/browseros-neo` 打开球探竞足页并切到目标日期，落盘 `data/{目标日期}/schedule.json`
+1. 用 `/browseros-neo` 或 `/scrapling-official` 打开球探竞足页并切到目标日期，落盘 `data/{目标日期}/meta.md`
 2. 解析对齐 `agent.schedule` 的结构并按步骤 3～4 输出。
 
 ---
@@ -158,8 +158,8 @@ metadata: { "emoji": "📆" }
 - 必须覆盖 14 家主流做市商（澳彩 80、Crown 545、365 281、易胜博 90、平博 177、威廉 115、立博 82、伟德 81、Interwetten 104、Bwin 255、SNAI 110、香港马会 432、188 976、必发 2）。
 
 ### 3. 落盘安检与物理门禁核验
-- 组装写入 `data/{销售日}/{matchId}.json`；
-- 执行门禁物理命令：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.json`
+- 组装写入单文件 `data/{销售日}/{matchId}.md`（全天赛程总览汇总于 `data/{销售日}/meta.md`）；
+- 执行门禁物理命令：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md`
 - 若返回 `FAIL`（如法定做市商流水覆盖不足、缺少时序、字段错位或摘要与流水冲突），物理熔断停止推演，必须补齐后方可放行。
 
 ---
