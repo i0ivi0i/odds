@@ -73,6 +73,22 @@ class VerifySnapshotUseCase:
                 data = self._parse_markdown_snapshot(content, path.stem)
                 data["is_markdown_baseline"] = True
                 data["_raw_content"] = content
+
+                # 交叉核对同目录下的 meta.md (若存在)
+                meta_path = path.parent / "meta.md"
+                if meta_path.exists():
+                    try:
+                        meta_text = meta_path.read_text(encoding="utf-8")
+                        row_m = re.search(rf"\|\s*([^\|]+)\s*\|\s*{re.escape(path.stem)}\s*\|\s*([^\|]+)\s*\|\s*([^\|]+)\s*vs\s*([^\|]+)\s*\|", meta_text)
+                        if row_m:
+                            data["_meta_info"] = {
+                                "code": row_m.group(1).strip(),
+                                "league": row_m.group(2).strip(),
+                                "home": row_m.group(3).strip(),
+                                "away": row_m.group(4).strip(),
+                            }
+                    except Exception:
+                        pass
             else:
                 try:
                     data = json.loads(content)

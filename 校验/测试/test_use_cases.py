@@ -88,10 +88,11 @@ class TestUseCases(unittest.TestCase):
         """测试黄金快照契约规范全量字段吸收：不丢行、不反序、不假凯利"""
         fixture_file = self.repo_root / "校验" / "测试" / "fixtures" / "golden_snapshot_sample.md"
         if not fixture_file.exists():
-            fixture_file = self.repo_root / "data" / "2026-10-10" / "3000474.md"
-        if not fixture_file.exists():
             self.skipTest("黄金快照测试样本不存在")
-        snap = self.verify_use_case._parse_markdown_snapshot(fixture_file.read_text(encoding="utf-8"), "3000474")
+        content = fixture_file.read_text(encoding="utf-8")
+        m_id = re.search(r"\*\*比赛 ID\*\*：(\d+)", content)
+        fixture_match_id = m_id.group(1) if m_id else "fixture_sample"
+        snap = self.verify_use_case._parse_markdown_snapshot(content, fixture_match_id)
         self.assertEqual(len(snap["europe1x2"]), 23)
         self.assertEqual(snap["europe1x2"][0]["latest"]["kelly"], [0.92, 0.93, 0.98])
         self.assertEqual(len(snap["asianHandicap"]), 7)
@@ -107,10 +108,10 @@ class TestUseCases(unittest.TestCase):
         """测试门禁物理拦截：一旦缺失香港马会大小球，必须返回 FAIL 并明确报错"""
         fixture_file = self.repo_root / "校验" / "测试" / "fixtures" / "golden_snapshot_sample.md"
         if not fixture_file.exists():
-            fixture_file = self.repo_root / "data" / "2026-10-10" / "3000474.md"
+            self.skipTest("黄金快照测试样本不存在")
         content = fixture_file.read_text(encoding="utf-8")
         m_id = re.search(r"\*\*比赛 ID\*\*：(\d+)", content)
-        fixture_match_id = m_id.group(1) if m_id else "3000474"
+        fixture_match_id = m_id.group(1) if m_id else "fixture_sample"
         # 模拟仅漏掉香港马会大小球
         corrupted = re.sub(
             r"(### 7\. 香港马会.*?)\n#### 大小球五阶段时序生命周期.*?(?=\n#### 欧指五阶段)",

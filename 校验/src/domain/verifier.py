@@ -206,7 +206,13 @@ class SnapshotVerifier:
         tactics = snapshot.get("tactics") or {}
         tech_stats = tactics.get("technicalStats") or {}
 
-        if (home_goals and away_goals) or goals_stats or tech_stats:
+        has_num_in_goals = bool(
+            home_goals and away_goals
+            and re.search(r"\d+", str(home_goals))
+            and re.search(r"\d+", str(away_goals))
+        )
+
+        if has_num_in_goals or goals_stats or tech_stats:
             has_goals = True
         elif basic_text:
             if re.search(r"(?:进|失|得)\s*\d+", basic_text):
@@ -648,21 +654,37 @@ class SnapshotVerifier:
         )
 
     def _check_crown_correct_score(self, snapshot: Dict[str, Any]) -> DimensionResult:
-        score_text = snapshot.get("correctScoreOdds") or ""
+        score_text = str(snapshot.get("correctScoreOdds") or "")
         markets = snapshot.get("markets") or {}
         crow_full = markets.get("crowFullIndex") or {}
 
-        has_score = (
-            len(score_text.strip()) > 15
-            and ("波胆" in score_text or "1:0" in score_text or "0:0" in score_text)
-        ) or bool(crow_full)
-
-        if not has_score:
+        # 检查是否包含占位符
+        if any(ph in score_text for ph in ["TODO", "占位", "暂无数据", "待填", "待补充"]):
             return DimensionResult(
                 dimension=DimensionType.CROWN_CORRECT_SCORE,
                 status=CheckStatus.FAIL,
-                message="Crown皇冠全指数波胆缺失或残缺 (未检测到 0:0~4:4 比分赔率矩阵)",
+                message="Crown皇冠全指数波胆包含占位符或未填充提示，禁止使用半成品！",
+                detail={"score_text_preview": score_text[:100]},
             )
+
+        # 解析实际提取到的比分赔率项
+        parsed = snapshot.get("parsedScores")
+        if not parsed or not isinstance(parsed, dict) or not parsed.get("correctScores"):
+            parsed = CorrectScoreParser().parse(score_text)
+
+        flat_scores = parsed.get("correctScores", {}).get("flat", {}) if parsed else {}
+
+        # 必须至少包含 8 项常规有效比分赔率 (如 1:0, 2:0, 1:1, 0:1 等)
+        if len(flat_scores) < 8 and not crow_full:
+            explicit_score_matches = re.findall(r"\b([0-4]:[0-4])\b\s*\|\s*(\d+\.\d+)", score_text)
+            total_detected = max(len(flat_scores), len(explicit_score_matches))
+            if total_detected < 8:
+                return DimensionResult(
+                    dimension=DimensionType.CROWN_CORRECT_SCORE,
+                    status=CheckStatus.FAIL,
+                    message=f"Crown皇冠全指数波胆缺失或残缺：有效比分赔率少于 8 项 (仅检测到 {total_detected} 项)，严禁在无数据时强行推演！",
+                    detail={"valid_score_count": total_detected},
+                )
 
         return DimensionResult(
             dimension=DimensionType.CROWN_CORRECT_SCORE,
@@ -784,7 +806,7 @@ class SnapshotVerifier:
         full_text = raw_content if raw_content else str(snapshot)
 
         # 1. 占位符检测
-        for ph in ["{homeTeam}", "{awayTeam}", "{league}", "{matchId}", "TODO", "xxx"]:
+        for ph in ["{homeTeam}", "{awayTeam}", "{league}", "{matchId}", "TODO", "xxx", "待填", "待补充"]:
             if ph in full_text:
                 return DimensionResult(
                     dimension=DimensionType.AUTHENTICITY,
@@ -792,6 +814,15 @@ class SnapshotVerifier:
                     message=f"真实性核验失败：快照中存在未填充的模板占位符 '{ph}'，禁止使用半成品模板！",
                     detail={"match_id": match_id, "placeholder": ph},
                 )
+
+        # 1.1 主客队伍名非空核验
+        if not home or not away:
+            return DimensionResult(
+                dimension=DimensionType.AUTHENTICITY,
+                status=CheckStatus.FAIL,
+                message=f"真实性核验失败：未能提取到明确的主客对阵队名 (home='{home}', away='{away}')，快照格式不合规！",
+                detail={"match_id": match_id, "home": home, "away": away},
+            )
 
         # 2. 队伍名称与比赛 ID 自洽性断言 (杜绝拿 002 的内容分析 004 或冒名顶替)
         if home and home not in full_text:
@@ -809,6 +840,20 @@ class SnapshotVerifier:
                 detail={"match_id": match_id, "missing_away": away},
             )
 
+        # 2.1 与 meta.md 登记信息交叉核验 (若存在)
+        meta_info = snapshot.get("_meta_info")
+        if meta_info and isinstance(meta_info, dict):
+            meta_home = meta_info.get("home", "")
+            meta_away = meta_info.get("away", "")
+            if meta_home and meta_away:
+                if home != meta_home or away != meta_away:
+                    return DimensionResult(
+                        dimension=DimensionType.AUTHENTICITY,
+                        status=CheckStatus.FAIL,
+                        message=f"真实性与场次一致性核验失败：快照对阵 ({home} vs {away}) 与 meta.md 登记对阵 ({meta_home} vs {meta_away}) 冲突，判定为严重张冠李戴！",
+                        detail={"match_id": match_id, "snapshot_teams": f"{home} vs {away}", "meta_teams": f"{meta_home} vs {meta_away}"},
+                    )
+
         # 正文声明的比赛 ID 必须与快照文件名 match_id 严格一致
         body_id_match = re.search(r"-\s*\*\*比赛\s*ID\*\*[：:]\s*(\d+)", full_text)
         if body_id_match and match_id.isdigit() and body_id_match.group(1) != match_id:
@@ -819,39 +864,37 @@ class SnapshotVerifier:
                 detail={"match_id": match_id, "body_id": body_id_match.group(1)},
             )
 
-        # 2. 检查克隆测试夹具 (非 3000474 场次却复制了大阪樱花/横滨水手专属时序或队名)
-        fixture_teams = ["大阪樱花", "横滨水手", "洋马长居体育场"]
-        if match_id != "3000474":
-            if any(t in full_text for t in fixture_teams) and (home not in ["大阪樱花", "横滨水手"] and away not in ["大阪樱花", "横滨水手"]):
+        # 2. 检查跨场次对阵泄漏 (通用检测正文中是否包含了与本场完全无关的第三方比赛对阵)
+        generic_terms = {"主队", "客队", "全场", "半场", "独赢", "让球", "走水", "平手", "胜平负"}
+        vs_matches = re.findall(
+            r"([\u4e00-\u9fa5a-zA-Z0-9·]{2,12})\s*(?:vs|VS|Vs|对阵)\s*([\u4e00-\u9fa5a-zA-Z0-9·]{2,12})",
+            full_text,
+        )
+        for t1, t2 in vs_matches:
+            t1_s, t2_s = t1.strip(), t2.strip()
+            if t1_s in generic_terms or t2_s in generic_terms:
+                continue
+            # 若两支队伍均非本场主客队，判定为跨场次对阵泄漏或模板夹具残留克隆
+            if (t1_s not in home and home not in t1_s and t1_s not in away and away not in t1_s) and \
+               (t2_s not in home and home not in t2_s and t2_s not in away and away not in t2_s):
                 return DimensionResult(
                     dimension=DimensionType.AUTHENTICITY,
                     status=CheckStatus.FAIL,
-                    message=f"真实性核验失败：当前比赛 ({home} vs {away}, ID: {match_id}) 包含测试夹具专属特征 (大阪樱花/横滨水手)，判定为克隆造假！",
-                    detail={"match_id": match_id, "home": home, "away": away, "violation": "fixture_team_leak"},
+                    message=f"真实性核验失败：当前比赛 ({home} vs {away}, ID: {match_id}) 正文包含与本场不符的第三方比赛对阵 ({t1_s} vs {t2_s})，判定为测试夹具专属特征或跨场克隆造假！",
+                    detail={"match_id": match_id, "home": home, "away": away, "alien_match": f"{t1_s} vs {t2_s}", "violation": "fixture_team_leak"},
                 )
 
-            # 检查时序是否一字不差复制了夹具的 澳彩 0.90/0.94 -> 0.98/0.86 -> 1.04/0.80 时序特征
-            trend_text = raw_content + str(snapshot.get("timeSeriesFlow") or "") + str(snapshot.get("trendComparison") or "") + str(snapshot.get("asianOddsText") or "")
-            if "10-06 21:50" in trend_text and "10-07 14:12" in trend_text and "10-10 12:30" in trend_text:
-                return DimensionResult(
-                    dimension=DimensionType.AUTHENTICITY,
-                    status=CheckStatus.FAIL,
-                    message=f"真实性核验失败：变盘时序时间戳完全复制了测试夹具 (3000474)，判定为克隆假数据！",
-                    detail={"match_id": match_id, "violation": "fixture_timestamp_collision"},
-                )
-
-        # 3. 检查快照内各 URL 中的 matchId 与文件实际 match_id 是否匹配
+        # 3. 检查快照内各 URL 中的 matchId 与文件实际 match_id 是否匹配 (严禁引用任何其他比赛 ID)
         url_matches = re.findall(r"(?:id|sid)=(\d{6,8})\b", full_text)
         conflicts = [uid for uid in url_matches if uid != match_id]
         if conflicts and match_id.isdigit():
             first_conflict = conflicts[0]
-            if first_conflict in ["3000474"] and match_id != "3000474":
-                return DimensionResult(
-                    dimension=DimensionType.AUTHENTICITY,
-                    status=CheckStatus.FAIL,
-                    message=f"真实性核验失败：快照内数据源链接引用了测试夹具比赛 ID ({first_conflict})，与当前场次 ({match_id}) 冲突！",
-                    detail={"match_id": match_id, "conflicting_url_id": first_conflict},
-                )
+            return DimensionResult(
+                dimension=DimensionType.AUTHENTICITY,
+                status=CheckStatus.FAIL,
+                message=f"真实性核验失败：快照内数据源链接引用了其他场次比赛 ID ({first_conflict})，与当前场次 ({match_id}) 冲突，判定为跨场次张冠李戴！",
+                detail={"match_id": match_id, "conflicting_url_id": first_conflict, "all_conflicts": list(set(conflicts))},
+            )
 
         return DimensionResult(
             dimension=DimensionType.AUTHENTICITY,

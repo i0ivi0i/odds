@@ -10,6 +10,64 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+# 法定 23 家机构及其战区分组定义（系统立宪契约）
+LEGAL_23_COMPANIES: Dict[str, str] = {
+    # 核心做市 (14 家)
+    "澳彩": "核心做市",
+    "Crown": "核心做市",
+    "Bet365": "核心做市",
+    "易胜博": "核心做市",
+    "平博": "核心做市",
+    "188Bet": "核心做市",
+    "香港马会": "核心做市",
+    "威廉希尔": "核心做市",
+    "立博": "核心做市",
+    "Bwin": "核心做市",
+    "Interwetten": "核心做市",
+    "SNAI": "核心做市",
+    "伟德": "核心做市",
+    "必发": "核心做市",
+    # 老庄机构 (2 家)
+    "SBO": "老庄机构",
+    "沙巴": "老庄机构",
+    # 论文样本 (5 家)
+    "Marathon": "论文样本",
+    "Betway": "论文样本",
+    "Unibet": "论文样本",
+    "Paddy Power": "论文样本",
+    "10Bet": "论文样本",
+    # 终端履约 (2 家)
+    "中国体彩": "终端履约",
+    "Polymarket": "终端履约",
+}
+
+# 别名查找与归一化映射表
+COMPANY_ALIASES: Dict[str, str] = {
+    "macau": "澳彩", "澳门": "澳彩", "澳门彩票": "澳彩", "澳彩": "澳彩",
+    "crown": "Crown", "皇冠": "Crown",
+    "bet365": "Bet365", "365": "Bet365",
+    "easybets": "易胜博", "易胜博": "易胜博",
+    "pinnacle": "平博", "平博": "平博",
+    "188bet": "188Bet", "188": "188Bet",
+    "hkjc": "香港马会", "马会": "香港马会", "香港马会": "香港马会",
+    "william hill": "威廉希尔", "williamhill": "威廉希尔", "威廉": "威廉希尔", "威廉希尔": "威廉希尔",
+    "ladbrokes": "立博", "立博": "立博",
+    "bwin": "Bwin", "必赢": "Bwin",
+    "interwetten": "Interwetten",
+    "snai": "SNAI",
+    "betvictor": "伟德", "vc": "伟德", "伟德": "伟德",
+    "betfair": "必发", "必发": "必发",
+    "sbo": "SBO", "sbobet": "SBO", "利记": "SBO",
+    "沙巴": "沙巴", "ibc": "沙巴", "ibcbet": "沙巴",
+    "marathon": "Marathon", "马拉松": "Marathon", "marathonbet": "Marathon",
+    "betway": "Betway", "必威": "Betway",
+    "unibet": "Unibet", "优胜客": "Unibet",
+    "paddy power": "Paddy Power", "paddypower": "Paddy Power", "paddy": "Paddy Power",
+    "10bet": "10Bet",
+    "中国体彩": "中国体彩", "体彩": "中国体彩", "竞彩": "中国体彩", "sporttery": "中国体彩",
+    "polymarket": "Polymarket", "poly": "Polymarket",
+}
+
 
 class SnapshotAssembler:
     """
@@ -80,9 +138,19 @@ class SnapshotAssembler:
         md_lines.append("| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |")
         
         euro_list = data.get("europe1x2", [])
+        seen_companies = set()
+        
         for row in euro_list:
-            zone = row.get("zone", "核心做市")
-            cname = row.get("company", "")
+            raw_cname = str(row.get("company", "")).strip()
+            # 别名归一化并核验法定白名单
+            norm_name = COMPANY_ALIASES.get(raw_cname.lower(), raw_cname)
+            if norm_name not in LEGAL_23_COMPANIES:
+                continue  # 彻底丢弃 140+ 家无用野鸡小庄
+            if norm_name in seen_companies:
+                continue
+            seen_companies.add(norm_name)
+            
+            zone = LEGAL_23_COMPANIES[norm_name]
             init_odds = row.get("initialOdds", [2.00, 3.20, 3.40])
             init_ret = row.get("initialReturn", 91.0)
             live_odds = row.get("liveOdds", [2.00, 3.20, 3.40])
@@ -90,7 +158,7 @@ class SnapshotAssembler:
             kelly = row.get("kelly", [0.92, 0.93, 0.95])
             kelly_str = f"{kelly[0]:.2f}/{kelly[1]:.2f}/{kelly[2]:.2f}"
             md_lines.append(
-                f"| {zone} | {cname} | {init_odds[0]:.2f} | {init_odds[1]:.2f} | {init_odds[2]:.2f} | {init_ret:.2f}% | "
+                f"| {zone} | {norm_name} | {init_odds[0]:.2f} | {init_odds[1]:.2f} | {init_odds[2]:.2f} | {init_ret:.2f}% | "
                 f"{live_odds[0]:.2f} | {live_odds[1]:.2f} | {live_odds[2]:.2f} | {live_ret:.2f}% | {kelly_str} |"
             )
         md_lines.append("")

@@ -152,21 +152,21 @@ metadata: { "emoji": "📆" }
   - 大小球：`https://vip.titan007.com/changeDetail/overunder.aspx?id={matchId}&companyID={cid}&l=0`
 - 编码与过滤：解码使用 `gb18030`；严格过滤掉开球后的滚球记录，仅保留赛前连续变动流水。
 
-### 2. 欧洲指数 23 家法定机构全覆盖与全时序解构
+### 2. 欧洲指数 23 家法定机构全覆盖与全时序解构（抓取时内存提纯，严禁 Raw Dump）
 - 请求端点：`https://1x2d.titan007.com/{matchId}.js`
-- 从 `var gameDetail=Array(...)` 中解构出包含时间戳与赔率的 `recordsText`；
-- **必须覆盖法定 23 家机构**，严禁漏项：
-  1. **核心做市（14 家）**：澳彩 80、Crown 545、365 281、易胜博 90、平博 177、威廉 115、立博 82、伟德 81、Interwetten 104、Bwin 255、SNAI 110、香港马会 432、188 976、必发 2；
-  2. **老庄机构（2 家）**：SBO利记 474、沙巴IBC 649；
-  3. **论文样本（5 家）**：Marathon马拉松 800、Betway必威 482、Unibet优胜客 386、Paddy Power 826、10Bet 16；
-  4. **终端履约（2 家）**：体彩官方 1129、Polymarket 链上预测市场。
+- **【Scrapling 官方抓取时提纯铁律（In-Flight Targeted Extraction）】**：
+  1. **禁止直接回传 Raw JS**：`1x2d.js` 包含全网 163 家机构数万行变盘，严禁将原始大包作为工具输出抛给 Agent；
+  2. **流入内存即刻切片**：在获取响应流的第一时间，强制使用预编译法定 23 家 ID 集合（`80, 545, 281, 90, 177, 115, 82, 81, 104, 255, 110, 432, 976, 2, 474, 649, 800, 482, 386, 826, 16, 1129`）进行单次正则直取；
+  3. **丢弃外来野鸡机构**：其余 140+ 家机构在内存中立即抛弃，向外传递的欧指结构严格控制在 23 家以内；
+  4. **单场数据预算硬顶**：单场提取结果向外交付体积严格限制在 **5KB 以内（约 1,000 Tokens）**，超过 10KB 视为严重采集违规。
 
-### 3. 单场 5 大数据源一次性并发全取清单（Scrapling bulk_get 毫秒直取）
-1. **微观阵容与基本面技统**：`https://zq.titan007.com/analysis/{matchId}cn.htm`
-2. **Crown 皇冠全指数波胆与半全场**：`https://zq.titan007.com/analysis/odds/{matchId}.htm`
-3. **体彩官方全玩法与半场指数**：`https://zq.titan007.com/default/getAnalyData?sid={matchId}&t=1`
-4. **百家欧指与分钟级流水**：`https://1x2d.titan007.com/{matchId}.js`
-5. **7 大做市商亚盘与大小球流水**：`https://vip.titan007.com/changeDetail/handicap.aspx` 与 `overunder.aspx`（共 14 条流水端点）
+### 3. 单场 5 大数据源抓取时精准提取规范（Scrapling 官方选择器下推）
+1. **微观阵容与基本面**：`https://zq.titan007.com/analysis/{matchId}cn.htm`
+   - **必须选择器下推 (Selector Pushdown)**：强制传递 `css_selector="#team_lineup"`（仅阵容表格）或战绩精简容器，禁止抓取整页 50 场交锋与裁判档案原始 HTML；
+2. **Crown 皇冠全指数波胆**：`https://zq.titan007.com/analysis/odds/{matchId}.htm`（提取 0:0~4:4 波胆赔率矩阵）
+3. **体彩官方玩法与代号**：`https://zq.titan007.com/default/getAnalyData?sid={matchId}&t=1`（仅提取 HAD/HHAD 赔率与让球数）
+4. **百家欧指与时序**：`https://1x2d.titan007.com/{matchId}.js`（仅提取法定 23 家初即盘）
+5. **7 大做市商亚盘与大小球流水**：`https://vip.titan007.com/changeDetail/handicap.aspx` 与 `overunder.aspx`（7家核心流水，GB18030 解码，剔除滚球）
 
 ### 4. 落盘安检与物理门禁核验
 - 组装写入单文件 `data/{销售日}/{matchId}.md`（全天赛程总览汇总于 `data/{销售日}/meta.md`）；
