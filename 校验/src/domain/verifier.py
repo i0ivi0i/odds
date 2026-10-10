@@ -340,6 +340,16 @@ class SnapshotVerifier:
                 message=f"欧洲指数(1X2)缺少连续变盘时序流水！严禁仅用初即盘切片偷懒 (有效欧指变盘记录={timeline_count}项，至少需4项带时间戳流水)",
             )
 
+        if snapshot.get("is_markdown_baseline"):
+            euro_list = snapshot.get("europe1x2") or []
+            if len(euro_list) < 23:
+                return DimensionResult(
+                    dimension=DimensionType.EUROPE_1X2,
+                    status=CheckStatus.FAIL,
+                    message=f"欧洲指数(1X2)法定机构数量不足 (当前仅{len(euro_list)}家，法定必须满23家，严禁漏项！)",
+                    detail={"count": len(euro_list)},
+                )
+
         return DimensionResult(
             dimension=DimensionType.EUROPE_1X2,
             status=CheckStatus.PASS,
@@ -385,6 +395,25 @@ class SnapshotVerifier:
                 status=CheckStatus.FAIL,
                 message="亚洲让球盘(AH)主流机构盘口水位缺失 (严禁仅用 profiling 叙述或空容器替代真实盘口)",
             )
+
+        if snapshot.get("is_markdown_baseline"):
+            statutory_7 = {"澳彩", "皇冠", "Bet365", "易胜博", "平博", "188Bet", "香港马会"}
+            def _norm_c(c):
+                c = str(c).strip()
+                if c in ("365", "bet365"): return "Bet365"
+                if c in ("188", "188bet"): return "188Bet"
+                if c in ("马会", "HKJC"): return "香港马会"
+                if c in ("Crown", "冠"): return "皇冠"
+                return c
+            present_ah = {_norm_c(x.get("company")) for x in valid_ah}
+            missing_ah = statutory_7 - present_ah
+            if missing_ah:
+                return DimensionResult(
+                    dimension=DimensionType.ASIAN_HANDICAP,
+                    status=CheckStatus.FAIL,
+                    message=f"亚洲让球盘(AH)第一战区核心做市商缺失: {sorted(list(missing_ah))} (法定7家必须全齐，严禁漏项！)",
+                    detail={"missing": list(missing_ah), "present": list(present_ah)},
+                )
 
         detail_data: Dict[str, Any] = {}
         msg = "亚洲让球盘主流机构盘口与水位完整"
@@ -438,6 +467,25 @@ class SnapshotVerifier:
                 status=CheckStatus.FAIL,
                 message="大小球进球数(OU)主流机构盘口水位缺失",
             )
+
+        if snapshot.get("is_markdown_baseline"):
+            statutory_7 = {"澳彩", "皇冠", "Bet365", "易胜博", "平博", "188Bet", "香港马会"}
+            def _norm_c(c):
+                c = str(c).strip()
+                if c in ("365", "bet365"): return "Bet365"
+                if c in ("188", "188bet"): return "188Bet"
+                if c in ("马会", "HKJC"): return "香港马会"
+                if c in ("Crown", "冠"): return "皇冠"
+                return c
+            present_ou = {_norm_c(x.get("company")) for x in valid_ou}
+            missing_ou = statutory_7 - present_ou
+            if missing_ou:
+                return DimensionResult(
+                    dimension=DimensionType.OVER_UNDER,
+                    status=CheckStatus.FAIL,
+                    message=f"大小球进球数(OU)第一战区核心做市商缺失: {sorted(list(missing_ou))} (法定7家必须全齐，包含香港马会，严禁漏项！)",
+                    detail={"missing": list(missing_ou), "present": list(present_ou)},
+                )
 
         return DimensionResult(
             dimension=DimensionType.OVER_UNDER,

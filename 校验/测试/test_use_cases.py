@@ -4,13 +4,14 @@
 
 import json
 import os
+import re
 import unittest
 from pathlib import Path
 from 校验.src.application.use_cases import (
     VerifySnapshotUseCase,
     CheckConsistencyUseCase,
 )
-from 校验.src.domain.model import CheckStatus
+from 校验.src.domain.model import CheckStatus, DimensionType
 
 
 class TestUseCases(unittest.TestCase):
@@ -99,6 +100,30 @@ class TestUseCases(unittest.TestCase):
         self.assertIn("庄家借战意做市破译", snap["tactics"]["motivationAndGameTheory"])
         self.assertEqual(snap["sportteryHandicap"]["handicap"], "-1")
         self.assertEqual(len(snap["polymarketTimeSeries"]), 5)
+
+    def test_markdown_snapshot_missing_hkjc_over_under_fails(self):
+        """测试门禁物理拦截：一旦缺失香港马会大小球，必须返回 FAIL 并明确报错"""
+        md_file = self.repo_root / "data" / "2026-10-10" / "3000474.md"
+        content = md_file.read_text(encoding="utf-8")
+        # 模拟仅漏掉香港马会大小球
+        corrupted = re.sub(
+            r"(### 7\. 香港马会.*?)\n#### 大小球五阶段时序生命周期.*?(?=\n#### 欧指五阶段)",
+            r"\1",
+            content,
+            flags=re.DOTALL,
+        )
+        temp_md = self.repo_root / "data" / "temp_missing_hkjc_test_3000474.md"
+        temp_md.write_text(corrupted, encoding="utf-8")
+        try:
+            receipt = self.verify_use_case.execute(str(temp_md))
+            self.assertFalse(receipt.is_valid)
+            self.assertEqual(receipt.overall_status, CheckStatus.FAIL)
+            ou_fails = [r for r in receipt.results if r.dimension == DimensionType.OVER_UNDER and r.status == CheckStatus.FAIL]
+            self.assertTrue(len(ou_fails) > 0)
+            self.assertIn("香港马会", ou_fails[0].message)
+        finally:
+            if temp_md.exists():
+                temp_md.unlink()
 
 
 if __name__ == "__main__":
