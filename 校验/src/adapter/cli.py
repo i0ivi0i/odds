@@ -121,8 +121,21 @@ def run_batch_verify(dir_path: str) -> int:
 
         # 跨场次张冠李戴核验 (文件名 ID 与正文比赛 ID 必须一致)
         body_id = re.search(r"-\s*\*\*比赛\s*ID\*\*[：:]\s*(\d+)", content)
-        if body_id and body_id.group(1) != f.stem:
+        if not body_id:
+            failed.append(f"{f.name}: 正文缺少明确的比赛 ID 声明 (格式: - **比赛 ID**：xxx)！")
+        elif body_id.group(1) != f.stem:
             failed.append(f"{f.name}: 文件名 ID ({f.stem}) 与正文声明 ID ({body_id.group(1)}) 冲突，判定为冒名顶替！")
+
+        # 跨场次对阵重复核验
+        title_m = re.search(r"#\s*【(.*?)】\S+\s+(\S+)\s+vs\s+(\S+)", content)
+        if title_m:
+            teams = f"{title_m.group(2)} vs {title_m.group(3)}"
+            if teams in seen_ts.get("_teams", {}):
+                failed.append(f"{f.name}: 对阵双方 ({teams}) 与 {seen_ts['_teams'][teams]} 完全相同，判定为跨场次文件复制造假！")
+            else:
+                if "_teams" not in seen_ts:
+                    seen_ts["_teams"] = {}
+                seen_ts["_teams"][teams] = f.name
 
     if failed:
         print(f"🚫 批量安检失败 ({len(failed)} 项违规):", file=sys.stderr)

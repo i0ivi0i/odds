@@ -41,7 +41,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 | 数据维度 | 抓取内容与标准 | 对应快照标准字段 | 严禁错位红线 |
 | :--- | :--- | :--- | :--- |
 | **分钟级变盘流水** | 澳彩/Crown/365/易胜博带时间戳的变盘时序 | `trendComparison` | 严禁缺少时间戳；严禁将未变盘的静态表头塞入流水 |
-| **欧洲指数百家** | 163 家主流机构初即盘、返还率与凯利指数 | `european1x2Text` / `europeOddsSummary` | 严禁将亚盘让球水位误填入欧指；严禁丢失返还率 |
+| **欧洲指数百家** | 从 1x2d 数据流提纯法定 23 家机构初即盘、返还率与凯利指数 | `european1x2Text` / `europeOddsSummary` | 严禁将亚盘让球水位误填入欧指；严禁丢失返还率 |
 | **亚洲让球盘** | 主流机构初即盘盘口、上下盘水位及变盘记录 | `asianOddsText` | 严禁与大小球盘口混淆；严禁盘口与水位颠倒 |
 | **大小球进球数** | 主流机构初即盘盘口、大球小球水位 | `overUnderOddsText` | 严禁将让球盘盘口填入大小球 |
 | **微观首发与伤停** | 分析页「阵容情况」名单，若无则保留【暂无数据】原句 | `lineupData` | 严禁将上一场阵容当本场；无数据严禁脑补无人缺阵 |
@@ -57,13 +57,19 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 ### 2. Scrapling 极速提取与防错位规范（官方黑科技全开）
 
 #### 官方三大能力全开配置与防错位防污染铁律
-1. **防封与防火墙穿透 (TLS Fingerprint)**：
+1. **抓取时选择器下推 (Selector Pushdown，严禁拉取 Giant HTML Blobs)**：
+   - 抓取 HTML 页面（如 `analysis/{id}cn.htm`）时，**必须显式下推 `css_selector="#team_lineup"`**；
+   - 底层 C/Cython 引擎直接在内存丢弃 99% 的 50 场历史交锋与裁判生平等无用 DOM，单场 HTML 提取物压制在 1KB 以内，杜绝 Token 爆炸。
+2. **抓取时流式内存截流 (In-Flight Hook，严禁 Raw JS 倾倒)**：
+   - 请求 `1x2d.js` 时，数据流入内存第一时间使用法定 23 家 ID 集合直接切片；
+   - 抛弃其余 140+ 家机构数据，向外交付仅包含法定 23 家初即盘的紧凑结构，单场数据严格压在 **5KB 以内**。
+3. **防封与防火墙穿透 (TLS Fingerprint)**：
    - 必须标配 `impersonate="chrome"` + `stealthy_headers=True`；
    - 自动克隆真实 Chrome 136+ 协议特征，绕过 Cloudflare 与 OpenResty 握手拦截。
-2. **极速并发矩阵 (Bulk Get 并发加速)**：
+4. **极速并发矩阵 (Bulk Get 并发加速)**：
    - 抓取多机构、多玩法（亚盘/大小球/欧指）时，**一律使用 `mcp__scrapling__bulk_get(urls=[...])` 一次性并发秒取**；
    - 避免逐条循环请求导致延迟与网络风暴。
-3. **精准语义防错位与防污染断言（最高铁律：绝不混淆、绝不认错）**：
+5. **精准语义防错位与防污染断言（最高铁律：绝不混淆、绝不认错）**：
    - **URL 显式语义绑定**：`urls` 列表必须按固定契约构建，返回结果按索引 `result[i]` 严格回填对应机构对应玩法：
      - `handicap.aspx?companyID={cid}` 必须且只能解析为 `asianOddsText`（亚洲让球盘）；
      - `overunder.aspx?companyID={cid}` 必须且只能解析为 `overUnderOddsText`（大小球盘）；
@@ -78,7 +84,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 #### Scrapling MCP 官方原生工具调用范式（严禁自写散装 Python 脚本）
 ```json
-// 1. 抓取百家欧指数据流（163家机构初即盘与时序，毫秒级直取）
+// 1. 抓取百家欧指数据流（从 1x2d.js 提纯法定 23 家机构初即盘与时序，毫秒级直取）
 mcp__scrapling__make_request({
   "url": "https://1x2d.titan007.com/3000474.js",
   "impersonate": "chrome",
@@ -100,7 +106,7 @@ mcp__scrapling__bulk_get({
 
 #### 实战踩坑必记
 1. **编码陷阱**：球探二级页面（`changeDetail/*.aspx`）为旧版编码，默认 UTF-8 会导致队名和盘口乱码，必须使用 `gb18030` 解码；
-2. **欧指百家非 SSR**：`oddslist/{id}.htm` 为空骨架，真实 163 家公司数据存储在 `https://1x2d.titan007.com/{id}.js` 中，直接抓 JS 文件效率最高且最全；
+2. **欧指百家非 SSR 与白名单提纯**：`oddslist/{id}.htm` 为空骨架，真实数据存储在 `https://1x2d.titan007.com/{id}.js` 中，直接抓 JS 文件并经法定 23 家白名单提纯收拢；
 3. **欧指历史流水参数与并发直取**：`OddsHistory.aspx` 若只传 `sid` 和 `cid` 会返回空表，必须传 `id={odds_id}` 参数方可提取分钟级变盘流水；核心做市商（澳彩 1、Crown 3、Bet365 8）可直接请求 `vip.titan007.com/changeDetail/1x2.aspx` 直取全量时序；
 4. **剔除滚球盘口**：调赔时序必须严格截断至比赛开球前，状态标记为“滚”或比分非 0:0 的记录必须物理剔除；
 5. **体彩数据隔离铁律**：中国体彩仅用于核对场次代号（如周四001）、开售状态与节假日休市，其静态赔率绝不进入 AI 十步深度推演与概率计算！
@@ -280,7 +286,7 @@ python 校验/src/adapter/cli.py --system
 调用 Scrapling 极速协议流与爱马仕 `/browseros-neo` 真实渲染，不是让主人自己开网页，也不是另写外置爬虫。
 
 1. **协同采集全维度数据**：
-   - **百家欧指 1X2 与流水**：通过 Scrapling 直取 `1x2d.titan007.com/{id}.js`（163家机构）与 `OddsHistory.aspx`（澳彩等核心依据公司变盘流水）；
+   - **百家欧指 1X2 与流水**：通过 Scrapling 直取 `1x2d.titan007.com/{id}.js`（提纯法定 23 家机构）与 `OddsHistory.aspx`（澳彩等核心依据公司变盘流水）；
    - **亚盘让球与大小球流水**：通过 Scrapling 直取 7 大法定做市商（澳彩 1、Crown 3、Bet365 8、易胜博 12、平博 47、188 42、香港马会 48）`changeDetail` 全量流水（GB18030解码）；
    - **微观首发与伤停情况**：通过 BrowserOS neo 访问分析页抽取「阵容情况」与球员评分；
    - **Crown 皇冠波胆全指数**：分析页 `#analy_sbAllOdds` 中 0:0～4:4 比分波胆赔率矩阵及半全场。

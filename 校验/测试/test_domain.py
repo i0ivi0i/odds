@@ -714,7 +714,7 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertIn("未填充的模板占位符", res.message)
 
     def test_authenticity_fails_when_cloning_fixture_detected(self):
-        """测试真实性核验：非 3000474 比赛若复制了测试夹具队名，必须 FAIL 拦截"""
+        """测试真实性核验：若复制了第三方对阵，必须 FAIL 拦截"""
         snap = {
             "matchId": "3003899",
             "match": {"homeTeam": "阿森纳", "awayTeam": "利兹联", "league": "英超"},
@@ -722,7 +722,19 @@ class TestSnapshotVerifier(unittest.TestCase):
         }
         res = self.verifier._check_authenticity(snap)
         self.assertEqual(res.status, CheckStatus.FAIL)
-        self.assertIn("测试夹具专属特征", res.message)
+        self.assertIn("第三方比赛对阵", res.message)
+
+    def test_authenticity_fails_on_generic_alien_match_leak(self):
+        """测试通用真实性核验：阿森纳比赛若出现曼城 vs 切尔西，必须泛化拦截而无需硬编码"""
+        snap = {
+            "matchId": "3003899",
+            "match": {"homeTeam": "阿森纳", "awayTeam": "利兹联", "league": "英超"},
+            "asianOddsText": "曼城 vs 切尔西 澳彩 0.90 半球 0.95",
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("第三方比赛对阵", res.message)
+        self.assertIn("曼城 vs 切尔西", res.message)
 
     def test_authenticity_passes_for_clean_data(self):
         """测试真实性核验：正常匹配的干净数据必须 PASS"""
@@ -733,6 +745,45 @@ class TestSnapshotVerifier(unittest.TestCase):
         }
         res = self.verifier._check_authenticity(snap)
         self.assertEqual(res.status, CheckStatus.PASS)
+
+    def test_authenticity_fails_on_conflicting_match_urls(self):
+        """测试真实性核验：快照内 URL 引用了其他比赛 ID 时必须 FAIL 拦截"""
+        snap = {
+            "matchId": "3013719",
+            "match": {"homeTeam": "巴列卡诺", "awayTeam": "毕尔巴鄂竞技", "league": "西甲"},
+            "_raw_content": "巴列卡诺 vs 毕尔巴鄂竞技 https://vip.titan007.com/AsianOdds_n.aspx?id=3018828",
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("引用了其他场次比赛 ID", res.message)
+
+    def test_authenticity_fails_on_meta_teams_mismatch(self):
+        """测试真实性核验：快照对阵与 meta.md 登记对阵冲突时必须 FAIL 拦截"""
+        snap = {
+            "matchId": "3013719",
+            "match": {"homeTeam": "帕德博恩", "awayTeam": "斯图加特", "league": "德甲"},
+            "_meta_info": {"home": "巴列卡诺", "away": "毕尔巴鄂竞技"},
+            "_raw_content": "帕德博恩 vs 斯图加特",
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("与 meta.md 登记对阵", res.message)
+
+    def test_crown_correct_score_fails_on_placeholders_or_too_few_scores(self):
+        """测试波胆核验：包含占位符或少于 8 项比分时必须 FAIL 拦截"""
+        snap_todo = {
+            "correctScoreOdds": "| 比分 | 赔率 |\n| 1:0 | TODO |",
+        }
+        res1 = self.verifier._check_crown_correct_score(snap_todo)
+        self.assertEqual(res1.status, CheckStatus.FAIL)
+        self.assertIn("包含占位符", res1.message)
+
+        snap_sparse = {
+            "correctScoreOdds": "| 比分 | 赔率 |\n| 1:0 | 7.00 |\n| 0:0 | 8.00 |",
+        }
+        res2 = self.verifier._check_crown_correct_score(snap_sparse)
+        self.assertEqual(res2.status, CheckStatus.FAIL)
+        self.assertIn("少于 8 项", res2.message)
 
 
 if __name__ == "__main__":
