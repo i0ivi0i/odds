@@ -21,14 +21,35 @@ def run_deep_graphify():
 
     with open(graph_json_path, encoding='utf-8') as f:
         data = json.load(f)
+
+    # 历史遗留节点重命名与规范化映射（剔除“一律走 BrowserOS”等旧标签，拥抱双轨并发体系）
+    node_id_remap = {
+        'tools_核心系统_球探数据一律走_browseros_neo': 'tools_核心系统_双轨敏捷数据采集',
+        'tools_核心安全通道_browseros_neo_真实浏览器直取与数据快照留底': 'tools_核心通道_scrapling极速并发与快照落盘',
+        'd_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_1_用_browseros_neo_获取上下文数据': 'skills_deep_analysis_步骤1_物理快照读取与门禁核验',
+        'd_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_browseros_neo_抓取与真实快照读取': 'skills_deep_analysis_scrapling并发与快照读取',
+        'scripts_sporttery_sniper_browseros_neo': 'scripts_sporttery_sniper_data_ingestion',
+    }
+    label_remap = {
+        'tools_核心系统_双轨敏捷数据采集': '核心系统：双轨敏捷数据采集（Scrapling ↔ BrowserOS neo）',
+        'tools_核心通道_scrapling极速并发与快照落盘': '核心通道：Scrapling 极速并发直取（BrowserOS 备用）与快照落盘',
+        'skills_deep_analysis_步骤1_物理快照读取与门禁核验': '步骤 1：物理快照读取与门禁核验（无米不推演）',
+        'skills_deep_analysis_scrapling并发与快照读取': 'Scrapling 极速并发与真实快照读取',
+        'scripts_sporttery_sniper_data_ingestion': '双轨数据采集入口 (Scrapling ↔ BrowserOS)',
+    }
         
     G = nx.Graph()
     for n in data.get('nodes', []):
-        G.add_node(n['id'], **{k: v for k, v in n.items() if k != 'id'})
+        raw_id = n['id']
+        nid = node_id_remap.get(raw_id, raw_id)
+        attrs = {k: v for k, v in n.items() if k != 'id'}
+        if nid in label_remap:
+            attrs['label'] = label_remap[nid]
+        G.add_node(nid, **attrs)
         
     for l in data.get('links', []) or data.get('edges', []):
-        src = l['source']
-        tgt = l['target']
+        src = node_id_remap.get(l['source'], l['source'])
+        tgt = node_id_remap.get(l['target'], l['target'])
         attrs = {k: v for k, v in l.items() if k not in ('source', 'target')}
         if 'source_file' not in attrs:
             attrs['source_file'] = G.nodes.get(src, {}).get('source_file') or 'AGENTS.md'

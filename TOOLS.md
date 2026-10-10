@@ -15,6 +15,9 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 数据采集采用**大模型自主调度的双轨敏捷架构**：系统正式装载并明确绑定两大核心 Skill 与其对应 MCP 服务。AI 大模型根据目标页面特性与即时网络状况，拥有完全自主、聪明智慧的决断权，灵活调度两军协同。
 
 ### 1. 技能与 MCP 主辅架构（Scrapling 100% 全包主力 × BrowserOS 备用辅助）
+- **批量赛事一键并发矩阵与第 0 秒落盘规约（First-Action Bulk Matrix）**：
+  - 凡触发赛前分析或重新推演，大模型唤醒后**第 0 秒第一工具动作**必须是直接构造候选场次全量 URL 矩阵，调用 `mcp__scrapling__bulk_get` 一次性并发秒取全部数据并批量落盘至 `data/{销售日}/{matchId}.md`；
+  - 严禁一场一场单串磨洋工，严禁边想边抓，未见全部文件落盘并通过 `cli.py --batch` 门禁（exit 0）前，绝对禁止开脑推演！
 - **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（1~2 秒全量并发直取）**：
   - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，通过 `mcp__scrapling__bulk_get` 一次性并发秒取单场全部 5 大数据源：
     1. **阵容伤停与基本面技统**：`https://zq.titan007.com/analysis/{id}cn.htm`（含伤停名单、主客得失球、盘路走势、进球时段、未来赛程）；
@@ -122,6 +125,8 @@ mcp__scrapling__bulk_get({
   - 若印出「暂无数据」，如实标注【暂无数据 / 伤停未核实】，保留页上原句，**允许继续十步但严禁脑补全主力或无人受伤**。
 - **Crown 皇冠波胆与半全场**：
   - 从分析页 `#analy_sbAllOdds` 提取 0:0~4:4 比分波胆赔率矩阵及半全场赔率，作为泊松分布物理偏差对账的真实市场锚点。
+- **即时走势比较（获取数据环节最重的一步）**：
+  - 当降级使用 `/browseros-neo` 打开分析页且页面未显示「即时走势比较」表格（或仅有标题无数据）时，必须依次点击 **定制 → 勾选「指数比较」 → 确定**，等待表格渲染后再 snapshot 提取各公司欧指、亚盘、大小球的初盘与即时盘。
 
 ---
 
@@ -206,7 +211,7 @@ mcp__scrapling__bulk_get({
 
 ### 数据安全规则
 
-- **赔率必须实时抓取**：每次分析都用 `/browseros-neo` 重开球探页，不复用 memory 中旧赔率。
+- **赔率必须实时抓取**：每次分析都用 `/scrapling-official`（或 `/browseros-neo` 备用辅助）实时拉取球探页最新数据，不复用 memory 中旧赔率。
 - **只用赛前赔率**：过滤状态为“滚”的记录，并按开赛时间截断赛前变化历史。
 - **缺失不臆造**：如果某家公司或某类市场缺失，报告中必须标注数据缺口，并降低对应维度权重。
 - **平博用途**：平博可作为主流公司交叉验证参考，不单独用于决策依据。
@@ -240,10 +245,10 @@ python 算法/src/adapter/cli.py 2.10 3.40 3.55 --json
 
 ```bash
 # 单场比赛快照 6 维度物理安检（核心数据缺失返回 exit 1 物理熔断）
-python 校验/src/adapter/cli.py --match data/2026-10-07/2981506.json
+python 校验/src/adapter/cli.py --match data/2026-10-07/2981506.md
 
 # 结构化输出快照安检法定收据（JSON格式）
-python 校验/src/adapter/cli.py --match data/2026-10-07/2981506.json --json
+python 校验/src/adapter/cli.py --match data/2026-10-07/2981506.md --json
 
 # 全系统一致性、图谱连通性与算法单测联合健康巡检
 python 校验/src/adapter/cli.py --system
@@ -329,12 +334,12 @@ python 校验/src/adapter/cli.py --system
 ```
 # 赛程同步（单个 subagent）
 sessions_spawn:
-  task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，用 /browseros-neo 打开球探竞足页抓今日全量赛程，禁止先跑 npm run schedule。通过 messaging 推送赛程列表给主人，写入 memory/{今天日期}.md。"
+  task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，优先用 /scrapling-official（/browseros-neo 备用辅助）抓球探竞足页全量赛程，禁止先跑 npm run schedule。通过 messaging 推送赛程列表给主人，写入 memory/{今天日期}.md。"
   label: "match-sync"
 
 # 深度分析（编排 subagent 内部 spawn worker）
 sessions_spawn:
-  task: "深度分析 [英超] 阿森纳 vs 曼城（ID: 2950977）。读取 skills/deep-analysis/SKILL.md。严格按照模板，先用 /browseros-neo 打开该场球探 5 页落盘，禁止先跑 npm run analyze，再完成全部 10 步分析；超 4000 字须分段。通过 messaging 推送分析报告给主人。返回结构化综合评估结果（JSON 格式）。"
+  task: "深度分析 [英超] 阿森纳 vs 曼城（ID: 2950977）。读取 skills/deep-analysis/SKILL.md。严格按照模板，阶段一完成快照落盘并过验，worker 纯只读加载快照完成全部 10 步分析；超 4000 字须分段。通过 messaging 推送分析报告给主人。返回结构化综合评估结果（JSON 格式）。"
   label: "deep-analysis-2950977"
   runTimeoutSeconds: 900
 ```

@@ -70,7 +70,7 @@ metadata: { "emoji": "📋" }
 从每日记忆中获取需要复盘的推荐。**若 `memory/{复盘日期}.md` 不存在**，视为无推荐记录，直接执行下方「如果没有找到推荐记录」的后续逻辑（告知主人、写入 ## 赛后复盘、结束）。
 
 ```
-memory_get memory/{复盘日期}.md
+read_file(path="memory/{复盘日期}.md")
 ```
 
 找到推荐部分：在 memory 文件中查找所有**二级标题**为以下之一的 section：
@@ -123,7 +123,7 @@ memory_get memory/{复盘日期}.md
 
 ### 步骤 2：获取比赛结果
 
-从推荐记录中取出每场比赛的比赛 ID，用 `/browseros-neo` 打开即时详情页获取完场赛果：
+从推荐记录中取出每场比赛的比赛 ID，优先用 `/scrapling-official` 并发抓取（`/browseros-neo` 备用辅助）即时详情页获取完场赛果：
 
 `https://live.titan007.com/detail/{matchId}cn.htm`
 
@@ -135,7 +135,7 @@ memory_get memory/{复盘日期}.md
 
 逐场获取，如遇偶发超时重试一次。
 
-若推荐记录中比赛 ID 丢失或需要查看整日开售赛果，用 `/browseros-neo` 打开球探竞足页切到昨日销售日，禁止先 `npm run schedule`。
+若推荐记录中比赛 ID 丢失或需要查看整日开售赛果，用 `/scrapling-official` 或 `/browseros-neo` 打开球探竞足页切到昨日销售日，禁止先 `npm run schedule`。
 
 ### 步骤 3：逐场核对
 
@@ -241,7 +241,7 @@ memory_get memory/{复盘日期}.md
 - **定位方式**：在 `## 深度分析` 中严格优先按该场纯数字 **matchId**（摘要块内含 `比赛ID: {matchId}`，防队名别名脱节）或 **联赛 + 主队 + 客队** 匹配到对应的 `### {联赛} {主队} vs {客队}（...）` 摘要块，再读取其下「综合评估」「【认知契约卡】」「泊松比分简表」等子块。若某场在 ## 深度分析 中无对应块（如补复盘且原日未存摘要），该场 4a 中泊松锚定等写「无摘要」或省略。
 
 ```
-memory_get memory/{复盘日期}.md
+read_file(path="memory/{复盘日期}.md")
 ```
 
 **4a. 关键判断回顾（每场都做）**
@@ -379,7 +379,7 @@ memory_get memory/{复盘日期}.md
 先读取 MEMORY.md 中的现有统计：
 
 ```
-memory_get MEMORY.md
+read_file(path="MEMORY.md")
 ```
 
 按既有原日贡献计算差量（与 MEMORY.md 结构一致），步骤 8 是唯一落账点。首次记录才增加；重复运行无变化则差量为零；更正用「新贡献－旧贡献」。逐项以 matchId＋发布版本＋指标去重，候补不混入精选，缺失不进相应评分分母：
