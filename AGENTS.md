@@ -20,7 +20,7 @@
    - **演化三阶原则**：在以后本足球系统的优化微调中，严格遵循“① 主要优先做减法；② 其次要做微调；③ 最后在实在不得已的情况下才做加法”。想做加法必须先向主人请示报告。
    - **`skills/deep-analysis/SKILL.md` 刚性封顶纪律**：该技能行数与字数已达物理上限，**严禁任何 AI 或维护者继续往里增加行数、字数或堆砌新规则**！未来方向仅限精炼优化、做减法或调整结构排序。
    - **保魂去腐底线**：做减法只准剔除形式主义冗余、重复格式与死板表格约束；**绝对严禁大幅减少其中的博弈智慧、哲学思考、实战手感与习惯塑形**！核心心法与认知精髓寸步不让。
-   - **严禁代码逻辑**：**系统严格禁止使用任何代码编写业务推演逻辑！** 除非抓取数据或纯数学算法才允许代码。所有决策与盘赔破译全权依托大模型主观意图与大局观，坚决杜绝死尺子与一票否决。
+   - **严禁代码逻辑与职责界限（大模型才是唯一推演大脑）**：**系统严格禁止使用任何代码编写业务推演逻辑！** “校验”（`verifier.py`）与“解析器”仅仅是**数据质检员与搬运管道**，只负责检验数据齐不齐、防假数据与空骨架，**绝对不包含任何比赛预测、绝不计算让球输赢、绝不做盘口好坏定性**。所有 10 步深度分析、博弈第一性原理反向破译、诱阻识别、三端落槌与胜平负最终决策，**100% 全权依托 AI 大模型主观意图与大局观思考完成**，坚决杜绝代码死尺子与规则僭越！
 10. **工程沉淀与汇报规范（Compound Engineering）**：
    - 知识库路径：`docs/solutions/`（记录已解决工程问题、踩坑复盘与最佳实践，按模块与分类沉淀）。
    - 自动沉淀指令：After a solved, verified problem, automatically invoke the `ce-compound` skill with `mode:non-interactive` at the completion checkpoint only when the work produced durable project reasoning that is not readily recoverable from the final code, tests, types, comments, or existing documentation, and losing it would plausibly cause recurrence, material risk, or substantial rediscovery. Apply this counterfactual: if the learning document disappeared, would a future engineer reading the final implementation still be likely to repeat the mistake or redo substantial investigation? If not, do not invoke it. Completion, effort, and diff size alone are not enough. Capture at the checkpoint so a qualifying learning can ship in the PR that produced it, and only where the repository treats captured learnings as tracked, committed knowledge.
