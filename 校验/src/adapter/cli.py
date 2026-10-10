@@ -119,6 +119,11 @@ def run_batch_verify(dir_path: str) -> int:
             else:
                 seen_ts[timestamps] = f.name
 
+        # 跨场次张冠李戴核验 (文件名 ID 与正文比赛 ID 必须一致)
+        body_id = re.search(r"-\s*\*\*比赛\s*ID\*\*[：:]\s*(\d+)", content)
+        if body_id and body_id.group(1) != f.stem:
+            failed.append(f"{f.name}: 文件名 ID ({f.stem}) 与正文声明 ID ({body_id.group(1)}) 冲突，判定为冒名顶替！")
+
     if failed:
         print(f"🚫 批量安检失败 ({len(failed)} 项违规):", file=sys.stderr)
         for err in failed:

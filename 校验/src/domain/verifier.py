@@ -793,6 +793,32 @@ class SnapshotVerifier:
                     detail={"match_id": match_id, "placeholder": ph},
                 )
 
+        # 2. 队伍名称与比赛 ID 自洽性断言 (杜绝拿 002 的内容分析 004 或冒名顶替)
+        if home and home not in full_text:
+            return DimensionResult(
+                dimension=DimensionType.AUTHENTICITY,
+                status=CheckStatus.FAIL,
+                message=f"真实性核验失败：主队名称 '{home}' 未出现在快照正文中，存在张冠李戴冒名顶替！",
+                detail={"match_id": match_id, "missing_home": home},
+            )
+        if away and away not in full_text:
+            return DimensionResult(
+                dimension=DimensionType.AUTHENTICITY,
+                status=CheckStatus.FAIL,
+                message=f"真实性核验失败：客队名称 '{away}' 未出现在快照正文中，存在张冠李戴冒名顶替！",
+                detail={"match_id": match_id, "missing_away": away},
+            )
+
+        # 正文声明的比赛 ID 必须与快照文件名 match_id 严格一致
+        body_id_match = re.search(r"-\s*\*\*比赛\s*ID\*\*[：:]\s*(\d+)", full_text)
+        if body_id_match and match_id.isdigit() and body_id_match.group(1) != match_id:
+            return DimensionResult(
+                dimension=DimensionType.AUTHENTICITY,
+                status=CheckStatus.FAIL,
+                message=f"真实性核验失败：正文声明的比赛 ID ({body_id_match.group(1)}) 与文件名 ID ({match_id}) 冲突，判定为跨场次文件冒名顶替！",
+                detail={"match_id": match_id, "body_id": body_id_match.group(1)},
+            )
+
         # 2. 检查克隆测试夹具 (非 3000474 场次却复制了大阪樱花/横滨水手专属时序或队名)
         fixture_teams = ["大阪樱花", "横滨水手", "洋马长居体育场"]
         if match_id != "3000474":
