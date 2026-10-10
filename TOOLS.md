@@ -48,15 +48,27 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 ---
 
-### 2. Scrapling 实战使用指南与避坑参数
+### 2. Scrapling 极速提取与防错位规范（官方黑科技全开）
 
-#### 运行环境与 CLI / MCP
-- Python 3.13 全局环境，已安装 `scrapling[all]`。
-- 已注册 Hermes 官方 MCP 服务 `scrapling`（包含 `make_request`, `fetch`, `stealthy_fetch` 等工具）。
-- CLI 命令：
-  ```bash
-  scrapling extract get "https://1x2d.titan007.com/3085211.js" -o data/odds.js
-  ```
+#### 官方三大能力全开配置与防错位防污染铁律
+1. **防封与防火墙穿透 (TLS Fingerprint)**：
+   - 必须标配 `impersonate="chrome"` + `stealthy_headers=True`；
+   - 自动克隆真实 Chrome 136+ 协议特征，绕过 Cloudflare 与 OpenResty 握手拦截。
+2. **极速并发矩阵 (Bulk Get 并发加速)**：
+   - 抓取多机构、多玩法（亚盘/大小球/欧指）时，**一律使用 `mcp__scrapling__bulk_get(urls=[...])` 一次性并发秒取**；
+   - 避免逐条循环请求导致延迟与网络风暴。
+3. **精准语义防错位与防污染断言（最高铁律：绝不混淆、绝不认错）**：
+   - **URL 显式语义绑定**：`urls` 列表必须按固定契约构建，返回结果按索引 `result[i]` 严格回填对应机构对应玩法：
+     - `handicap.aspx?companyID={cid}` 必须且只能解析为 `asianOddsText`（亚洲让球盘）；
+     - `overunder.aspx?companyID={cid}` 必须且只能解析为 `overUnderOddsText`（大小球盘）；
+     - `1x2.aspx` 或 `1x2d.js` 必须且只能解析为 `european1x2Text`（欧洲胜平负）；
+   - **返回校验门禁断言**：提取内容后必须执行特征关键字校验：
+     - 亚盘必须校验包含“大阪樱花/横滨水手”与让球字样；
+     - 大小球必须校验包含“大球/小球”字样；
+     - 欧指必须校验包含“主胜/平局/客胜”三项浮点数；
+     - 一旦关键字不匹配，立即报错阻断，**严禁跨玩法交叉污染，严禁把不对的数据填进不该在的位置**！
+4. **自适应元素记忆 (Adaptive Relocation)**：
+   - 在解析微观首发或动态表格时，启用 `auto_save=True` 记忆元素指纹，改版时启用 `adaptive=True` 自动寻回。
 
 #### Python 极速提取核心范式
 ```python
