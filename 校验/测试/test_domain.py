@@ -627,6 +627,81 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertEqual(euro_res.status, CheckStatus.FAIL)
         self.assertIn("缺少主流机构返还率与凯利指数", euro_res.message)
 
+    def test_clean_json_schema_passes_all_checks(self):
+        """测试方案B：纯净结构化 JSON（无制表符大转义字符串）通过全量安检门禁"""
+        snap = {
+            "matchId": "2912286",
+            "sportteryCode": "周五004",
+            "fetchedAt": "2026-10-09 23:42:16",
+            "match": {
+                "league": "瑞典超",
+                "homeTeam": "哥德堡",
+                "awayTeam": "瓦斯特拉斯",
+                "homeGoals": "近6场进11失7 主场战力充沛",
+                "awayGoals": "近6场进8失9 客场韧性均衡",
+            },
+            "lineupData": "哥德堡\n暂无数据\n\n韦斯特罗\n暂无数据",
+            "correctScoreOdds": "波胆 1:0 8.5, 2:0 10.5, 1:1 6.8",
+            "europe1x2": [
+                {
+                    "company": "竞彩官方",
+                    "initial": {"odds": [1.48, 4.10, 4.80], "returnRate": 88.66, "kelly": [0.85, 0.90, 0.95]},
+                    "latest": {"odds": [1.53, 3.95, 4.50], "returnRate": 88.58, "kelly": [0.84, 0.93, 0.99]},
+                },
+                {
+                    "company": "Bet365",
+                    "initial": {"odds": [1.70, 3.80, 4.33], "returnRate": 92.39, "kelly": [0.90, 0.90, 0.90]},
+                    "latest": {"odds": [1.73, 3.80, 4.50], "returnRate": 94.04, "kelly": [0.94, 0.89, 0.99]},
+                },
+                {
+                    "company": "澳彩",
+                    "initial": {"odds": [1.53, 4.15, 4.25], "returnRate": 88.60, "kelly": [0.92, 0.89, 0.82]},
+                    "latest": {"odds": [1.68, 3.78, 3.72], "returnRate": 88.60, "kelly": [0.92, 0.89, 0.82]},
+                },
+            ],
+            "asianHandicap": [
+                {
+                    "company": "澳彩",
+                    "initial": {"handicap": "半球", "home": 0.88, "away": 0.94},
+                    "latest": {"handicap": "平/半", "home": 0.92, "away": 0.92},
+                },
+                {
+                    "company": "Crown",
+                    "initial": {"handicap": "平/半", "home": 0.81, "away": 1.07},
+                    "latest": {"handicap": "半/一", "home": 0.94, "away": 0.95},
+                },
+            ],
+            "overUnder": [
+                {
+                    "company": "澳彩",
+                    "initial": {"goal": 2.5, "over": 0.88, "under": 0.92},
+                    "latest": {"goal": 2.5, "over": 0.90, "under": 0.90},
+                }
+            ],
+            "timeSeriesFlow": [
+                {"company": "澳彩", "time": "10-09 21:21", "handicap": "平/半", "home": 0.92, "away": 0.92, "odds": [1.70, 3.80, 4.33]},
+                {"company": "Crown", "time": "10-09 21:21", "handicap": "平/半", "home": 0.92, "away": 0.92, "odds": [1.70, 3.80, 4.33]},
+                {"company": "Bet365", "time": "10-09 21:18", "handicap": "平/半", "home": 0.90, "away": 0.90, "odds": [1.73, 3.80, 4.50]},
+                {"company": "易胜博", "time": "10-09 21:10", "handicap": "平/半", "home": 0.90, "away": 0.90, "odds": [1.72, 3.80, 4.40]},
+                {"company": "平博", "time": "10-09 21:05", "handicap": "平/半", "home": 0.91, "away": 0.91, "odds": [1.74, 3.82, 4.45]},
+                {"company": "188", "time": "10-09 20:55", "handicap": "平/半", "home": 0.92, "away": 0.92, "odds": [1.70, 3.80, 4.33]},
+            ],
+            "tactics": {
+                "technicalStats": {
+                    "home": {"avgGoals": 1.7, "avgCorners": 5.2},
+                    "away": {"avgGoals": 1.2, "avgCorners": 4.3},
+                }
+            },
+            "profiling": {
+                "identicalOddsHistory": {"home": {"winRate": 0.52}},
+                "handicapTrends": {"home": "平稳"}
+            },
+            "polymarket": {"status": "unopened", "url": "未开放"}
+        }
+        receipt = self.verifier.verify(snap)
+        self.assertTrue(receipt.is_valid)
+        self.assertEqual(receipt.failed_count, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

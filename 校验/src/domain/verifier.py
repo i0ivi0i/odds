@@ -238,7 +238,7 @@ class SnapshotVerifier:
         text = snapshot.get("european1x2Text") or ""
         markets = snapshot.get("markets") or {}
         histories = markets.get("europeHistories") or []
-        companies = markets.get("europeCompanies") or []
+        companies = markets.get("europeCompanies") or snapshot.get("europe1x2") or []
 
         # 0. 严禁算术平均伪数据
         if "marketConsensus" in snapshot or "marketConsensus" in markets or "百家平均" in text:
@@ -320,12 +320,18 @@ class SnapshotVerifier:
             )
 
         # 3. 欧指连续变盘时序流水校验：严禁仅有初即盘两点切片偷懒 (至少需包含竞彩官方或主流做市商带时间戳变盘记录)
-        europe_histories = markets.get("europeHistories") or []
+        europe_histories = markets.get("europeHistories") or snapshot.get("europeHistories") or []
         trend_text = snapshot.get("trendComparison") or ""
 
         timeline_count = sum(len(h.get("records") or h.get("timeline") or []) for h in europe_histories if isinstance(h, dict))
         if timeline_count == 0:
-            timeline_count = len(re.findall(r"(?:\(欧\)|欧指|1X2|标准走势).*?\d{1,2}-\\d{1,2}\s+\d{1,2}:\d{2}", trend_text))
+            timeline_count += sum(len(c.get("records") or c.get("timeline") or []) for c in companies if isinstance(c, dict))
+        if timeline_count == 0:
+            time_series = snapshot.get("timeSeriesFlow") or snapshot.get("timeSeries") or []
+            if isinstance(time_series, list):
+                timeline_count += sum(1 for item in time_series if isinstance(item, dict) and ("odds" in item or "1x2" in item or "europe" in str(item).lower()))
+        if timeline_count == 0:
+            timeline_count = len(re.findall(r"(?:\(欧\)|欧指|1X2|标准走势).*?\d{1,2}-\d{1,2}\s+\d{1,2}:\d{2}", trend_text))
 
         if timeline_count < 4:
             return DimensionResult(
@@ -365,8 +371,13 @@ class SnapshotVerifier:
             h for h in histories
             if isinstance(h, dict) and len(h.get("records") or h.get("timeline") or []) > 0
         ]
+        ah_list = snapshot.get("asianHandicap") or markets.get("asianHandicap") or []
+        valid_ah = [
+            x for x in ah_list
+            if isinstance(x, dict) and (x.get("company") or x.get("initial") or x.get("latest"))
+        ]
         has_text_data = len(text.strip()) > 20
-        has_real_ah = has_text_data or len(valid_histories) > 0
+        has_real_ah = has_text_data or len(valid_histories) > 0 or len(valid_ah) > 0
 
         if not has_real_ah:
             return DimensionResult(
@@ -414,8 +425,13 @@ class SnapshotVerifier:
             h for h in histories
             if isinstance(h, dict) and len(h.get("records") or h.get("timeline") or []) > 0
         ]
+        ou_list = snapshot.get("overUnder") or snapshot.get("overUnderOdds") or markets.get("overUnder") or []
+        valid_ou = [
+            x for x in ou_list
+            if isinstance(x, dict) and (x.get("company") or x.get("initial") or x.get("latest"))
+        ]
         has_text_data = len(text.strip()) > 20
-        has_data = has_text_data or len(valid_histories) > 0
+        has_data = has_text_data or len(valid_histories) > 0 or len(valid_ou) > 0
         if not has_data:
             return DimensionResult(
                 dimension=DimensionType.OVER_UNDER,
@@ -448,6 +464,21 @@ class SnapshotVerifier:
             # 兼容时分格式，如 "21:33"
             timestamps = re.findall(r"\b\d{1,2}:\d{2}\b", trend)
 
+        # 兼容原生结构化 timeSeriesFlow 列表
+        time_series = snapshot.get("timeSeriesFlow") or snapshot.get("timeSeries") or []
+        ts_flow_count = 0
+        if isinstance(time_series, list) and time_series:
+            ts_flow_count = len(time_series)
+            for item in time_series:
+                if isinstance(item, dict):
+                    t_val = str(item.get("time") or item.get("timestamp") or "")
+                    if t_val:
+                        found_ts = re.findall(r"\b\d{1,2}-\d{1,2}\s+\d{1,2}:\d{2}\b", t_val)
+                        if found_ts:
+                            timestamps.extend(found_ts)
+                        else:
+                            timestamps.append(t_val)
+
         ts_count = len(timestamps)
         # 仅统计包含真实 records/timeline 的记录条数，空容器不能伪充记录行数
         hist_records_count = sum(
@@ -455,7 +486,7 @@ class SnapshotVerifier:
             for h in (markets.get("asianHistories") or []) + (markets.get("europeHistories") or [])
             if isinstance(h, dict)
         )
-        effective_count = max(ts_count, hist_records_count)
+        effective_count = max(ts_count, hist_records_count, ts_flow_count)
 
         # 铁律1: 必须包含时间戳，严禁静态初即两端冒充时序
         if effective_count == 0:
@@ -542,6 +573,13 @@ class SnapshotVerifier:
                 if any(a.lower() in c_name.lower() for a in aliases):
                     if len(h.get("records") or h.get("timeline") or []) > 0:
                         matched_core_companies.add(cname)
+        if isinstance(time_series, list) and time_series:
+            for item in time_series:
+                if isinstance(item, dict):
+                    c_name = str(item.get("company") or "")
+                    for cname, aliases in core_keys.items():
+                        if any(a.lower() in c_name.lower() for a in aliases):
+                            matched_core_companies.add(cname)
 
         if len(matched_core_companies) < 5:
             return DimensionResult(
