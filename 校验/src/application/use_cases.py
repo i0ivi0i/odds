@@ -309,11 +309,29 @@ class VerifySnapshotUseCase:
             btext = m_tactics.group(1)
             hg = re.search(r"主队近况.*?：(.*?)(?=\n|\Z)", btext)
             ag = re.search(r"客队近况.*?：(.*?)(?=\n|\Z)", btext)
+            mot = re.search(r"赛事性质与战意博弈.*?：(.*?)(?=\n- |\n\Z|\Z)", btext, re.DOTALL)
+            sch = re.search(r"赛程陷阱.*?：(.*?)(?=\n|\Z)", btext)
+            prof = re.search(r"盘路画像.*?：(.*?)(?=\n|\Z)", btext)
+            hg_str = hg.group(1).strip() if hg else "近6场数据完整"
+            ag_str = ag.group(1).strip() if ag else "近6场数据完整"
             if "match" in snap:
-                snap["match"]["homeGoals"] = hg.group(1).strip() if hg else "近6场数据完整"
-                snap["match"]["awayGoals"] = ag.group(1).strip() if ag else "近6场数据完整"
-            snap["tactics"] = {"technicalStats": {"home": {"goals": 1.25}, "away": {"goals": 1.50}}}
-            snap["profiling"] = {"handicapTrends": {"home": "平稳", "away": "平稳"}}
+                snap["match"]["homeGoals"] = hg_str
+                snap["match"]["awayGoals"] = ag_str
+            h_g = re.search(r"进球\s*([\d\.]+).*?失球\s*([\d\.]+)", hg_str)
+            a_g = re.search(r"进球\s*([\d\.]+).*?失球\s*([\d\.]+)", ag_str)
+            snap["tactics"] = {
+                "technicalStats": {
+                    "home": {"goals": float(h_g.group(1)) if h_g else 1.25, "conceded": float(h_g.group(2)) if h_g else 0.25, "raw": hg_str},
+                    "away": {"goals": float(a_g.group(1)) if a_g else 1.50, "conceded": float(a_g.group(2)) if a_g else 1.00, "raw": ag_str},
+                },
+                "motivationAndGameTheory": mot.group(1).strip() if mot else "",
+                "futureSchedule": {"raw": sch.group(1).strip() if sch else ""},
+            }
+            prof_str = prof.group(1).strip() if prof else "平稳"
+            snap["profiling"] = {
+                "handicapTrends": {"home": prof_str, "away": prof_str, "raw": prof_str},
+                "identicalOddsHistory": {"raw": prof_str},
+            }
 
         euro_list = []
         ts_list = []
@@ -340,13 +358,35 @@ class VerifySnapshotUseCase:
                         d = float(parts[idx_offset + 6])
                         a = float(parts[idx_offset + 7])
                         r = float(parts[idx_offset + 8].replace("%", "") if len(parts) > idx_offset + 8 else "90")
+                        kelly_vals = [0.94, 0.88, 0.84]
+                        if len(parts) > idx_offset + 9 and "/" in parts[idx_offset + 9]:
+                            k_parts = [float(x.strip()) for x in parts[idx_offset + 9].split("/") if x.strip()]
+                            if len(k_parts) == 3:
+                                kelly_vals = k_parts
                         euro_list.append({
                             "company": comp_name,
                             "initial": {"odds": [h0, d0, a0], "returnRate": r0},
-                            "latest": {"odds": [h, d, a], "returnRate": r, "kelly": [0.94, 0.88, 0.84]},
+                            "latest": {"odds": [h, d, a], "returnRate": r, "kelly": kelly_vals},
                         })
                     except Exception:
                         pass
+
+        def _extract_table_rows(block_text: str) -> List[List[str]]:
+            res_rows = []
+            for p in block_text.strip().splitlines():
+                if not p.startswith("|") or "---" in p:
+                    continue
+                cells = [x.strip() for x in p.split("|")[1:-1]]
+                if not cells or cells[0] in ("生命周期", "生命周期阶段", "变盘时间", "观测时间", "玩法类型", "机构"):
+                    continue
+                if len(cells) >= 4:
+                    res_rows.append(cells)
+            return res_rows
+
+        def _pick_init_latest(rows: List[List[str]]) -> tuple[List[str], List[str]]:
+            if any(t in rows[0][0] for t in ["T0", "初盘"]):
+                return rows[0], rows[-1]
+            return rows[-1], rows[0]
 
         # 解析核心机构按块列出的变盘时序流水
         comp_blocks = re.split(r"\n###\s+(?:\d+[\.、\s]*)?([^\n\(]+)(?:\([^\)]*\))?", content)
@@ -357,11 +397,9 @@ class VerifySnapshotUseCase:
                 # AH
                 m_ah_block = re.search(r"####?\s*亚盘.*?\n(.*?)(?=\n####?|\n---|\Z)", block, re.DOTALL)
                 if m_ah_block:
-                    rows = [p.split("|")[1:-1] for p in m_ah_block.group(1).strip().splitlines() if p.startswith("|") and "---" not in p and "变盘时间" not in p and "盘口" not in p]
-                    rows = [[x.strip() for x in r] for r in rows if len(r) >= 4]
+                    rows = _extract_table_rows(m_ah_block.group(1))
                     if rows:
-                        latest = rows[0]
-                        initial = rows[-1]
+                        initial, latest = _pick_init_latest(rows)
                         off = 1 if len(latest) >= 5 and any(t in latest[0] for t in ["T0", "T1", "T2", "T3", "T4"]) else 0
                         try:
                             ah_list.append({
@@ -369,19 +407,30 @@ class VerifySnapshotUseCase:
                                 "initial": {"handicap": initial[off+1].replace("**", "").replace("初盘", "").strip(), "home": float(initial[off+2].replace("**", "").strip()), "away": float(initial[off+3].replace("**", "").strip())},
                                 "latest": {"handicap": latest[off+1].replace("**", "").replace("初盘", "").strip(), "home": float(latest[off+2].replace("**", "").strip()), "away": float(latest[off+3].replace("**", "").strip())},
                             })
+                            last_t = "10-08 12:00"
                             for r in rows:
-                                ts_list.append({"company": cname, "time": r[off].replace("**", "").replace("初盘", "").strip(), "handicap": r[off+1].replace("**", "").replace("初盘", "").strip(), "home": float(r[off+2].replace("**", "").strip()), "away": float(r[off+3].replace("**", "").strip())})
+                                raw_t = r[off].replace("**", "").replace("初盘", "").strip()
+                                if raw_t != "维持区间":
+                                    last_t = raw_t
+                                ts_list.append({
+                                    "company": cname,
+                                    "market": "AH",
+                                    "phase": r[0].replace("**", "").strip() if off == 1 else "",
+                                    "time": last_t,
+                                    "handicap": r[off+1].replace("**", "").replace("初盘", "").strip(),
+                                    "home": float(r[off+2].replace("**", "").strip()),
+                                    "away": float(r[off+3].replace("**", "").strip()),
+                                    "morphology": r[-1].strip() if len(r) > off + 4 else "",
+                                })
                         except Exception:
                             pass
 
                 # OU
                 m_ou_block = re.search(r"####?\s*大小球.*?\n(.*?)(?=\n####?|\n---|\Z)", block, re.DOTALL)
                 if m_ou_block:
-                    rows = [p.split("|")[1:-1] for p in m_ou_block.group(1).strip().splitlines() if p.startswith("|") and "---" not in p and "变盘时间" not in p and "盘口" not in p]
-                    rows = [[x.strip() for x in r] for r in rows if len(r) >= 4]
+                    rows = _extract_table_rows(m_ou_block.group(1))
                     if rows:
-                        latest = rows[0]
-                        initial = rows[-1]
+                        initial, latest = _pick_init_latest(rows)
                         off = 1 if len(latest) >= 5 and any(t in latest[0] for t in ["T0", "T1", "T2", "T3", "T4"]) else 0
                         try:
                             ou_list.append({
@@ -389,20 +438,87 @@ class VerifySnapshotUseCase:
                                 "initial": {"goal": initial[off+1].replace("**", "").replace("初盘", "").strip(), "over": float(initial[off+2].replace("**", "").strip()), "under": float(initial[off+3].replace("**", "").strip())},
                                 "latest": {"goal": latest[off+1].replace("**", "").replace("初盘", "").strip(), "over": float(latest[off+2].replace("**", "").strip()), "under": float(latest[off+3].replace("**", "").strip())},
                             })
+                            last_t = "10-08 12:00"
+                            for r in rows:
+                                raw_t = r[off].replace("**", "").replace("初盘", "").strip()
+                                if raw_t != "维持区间":
+                                    last_t = raw_t
+                                ts_list.append({
+                                    "company": cname,
+                                    "market": "OU",
+                                    "phase": r[0].replace("**", "").strip() if off == 1 else "",
+                                    "time": last_t,
+                                    "goal": r[off+1].replace("**", "").replace("初盘", "").strip(),
+                                    "over": float(r[off+2].replace("**", "").strip()),
+                                    "under": float(r[off+3].replace("**", "").strip()),
+                                    "morphology": r[-1].strip() if len(r) > off + 4 else "",
+                                })
                         except Exception:
                             pass
 
-                # 欧指时序
-                m_eu_block = re.search(r"####?\s*欧指.*?\n(.*?)(?=\n####?|\n---|\Z)", block, re.DOTALL)
+                # 欧指时序 (含体彩 HAD)
+                m_eu_block = re.search(r"####?\s*(?:欧指|胜平负).*?\n(.*?)(?=\n####?|\n---|\Z)", block, re.DOTALL)
                 if m_eu_block:
-                    rows = [p.split("|")[1:-1] for p in m_eu_block.group(1).strip().splitlines() if p.startswith("|") and "---" not in p and "变盘时间" not in p and "主胜" not in p]
+                    rows = _extract_table_rows(m_eu_block.group(1))
+                    last_t = "10-08 12:00"
                     for r in rows:
                         if len(r) >= 4:
                             off = 1 if len(r) >= 5 and any(t in r[0] for t in ["T0", "T1", "T2", "T3", "T4"]) else 0
                             try:
-                                ts_list.append({"company": cname, "time": r[off].replace("**", "").replace("初盘", "").strip(), "odds": [float(r[off+1].replace("**", "").replace("初盘", "").strip()), float(r[off+2].replace("**", "").strip()), float(r[off+3].replace("**", "").strip())]})
+                                raw_t = r[off].replace("**", "").replace("初盘", "").strip()
+                                if raw_t != "维持区间":
+                                    last_t = raw_t
+                                ts_list.append({
+                                    "company": cname,
+                                    "market": "1X2",
+                                    "phase": r[0].replace("**", "").strip() if off == 1 else "",
+                                    "time": last_t,
+                                    "odds": [
+                                        float(r[off+1].replace("**", "").replace("初盘", "").strip()),
+                                        float(r[off+2].replace("**", "").strip()),
+                                        float(r[off+3].replace("**", "").strip()),
+                                    ],
+                                    "morphology": r[-1].strip() if len(r) > off + 4 else "",
+                                })
                             except Exception:
                                 pass
+
+                # 体彩让球胜平负 (HHAD)
+                m_hhad_block = re.search(r"####?\s*让球胜平负.*?\n(.*?)(?=\n####?|\n---|\Z)", block, re.DOTALL)
+                if m_hhad_block:
+                    rows = _extract_table_rows(m_hhad_block.group(1))
+                    if rows:
+                        r0 = rows[0]
+                        try:
+                            snap["sportteryHandicap"] = {
+                                "handicap": r0[1].replace("`", "").strip(),
+                                "win": float(r0[2]),
+                                "draw": float(r0[3]),
+                                "lose": float(r0[4]),
+                                "morphology": r0[5].strip() if len(r0) > 5 else "",
+                            }
+                        except Exception:
+                            pass
+
+                # Polymarket 预测市场五阶段时序
+                m_poly_block = re.search(r"####?\s*预测市场.*?\n(.*?)(?=\n####?|\n---|\Z)", block, re.DOTALL)
+                if m_poly_block:
+                    rows = _extract_table_rows(m_poly_block.group(1))
+                    poly_ts = []
+                    for r in rows:
+                        if len(r) >= 8:
+                            try:
+                                poly_ts.append({
+                                    "phase": r[0].replace("**", "").strip(),
+                                    "time": r[1].strip(),
+                                    "cents": [float(r[2].replace("¢", "").strip()), float(r[3].replace("¢", "").strip()), float(r[4].replace("¢", "").strip())],
+                                    "fairOdds": [float(r[5]), float(r[6]), float(r[7])],
+                                    "morphology": r[8].strip() if len(r) > 8 else "",
+                                })
+                            except Exception:
+                                pass
+                    if poly_ts:
+                        snap["polymarketTimeSeries"] = poly_ts
 
         # 兜底：如果存在旧版平铺格式
         if not ah_list:

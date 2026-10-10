@@ -83,6 +83,23 @@ class TestUseCases(unittest.TestCase):
             if temp_file.exists():
                 temp_file.unlink()
 
+    def test_markdown_snapshot_full_absorption_without_reversal_or_drops(self):
+        """测试黄金快照 3000474.md 全量字段吸收：不丢行、不反序、不假凯利"""
+        md_file = self.repo_root / "data" / "2026-10-10" / "3000474.md"
+        if not md_file.exists():
+            self.skipTest("3000474.md 不存在")
+        snap = self.verify_use_case._parse_markdown_snapshot(md_file.read_text(encoding="utf-8"), "3000474")
+        self.assertEqual(len(snap["europe1x2"]), 23)
+        self.assertEqual(snap["europe1x2"][0]["latest"]["kelly"], [0.92, 0.93, 0.98])
+        self.assertEqual(len(snap["asianHandicap"]), 7)
+        self.assertEqual(snap["asianHandicap"][0]["initial"]["home"], 0.90)
+        self.assertEqual(snap["asianHandicap"][0]["latest"]["home"], 1.04)
+        self.assertEqual(len(snap["overUnder"]), 7)
+        self.assertEqual(len(snap["timeSeriesFlow"]), 180)
+        self.assertIn("庄家借战意做市破译", snap["tactics"]["motivationAndGameTheory"])
+        self.assertEqual(snap["sportteryHandicap"]["handicap"], "-1")
+        self.assertEqual(len(snap["polymarketTimeSeries"]), 5)
+
 
 if __name__ == "__main__":
     unittest.main()
