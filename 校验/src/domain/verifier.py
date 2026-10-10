@@ -146,6 +146,9 @@ class SnapshotVerifier:
         # 8. Polymarket 真实流动性与链接真实性核验
         results.append(self._check_polymarket(snapshot))
 
+        # 9. 真实性与防克隆核验 (严禁跨场次克隆与模板伪造)
+        results.append(self._check_authenticity(snapshot))
+
         tactics = snapshot.get("tactics") or {}
         profiling = snapshot.get("profiling") or {}
         has_dual_track = bool(
@@ -769,4 +772,64 @@ class SnapshotVerifier:
             status=CheckStatus.PASS,
             message=f"Polymarket 真实交易市场链接已配置: {url}",
             detail={"url": url, "slug": slug},
+        )
+
+    def _check_authenticity(self, snapshot: Dict[str, Any]) -> DimensionResult:
+        """真实性与防克隆核验：杜绝跨场次复制、模板克隆与未替换占位符"""
+        match_id = str(get_match_property(snapshot, "matchId") or snapshot.get("id") or "unknown")
+        home = str(get_match_property(snapshot, "homeTeam") or "")
+        away = str(get_match_property(snapshot, "awayTeam") or "")
+
+        raw_content = str(snapshot.get("_raw_content") or "")
+        full_text = raw_content if raw_content else str(snapshot)
+
+        # 1. 占位符检测
+        for ph in ["{homeTeam}", "{awayTeam}", "{league}", "{matchId}", "TODO", "xxx"]:
+            if ph in full_text:
+                return DimensionResult(
+                    dimension=DimensionType.AUTHENTICITY,
+                    status=CheckStatus.FAIL,
+                    message=f"真实性核验失败：快照中存在未填充的模板占位符 '{ph}'，禁止使用半成品模板！",
+                    detail={"match_id": match_id, "placeholder": ph},
+                )
+
+        # 2. 检查克隆测试夹具 (非 3000474 场次却复制了大阪樱花/横滨水手专属时序或队名)
+        fixture_teams = ["大阪樱花", "横滨水手", "洋马长居体育场"]
+        if match_id != "3000474":
+            if any(t in full_text for t in fixture_teams) and (home not in ["大阪樱花", "横滨水手"] and away not in ["大阪樱花", "横滨水手"]):
+                return DimensionResult(
+                    dimension=DimensionType.AUTHENTICITY,
+                    status=CheckStatus.FAIL,
+                    message=f"真实性核验失败：当前比赛 ({home} vs {away}, ID: {match_id}) 包含测试夹具专属特征 (大阪樱花/横滨水手)，判定为克隆造假！",
+                    detail={"match_id": match_id, "home": home, "away": away, "violation": "fixture_team_leak"},
+                )
+
+            # 检查时序是否一字不差复制了夹具的 澳彩 0.90/0.94 -> 0.98/0.86 -> 1.04/0.80 时序特征
+            trend_text = raw_content + str(snapshot.get("timeSeriesFlow") or "") + str(snapshot.get("trendComparison") or "") + str(snapshot.get("asianOddsText") or "")
+            if "10-06 21:50" in trend_text and "10-07 14:12" in trend_text and "10-10 12:30" in trend_text:
+                return DimensionResult(
+                    dimension=DimensionType.AUTHENTICITY,
+                    status=CheckStatus.FAIL,
+                    message=f"真实性核验失败：变盘时序时间戳完全复制了测试夹具 (3000474)，判定为克隆假数据！",
+                    detail={"match_id": match_id, "violation": "fixture_timestamp_collision"},
+                )
+
+        # 3. 检查快照内各 URL 中的 matchId 与文件实际 match_id 是否匹配
+        url_matches = re.findall(r"(?:id|sid)=(\d{6,8})\b", full_text)
+        conflicts = [uid for uid in url_matches if uid != match_id]
+        if conflicts and match_id.isdigit():
+            first_conflict = conflicts[0]
+            if first_conflict in ["3000474"] and match_id != "3000474":
+                return DimensionResult(
+                    dimension=DimensionType.AUTHENTICITY,
+                    status=CheckStatus.FAIL,
+                    message=f"真实性核验失败：快照内数据源链接引用了测试夹具比赛 ID ({first_conflict})，与当前场次 ({match_id}) 冲突！",
+                    detail={"match_id": match_id, "conflicting_url_id": first_conflict},
+                )
+
+        return DimensionResult(
+            dimension=DimensionType.AUTHENTICITY,
+            status=CheckStatus.PASS,
+            message="数据真实性与防克隆指纹核验通过 (无模板造假、无测试夹具克隆)",
+            detail={"match_id": match_id},
         )

@@ -284,10 +284,17 @@ python 校验/src/adapter/cli.py --system
    - **亚盘让球与大小球流水**：通过 Scrapling 直取 7 大法定做市商（澳彩 1、Crown 3、Bet365 8、易胜博 12、平博 47、188 42、香港马会 48）`changeDetail` 全量流水（GB18030解码）；
    - **微观首发与伤停情况**：通过 BrowserOS neo 访问分析页抽取「阵容情况」与球员评分；
    - **Crown 皇冠波胆全指数**：分析页 `#analy_sbAllOdds` 中 0:0～4:4 比分波胆赔率矩阵及半全场。
-2. **本地快照存盘（方案B纯净结构化规约）**：组装保存为 `data/YYYY-MM-DD/{matchId}.json`。序列化必须严格遵循 `json.dump(..., indent=2, ensure_ascii=False)`。全面废除在 `trendComparison`、`european1x2Text`、`asianOddsText` 中存放 `\t` 和 `
-\n` 的转义长文本乱码；盘口、赔率与五阶段变盘流水一律采用原生结构化数组（`europe1x2`、`asianHandicap`、`overUnder`、`timeSeriesFlow`），杜绝大泥潭乱码，确保人眼秒懂与编辑器自然语法高亮。
-3. **物理安检门禁**：通过 `python 校验/src/adapter/cli.py --match ...` 检验数据完整性。门禁已实现双模无缝兼容（同时支持原生纯净列表与传统字段）。门禁通过即进入 10 步深度推演；若门禁拦截，AI 自主调度补抓，拒绝无依据硬推。
-4. **伤停空表处理**：分析页抽出的阵容表若印「暂无数据」，如实标注【暂无数据 / 伤停未核实】，保留页上原句，**继续十步推演，严禁脑补无伤停**。
+2. **确定性快照自动化装配管道 (SnapshotAssembler)**：
+   - 严禁大模型在会话里手写文本或拼凑散装 Markdown！原始数据采集后，通过确定性装配管道直接转化为符合黄金契约的单文件 Markdown 快照：
+     ```bash
+     python 校验/src/adapter/cli.py --assemble raw_data.json --output data/YYYY-MM-DD/{matchId}.md
+     ```
+   - 装配器负责结构化提纯法定 23 家欧指、7 大做市商双盘时序、Crown 波胆与官方玩法，保证字段 100% 规范无噪音。
+3. **物理安检门禁与反克隆核验**：
+   - 运行 `python 校验/src/adapter/cli.py --match data/YYYY-MM-DD/{matchId}.md`。
+   - 门禁执行 6 大黄金维度安检 + 第 9 道 `AUTHENTICITY` 真实性与防克隆核验（校验主客队名对齐、杜绝模板占位符、杜绝测试夹具时序克隆）。
+   - **退出码硬熔断**：返回 exit 1 时必须立即物理阻断，严禁输出任何推演结论与预测表格！返回 exit 0 (PASS/WARN) 方可进入 10 步推演。
+4. **伤停空表处理**：分析页抽出的阵容表若印「暂无数据」，如实标注【暂无数据 / 伤停未核实】，保留页上原句，**允许继续十步推演，严禁脑补无伤停**。
 5. **时点分立**：实际抓取、分析截至、报价、开球、保存与发布时间分开记录，严禁用赛后记录或未来时点倒填赛前。
 
 ## Subagent 工具
