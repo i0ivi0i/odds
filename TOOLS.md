@@ -14,14 +14,18 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 数据采集采用**大模型自主调度的双轨敏捷架构**：系统正式装载并明确绑定两大核心 Skill 与其对应 MCP 服务。AI 大模型根据目标页面特性与即时网络状况，拥有完全自主、聪明智慧的决断权，灵活调度两军协同。
 
-### 1. 技能与 MCP 双轨绑定及分工
-- **Skill `/scrapling-official` ↔ MCP `scrapling`（极速协议流通道）**：
-  - 原生集成 TLS 浏览器指纹伪装与抗封锁能力；
-  - 毫秒级直取 163 家百家欧指数据流（`1x2d.titan007.com/{id}.js`）与 7 大法定机构分钟级变盘流水（`changeDetail`）；
-  - 作为赛前高频盘赔时序数据提取的**首选高速通道**。
-- **Skill `/browseros-neo` ↔ MCP `browseros_neo`（真实渲染通道）**：
-  - 真实 Chromium 渲染环境，专攻球探单场分析页的「阵容情况」微观伤停原句、首发球员评分、积分榜战术技统与竞足全开大盘；
-  - 当 Scrapling 遭遇未知动态加密或复杂交互验证时，作为**强力真实环境兜底**。
+### 1. 技能与 MCP 主辅架构（Scrapling 100% 全包主力 × BrowserOS 备用辅助）
+- **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（1~2 秒全量并发直取）**：
+  - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，通过 `mcp__scrapling__bulk_get` 一次性并发秒取单场全部 5 大数据源：
+    1. **阵容伤停与基本面技统**：`https://zq.titan007.com/analysis/{id}cn.htm`（含伤停名单、主客得失球、盘路走势、进球时段、未来赛程）；
+    2. **Crown 皇冠波胆与半全场**：`https://zq.titan007.com/analysis/odds/{id}.htm`（含 0:0~4:4 比分波胆、总入球、半全场、角球、必发指数）；
+    3. **体彩全玩法与半场指数**：`https://zq.titan007.com/default/getAnalyData?sid={id}&t=1`（含体彩 HAD/HHAD/TTG/CRS/HAFU 及半场欧亚大）；
+    4. **百家欧指与分钟级流水**：`https://1x2d.titan007.com/{id}.js`（含 23 家法定机构初即盘、返还率、凯利指数及全部变盘历史）；
+    5. **7 大做市商亚盘与大小球流水**：`https://vip.titan007.com/changeDetail/handicap.aspx` 与 `overunder.aspx`。
+  - **常规流程 100% 由 Scrapling 独立极速完成，严禁无故启动缓慢的浏览器渲染！**
+- **备用辅助兜底：Skill `/browseros-neo` ↔ MCP `browseros_neo`（仅限异常降级辅助）**：
+  - 由于浏览器渲染速度慢、资源消耗高，**仅作为辅助备用通道**；
+  - 仅当 Scrapling 遭遇极端反爬锁死、接口改版或必须执行前端点击交互时，才降级调用 BrowserOS neo 兜底。
 - **自主智能调度与物理门禁兜底**：
   - AI 大模型拥有完全自主的选择、切换与组合调度权；
   - 无论选用哪一个工具，最终组装的工作快照文件必须落盘至工整单文件 `data/YYYY-MM-DD/{matchId}.md`（全天赛程索引与元数据明细统一汇总于 `data/YYYY-MM-DD/meta.md`），必须 100% 通过 `python 校验/src/adapter/cli.py --match ...` 物理安检门禁。

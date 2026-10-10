@@ -135,7 +135,7 @@ subagent：获取赛果 → 对比推荐 → 计算命中率 → 分析失误 �
 2. **`Skill /browseros-neo` ↔ `MCP browseros_neo`**（真实 Chromium 浏览器环境）。
 违者视为严重工程违规与作弊！
 
-球探数据抓取采用**大模型自主调度的双轨敏捷架构**：**Skill `/scrapling-official` ↔ MCP `scrapling`**（毫秒级直取 163 家百家欧指 `1x2d.js` 与 7 大法定机构分钟级变盘流水，原生 TLS 伪装抗封锁）+ **Skill `/browseros-neo` ↔ MCP `browseros_neo`**（真实 Chromium 渲染环境，专攻「阵容情况」微观首发/伤停原句、球员评分与复杂大盘兜底）。禁止先跑旧版 `npm run schedule` / `analyze` / `review`。大模型拥有完全自主、聪明智慧的决断权，可根据页面与网络状况自主选择使用哪一个工具。
+球探数据抓取采用**Scrapling 主力全包、BrowserOS 辅助兜底的主辅架构**：**主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`**（通过 `bulk_get` 1~2 秒一次性并发秒取：分析页 `analysis/{id}cn.htm` 微观伤停与技统、波胆页 `analysis/odds/{id}.htm` 皇冠全指数波胆、竞彩接口 `getAnalyData` 体彩全玩法、百家欧指 `1x2d.js` 及 7 大法定机构 `changeDetail` 变盘流水，100% 覆盖黄金模板全部数据）+ **备用辅助：Skill `/browseros-neo` ↔ MCP `browseros_neo`**（因浏览器渲染较慢，仅在极端锁死或必须交互时作为辅助兜底，常规流程严禁启动）。禁止先跑旧版 `npm run schedule` / `analyze` / `review`。
 
 **最高数据铁律（数据纯净与严禁错位）**：**数据一定要抓取正确，不要乱抓乱获取，绝对禁止把不对的数据放进不应该在的位置！**
 数据采集必须实事求是、精准归位，严禁为了应付门禁而猜测脑补、拼凑假数据或把无关字段错位塞入快照。时序归 `trendComparison`、欧指归 `european1x2Text`、亚盘归 `asianOddsText`、大小球归 `overUnderOddsText`、阵容归 `lineupData`、技统归 `tactics`、画像归 `profiling`。
