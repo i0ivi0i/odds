@@ -785,6 +785,23 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertEqual(res2.status, CheckStatus.FAIL)
         self.assertIn("少于 8 项", res2.message)
 
+    def test_trend_history_fails_on_invalid_timestamp_bounds(self):
+        """测试时序流水校验：时间戳小时或分钟越界(如18:62)必须 FAIL 拦截"""
+        snap_bad_time = {
+            "trendComparison": (
+                "澳彩\t半球 0.94 0.86 10-10 18:62\n"
+                "Crown\t半球 1.00 0.90 10-10 18:30\n"
+                "Bet365\t半球 0.98 0.88 10-10 18:29\n"
+                "易胜博\t半球 0.96 0.87 10-10 18:28\n"
+                "平博\t半球 0.95 0.89 10-10 18:25\n"
+                "188\t半球 0.93 0.87 10-10 18:23\n"
+            )
+        }
+        res = self.verifier._check_trend_history(snap_bad_time)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("非法时间戳", res.message)
+        self.assertIn("18:62", res.message)
+
 
 if __name__ == "__main__":
     unittest.main()
