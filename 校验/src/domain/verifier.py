@@ -1,6 +1,11 @@
 """
 校验/src/domain/verifier.py
 快照数据完整性纯领域检验引擎 (零外部依赖，纯 Python 原生规则判定)
+
+【架构铁律与只读契约】
+1. 本模块为绝对只读检验员 (Read-Only Verifier)，严禁在此类中添加任何写文件、改文件、创建文件逻辑！
+2. 任何比赛预测、推演算法、让球定性严禁在此编写，本模块仅负责数据真实性、完整性与时序合法性质检。
+3. 一旦发现数据缺失、非法时间戳 (如分钟>59) 或时序造假，直接返回 FAIL 触发物理熔断。
 """
 
 from __future__ import annotations
@@ -535,6 +540,20 @@ class SnapshotVerifier:
                             timestamps.extend(found_ts)
                         else:
                             timestamps.append(t_val)
+
+        # 铁律0: 校验提取到的全部时间戳合法性 (杜绝 18:62 伪造时间，小时 0-23，分钟 0-59)
+        for ts_raw in timestamps:
+            m_time = re.search(r"(\d{1,2}):(\d{2})", ts_raw)
+            if m_time:
+                hh = int(m_time.group(1))
+                mm = int(m_time.group(2))
+                if hh < 0 or hh > 23 or mm < 0 or mm > 59:
+                    return DimensionResult(
+                        dimension=DimensionType.TREND_HISTORY,
+                        status=CheckStatus.FAIL,
+                        message=f"变盘时序流水包含非法时间戳 '{ts_raw}' (小时必须在0~23，分钟必须在0~59)！严禁公式粗制伪造时间！",
+                        detail={"invalid_timestamp": ts_raw, "hour": hh, "minute": mm},
+                    )
 
         ts_count = len(timestamps)
         # 仅统计包含真实 records/timeline 的记录条数，空容器不能伪充记录行数
