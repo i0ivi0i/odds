@@ -26,6 +26,7 @@ class DimensionType(Enum):
     CROWN_CORRECT_SCORE = "Crown皇冠全指数波胆"
     LINEUP_INJURY = "微观阵容与首发伤停"
     POLYMARKET_LIQUIDITY = "Polymarket预测市场真实流动性"
+    AUTHENTICITY = "真实性与防克隆核验"
 
 
 @dataclass(frozen=True)

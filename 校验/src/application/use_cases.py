@@ -72,6 +72,7 @@ class VerifySnapshotUseCase:
             if path.suffix.lower() == ".md":
                 data = self._parse_markdown_snapshot(content, path.stem)
                 data["is_markdown_baseline"] = True
+                data["_raw_content"] = content
             else:
                 try:
                     data = json.loads(content)

@@ -702,6 +702,38 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertTrue(receipt.is_valid)
         self.assertEqual(receipt.failed_count, 0)
 
+    def test_authenticity_fails_when_template_placeholders_present(self):
+        """测试真实性核验：包含未填充占位符时必须 FAIL 拦截"""
+        snap = {
+            "matchId": "2981506",
+            "match": {"homeTeam": "{homeTeam}", "awayTeam": "切尔西", "league": "英超"},
+            "basicStatsText": "主场进球 1.5",
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("未填充的模板占位符", res.message)
+
+    def test_authenticity_fails_when_cloning_fixture_detected(self):
+        """测试真实性核验：非 3000474 比赛若复制了测试夹具队名，必须 FAIL 拦截"""
+        snap = {
+            "matchId": "3003899",
+            "match": {"homeTeam": "阿森纳", "awayTeam": "利兹联", "league": "英超"},
+            "asianOddsText": "大阪樱花 vs 横滨水手 澳彩 0.90 平半 0.94",
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("测试夹具专属特征", res.message)
+
+    def test_authenticity_passes_for_clean_data(self):
+        """测试真实性核验：正常匹配的干净数据必须 PASS"""
+        snap = {
+            "matchId": "3003899",
+            "match": {"homeTeam": "阿森纳", "awayTeam": "利兹联", "league": "英超"},
+            "asianOddsText": "阿森纳 vs 利兹联 澳彩 0.85 球半 1.00",
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.PASS)
+
 
 if __name__ == "__main__":
     unittest.main()
