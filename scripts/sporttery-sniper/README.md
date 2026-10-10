@@ -2,7 +2,7 @@
 
 手动运行的 titan007 足球赔率分析数据提取工具。
 
-**本仓库线上抓取已改走爱马仕 `/browseros-neo`。** 定时任务与赛前/赛后流程禁止先跑下面的 `npm run schedule` / `analyze` / `review`。本目录仅保留解析、样例单测与手工诊断。
+**本仓库线上抓取已改走 Skill `/scrapling-official` 极速并发直取（`/browseros-neo` 备用辅助）。** 定时任务与赛前/赛后流程禁止先跑下面的 `npm run schedule` / `analyze` / `review`。本目录仅保留解析、样例单测与手工诊断。
 
 ## 部署
 

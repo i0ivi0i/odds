@@ -23,7 +23,7 @@
 ## 快速上手与运行环境
 
 ### 1. 通用环境准备
-- **爱马仕 `/browseros-neo`**：正式赛程、盘口、赛果一律用它打开球探页（不是让主人自己开网页）
+- **双轨数据采集通道**：优先调用 Skill `/scrapling-official` ↔ MCP `scrapling`（极速并发全包直取），`/browseros-neo` 真实 Chromium 渲染作为备用辅助兜底（不是让主人自己开网页）
 - **Node.js**: v20+（仅 `scripts/sporttery-sniper` 离线解析与 `npm test`，不是线上抓取入口）
 - **Python**: v3.11+（用于验证泊松比分与运行图谱工具）
 
@@ -92,7 +92,7 @@ workspace/
 ├── SOUL.md              # 灵魂：性格、风格、原则、边界
 ├── AGENTS.md            # 操作手册：完整方法论和规则
 ├── USER.md              # 用户偏好
-├── TOOLS.md             # 工具指南：/browseros-neo 球探直取与落盘规范
+├── TOOLS.md             # 工具指南：Scrapling 并发直取与 BrowserOS neo 规范
 ├── HEARTBEAT.md         # 定时检查清单
 ├── MEMORY.md            # 长期记忆：累计统计、策略结论
 ├── memory/              # 每日记忆
@@ -124,7 +124,7 @@ workspace/
 在多场深度分析执行时（例如主人要求「分析 002 和 005」，或赛前初筛通过多场并发处理），如果直接使用浏览器 CLI 并发抓取，由于浏览器实例属于共享单例，容易发生标签页互踩与数据串号。
 
 ### 架构应对策略
-1. **数据抓取层解耦**：编排阶段集中调用 `/browseros-neo` 一次性提取全量快照落盘 `data/`；worker 只读本地快照做推理，禁止各 worker 争抢浏览器。
+1. **数据抓取层解耦**：编排阶段（阶段一）集中调用 `/scrapling-official` 并发矩阵一次性提取全量快照落盘 `data/`（`/browseros-neo` 备用辅助）；阶段二 worker 纯只读本地快照做推理，严禁抢跑思考。
 2. **子智能体分析策略**：通过各 Agent 的子任务机制（爱马仕 `delegate_task`、反重力 `invoke_subagent`）隔离推演上下文，从根源杜绝数据污染。
 
 ---
@@ -139,7 +139,7 @@ python3 scripts/check_consistency.py --print-ok
 
 ## 注意事项
 
-- 数据抓取默认 `/browseros-neo` 直开球探页。禁止先跑 sporttery-sniper 命令。其他来源齐全且对得上才能代，缺、错、少不能硬推
+- 数据抓取默认 Skill `/scrapling-official` 极速直取（`/browseros-neo` 备用辅助）。禁止先跑 sporttery-sniper 命令。其他来源齐全且对得上才能代，缺、错、少不能硬推
 - 每日初筛最多 8 场（建议 3-5 场），精选 2-3 场核心推荐（最多 4 场）
 - MEMORY.md 策略调优和关键教训不允许重复，主题相同时合并更新原条目
 - 所有分析基于数据，不保证胜率，仅供参考
