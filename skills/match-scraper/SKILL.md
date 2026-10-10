@@ -152,12 +152,23 @@ metadata: { "emoji": "📆" }
   - 大小球：`https://vip.titan007.com/changeDetail/overunder.aspx?id={matchId}&companyID={cid}&l=0`
 - 编码与过滤：解码使用 `gb18030`；严格过滤掉开球后的滚球记录，仅保留赛前连续变动流水。
 
-### 2. 欧洲指数 14 家做市商全时序解构
+### 2. 欧洲指数 23 家法定机构全覆盖与全时序解构
 - 请求端点：`https://1x2d.titan007.com/{matchId}.js`
 - 从 `var gameDetail=Array(...)` 中解构出包含时间戳与赔率的 `recordsText`；
-- 必须覆盖 14 家主流做市商（澳彩 80、Crown 545、365 281、易胜博 90、平博 177、威廉 115、立博 82、伟德 81、Interwetten 104、Bwin 255、SNAI 110、香港马会 432、188 976、必发 2）。
+- **必须覆盖法定 23 家机构**，严禁漏项：
+  1. **核心做市（14 家）**：澳彩 80、Crown 545、365 281、易胜博 90、平博 177、威廉 115、立博 82、伟德 81、Interwetten 104、Bwin 255、SNAI 110、香港马会 432、188 976、必发 2；
+  2. **老庄机构（2 家）**：SBO利记 474、沙巴IBC 649；
+  3. **论文样本（5 家）**：Marathon马拉松 800、Betway必威 482、Unibet优胜客 386、Paddy Power 826、10Bet 16；
+  4. **终端履约（2 家）**：体彩官方 1129、Polymarket 链上预测市场。
 
-### 3. 落盘安检与物理门禁核验
+### 3. 单场 5 大数据源一次性并发全取清单（Scrapling bulk_get 毫秒直取）
+1. **微观阵容与基本面技统**：`https://zq.titan007.com/analysis/{matchId}cn.htm`
+2. **Crown 皇冠全指数波胆与半全场**：`https://zq.titan007.com/analysis/odds/{matchId}.htm`
+3. **体彩官方全玩法与半场指数**：`https://zq.titan007.com/default/getAnalyData?sid={matchId}&t=1`
+4. **百家欧指与分钟级流水**：`https://1x2d.titan007.com/{matchId}.js`
+5. **7 大做市商亚盘与大小球流水**：`https://vip.titan007.com/changeDetail/handicap.aspx` 与 `overunder.aspx`（共 14 条流水端点）
+
+### 4. 落盘安检与物理门禁核验
 - 组装写入单文件 `data/{销售日}/{matchId}.md`（全天赛程总览汇总于 `data/{销售日}/meta.md`）；
 - 执行门禁物理命令：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md`
 - 若返回 `FAIL`（如法定做市商流水覆盖不足、缺少时序、字段错位或摘要与流水冲突），物理熔断停止推演，必须补齐后方可放行。
