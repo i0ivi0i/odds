@@ -30,27 +30,31 @@ curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" -H "Referer: https://www.lottery.g
 
 中国 02:45 开球（例如 2026-09-30 02:45）→ 链接日期常用 **2026-09-29**。拿不准就用队名去搜，不要死拼日期。
 
-## 三、用接口核实体，禁止猜地址
+## 三、标准三步核验法（强制全网检索，严禁偷懒调死接口）
 
-### 1）按地址试（先试，空的就别用）
+**为什么之前总是查不到？血泪教训**：
+1. **中英文断层**：Polymarket 全站为纯英文（如 "West Ham United", "QPR"），直接用中文队名调用 Polymarket API 必定 100% 返回空！
+2. **标签碎片化**：Polymarket 联赛标签极细（如英冠是 `efl-championship`，英超是 `premier-league`），只查 `soccer` 会漏掉大量次级与杯赛市场！
+3. **严禁只调 API 碰壁即放弃**：严禁仅凭 API 返回 `[]` 就草率判定“未开盘”！
 
+### 第一步（绝对强制首选）：实网全网精准检索
+必须先使用 `web_search` 或 Google 检索，由搜索引擎自动完成中英文映射与最新 slug 定位：
 ```bash
-curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" "https://gamma-api.polymarket.com/events?slug=联赛缩写-主队三字-客队三字-年-月-日"
+# 语法：site:polymarket.com/event "主队英文名/别名" "客队英文名/别名"
+site:polymarket.com/event "West Ham" "Queens Park Rangers"
+```
+或直接由 `BrowserOS neo` 访问 `https://polymarket.com/sports` 在页面顶端搜索框输入英文队名查找。
+
+### 第二步：拿到页面 slug 后，核查流动性与可买报价
+拿到 Google 检索出的链接或 slug 后，再调用官方接口或 BrowserOS neo 校验实盘交易池：
+```bash
+curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" "https://gamma-api.polymarket.com/events?slug=检索到的完整slug"
 ```
 
-返回 `[]` 只表示该 slug 未找到实体；报错表示访问失败。两者都进入第 2 步查找，不直接写成未开盘。不要把空结果说成「已验证」。
-
-常见联赛缩写：欧国联 `unl`，英超 `epl`，欧冠 `ucl`，西甲 `lal`，友谊赛可能是 `fif`（以搜到的为准）。
-
-### 2）三字码经常拼错，必须搜
-
-瑞士不是 `sui` 而是 `che`；斯洛文尼亚不是 `svn` 而是 `slv`；克罗地亚不是 `cro` 而是 `hrv`；北马其顿不是 `mkd` 而是 `mac`。
-
-```bash
-curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" --get "https://gamma-api.polymarket.com/public-search" --data-urlencode "q=队名 队名 年-月-日"
-```
-
-从结果里抄 `slug`、`title`，核对阵、开球与市场规则。搜不到写【未找到市场】；访问失败写【核验失败】；只有实体及开放状态确已核实，才写【Polymarket 未开盘】。
+### 第三步：门禁判定标准
+- 只有在：① `web_search (site:polymarket.com/event)` 查无此赛；② BrowserOS neo 页面搜索确认无池；③ Gamma API 英文全称无记录。
+- **三者全部落空时**，才准许打标【Polymarket 未开放独立交易池】！
+- 凡未经第一步全网实网检索就敢写“未开放”的，一律按作弊与虚假汇报严肃处理！
 
 ### 3）读价钱
 

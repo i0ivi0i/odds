@@ -4,6 +4,7 @@
 """
 
 from __future__ import annotations
+from datetime import datetime, timedelta
 import json
 import re
 from typing import Any, Dict, List, Optional
@@ -17,6 +18,29 @@ from 校验.src.domain.model import (
 from 校验.src.domain.profiling_parser import ProfilingParser
 from 校验.src.domain.correct_score_parser import CorrectScoreParser
 from 校验.src.domain.tactics_parser import TacticsParser
+
+
+def _is_valid_rate(val: Any) -> bool:
+    """校验返还率/赔率是否为有效非空正数值"""
+    if val is None or val is False or val == "":
+        return False
+    if isinstance(val, (int, float)):
+        return val > 0
+    if isinstance(val, str):
+        try:
+            return float(val.rstrip("%").strip()) > 0
+        except ValueError:
+            return False
+    return False
+
+
+def _is_valid_kelly(val: Any) -> bool:
+    """校验凯利指数是否为有效非空数值或数值列表"""
+    if val is None or val is False or val == "":
+        return False
+    if isinstance(val, (list, tuple)):
+        return len(val) >= 3 and any(_is_valid_rate(x) for x in val)
+    return _is_valid_rate(val)
 
 
 def convert_a11y_table_to_tsv(text: str) -> str:
@@ -270,8 +294,13 @@ class SnapshotVerifier:
             for c in companies:
                 init_data = c.get("initial") or {}
                 latest_data = c.get("latest") or {}
-                has_ret = "return_rate" in init_data or "returnRate" in init_data or "return_rate" in latest_data or "returnRate" in latest_data
-                has_k = "kelly" in init_data or "kelly" in latest_data
+                has_ret = (
+                    _is_valid_rate(init_data.get("return_rate"))
+                    or _is_valid_rate(init_data.get("returnRate"))
+                    or _is_valid_rate(latest_data.get("return_rate"))
+                    or _is_valid_rate(latest_data.get("returnRate"))
+                )
+                has_k = _is_valid_kelly(init_data.get("kelly")) or _is_valid_kelly(latest_data.get("kelly"))
                 if has_ret and has_k:
                     has_kelly_and_return = True
                     break
@@ -294,9 +323,9 @@ class SnapshotVerifier:
         europe_histories = markets.get("europeHistories") or []
         trend_text = snapshot.get("trendComparison") or ""
 
-        timeline_count = sum(len(h.get("timeline", [])) for h in europe_histories)
+        timeline_count = sum(len(h.get("records") or h.get("timeline") or []) for h in europe_histories if isinstance(h, dict))
         if timeline_count == 0:
-            timeline_count = len(re.findall(r"(?:\(欧\)|欧指|1X2|标准走势).*?\d{1,2}-\d{1,2}\s+\d{1,2}:\d{2}", trend_text))
+            timeline_count = len(re.findall(r"(?:\(欧\)|欧指|1X2|标准走势).*?\d{1,2}-\\d{1,2}\s+\d{1,2}:\d{2}", trend_text))
 
         if timeline_count < 4:
             return DimensionResult(
@@ -318,14 +347,6 @@ class SnapshotVerifier:
         profiling = snapshot.get("profiling") or {}
         half_time = markets.get("halfTime") or {}
 
-        has_data = len(text.strip()) > 20 or len(histories) > 0 or bool(profiling)
-        if not has_data:
-            return DimensionResult(
-                dimension=DimensionType.ASIAN_HANDICAP,
-                status=CheckStatus.FAIL,
-                message="亚洲让球盘(AH)主流机构盘口水位缺失",
-            )
-
         # 负面清单: 严禁包含 HTML 骨架或导航栏垃圾
         if re.search(r"<!DOCTYPE|<html\b|<body\b", text, re.I):
             return DimensionResult(
@@ -338,6 +359,20 @@ class SnapshotVerifier:
                 dimension=DimensionType.ASIAN_HANDICAP,
                 status=CheckStatus.FAIL,
                 message="亚洲让球盘包含整页导航栏垃圾文本，必须使用精准 CSS 容器提取",
+            )
+
+        valid_histories = [
+            h for h in histories
+            if isinstance(h, dict) and len(h.get("records") or h.get("timeline") or []) > 0
+        ]
+        has_text_data = len(text.strip()) > 20
+        has_real_ah = has_text_data or len(valid_histories) > 0
+
+        if not has_real_ah:
+            return DimensionResult(
+                dimension=DimensionType.ASIAN_HANDICAP,
+                status=CheckStatus.FAIL,
+                message="亚洲让球盘(AH)主流机构盘口水位缺失 (严禁仅用 profiling 叙述或空容器替代真实盘口)",
             )
 
         detail_data: Dict[str, Any] = {}
@@ -361,14 +396,6 @@ class SnapshotVerifier:
         markets = snapshot.get("markets") or {}
         histories = markets.get("overUnderHistories") or []
 
-        has_data = len(text.strip()) > 20 or len(histories) > 0
-        if not has_data:
-            return DimensionResult(
-                dimension=DimensionType.OVER_UNDER,
-                status=CheckStatus.FAIL,
-                message="大小球进球数(OU)主流机构盘口水位缺失",
-            )
-
         # 负面清单: 严禁包含 HTML 骨架或导航栏垃圾
         if re.search(r"<!DOCTYPE|<html\b|<body\b", text, re.I):
             return DimensionResult(
@@ -383,6 +410,19 @@ class SnapshotVerifier:
                 message="大小球包含整页导航栏垃圾文本，必须使用精准 CSS 容器提取",
             )
 
+        valid_histories = [
+            h for h in histories
+            if isinstance(h, dict) and len(h.get("records") or h.get("timeline") or []) > 0
+        ]
+        has_text_data = len(text.strip()) > 20
+        has_data = has_text_data or len(valid_histories) > 0
+        if not has_data:
+            return DimensionResult(
+                dimension=DimensionType.OVER_UNDER,
+                status=CheckStatus.FAIL,
+                message="大小球进球数(OU)主流机构盘口水位缺失",
+            )
+
         return DimensionResult(
             dimension=DimensionType.OVER_UNDER,
             status=CheckStatus.PASS,
@@ -391,6 +431,8 @@ class SnapshotVerifier:
 
     def _check_trend_history(self, snapshot: Dict[str, Any]) -> DimensionResult:
         trend = snapshot.get("trendComparison") or ""
+        if isinstance(trend, list):
+            trend = "\n".join(str(x) for x in trend)
         asian_text = snapshot.get("asianOddsText") or ""
         markets = snapshot.get("markets") or {}
         histories = (
@@ -407,8 +449,13 @@ class SnapshotVerifier:
             timestamps = re.findall(r"\b\d{1,2}:\d{2}\b", trend)
 
         ts_count = len(timestamps)
-        hist_count = len(histories)
-        effective_count = max(ts_count, hist_count)
+        # 仅统计包含真实 records/timeline 的记录条数，空容器不能伪充记录行数
+        hist_records_count = sum(
+            len(h.get("records") or h.get("timeline") or [])
+            for h in (markets.get("asianHistories") or []) + (markets.get("europeHistories") or [])
+            if isinstance(h, dict)
+        )
+        effective_count = max(ts_count, hist_records_count)
 
         # 铁律1: 必须包含时间戳，严禁静态初即两端冒充时序
         if effective_count == 0:
@@ -416,7 +463,7 @@ class SnapshotVerifier:
                 dimension=DimensionType.TREND_HISTORY,
                 status=CheckStatus.FAIL,
                 message="变盘时序流水缺少分秒时间戳，严禁使用静态初即两端冒充时序",
-                detail={"timestamps": 0, "histories": hist_count},
+                detail={"timestamps": 0, "histories": hist_records_count},
             )
 
         # 铁律2: 有效时间戳流水必须 >= 6 条
@@ -425,7 +472,7 @@ class SnapshotVerifier:
                 dimension=DimensionType.TREND_HISTORY,
                 status=CheckStatus.FAIL,
                 message=f"变盘时序流水记录不足 (仅有{effective_count}条时间戳记录，法定最低必须 >= 6行)",
-                detail={"timestamps": ts_count, "histories": hist_count},
+                detail={"timestamps": ts_count, "histories": hist_records_count},
             )
 
         # 铁律3 (负面清单): 严禁混入赛后“滚”球时序数据（必须是赛前赔率）
@@ -436,6 +483,41 @@ class SnapshotVerifier:
                 message="变盘时序流水混入赛中‘滚’球盘口！系统法定只准使用赛前赔率时序",
                 detail={"trend": trend[:100]},
             )
+
+        # 铁律4 (时点一致性与防混批次): 抓取时间 fetchedAt 不得早于时序流水时间戳 (时点倒挂/混批次检测)
+        fetched_at_str = str(snapshot.get("fetchedAt") or "").strip()
+        if fetched_at_str and timestamps:
+            m_fetch = re.search(r"(\d{4})?-?(\d{1,2})-(\d{1,2})[T\s]+(\d{1,2}):(\d{2})", fetched_at_str)
+            if m_fetch:
+                f_year = int(m_fetch.group(1)) if m_fetch.group(1) else datetime.now().year
+                f_month = int(m_fetch.group(2))
+                f_day = int(m_fetch.group(3))
+                f_hour = int(m_fetch.group(4))
+                f_min = int(m_fetch.group(5))
+                try:
+                    dt_fetch = datetime(f_year, f_month, f_day, f_hour, f_min)
+                    for ts_s in timestamps:
+                        m_ts = re.search(r"(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{2})", ts_s)
+                        if m_ts:
+                            t_month = int(m_ts.group(1))
+                            t_day = int(m_ts.group(2))
+                            t_hour = int(m_ts.group(3))
+                            t_min = int(m_ts.group(4))
+                            t_year = f_year
+                            if f_month == 12 and t_month == 1:
+                                t_year = f_year + 1
+                            elif f_month == 1 and t_month == 12:
+                                t_year = f_year - 1
+                            dt_ts = datetime(t_year, t_month, t_day, t_hour, t_min)
+                            if dt_ts > dt_fetch + timedelta(minutes=10):
+                                return DimensionResult(
+                                    dimension=DimensionType.TREND_HISTORY,
+                                    status=CheckStatus.FAIL,
+                                    message=f"变盘时序流水与快照抓取时点冲突！快照抓取时点({fetched_at_str})早于内部变盘时序时间戳({ts_s})，存在混批次时点倒挂风险",
+                                    detail={"fetchedAt": fetched_at_str, "conflictTimestamp": ts_s},
+                                )
+                except Exception:
+                    pass
 
         # 铁律4 (防偷懒硬门禁): 变盘时序流水核心做市商覆盖必须 >= 3 家 (覆盖范围：澳彩/皇冠/365/易胜博/平博/188/香港马会)
         matched_core_companies = set()
@@ -473,7 +555,7 @@ class SnapshotVerifier:
             dimension=DimensionType.TREND_HISTORY,
             status=CheckStatus.PASS,
             message=f"变盘时序流水完整 (有效时间戳变盘记录={effective_count}项，涵盖核心做市商={', '.join(sorted(matched_core_companies))})",
-            detail={"timestamps": ts_count, "histories": hist_count, "companies": list(matched_core_companies)},
+            detail={"timestamps": ts_count, "histories": hist_records_count, "companies": list(matched_core_companies)},
         )
 
     def _check_crown_correct_score(self, snapshot: Dict[str, Any]) -> DimensionResult:

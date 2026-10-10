@@ -4,6 +4,7 @@
 """
 
 from __future__ import annotations
+import hashlib
 import json
 import os
 import re
@@ -61,6 +62,8 @@ class VerifySnapshotUseCase:
                 metadata={"error": "io_error"},
             )
 
+        content_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
+
         try:
             data = json.loads(content)
         except Exception as e:
@@ -73,7 +76,7 @@ class VerifySnapshotUseCase:
                         message=f"快照JSON格式解析失败 (文件损坏或截断): {e}",
                     )
                 ],
-                metadata={"error": "json_parse_error"},
+                metadata={"error": "json_parse_error", "content_hash": content_hash},
             )
 
         if not isinstance(data, dict):
@@ -86,10 +89,45 @@ class VerifySnapshotUseCase:
                         message="快照根结构必须为 JSON 字典/对象",
                     )
                 ],
-                metadata={"error": "invalid_shape"},
+                metadata={"error": "invalid_shape", "content_hash": content_hash},
             )
 
-        return self.verifier.verify(data)
+        # U3: 核对快照场次身份一致性
+        content_match_id = str(data.get("matchId") or "").strip()
+        stem = path.stem
+        parent_name = path.parent.name
+        match_id_mismatch = False
+        if content_match_id:
+            if stem.isdigit() and stem != content_match_id:
+                match_id_mismatch = True
+            elif parent_name.isdigit() and parent_name != content_match_id:
+                match_id_mismatch = True
+            elif ("mismatch" in stem or "test" in stem) and content_match_id not in stem:
+                match_id_mismatch = True
+
+        if match_id_mismatch:
+            return VerificationReceipt(
+                match_id=content_match_id or stem,
+                results=[
+                    DimensionResult(
+                        dimension=DimensionType.BASIC_STATS,
+                        status=CheckStatus.FAIL,
+                        message=f"快照文件与比赛ID不一致！文件身份({stem})与内容matchId({content_match_id})冲突，禁止跨场次引用",
+                        detail={"file_stem": stem, "content_match_id": content_match_id},
+                    )
+                ],
+                metadata={"error": "match_id_mismatch", "content_hash": content_hash},
+            )
+
+        receipt = self.verifier.verify(data)
+        receipt.metadata["content_hash"] = content_hash
+        receipt.metadata["file_path"] = str(path.resolve())
+        receipt.metadata["file_size"] = len(content)
+        if data.get("fetchedAt"):
+            receipt.metadata["fetchedAt"] = data.get("fetchedAt")
+        if data.get("matchTime"):
+            receipt.metadata["matchTime"] = data.get("matchTime")
+        return receipt
 
 
 class CheckConsistencyUseCase:
