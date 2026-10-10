@@ -24,7 +24,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
   - 当 Scrapling 遭遇未知动态加密或复杂交互验证时，作为**强力真实环境兜底**。
 - **自主智能调度与物理门禁兜底**：
   - AI 大模型拥有完全自主的选择、切换与组合调度权；
-  - 无论选用哪一个工具，最终组装的工作快照文件必须落盘至 `data/YYYY-MM-DD/{matchId}.json`，并在赛前分析/临盘复核落盘时同步冻结保存只读批次文件至 `data/YYYY-MM-DD/{matchId}/{HHMM}.json`（绑定 SHA256 内容指纹），必须 100% 通过 `python 校验/src/adapter/cli.py --match ...` 物理安检门禁。
+  - 无论选用哪一个工具，最终组装的工作快照文件必须落盘至工整单文件 `data/YYYY-MM-DD/{matchId}.md`（全天赛程索引与元数据明细统一汇总于 `data/YYYY-MM-DD/meta.md`），必须 100% 通过 `python 校验/src/adapter/cli.py --match ...` 物理安检门禁。
 
 ---
 
@@ -105,7 +105,7 @@ text_history = res_history.body.decode("utf-8", errors="ignore")
 
 ### 4. 预赛快照与落盘标准
 
-- 统一落盘路径：`data/YYYY-MM-DD/{matchId}.json`。
+- 统一落盘路径：工整单文件 `data/YYYY-MM-DD/{matchId}.md`（全天赛程总览与元数据汇总于 `data/YYYY-MM-DD/meta.md`）。彻底废除单体大 JSON 与多级子目录。
 - 输出结构严格遵循 `agent.analysis` 契约规范。
 - **杜绝低级排版与骨架抓取错误（刚性规范）**：
   1. **结构化原生存储**：百家欧指必须通过 `1x2d.js` 解析后，结构化写入 `markets.europeCompanies` 数组（包含各公司初即盘、返还率与凯利独立对象），**严禁将百家数据挤入单行转义长文本**导致 JSON 仅有几十行假象！
@@ -211,8 +211,9 @@ python 校验/src/adapter/cli.py --system
    - **亚盘让球与大小球流水**：通过 Scrapling 直取 7 大法定做市商（澳彩 1、Crown 3、Bet365 8、易胜博 12、平博 47、188 42、香港马会 48）`changeDetail` 全量流水（GB18030解码）；
    - **微观首发与伤停情况**：通过 BrowserOS neo 访问分析页抽取「阵容情况」与球员评分；
    - **Crown 皇冠波胆全指数**：分析页 `#analy_sbAllOdds` 中 0:0～4:4 比分波胆赔率矩阵及半全场。
-2. **本地快照存盘**：组装保存为 `data/YYYY-MM-DD/{matchId}.json`。
-3. **物理安检门禁**：通过 `python 校验/src/adapter/cli.py --match ...` 检验数据完整性。门禁通过即进入 10 步深度推演；若门禁拦截，AI 自主调度补抓，拒绝无依据硬推。
+2. **本地快照存盘（方案B纯净结构化规约）**：组装保存为 `data/YYYY-MM-DD/{matchId}.json`。序列化必须严格遵循 `json.dump(..., indent=2, ensure_ascii=False)`。全面废除在 `trendComparison`、`european1x2Text`、`asianOddsText` 中存放 `\t` 和 `
+\n` 的转义长文本乱码；盘口、赔率与五阶段变盘流水一律采用原生结构化数组（`europe1x2`、`asianHandicap`、`overUnder`、`timeSeriesFlow`），杜绝大泥潭乱码，确保人眼秒懂与编辑器自然语法高亮。
+3. **物理安检门禁**：通过 `python 校验/src/adapter/cli.py --match ...` 检验数据完整性。门禁已实现双模无缝兼容（同时支持原生纯净列表与传统字段）。门禁通过即进入 10 步深度推演；若门禁拦截，AI 自主调度补抓，拒绝无依据硬推。
 4. **伤停空表处理**：分析页抽出的阵容表若印「暂无数据」，如实标注【暂无数据 / 伤停未核实】，保留页上原句，**继续十步推演，严禁脑补无伤停**。
 5. **时点分立**：实际抓取、分析截至、报价、开球、保存与发布时间分开记录，严禁用赛后记录或未来时点倒填赛前。
 
