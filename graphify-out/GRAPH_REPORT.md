@@ -5,8 +5,8 @@
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4130 nodes · 7792 edges · 215 communities (194 shown, 21 thin omitted)
-- Extraction: 59% EXTRACTED · 41% INFERRED · 0% AMBIGUOUS · INFERRED: 3229 edges (avg confidence: 0.92)
+- 4130 nodes · 7793 edges · 215 communities (194 shown, 21 thin omitted)
+- Extraction: 59% EXTRACTED · 41% INFERRED · 0% AMBIGUOUS · INFERRED: 3230 edges (avg confidence: 0.92)
 - Token cost: 12,500 input · 3,500 output
 
 ## Community Hubs (Navigation)
@@ -227,8 +227,8 @@
 2. `第三部分：盘口分类体系速查（主人亲授）` - 355 edges
 3. `赛后复盘（post-review）` - 254 edges
 4. `深度分析（deep-analysis）` - 195 edges
-5. `2. 站在庄家视角精准预测「胜平负」的核心方法` - 164 edges
-6. `AGENTS.md - 足彩分析工作流操作手册` - 152 edges
+5. `2. 站在庄家视角精准预测「胜平负」的核心方法` - 165 edges
+6. `AGENTS.md - 足彩分析工作流操作手册` - 153 edges
 7. `累计战绩` - 86 edges
 8. `Comparing Sequential Forecasters` - 64 edges
 9. `极小化最大损失` - 51 edges
@@ -1034,7 +1034,7 @@ Nodes (3): 初筛结果（21:30）, 推荐深度分析场次, 被筛除的场次
   docs/倍率时序波动分析手册.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **874 isolated node(s):** `Hegarty/Whelan：论文方法与执行落点`, `德甲首球研究：论文方法与执行落点`, `表格：六、可配置参数 / parameter_defaults`, `表格：手动交互模式 / manual_full_actions`, `表格：手动交互模式 / manual_staged_actions` (+869 more)
+- **874 isolated node(s):** `Hegarty/Whelan：论文方法与执行落点`, `德甲首球研究：论文方法与执行落点`, `表格：比赛信息 / postmatch_identity`, `表格：第一步：赛前预测回顾 / predictions_results`, `表格：比赛信息 / prematch_identity` (+869 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1190 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -1044,14 +1044,14 @@ _Questions this graph is uniquely positioned to answer:_
 - **What is the exact relationship between `paper-integration-v1（旧留存标签）` and `paper-application-v2（当前执行）`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `Outcomes Affect` connect `Outcomes Affect` to `平博.md`, `第三部分：盘口分类体系速查（主人亲授）`, `AGENTS.md - 足彩分析工作流操作手册`, `校验/src/adapter/cli.py`, `.verify`, `poisson_lib.py`, `Comparing Sequential Forecasters`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `赛后复盘（post-review）`, `条件预测能力与滚动样本外检验`, `OddsVector`, `极小化最大损失`, `2026-10-07 每日记忆`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `累计战绩`, `verifier.py`, `test_poisson.py`, `泊松概率计算手册（足彩用）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `OddsConversionResult`, `浅盘阻上 vs 浅盘诱上 对比`, `DimensionResult`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `杯赛防守脆断与进球肥尾`, `Polymarket 链接查找教程`, `cli.py (OO-EPC去水CLI)`, `injury-service.js`, `十九篇的执行落点与原文锚点`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `执行步骤`, `泊松概率分析：布伦特福德 vs 狼队`, `SAFETY.md`, `输出 2：写入记忆`, `TOOLS.md - 工具使用指南`, `五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南`, `load_params`, `输出 1：综合评估与推荐`, `泊松概率分析：克雷莫纳 vs 佛罗伦萨`, `泊松概率分析：阿纳西 vs 特鲁瓦`, `泊松概率分析：巴列卡诺 vs 莱万特`, `Asian Handicap & 1X2 Market Efficiency in Football (Constantinou, 2022)`, `Favorite-Longshot Bias (FLB)`, `Consensus Probability Estimation`, `Sub-Exponential E-Process (Theorem 3)`, `ProfilingParser`, `AGENTS.md Footy Analysis Workflow`, `TOOLS.md`, `buildAnalysisContext`, `步骤 1.5：先审过程，再揭比分（Aiyer 决策审计与认知契约卡对账）`, `模型扩展与组合手册（除泊松之外）`, `三、海外免费储备 API 矩阵`, `第 9 步：关键点 / 疑点 / 矛盾分析`, `fetchMatchData`, `倍率分析推演 (Pansuan Engine) Strategy`, `Levitt（2004）：NFL博彩定价`, `CorrectScoreParser`, `下注决策手册（版本 1）`, `Stable reliability diagrams for probabilistic classifiers`, `步骤 3：10 步分析过程（固定顺序）`, `联赛配置手册（泊松 + 盘口）`, `论文与知识图谱应用：高频深广检索与自愈自进化推演体系`, `执行流程`, `市场、独立泊松、综合判断分源评分`, `二、建议修补的漏洞 / 不一致`, `比分建模与投注手册（泊松版）`, `执行流程`, `四、从 λ 到各项概率的计算步骤`, `球队风格判定手册（简版）`, `Bayesian weighted discrete-time dynamic models for association football prediction`, `4. 存档原始赔率数据`, `【周六028】法甲 摩纳哥 vs 图卢兹`, `第 4 段：大小球 + 第 6-10 步摘要`, `计算方法`, `第二步：亚盘盘口类型判断（主人亲授体系）`, `Betting Against Integrity: Identifying Match-Fixing Through In-Play Market Dynamics (Winkelmann et al., 2026)`, `【周六001】日职联 大阪樱花 vs 横滨水手`, `欧国联 克罗地亚 vs 西班牙（编号: 周二008 比赛ID: 2981455，开球: 2026-10-07 02:45，分析: 2026-10-06 21:20）`, `[欧国联] 哈萨克斯坦 vs 法罗群岛（编号: 周二003 比赛ID: 2981549，开球: 2026-10-06 22:00，分析: 2026-10-06 17:40）`, `欧国联 克罗地亚 vs 英格兰（编号: - 比赛ID: 2981447，开球: 2026-10-04 00:00，分析: 2026-10-03 22:15）`, `欧国联 瑞士 vs 斯洛文尼亚（编号: - 比赛ID: 2981497，开球: 2026-10-04 02:45，分析: 2026-10-03 22:25）`, `欧国联 北马其顿 vs 苏格兰（编号: - 比赛ID: 2981498，开球: 2026-10-04 02:45，分析: 2026-10-03 22:15）`, `欧国联 卢森堡 vs 保加利亚（编号: 周二005 比赛ID: 2981553，开球: 2026-10-07 02:45，分析: 2026-10-06 21:30）`, `欧国联 苏格兰 vs 斯洛文尼亚（编号: 周二006 比赛ID: 2981506，开球: 2026-10-07 02:45，分析: 2026-10-06 21:25）`, `4. 易胜博`, `4. 易胜博`, `4. 易胜博`, `4. 易胜博`, `4. 易胜博`, `2026-10-02 Nations League Audit & Match Predictions`, `1. 亚盘与大小球 7 大法定机构并发直取`?**
-  _High betweenness centrality (0.278) - this node is a cross-community bridge._
+  _High betweenness centrality (0.277) - this node is a cross-community bridge._
 - **Are the 575 inferred relationships involving `Outcomes Affect` (e.g. with `表格：三、浅盘三种形态（重点） / shallow_outcomes` and `胜／平／负三端裁决`) actually correct?**
   _`Outcomes Affect` has 575 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Hegarty/Whelan：论文方法与执行落点`, `德甲首球研究：论文方法与执行落点`, `表格：六、可配置参数 / parameter_defaults` to the rest of the system?**
+- **What connects `Hegarty/Whelan：论文方法与执行落点`, `德甲首球研究：论文方法与执行落点`, `表格：比赛信息 / postmatch_identity` to the rest of the system?**
   _874 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `平博.md` be split into smaller, more focused modules?**
   _Cohesion score 0.028879720723579815 - nodes in this community are weakly interconnected._
 - **What is the exact relationship between `2. 跨市场几何联动战区（严禁单看亚盘）` and `两项AH报价不唯一识别退款率`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `AGENTS.md - 足彩分析工作流操作手册` connect `AGENTS.md - 足彩分析工作流操作手册` to `平博.md`, `Sporttery Sniper 数据提取工具`, `Outcomes Affect`, `第三部分：盘口分类体系速查（主人亲授）`, `一、工作流程总览`, `深度分析（deep-analysis）`, `ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）`, `赛后复盘（post-review）`, `五、Subagent 编排规则`, `2026-10-07 每日记忆`, `深度分析（晚盘 22:30 · 15 场全量从头推演）`, `深度分析（欧国联10场，17:35）`, `累计战绩`, `一、发现的 BUG / 漏洞`, `OddsConversionResult`, `浅盘阻上 vs 浅盘诱上 对比`, `DimensionResult`, `三、技能流程指引`, `2026-10-04 每日记忆`, `杯赛防守脆断与进球肥尾`, `Polymarket 链接查找教程`, `cli.py (OO-EPC去水CLI)`, `SAFETY.md`, `TOOLS.md - 工具使用指南`, `五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南`, `深度分析（17:28 & 21:55）`, `赛事初筛（match-screening）`, `通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)`, `八、心跳机制`, `TOOLS.md`, `赛后复盘`, `倍率分析推演 (Pansuan Engine) Strategy`, `预测 → 推荐 → 复盘的实际闭环`, `赛程抓取（match-scraper）`, `2026-10-03 每日记忆`, `Poisson Probability Calculation Manual`, `2026-10-05 每日记忆`, `2026-10-06 每日记忆`, `二、建议修补的漏洞 / 不一致`?**
-  _High betweenness centrality (0.223) - this node is a cross-community bridge._
+- **Why does `AGENTS.md - 足彩分析工作流操作手册` connect `AGENTS.md - 足彩分析工作流操作手册` to `平博.md`, `Sporttery Sniper 数据提取工具`, `第三部分：盘口分类体系速查（主人亲授）`, `Outcomes Affect`, `一、工作流程总览`, `深度分析（deep-analysis）`, `ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）`, `赛后复盘（post-review）`, `五、Subagent 编排规则`, `2026-10-07 每日记忆`, `深度分析（晚盘 22:30 · 15 场全量从头推演）`, `深度分析（欧国联10场，17:35）`, `累计战绩`, `一、发现的 BUG / 漏洞`, `OddsConversionResult`, `浅盘阻上 vs 浅盘诱上 对比`, `DimensionResult`, `三、技能流程指引`, `2026-10-04 每日记忆`, `杯赛防守脆断与进球肥尾`, `Polymarket 链接查找教程`, `cli.py (OO-EPC去水CLI)`, `SAFETY.md`, `TOOLS.md - 工具使用指南`, `五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南`, `深度分析（17:28 & 21:55）`, `赛事初筛（match-screening）`, `通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)`, `八、心跳机制`, `TOOLS.md`, `赛后复盘`, `倍率分析推演 (Pansuan Engine) Strategy`, `预测 → 推荐 → 复盘的实际闭环`, `赛程抓取（match-scraper）`, `2026-10-03 每日记忆`, `Poisson Probability Calculation Manual`, `2026-10-05 每日记忆`, `2026-10-06 每日记忆`, `二、建议修补的漏洞 / 不一致`?**
+  _High betweenness centrality (0.201) - this node is a cross-community bridge._
