@@ -32,6 +32,11 @@
    - 知识库路径：`docs/solutions/`（记录已解决工程问题、踩坑复盘与最佳实践，按模块与分类沉淀）。
    - 自动沉淀指令：After a solved, verified problem, automatically invoke the `ce-compound` skill with `mode:non-interactive` at the completion checkpoint only when the work produced durable project reasoning that is not readily recoverable from the final code, tests, types, comments, or existing documentation, and losing it would plausibly cause recurrence, material risk, or substantial rediscovery. Apply this counterfactual: if the learning document disappeared, would a future engineer reading the final implementation still be likely to repeat the mistake or redo substantial investigation? If not, do not invoke it. Completion, effort, and diff size alone are not enough. Capture at the checkpoint so a qualifying learning can ship in the PR that produced it, and only where the repository treats captured learnings as tracked, committed knowledge.
    - 报告去废话指令：Write every report, summary, or handoff to the user through the `ce-noslop` skill. This applies when you are the top-level agent writing to the user, not when you are a subagent reporting to its caller. Do not apply it to code, config, verbatim quotes, or text the user asked to post as written.
+11. **代码工程三位一体军规（动代码、编写代码、思考代码必用三大 Skill）**：
+   - 凡涉及“动代码、编写代码、思考代码”，必须深刻铭记并强制激活三大标准技能，杜绝随手散装写脚本：
+     - **`/tdd`（测试驱动开发）**：恪守“红-绿-重构”闭环，在公认契约缝隙（Seams）写测试，红在前绿在后，严禁无测试直接写裸代码；
+     - **`/ddd-hexagonal-architecture`（六边形端口与适配器架构）**：坚守领域层极致纯净，外部输入输出（HTTP/Scrapling/DB/CLI）严格通过端口（Port）与适配器（Adapter）解耦，依赖永远向内指向领域核心；
+     - **`/domain-driven-design`（领域驱动设计）**：以统一语言（Ubiquitous Language）、限界上下文（Bounded Context）和聚合根（Aggregate Root）建模业务，坚决消灭贫血模型与技术黑话，代码即模型、模型即代码。
 
 不要问许可。直接做。
 
