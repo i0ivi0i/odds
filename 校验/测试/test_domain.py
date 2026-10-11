@@ -321,7 +321,7 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertIn("profiling", ah_res.detail)
 
     def test_verify_full_dual_track_snapshot_all_pass(self):
-        """测试全量携带 tactics(物理底牌) 与 profiling(散户镜像) 的高密快照全绿通过"""
+        """测试全量携带 tactics(物理底牌) 与 profiling(散户镜像) 的高密【推演源数据】全绿通过"""
         full_snapshot = dict(self.valid_snapshot)
         full_snapshot["tactics"] = {
             "technicalStats": {
@@ -747,7 +747,7 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertEqual(res.status, CheckStatus.PASS)
 
     def test_authenticity_fails_on_conflicting_match_urls(self):
-        """测试真实性核验：快照内 URL 引用了其他比赛 ID 时必须 FAIL 拦截"""
+        """测试真实性核验：【推演源数据】内 URL 引用了其他比赛 ID 时必须 FAIL 拦截"""
         snap = {
             "matchId": "3013719",
             "match": {"homeTeam": "巴列卡诺", "awayTeam": "毕尔巴鄂竞技", "league": "西甲"},
@@ -758,7 +758,7 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertIn("引用了其他场次比赛 ID", res.message)
 
     def test_authenticity_fails_on_meta_teams_mismatch(self):
-        """测试真实性核验：快照对阵与 meta.md 登记对阵冲突时必须 FAIL 拦截"""
+        """测试真实性核验：【推演源数据】对阵与 meta.md 登记对阵冲突时必须 FAIL 拦截"""
         snap = {
             "matchId": "3013719",
             "match": {"homeTeam": "帕德博恩", "awayTeam": "斯图加特", "league": "德甲"},

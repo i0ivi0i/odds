@@ -25,16 +25,16 @@ def run_deep_graphify():
     # 历史遗留节点重命名与规范化映射（剔除“一律走 BrowserOS”等旧标签，拥抱双轨并发体系）
     node_id_remap = {
         'tools_核心系统_球探数据一律走_browseros_neo': 'tools_核心系统_双轨敏捷数据采集',
-        'tools_核心安全通道_browseros_neo_真实浏览器直取与数据快照留底': 'tools_核心通道_scrapling极速并发与快照落盘',
-        'd_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_1_用_browseros_neo_获取上下文数据': 'skills_deep_analysis_步骤1_物理快照读取与门禁核验',
-        'd_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_browseros_neo_抓取与真实快照读取': 'skills_deep_analysis_scrapling并发与快照读取',
+        'tools_核心安全通道_browseros_neo_真实浏览器直取与数据快照留底': 'tools_核心通道_scrapling极速并发与推演源数据落盘',
+        'd_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_步骤_1_用_browseros_neo_获取上下文数据': 'skills_deep_analysis_步骤1_物理推演源数据读取与门禁核验',
+        'd_100_工作_200_交易_倍率分析推演_skills_deep_analysis_skill_browseros_neo_抓取与真实快照读取': 'skills_deep_analysis_scrapling并发与推演源数据读取',
         'scripts_sporttery_sniper_browseros_neo': 'scripts_sporttery_sniper_data_ingestion',
     }
     label_remap = {
         'tools_核心系统_双轨敏捷数据采集': '核心系统：双轨敏捷数据采集（Scrapling ↔ BrowserOS neo）',
-        'tools_核心通道_scrapling极速并发与快照落盘': '核心通道：Scrapling 极速并发直取（BrowserOS 备用）与快照落盘',
-        'skills_deep_analysis_步骤1_物理快照读取与门禁核验': '步骤 1：物理快照读取与门禁核验（无米不推演）',
-        'skills_deep_analysis_scrapling并发与快照读取': 'Scrapling 极速并发与真实快照读取',
+        'tools_核心通道_scrapling极速并发与推演源数据落盘': '核心通道：Scrapling 极速并发直取（BrowserOS 备用）与【推演源数据】落盘',
+        'skills_deep_analysis_步骤1_物理推演源数据读取与门禁核验': '步骤 1：物理【推演源数据】读取与门禁核验（无米不推演）',
+        'skills_deep_analysis_scrapling并发与推演源数据读取': 'Scrapling 极速并发与真实【推演源数据】读取',
         'scripts_sporttery_sniper_data_ingestion': '双轨数据采集入口 (Scrapling ↔ BrowserOS)',
     }
         

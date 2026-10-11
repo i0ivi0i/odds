@@ -21,7 +21,7 @@ class TestUseCases(unittest.TestCase):
         self.repo_root = Path(".").resolve()
 
     def test_verify_real_match_snapshot_passes(self):
-        """测试对真实存在的快照 data/2026-10-06/2981506.json 的检验"""
+        """测试对真实存在的【推演源数据】 data/2026-10-06/2981506.json 的检验"""
         real_file = self.repo_root / "data" / "2026-10-06" / "2981506.json"
         if not real_file.exists():
             self.skipTest(f"{real_file} 不存在，跳过真实文件测试")
@@ -60,10 +60,10 @@ class TestUseCases(unittest.TestCase):
         self.assertTrue(result["algo_tests_passed"])
 
     def test_verify_snapshot_binds_content_hash_and_metadata(self):
-        """测试U3: 用例层在读取快照时必须绑定 content_hash (SHA256) 与文件元数据"""
+        """测试U3: 用例层在读取【推演源数据】时必须绑定 content_hash (SHA256) 与文件元数据"""
         real_file = self.repo_root / "data" / "2026-10-06" / "2981506.json"
         if not real_file.exists():
-            self.skipTest("真实快照不存在")
+            self.skipTest("真实【推演源数据】不存在")
         receipt = self.verify_use_case.execute(str(real_file))
         self.assertIn("content_hash", receipt.metadata)
         self.assertEqual(len(receipt.metadata["content_hash"]), 64)
@@ -71,7 +71,7 @@ class TestUseCases(unittest.TestCase):
         self.assertIn("fetchedAt", receipt.metadata)
 
     def test_verify_snapshot_match_id_mismatch_fails(self):
-        """测试U3: 快照内 matchId 与文件名 stem 不符时判定 FAIL 阻断"""
+        """测试U3: 【推演源数据】内 matchId 与文件名 stem 不符时判定 FAIL 阻断"""
         temp_file = self.repo_root / "data" / "temp_mismatch_test_999999.json"
         content = json.dumps({"matchId": "888888", "match": {"league": "英超"}}, ensure_ascii=False)
         temp_file.write_text(content, encoding="utf-8")
@@ -85,10 +85,10 @@ class TestUseCases(unittest.TestCase):
                 temp_file.unlink()
 
     def test_markdown_snapshot_full_absorption_without_reversal_or_drops(self):
-        """测试黄金快照契约规范全量字段吸收：不丢行、不反序、不假凯利"""
+        """测试黄金【推演源数据】契约规范全量字段吸收：不丢行、不反序、不假凯利"""
         fixture_file = self.repo_root / "校验" / "测试" / "fixtures" / "golden_snapshot_sample.md"
         if not fixture_file.exists():
-            self.skipTest("黄金快照测试样本不存在")
+            self.skipTest("黄金【推演源数据】测试样本不存在")
         content = fixture_file.read_text(encoding="utf-8")
         m_id = re.search(r"\*\*比赛 ID\*\*：(\d+)", content)
         fixture_match_id = m_id.group(1) if m_id else "fixture_sample"
@@ -108,7 +108,7 @@ class TestUseCases(unittest.TestCase):
         """测试门禁物理拦截：一旦缺失香港马会大小球，必须返回 FAIL 并明确报错"""
         fixture_file = self.repo_root / "校验" / "测试" / "fixtures" / "golden_snapshot_sample.md"
         if not fixture_file.exists():
-            self.skipTest("黄金快照测试样本不存在")
+            self.skipTest("黄金【推演源数据】测试样本不存在")
         content = fixture_file.read_text(encoding="utf-8")
         m_id = re.search(r"\*\*比赛 ID\*\*：(\d+)", content)
         fixture_match_id = m_id.group(1) if m_id else "fixture_sample"

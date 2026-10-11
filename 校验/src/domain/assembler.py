@@ -1,7 +1,7 @@
 """
 校验/src/domain/assembler.py
-快照数据组装器: 将 Scrapling 采集到的多源纯净数据结构化为法定单文件 Markdown 快照
-严格遵守 TOOLS.md 第四节【法定单场 Markdown 快照黄金契约规范】
+【推演源数据】组装器: 将 Scrapling 采集到的多源纯净数据结构化为法定单文件 Markdown 【推演源数据】
+严格遵守 TOOLS.md 第四节【法定单场 Markdown 【推演源数据】黄金契约规范】
 """
 
 from __future__ import annotations
@@ -71,7 +71,7 @@ COMPANY_ALIASES: Dict[str, str] = {
 
 class SnapshotAssembler:
     """
-    确定性快照组装领域服务
+    确定性【推演源数据】组装领域服务
     职责:
       1. 接收各战区结构化原始数据;
       2. 校验关键字段不为空;
@@ -88,7 +88,7 @@ class SnapshotAssembler:
         poly_url = str(data.get("polymarketUrl", "未开放")).strip()
         
         if not (match_id and home and away):
-            raise ValueError(f"快照组装失败: 核心信息残缺 (matchId={match_id}, home={home}, away={away})")
+            raise ValueError(f"【推演源数据】组装失败: 核心信息残缺 (matchId={match_id}, home={home}, away={away})")
 
         md_lines: List[str] = []
 

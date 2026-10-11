@@ -40,7 +40,7 @@ class DimensionResult:
 
 @dataclass(frozen=True)
 class VerificationReceipt:
-    """快照安检法定收据 (不可变值对象)"""
+    """【推演源数据】安检法定收据 (不可变值对象)"""
     match_id: str
     results: List[DimensionResult]
     metadata: Dict[str, Any] = field(default_factory=dict)

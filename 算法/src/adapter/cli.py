@@ -30,11 +30,11 @@ def main(args: Optional[List[str]] = None) -> int:
     parser.add_argument("--decimals", type=int, default=2, help="百分比小数保留位数 (默认: 2)")
     parser.add_argument("--poisson", nargs=2, type=float, metavar=("L1", "L2"), help="计算双队泊松进球期望值 (主队λ 客队λ)")
     parser.add_argument("--top", type=int, default=6, help="输出 Top 比分个数 (默认: 6)")
-    parser.add_argument("--match", type=str, help="从快照文件提取战术技统与波胆赔率并执行泊松对账")
+    parser.add_argument("--match", type=str, help="从【推演源数据】文件提取战术技统与波胆赔率并执行泊松对账")
 
     parsed = parser.parse_args(args)
 
-    # 1. 快照分析或泊松进球期望值计算分支
+    # 1. 【推演源数据】分析或泊松进球期望值计算分支
     if parsed.match or parsed.poisson:
         snapshot = None
         l1, l2 = (None, None)
@@ -45,7 +45,7 @@ def main(args: Optional[List[str]] = None) -> int:
                     snapshot = json.load(f)
                 SnapshotVerifier().verify(snapshot)
             except Exception as e:
-                sys.stderr.write(f"读取快照失败: {e}\n")
+                sys.stderr.write(f"读取【推演源数据】失败: {e}\n")
                 return 1
 
             # 从战术技统推导基准期望 λ
@@ -74,7 +74,7 @@ def main(args: Optional[List[str]] = None) -> int:
             sys.stderr.write(f"泊松计算失败: {e}\n")
             return 1
 
-        # 若有快照，丰富队名与 Crown 波胆交叉对账
+        # 若有【推演源数据】，丰富队名与 Crown 波胆交叉对账
         if snapshot:
             home_team = get_match_property(snapshot, "homeTeam", "主队")
             away_team = get_match_property(snapshot, "awayTeam", "客队")
@@ -96,7 +96,7 @@ def main(args: Optional[List[str]] = None) -> int:
         if parsed.json:
             print(json.dumps(result, ensure_ascii=False, indent=2))
         else:
-            title = f"[快照战术技统与 Crown 波胆泊松对账: {result.get('home_team', '主队')} vs {result.get('away_team', '客队')}]" if snapshot else f"[纯物理泊松进球期望值推演: 主队λ={l1:.2f}, 客队λ={l2:.2f}]"
+            title = f"[【推演源数据】战术技统与 Crown 波胆泊松对账: {result.get('home_team', '主队')} vs {result.get('away_team', '客队')}]" if snapshot else f"[纯物理泊松进球期望值推演: 主队λ={l1:.2f}, 客队λ={l2:.2f}]"
             print(title)
             print(f"期望进球: 主队λ={l1:.2f}, 客队λ={l2:.2f} | 期望总进球: {result['expected_total_goals']}")
             dist = result['distribution_1x2']

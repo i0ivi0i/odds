@@ -1,19 +1,29 @@
 ---
 name: match-scraper
-description: "从球探体育(titan007)抓取竞彩足球赛程数据。在用户说「抓取赛程」「获取今日比赛」「今天有什么比赛」或赛前分析流程启动时使用。"
+description: "从球探体育(titan007)抓取竞彩足球赛程数据与单场【推演源数据】。在用户说「抓取赛程」「获取今日比赛」「进货」「拉取推演源数据」或赛前分析阶段一进行推演源数据抓取与门禁质检时使用。"
 metadata: { "emoji": "📆" }
 ---
 
-# 赛程抓取（match-scraper）
+# 赛程与推演源数据采集（match-scraper）
 
-用 Skill `/scrapling-official` 并发抓取球探竞足页（`/browseros-neo` 备用辅助），抓取当日竞彩足球全量赛程。禁止先跑 `npm run schedule`。
+本技能包含两大工作模式：
+- **模式一：赛程同步与索引初始化**（每日 11:10 或用户查询）：抓取当日竞彩足球全量赛程，落盘 `data/{YYYY-MM-DD}/meta.md` 并写入 memory。
+- **模式二：【推演源数据】抓取与门禁质检**（赛前分析阶段一专属搬运工）：Scrapling MCP 并发秒取 5 大接口，通过 SnapshotAssembler 组装落盘为 `data/{销售日}/{matchId}.md`【推演源数据】，并运行 `cli.py` 门禁过验（exit 0）。
+
+用 Skill `/scrapling-official` 并发抓取球探页面（`/browseros-neo` 备用辅助）。禁止先跑 `npm run schedule`。
 
 ## 前提条件
 
 - 优先调用 Skill `/scrapling-official` ↔ MCP `scrapling`（协议流秒级抓取），`/browseros-neo` 作为真实渲染备用辅助。
-- 目标页面 `https://jc.titan007.com/index.aspx` 抽编号、比赛 ID、开球、对阵、分析页。
-- 抓不到或场次不全：置顶报告，结束流程，不写残缺赛程进 memory。
+- 严禁在根目录或任何位置自写临时 `.py` 脚本！
+- 抓取赛程目标页面：`https://jc.titan007.com/index.aspx` 抽编号、比赛 ID、开球、对阵、分析页。
+- 抓取推演源数据目标页面：单场 5 大数据源（分析页、波胆页、竞彩接口、1x2d.js、7家变盘流水）。
+- 抓不到或场次不全：置顶报告，结束流程，不写残缺记录进 memory。
 - **每次必须实时重新抓取**，不得复用之前抓取的旧数据。
+
+---
+
+# 第一部分：模式一·赛程抓取与索引初始化
 
 ## 销售窗口检查（定时任务触发时必须执行）
 
@@ -133,9 +143,10 @@ metadata: { "emoji": "📆" }
 
 ---
 
-## 单场盘赔与多做市商时序采集规范（match-odds-scraper 专职规约）
+# 第二部分：模式二·单场【推演源数据】采集与门禁质检（阶段一专属搬运工）
 
-凡涉及单场比赛盘赔抓取与快照组装，必须在此严格执行多做市商并发直取，**严禁凭习惯只抓 1~2 家机构偷懒作弊**：
+【推演源数据】（`data/{销售日}/{matchId}.md`）是推演大脑（`deep-analysis`）做深度推演的**唯一真实物理原材料**，绝非事后可选备份日志！无新鲜源数据严禁下锅！
+编排者在阶段一作为纯物理进货搬运工，必须在此并发采集 5 大数据源，组装落盘并通过门禁检验后方可交付。
 
 ### 1. 亚盘与大小球 7 大法定机构并发直取
 调用 Scrapling `bulk_get` 单次并发拉取 7 大法定做市商的分钟级变盘流水：
@@ -168,10 +179,12 @@ metadata: { "emoji": "📆" }
 4. **百家欧指与时序**：`https://1x2d.titan007.com/{matchId}.js`（仅提取法定 23 家初即盘）
 5. **7 大做市商亚盘与大小球流水**：`https://vip.titan007.com/changeDetail/handicap.aspx` 与 `overunder.aspx`（7家核心流水，GB18030 解码，剔除滚球）
 
-### 4. 落盘安检与物理门禁核验
-- 组装写入单文件 `data/{销售日}/{matchId}.md`（全天赛程总览汇总于 `data/{销售日}/meta.md`）；
-- 执行门禁物理命令：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`
-- 若返回 `FAIL`（如法定做市商流水覆盖不足、缺少时序、字段错位或摘要与流水冲突），物理熔断停止推演，必须补齐后方可放行。
+### 4. 组装落盘与物理门禁核验（进货合格线）
+- 组装写入单文件 `data/{销售日}/{matchId}.md`（即本场法定的【推演源数据】；全天赛程总览汇总于 `data/{销售日}/meta.md`）；
+- 执行门禁物理命令：
+  - 单场核验：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`
+  - 批量核验：`python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30`
+- 若返回 `FAIL`（如法定做市商流水覆盖不足、缺少时序、字段错位或摘要与流水冲突），物理熔断停止流程，必须补齐原材料并拿到 `exit 0` 后方可交接给推演分析师。
 
 ---
 

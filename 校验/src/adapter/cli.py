@@ -2,7 +2,7 @@
 校验/src/adapter/cli.py
 适配器层: 统一质量守门人命令行入口 (CLI)
 支持：
-  1. 单场比赛快照数据完整性 6 维度穿透扫描与硬熔断: --match <json_path> [--json]
+  1. 单场比赛【推演源数据】完整性 6 维度穿透扫描与硬熔断: --match <md_path> [--json]
   2. 全库系统规范与图谱健康一致性巡检: --system [--print-ok]
 """
 
@@ -15,6 +15,18 @@ import re
 import sys
 from pathlib import Path
 from typing import Optional
+
+# 彻底免疫 Windows 控制台 GBK 编码异常 (防止 UnicodeEncodeError)
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if sys.stderr and hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 
 # 确保项目根目录在 sys.path
 repo_root = Path(__file__).resolve().parent.parent.parent.parent
@@ -99,7 +111,7 @@ def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None) -> in
         return 1
     md_files = [f for f in p.glob("*.md") if f.stem.isdigit()]
     if not md_files:
-        print(f"❌ 批量安检失败: 目录下无比赛 ID 命名的 .md 快照文件 ({dir_path})", file=sys.stderr)
+        print(f"❌ 批量安检失败: 目录下无比赛 ID 命名的 .md 【推演源数据】文件 ({dir_path})", file=sys.stderr)
         return 1
 
     uc = VerifySnapshotUseCase()
@@ -146,7 +158,7 @@ def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None) -> in
             print(f"  ❌ {err}", file=sys.stderr)
         return 1
 
-    print(f"✅ 批量安检通过: 全部 {len(md_files)} 场快照合法且无跨场克隆")
+    print(f"✅ 批量安检通过: 全部 {len(md_files)} 场【推演源数据】合法且无跨场克隆")
     return 0
 
 
@@ -160,7 +172,7 @@ def run_assemble(input_json_path: str, output_md_path: Optional[str]) -> int:
         data = json.loads(p.read_text(encoding="utf-8"))
         md_content = assembler.assemble(data)
     except Exception as e:
-        print(f"❌ 快照装配失败: {e}", file=sys.stderr)
+        print(f"❌ 【推演源数据】装配失败: {e}", file=sys.stderr)
         return 1
 
     if output_md_path:
@@ -170,7 +182,7 @@ def run_assemble(input_json_path: str, output_md_path: Optional[str]) -> int:
         st = out_p.stat()
         file_sha256 = hashlib.sha256(md_content.encode("utf-8")).hexdigest()
         mtime_str = datetime.fromtimestamp(st.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
-        print(f"🧾 [PHYSICAL_RECEIPT] 黄金快照装配落盘完成: path={out_p.resolve()}, sha256={file_sha256}, mtime={mtime_str}, size={st.st_size}B")
+        print(f"🧾 [PHYSICAL_RECEIPT] 黄金【推演源数据】装配落盘完成: path={out_p.resolve()}, sha256={file_sha256}, mtime={mtime_str}, size={st.st_size}B")
         meta_p = out_p.parent / "meta.md"
         if meta_p.exists():
             assembler.update_meta(meta_p, data)
@@ -197,17 +209,17 @@ def run_sync_meta(dir_path: str) -> int:
             content = content.replace(target, repl)
             updated += 1
     meta_p.write_text(content, encoding="utf-8")
-    print(f"✅ 赛程总览 meta.md 同步完成: 状态已对齐 {len(md_files)} 场落盘快照 (更新了 {updated} 处状态)")
+    print(f"✅ 赛程总览 meta.md 同步完成: 状态已对齐 {len(md_files)} 场落盘【推演源数据】 (更新了 {updated} 处状态)")
     return 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="pansuan 校验守门人：单场数据快照安检与全系统一致性巡检",
+        description="pansuan 校验守门人：单场【推演源数据】安检与全系统一致性巡检",
     )
     parser.add_argument(
         "--match",
-        help="指定待检测的比赛数据快照路径 (如 data/2026-10-07/2981506.json)",
+        help="指定待检测的比赛【推演源数据】路径 (如 data/2026-10-10/3000480.md)",
     )
     parser.add_argument(
         "--batch",
@@ -215,20 +227,20 @@ def main() -> int:
     )
     parser.add_argument(
         "--assemble",
-        help="指定待装配的原始结构化 JSON 路径，自动组装为黄金 Markdown 快照",
+        help="指定待装配的原始结构化 JSON 路径，自动组装为黄金 Markdown 【推演源数据】",
     )
     parser.add_argument(
         "--output",
-        help="快照装配输出路径 (如 data/2026-10-10/3000480.md)",
+        help="【推演源数据】装配输出路径 (如 data/2026-10-10/3000480.md)",
     )
     parser.add_argument(
         "--sync-meta",
-        help="指定日期目录 (如 data/2026-10-10)，将所有已落盘快照状态同步至 meta.md",
+        help="指定日期目录 (如 data/2026-10-10)，将所有已落盘【推演源数据】状态同步至 meta.md",
     )
     parser.add_argument(
         "--json",
         action="store_true",
-        help="以 JSON 格式输出快照安检法定收据",
+        help="以 JSON 格式输出【推演源数据】安检法定收据",
     )
     parser.add_argument(
         "--system",
@@ -249,12 +261,12 @@ def main() -> int:
         "--max-age-minutes",
         type=int,
         default=None,
-        help="快照文件物理新鲜度最大允许分钟数 (如 30)，超期直接判定 STALE_SNAPSHOT 熔断",
+        help="【推演源数据】文件物理新鲜度最大允许分钟数 (如 30)，超期直接判定 STALE_SNAPSHOT 熔断",
     )
 
     args = parser.parse_args()
 
-    # 优先级 1: 快照装配
+    # 优先级 1: 【推演源数据】装配
     if args.assemble:
         return run_assemble(args.assemble, args.output)
 
@@ -266,7 +278,7 @@ def main() -> int:
     if args.batch:
         return run_batch_verify(args.batch, max_age_minutes=args.max_age_minutes)
 
-    # 优先级 3: 指定了单场比赛快照进行安检
+    # 优先级 3: 指定了单场比赛【推演源数据】进行安检
     if args.match:
         return run_match_verify(args.match, args.json, max_age_minutes=args.max_age_minutes)
 

@@ -1,6 +1,6 @@
 """
 校验/src/domain/verifier.py
-快照数据完整性纯领域检验引擎 (零外部依赖，纯 Python 原生规则判定)
+【推演源数据】完整性纯领域检验引擎 (零外部依赖，纯 Python 原生规则判定)
 
 【架构铁律与只读契约】
 1. 本模块为绝对只读检验员 (Read-Only Verifier)，严禁在此类中添加任何写文件、改文件、创建文件逻辑！
@@ -70,7 +70,7 @@ def convert_a11y_table_to_tsv(text: str) -> str:
 
 
 def clean_a11y_noise(text: Optional[str]) -> str:
-    """清洗从 Chromium AXTree / BrowserOS 页面快照中残留的无障碍树标记杂质"""
+    """清洗从 Chromium AXTree / BrowserOS 页面无障碍文本中残留的标记杂质"""
     if not text or not isinstance(text, str):
         return ""
     # 优先转换可能存在的 LayoutTable 无障碍树表格
@@ -102,7 +102,7 @@ def get_match_property(snapshot: Dict[str, Any], key: str, default: Any = None) 
 
 class SnapshotVerifier:
     """
-    快照数据完整性领域聚合根
+    【推演源数据】完整性领域聚合根
     负责对 6 大黄金维度 + 1 阵容容错维度进行纯规则判定
     """
 
@@ -621,7 +621,7 @@ class SnapshotVerifier:
                                 return DimensionResult(
                                     dimension=DimensionType.TREND_HISTORY,
                                     status=CheckStatus.FAIL,
-                                    message=f"变盘时序流水与快照抓取时点冲突！快照抓取时点({fetched_at_str})早于内部变盘时序时间戳({ts_s})，存在混批次时点倒挂风险",
+                                    message=f"变盘时序流水与【推演源数据】抓取时点冲突！【推演源数据】抓取时点({fetched_at_str})早于内部变盘时序时间戳({ts_s})，存在混批次时点倒挂风险",
                                     detail={"fetchedAt": fetched_at_str, "conflictTimestamp": ts_s},
                                 )
                 except Exception:
@@ -831,7 +831,7 @@ class SnapshotVerifier:
                 return DimensionResult(
                     dimension=DimensionType.AUTHENTICITY,
                     status=CheckStatus.FAIL,
-                    message=f"真实性核验失败：快照中存在未填充的模板占位符 '{ph}'，禁止使用半成品模板！",
+                    message=f"真实性核验失败：【推演源数据】中存在未填充的模板占位符 '{ph}'，禁止使用半成品模板！",
                     detail={"match_id": match_id, "placeholder": ph},
                 )
 
@@ -840,7 +840,7 @@ class SnapshotVerifier:
             return DimensionResult(
                 dimension=DimensionType.AUTHENTICITY,
                 status=CheckStatus.FAIL,
-                message=f"真实性核验失败：未能提取到明确的主客对阵队名 (home='{home}', away='{away}')，快照格式不合规！",
+                message=f"真实性核验失败：未能提取到明确的主客对阵队名 (home='{home}', away='{away}')，【推演源数据】格式不合规！",
                 detail={"match_id": match_id, "home": home, "away": away},
             )
 
@@ -849,14 +849,14 @@ class SnapshotVerifier:
             return DimensionResult(
                 dimension=DimensionType.AUTHENTICITY,
                 status=CheckStatus.FAIL,
-                message=f"真实性核验失败：主队名称 '{home}' 未出现在快照正文中，存在张冠李戴冒名顶替！",
+                message=f"真实性核验失败：主队名称 '{home}' 未出现在【推演源数据】正文中，存在张冠李戴冒名顶替！",
                 detail={"match_id": match_id, "missing_home": home},
             )
         if away and away not in full_text:
             return DimensionResult(
                 dimension=DimensionType.AUTHENTICITY,
                 status=CheckStatus.FAIL,
-                message=f"真实性核验失败：客队名称 '{away}' 未出现在快照正文中，存在张冠李戴冒名顶替！",
+                message=f"真实性核验失败：客队名称 '{away}' 未出现在【推演源数据】正文中，存在张冠李戴冒名顶替！",
                 detail={"match_id": match_id, "missing_away": away},
             )
 
@@ -870,11 +870,11 @@ class SnapshotVerifier:
                     return DimensionResult(
                         dimension=DimensionType.AUTHENTICITY,
                         status=CheckStatus.FAIL,
-                        message=f"真实性与场次一致性核验失败：快照对阵 ({home} vs {away}) 与 meta.md 登记对阵 ({meta_home} vs {meta_away}) 冲突，判定为严重张冠李戴！",
+                        message=f"真实性与场次一致性核验失败：【推演源数据】对阵 ({home} vs {away}) 与 meta.md 登记对阵 ({meta_home} vs {meta_away}) 冲突，判定为严重张冠李戴！",
                         detail={"match_id": match_id, "snapshot_teams": f"{home} vs {away}", "meta_teams": f"{meta_home} vs {meta_away}"},
                     )
 
-        # 正文声明的比赛 ID 必须与快照文件名 match_id 严格一致
+        # 正文声明的比赛 ID 必须与【推演源数据】文件名 match_id 严格一致
         body_id_match = re.search(r"-\s*\*\*比赛\s*ID\*\*[：:]\s*(\d+)", full_text)
         if body_id_match and match_id.isdigit() and body_id_match.group(1) != match_id:
             return DimensionResult(
@@ -904,7 +904,7 @@ class SnapshotVerifier:
                     detail={"match_id": match_id, "home": home, "away": away, "alien_match": f"{t1_s} vs {t2_s}", "violation": "fixture_team_leak"},
                 )
 
-        # 3. 检查快照内各 URL 中的 matchId 与文件实际 match_id 是否匹配 (严禁引用任何其他比赛 ID)
+        # 3. 检查【推演源数据】内各 URL 中的 matchId 与文件实际 match_id 是否匹配 (严禁引用任何其他比赛 ID)
         url_matches = re.findall(r"(?:id|sid)=(\d{6,8})\b", full_text)
         conflicts = [uid for uid in url_matches if uid != match_id]
         if conflicts and match_id.isdigit():
@@ -912,11 +912,11 @@ class SnapshotVerifier:
             return DimensionResult(
                 dimension=DimensionType.AUTHENTICITY,
                 status=CheckStatus.FAIL,
-                message=f"真实性核验失败：快照内数据源链接引用了其他场次比赛 ID ({first_conflict})，与当前场次 ({match_id}) 冲突，判定为跨场次张冠李戴！",
+                message=f"真实性核验失败：【推演源数据】内数据源链接引用了其他场次比赛 ID ({first_conflict})，与当前场次 ({match_id}) 冲突，判定为跨场次张冠李戴！",
                 detail={"match_id": match_id, "conflicting_url_id": first_conflict, "all_conflicts": list(set(conflicts))},
             )
 
-        # 4. 快照物理新鲜度核验 (防止跳过抓取偷懒使用历史旧快照蒙混过关)
+        # 4. 【推演源数据】物理新鲜度核验 (防止跳过抓取偷懒使用历史旧【推演源数据】蒙混过关)
         max_age = snapshot.get("_max_age_minutes")
         file_mtime = snapshot.get("_file_mtime")
         if max_age is not None and file_mtime is not None:
@@ -928,7 +928,7 @@ class SnapshotVerifier:
                     return DimensionResult(
                         dimension=DimensionType.AUTHENTICITY,
                         status=CheckStatus.FAIL,
-                        message=f"STALE_SNAPSHOT: 快照物理修改时间已过期 (最后修改于 {mtime_str}，距今 {age_min:.1f} 分钟 > 允许阈值 {max_age} 分钟)！严禁跳过真实抓取使用历史旧快照炒冷饭！",
+                        message=f"STALE_SNAPSHOT: 【推演源数据】物理修改时间已过期 (最后修改于 {mtime_str}，距今 {age_min:.1f} 分钟 > 允许阈值 {max_age} 分钟)！严禁跳过真实抓取使用历史旧【推演源数据】炒冷饭！",
                         detail={"match_id": match_id, "mtime": mtime_str, "age_minutes": round(age_min, 1), "max_age_minutes": max_age},
                     )
             except Exception:

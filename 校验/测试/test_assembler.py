@@ -1,6 +1,6 @@
 """
 校验/测试/test_assembler.py
-快照组装器单元测试: 确保 SnapshotAssembler 输出的 Markdown 能 100% 通过物理门禁
+【推演源数据】组装器单元测试: 确保 SnapshotAssembler 输出的 Markdown 能 100% 通过物理门禁
 """
 
 import unittest
@@ -16,7 +16,7 @@ class TestSnapshotAssembler(unittest.TestCase):
         self.use_case = VerifySnapshotUseCase()
 
     def test_assembled_markdown_passes_full_verification(self):
-        """测试组装器输出的标准快照能直接通过用例层完整物理门禁"""
+        """测试组装器输出的标准【推演源数据】能直接通过用例层完整物理门禁"""
         data = {
             "matchId": "2989999",
             "league": "英超",
@@ -136,7 +136,7 @@ class TestSnapshotAssembler(unittest.TestCase):
         self.assertEqual(len(euro_rows), 23)
 
     def test_run_assemble_prints_physical_receipt(self):
-        """测试 CLI run_assemble 生成快照时输出包含完整属性的法定收据"""
+        """测试 CLI run_assemble 生成【推演源数据】时输出包含完整属性的法定收据"""
         import io
         import tempfile
         from unittest.mock import patch

@@ -2,7 +2,7 @@
 校验/src/domain/correct_score_parser.py
 波胆比分与半全场赔率领域解析服务 (CorrectScoreParser)
 
-将球探快照中 correctScoreOdds 的原始文本安全解析为结构化波胆赔率字典 (homeWin, draw, awayWin, flat)
+将球探【推演源数据】中 correctScoreOdds 的原始文本安全解析为结构化波胆赔率字典 (homeWin, draw, awayWin, flat)
 以及半全场赔率字典 (halfFullTime)，并按 SKILL.md 要求挂载到 snapshot["markets"]["crowFullIndex"]["correctScores"]。
 """
 
@@ -115,7 +115,7 @@ class CorrectScoreParser:
 
     def enrich_snapshot(self, snapshot: Dict[str, Any]) -> Dict[str, Any]:
         """
-        结构化丰富快照对象中的 markets.crowFullIndex.correctScores 和 markets.halfFullTime
+        结构化丰富【推演源数据】对象中的 markets.crowFullIndex.correctScores 和 markets.halfFullTime
         """
         if not snapshot or not isinstance(snapshot, dict):
             return snapshot

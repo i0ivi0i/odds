@@ -24,8 +24,8 @@ from 校验.src.domain.verifier import SnapshotVerifier
 
 class VerifySnapshotUseCase:
     """
-    用例 1: 单场快照文件数据完整性安检
-    负责：安全读取磁盘快照 JSON，调用 SnapshotVerifier 纯领域模型，返回防篡改法定收据
+    用例 1: 单场【推演源数据】文件数据完整性安检
+    负责：安全读取磁盘【推演源数据】，调用 SnapshotVerifier 纯领域模型，返回防篡改法定收据
     """
 
     def __init__(self, verifier: Optional[SnapshotVerifier] = None):
@@ -40,7 +40,7 @@ class VerifySnapshotUseCase:
                     DimensionResult(
                         dimension=DimensionType.BASIC_STATS,
                         status=CheckStatus.FAIL,
-                        message=f"快照文件不存在: {file_path_str} (请先执行抓取落盘或检查路径)",
+                        message=f"【推演源数据】文件不存在: {file_path_str} (请先执行抓取落盘或检查路径)",
                         detail={"target_path": str(path.resolve())},
                     )
                 ],
@@ -61,7 +61,7 @@ class VerifySnapshotUseCase:
                         DimensionResult(
                             dimension=DimensionType.BASIC_STATS,
                             status=CheckStatus.FAIL,
-                            message=f"快照文件无法读取: {e}",
+                            message=f"【推演源数据】文件无法读取: {e}",
                         )
                     ],
                     metadata={"error": "io_error"},
@@ -99,7 +99,7 @@ class VerifySnapshotUseCase:
                             DimensionResult(
                                 dimension=DimensionType.BASIC_STATS,
                                 status=CheckStatus.FAIL,
-                                message=f"快照JSON格式解析失败 (文件损坏或截断): {e}",
+                                message=f"【推演源数据】JSON格式解析失败 (文件损坏或截断): {e}",
                             )
                         ],
                         metadata={"error": "json_parse_error", "content_hash": content_hash},
@@ -112,13 +112,13 @@ class VerifySnapshotUseCase:
                     DimensionResult(
                         dimension=DimensionType.BASIC_STATS,
                         status=CheckStatus.FAIL,
-                        message="快照根结构必须为 JSON 字典/对象",
+                        message="【推演源数据】根结构必须为 JSON 字典/对象",
                     )
                 ],
                 metadata={"error": "invalid_shape", "content_hash": content_hash},
             )
 
-        # U3: 核对快照场次身份一致性
+        # U3: 核对【推演源数据】场次身份一致性
         content_match_id = str(data.get("matchId") or "").strip()
         stem = path.stem
         parent_name = path.parent.name
@@ -138,7 +138,7 @@ class VerifySnapshotUseCase:
                     DimensionResult(
                         dimension=DimensionType.BASIC_STATS,
                         status=CheckStatus.FAIL,
-                        message=f"快照文件与比赛ID不一致！文件身份({stem})与内容matchId({content_match_id})冲突，禁止跨场次引用",
+                        message=f"【推演源数据】文件与比赛ID不一致！文件身份({stem})与内容matchId({content_match_id})冲突，禁止跨场次引用",
                         detail={"file_stem": stem, "content_match_id": content_match_id},
                     )
                 ],
@@ -297,7 +297,7 @@ class VerifySnapshotUseCase:
         return snap
 
     def _parse_markdown_snapshot(self, content: str, fallback_match_id: str) -> Dict[str, Any]:
-        """将纯净工整单文件 Markdown 快照解析为领域验证字典"""
+        """将纯净工整单文件 Markdown 【推演源数据】解析为领域验证字典"""
         snap: Dict[str, Any] = {"matchId": fallback_match_id}
         m_id = re.search(r"\*\*比赛 ID\*\*：(\d+)", content)
         if m_id:
