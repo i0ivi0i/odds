@@ -8,6 +8,8 @@
 
 from __future__ import annotations
 import argparse
+from datetime import datetime
+import hashlib
 import json
 import re
 import sys
@@ -54,9 +56,9 @@ def format_receipt_console(receipt) -> str:
     return "\n".join(lines)
 
 
-def run_match_verify(match_path: str, output_json: bool) -> int:
+def run_match_verify(match_path: str, output_json: bool, max_age_minutes: Optional[int] = None) -> int:
     uc = VerifySnapshotUseCase()
-    receipt = uc.execute(match_path)
+    receipt = uc.execute(match_path, max_age_minutes=max_age_minutes)
 
     if output_json:
         print(json.dumps(receipt.to_dict(), ensure_ascii=False, indent=2))
@@ -90,7 +92,7 @@ def run_system_check(root_dir: str, print_ok: bool) -> int:
     return 0
 
 
-def run_batch_verify(dir_path: str) -> int:
+def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None) -> int:
     p = Path(dir_path)
     if not p.is_dir():
         print(f"❌ 批量安检失败: 目录不存在 ({dir_path})", file=sys.stderr)
@@ -105,9 +107,10 @@ def run_batch_verify(dir_path: str) -> int:
     seen_ts = {}
 
     for f in md_files:
-        receipt = uc.execute(str(f))
+        receipt = uc.execute(str(f), max_age_minutes=max_age_minutes)
         if not receipt.is_valid:
-            failed.append(f"{f.name}: 门禁安检未通过 ({receipt.overall_status.value})")
+            fail_msgs = [r.message for r in receipt.results if r.status == CheckStatus.FAIL]
+            failed.append(f"{f.name}: 门禁安检未通过 ({receipt.overall_status.value}) - {'; '.join(fail_msgs)}")
             continue
 
         # 跨场次时序去重防作弊核验 (同一批次不同比赛的时间戳不得完全碰撞)
@@ -164,7 +167,10 @@ def run_assemble(input_json_path: str, output_md_path: Optional[str]) -> int:
         out_p = Path(output_md_path)
         out_p.parent.mkdir(parents=True, exist_ok=True)
         out_p.write_text(md_content, encoding="utf-8")
-        print(f"✅ 黄金快照装配完成并落盘: {output_md_path}")
+        st = out_p.stat()
+        file_sha256 = hashlib.sha256(md_content.encode("utf-8")).hexdigest()
+        mtime_str = datetime.fromtimestamp(st.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+        print(f"🧾 [PHYSICAL_RECEIPT] 黄金快照装配落盘完成: path={out_p.resolve()}, sha256={file_sha256}, mtime={mtime_str}, size={st.st_size}B")
         meta_p = out_p.parent / "meta.md"
         if meta_p.exists():
             assembler.update_meta(meta_p, data)
@@ -239,6 +245,12 @@ def main() -> int:
         action="store_true",
         help="系统巡检通过时输出 OK 提示",
     )
+    parser.add_argument(
+        "--max-age-minutes",
+        type=int,
+        default=None,
+        help="快照文件物理新鲜度最大允许分钟数 (如 30)，超期直接判定 STALE_SNAPSHOT 熔断",
+    )
 
     args = parser.parse_args()
 
@@ -252,11 +264,11 @@ def main() -> int:
 
     # 优先级 3: 批量安检
     if args.batch:
-        return run_batch_verify(args.batch)
+        return run_batch_verify(args.batch, max_age_minutes=args.max_age_minutes)
 
     # 优先级 3: 指定了单场比赛快照进行安检
     if args.match:
-        return run_match_verify(args.match, args.json)
+        return run_match_verify(args.match, args.json, max_age_minutes=args.max_age_minutes)
 
     # 优先级 3: 系统巡检 (传了 --system 或默认行为)
     return run_system_check(args.root, args.print_ok or args.system)

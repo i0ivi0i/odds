@@ -170,7 +170,7 @@ metadata: { "emoji": "📆" }
 
 ### 4. 落盘安检与物理门禁核验
 - 组装写入单文件 `data/{销售日}/{matchId}.md`（全天赛程总览汇总于 `data/{销售日}/meta.md`）；
-- 执行门禁物理命令：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md`
+- 执行门禁物理命令：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`
 - 若返回 `FAIL`（如法定做市商流水覆盖不足、缺少时序、字段错位或摘要与流水冲突），物理熔断停止推演，必须补齐后方可放行。
 
 ---

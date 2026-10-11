@@ -4,6 +4,7 @@
 """
 
 import unittest
+from pathlib import Path
 from 校验.src.domain.assembler import SnapshotAssembler
 from 校验.src.domain.verifier import SnapshotVerifier
 from 校验.src.application.use_cases import VerifySnapshotUseCase
@@ -133,6 +134,36 @@ class TestSnapshotAssembler(unittest.TestCase):
         # 欧指清单表格最多 23 行
         euro_rows = [ln for ln in lines if any(z in ln for z in ["核心做市", "老庄机构", "论文样本", "终端履约"])]
         self.assertEqual(len(euro_rows), 23)
+
+    def test_run_assemble_prints_physical_receipt(self):
+        """测试 CLI run_assemble 生成快照时输出包含完整属性的法定收据"""
+        import io
+        import tempfile
+        from unittest.mock import patch
+        from 校验.src.adapter.cli import run_assemble
+
+        data = {
+            "matchId": "2989999",
+            "league": "英超",
+            "homeTeam": "曼城",
+            "awayTeam": "切尔西",
+            "kickoffTime": "2026-10-10 22:00",
+            "sportteryCode": "周六020",
+        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            json_p = Path(tmpdir) / "test.json"
+            md_p = Path(tmpdir) / "test.md"
+            import json
+            json_p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+            with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
+                exit_code = run_assemble(str(json_p), str(md_p))
+                self.assertEqual(exit_code, 0)
+                out = mock_stdout.getvalue()
+                self.assertIn("[PHYSICAL_RECEIPT]", out)
+                self.assertIn("sha256=", out)
+                self.assertIn("mtime=", out)
+                self.assertTrue(md_p.exists())
 
 
 if __name__ == "__main__":

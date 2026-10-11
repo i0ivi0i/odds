@@ -802,6 +802,29 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertIn("非法时间戳", res.message)
         self.assertIn("18:62", res.message)
 
+    def test_verify_freshness_passes_when_recent(self):
+        """测试新鲜度核验：当文件修改时间在允许阈值内时必须 PASS"""
+        import time
+        snap = dict(self.valid_snapshot)
+        snap["_file_mtime"] = time.time() - 60  # 1分钟前
+        snap["_max_age_minutes"] = 30
+        receipt = self.verifier.verify(snap)
+        self.assertTrue(receipt.is_valid)
+        auth_res = [r for r in receipt.results if r.dimension == DimensionType.AUTHENTICITY][0]
+        self.assertEqual(auth_res.status, CheckStatus.PASS)
+
+    def test_verify_freshness_fails_when_stale(self):
+        """测试新鲜度核验：当文件修改时间超过允许阈值时必须判定 FAIL (STALE_SNAPSHOT) 物理熔断"""
+        import time
+        snap = dict(self.valid_snapshot)
+        snap["_file_mtime"] = time.time() - 3600  # 60分钟前 (超期)
+        snap["_max_age_minutes"] = 30
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        auth_res = [r for r in receipt.results if r.dimension == DimensionType.AUTHENTICITY][0]
+        self.assertEqual(auth_res.status, CheckStatus.FAIL)
+        self.assertIn("STALE_SNAPSHOT", auth_res.message)
+
 
 if __name__ == "__main__":
     unittest.main()

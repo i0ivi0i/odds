@@ -60,18 +60,18 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 ### 2. Scrapling 极速提取与防错位规范（官方黑科技全开）
 
 #### 官方三大能力全开配置与防错位防污染铁律
-1. **抓取时选择器下推 (Selector Pushdown，严禁拉取 Giant HTML Blobs)**：
-   - 抓取 HTML 页面（如 `analysis/{id}cn.htm`）时，**必须显式下推 `css_selector="#team_lineup"`**；
-   - 底层 C/Cython 引擎直接在内存丢弃 99% 的 50 场历史交锋与裁判生平等无用 DOM，单场 HTML 提取物压制在 1KB 以内，杜绝 Token 爆炸。
-2. **抓取时流式内存截流 (In-Flight Hook，严禁 Raw JS 倾倒)**：
+1. **抓取时选择器下推 (Selector Pushdown，严禁全量 DOM 倾倒)**：
+   - 抓取 HTML 页面（如 `analysis/{id}cn.htm` 或 `odds/{id}.htm`）时，**必须显式下推 `css_selector` 参数**（如 `css_selector="#analy_sbAllOdds, #odds, #team_lineup, .analyhead"`）；
+   - 底层 C/Cython 引擎在内存中就地剔除 90% 以上无关 DOM 树，单页文本从 200KB 压缩至 5KB 以内，秒回零超时，杜绝 Token 爆炸。
+2. **小批切片并发规约（Batch Chunking，单批限 4~8 URLs）**：
+   - 严禁单次向 `mcp__scrapling__bulk_get` 传入数十个长连接重型页面；
+   - 批量矩阵请求严格按 **4~8 个 URL 为一组分批（Chunking）并发**，各批间无缝秒级流转，杜绝 IPC 缓冲区溢出与 MCP 崩溃。
+3. **抓取时流式内存截流 (In-Flight Hook，严禁 Raw JS 倾倒)**：
    - 请求 `1x2d.js` 时，数据流入内存第一时间使用法定 23 家 ID 集合直接切片；
    - 抛弃其余 140+ 家机构数据，向外交付仅包含法定 23 家初即盘的紧凑结构，单场数据严格压在 **5KB 以内**。
-3. **防封与防火墙穿透 (TLS Fingerprint)**：
+4. **防封与防火墙穿透 (TLS Fingerprint)**：
    - 必须标配 `impersonate="chrome"` + `stealthy_headers=True`；
    - 自动克隆真实 Chrome 136+ 协议特征，绕过 Cloudflare 与 OpenResty 握手拦截。
-4. **极速并发矩阵 (Bulk Get 并发加速)**：
-   - 抓取多机构、多玩法（亚盘/大小球/欧指）时，**一律使用 `mcp__scrapling__bulk_get(urls=[...])` 一次性并发秒取**；
-   - 避免逐条循环请求导致延迟与网络风暴。
 5. **精准语义防错位与防污染断言（最高铁律：绝不混淆、绝不认错）**：
    - **URL 显式语义绑定**：`urls` 列表必须按固定契约构建，返回结果按索引 `result[i]` 严格回填对应机构对应玩法：
      - `handicap.aspx?companyID={cid}` 必须且只能解析为 `asianOddsText`（亚洲让球盘）；

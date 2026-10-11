@@ -66,6 +66,13 @@ class TestAdapterCli(unittest.TestCase):
         self.assertIn("验收存在警告 (WARN)", output)
         self.assertNotIn("验收全部通过", output)
 
+    def test_cli_max_age_minutes_blocks_stale_file(self):
+        """测试 CLI 传入 --max-age-minutes 拦截历史旧快照返回退出码 1"""
+        cmd = [sys.executable, str(self.cli_py), "--match", str(self.valid_snapshot), "--max-age-minutes", "1"]
+        res = subprocess.run(cmd, cwd=str(self.repo_root), capture_output=True, text=True)
+        self.assertEqual(res.returncode, 1)
+        self.assertIn("STALE_SNAPSHOT", res.stderr + res.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

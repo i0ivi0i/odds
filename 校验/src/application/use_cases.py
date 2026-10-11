@@ -31,7 +31,7 @@ class VerifySnapshotUseCase:
     def __init__(self, verifier: Optional[SnapshotVerifier] = None):
         self.verifier = verifier or SnapshotVerifier()
 
-    def execute(self, file_path_str: str) -> VerificationReceipt:
+    def execute(self, file_path_str: str, max_age_minutes: Optional[int] = None) -> VerificationReceipt:
         path = Path(file_path_str)
         if not path.exists():
             return VerificationReceipt(
@@ -144,6 +144,14 @@ class VerifySnapshotUseCase:
                 ],
                 metadata={"error": "match_id_mismatch", "content_hash": content_hash},
             )
+
+        if not path.is_dir():
+            try:
+                data["_file_mtime"] = path.stat().st_mtime
+            except Exception:
+                pass
+        if max_age_minutes is not None:
+            data["_max_age_minutes"] = max_age_minutes
 
         receipt = self.verifier.verify(data)
         receipt.metadata["content_hash"] = content_hash

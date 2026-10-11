@@ -12,6 +12,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 import json
 import re
+import time
 from typing import Any, Dict, List, Optional
 
 from 校验.src.domain.model import (
@@ -914,6 +915,24 @@ class SnapshotVerifier:
                 message=f"真实性核验失败：快照内数据源链接引用了其他场次比赛 ID ({first_conflict})，与当前场次 ({match_id}) 冲突，判定为跨场次张冠李戴！",
                 detail={"match_id": match_id, "conflicting_url_id": first_conflict, "all_conflicts": list(set(conflicts))},
             )
+
+        # 4. 快照物理新鲜度核验 (防止跳过抓取偷懒使用历史旧快照蒙混过关)
+        max_age = snapshot.get("_max_age_minutes")
+        file_mtime = snapshot.get("_file_mtime")
+        if max_age is not None and file_mtime is not None:
+            try:
+                age_sec = time.time() - float(file_mtime)
+                age_min = age_sec / 60.0
+                if age_min > float(max_age):
+                    mtime_str = datetime.fromtimestamp(float(file_mtime)).strftime("%Y-%m-%d %H:%M:%S")
+                    return DimensionResult(
+                        dimension=DimensionType.AUTHENTICITY,
+                        status=CheckStatus.FAIL,
+                        message=f"STALE_SNAPSHOT: 快照物理修改时间已过期 (最后修改于 {mtime_str}，距今 {age_min:.1f} 分钟 > 允许阈值 {max_age} 分钟)！严禁跳过真实抓取使用历史旧快照炒冷饭！",
+                        detail={"match_id": match_id, "mtime": mtime_str, "age_minutes": round(age_min, 1), "max_age_minutes": max_age},
+                    )
+            except Exception:
+                pass
 
         return DimensionResult(
             dimension=DimensionType.AUTHENTICITY,
