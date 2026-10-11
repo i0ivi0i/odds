@@ -25,5 +25,9 @@ problem_type: pipeline-integrity
    - 在 `校验/src/adapter/cli.py` 暴露 `--max-age-minutes` 参数，赛前分析与重新推演强制绑定 `--max-age-minutes 30`，文件超期立即返回 `exit 1` 物理熔断。
 2. **实装装配器法定落盘收据 (`[PHYSICAL_RECEIPT]`)**：
    - `cli.py --assemble` 落盘时强制输出包含物理路径、SHA256、mtime 与字节数的标准收据。
-3. **固化 Scrapling 选择器下推与分批切片规约**：
-   - 在 `TOOLS.md`、`AGENTS.md` 与 `pansuan-workflow` 中焊死 `css_selector` 下推与 4~8 URL 分批并发规范。
+3. **固化 Scrapling 选择器下推与分组分批规约**：
+   - 在 `TOOLS.md`、`AGENTS.md` 与 `skills/match-scraper` 中焊死 `css_selector` 下推与 4~8 URL 分批并发规范。
+4. **实装批量门禁故障隔离机制 (`--isolate-failed`)**：
+   - 在 `校验/src/adapter/cli.py` 增加 `--isolate-failed`，自动将残缺或异常快照移入 `.quarantine`，放行合格集群，杜绝木桶短板拖垮全天批次。
+5. **确立多场推演单写者原子封存机制**：
+   - 规定 Worker 仅只读推演并回传待验收结果，由顶层编排者作为唯一单写者原子化前置写入 `memory/`，彻底杜绝并发写冲突。

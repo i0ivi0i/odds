@@ -73,6 +73,38 @@ class TestAdapterCli(unittest.TestCase):
         self.assertEqual(res.returncode, 1)
         self.assertIn("STALE_SNAPSHOT", res.stderr + res.stdout)
 
+    def test_cli_batch_isolate_failed_quarantines_and_passes_valid(self):
+        """测试 CLI 批量安检模式下启用 --isolate-failed：自动隔离违规快照并放行合格集群"""
+        import shutil
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_path = Path(tmpdir)
+            # 放入一个合法的真实快照文件
+            valid_src = self.repo_root / "data" / "2026-10-11" / "3003906.md"
+            valid_dest = tmp_path / "3003906.md"
+            shutil.copy(str(valid_src), str(valid_dest))
+
+            # 放入一个破损违规的快照文件
+            corrupt_dest = tmp_path / "9999999.md"
+            corrupt_dest.write_text("# 破损残缺快照", encoding="utf-8")
+
+            # 未开启 --isolate-failed 时：必须退出码 1 熔断
+            cmd_strict = [sys.executable, str(self.cli_py), "--batch", str(tmp_path)]
+            res_strict = subprocess.run(cmd_strict, cwd=str(self.repo_root), capture_output=True, text=True, encoding="utf-8", errors="replace")
+            self.assertEqual(res_strict.returncode, 1)
+            self.assertIn("批量安检失败", res_strict.stderr + res_strict.stdout)
+
+            # 开启 --isolate-failed 时：自动隔离违规文件，合格场次放行 (退出码 0)
+            cmd_isolate = [sys.executable, str(self.cli_py), "--batch", str(tmp_path), "--isolate-failed"]
+            res_isolate = subprocess.run(cmd_isolate, cwd=str(self.repo_root), capture_output=True, text=True, encoding="utf-8", errors="replace")
+            self.assertEqual(res_isolate.returncode, 0, f"stderr: {res_isolate.stderr}")
+            self.assertIn("故障隔离触发", res_isolate.stdout)
+            self.assertIn("3003906", res_isolate.stdout)
+            self.assertTrue((tmp_path / ".quarantine" / "9999999.md").exists())
+            self.assertFalse(corrupt_dest.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
+

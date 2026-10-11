@@ -15,9 +15,9 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 数据采集采用**大模型自主调度的双轨敏捷架构**：系统正式装载并明确绑定两大核心 Skill 与其对应 MCP 服务。AI 大模型根据目标页面特性与即时网络状况，拥有完全自主、聪明智慧的决断权，灵活调度两军协同。
 
 ### 1. 技能与 MCP 主辅架构（Scrapling 100% 全包主力 × BrowserOS 备用辅助）
-- **批量赛事一键并发矩阵与第 0 秒落盘规约（First-Action Bulk Matrix）**：
-  - 凡触发赛前分析或重新推演，大模型唤醒后**第 0 秒第一工具动作**必须是直接构造候选场次全量 URL 矩阵，调用 `mcp__scrapling__bulk_get` 一次性并发秒取全部数据并批量落盘至 `data/{销售日}/{matchId}.md`；
-  - 严禁一场一场单串磨洋工，严禁边想边抓，未见全部文件落盘并通过 `cli.py --batch` 门禁（exit 0）前，绝对禁止开脑推演！
+- **批量赛事分批并发矩阵与第 0 秒落盘规约（First-Action Batch Matrix）**：
+  - 凡触发赛前分析或重新推演，大模型唤醒后**第 0 秒第一工具动作**必须是构造候选场次分批矩阵（严格按 4~6 场为一组 Batch、4~8 URLs 协议流并发 + 选择器下推），调用 `mcp__scrapling__bulk_get` 分批秒取全部数据并批量组装落盘至 `data/{销售日}/{matchId}.md`；
+  - 严禁单场串行磨洋工，严禁单批超载倾倒，未见快照落盘并通过 `cli.py --batch ... --isolate-failed` 门禁（exit 0）前，绝对禁止开脑推演！
 - **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（1~2 秒全量并发直取）**：
   - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，通过 `mcp__scrapling__bulk_get` 一次性并发秒取单场全部 5 大数据源：
     1. **阵容伤停与基本面技统**：`https://zq.titan007.com/analysis/{id}cn.htm`（含伤停名单、主客得失球、盘路走势、进球时段、未来赛程）；
@@ -63,11 +63,11 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 1. **抓取时选择器下推 (Selector Pushdown，严禁全量 DOM 倾倒)**：
    - 抓取 HTML 页面（如 `analysis/{id}cn.htm` 或 `odds/{id}.htm`）时，**必须显式下推 `css_selector` 参数**（如 `css_selector="#analy_sbAllOdds, #odds, #team_lineup, .analyhead"`）；
    - 底层 C/Cython 引擎在内存中就地剔除 90% 以上无关 DOM 树，单页文本从 200KB 压缩至 5KB 以内，秒回零超时，杜绝 Token 爆炸。
-2. **小批切片并发规约（Batch Chunking，单批限 4~8 URLs）**：
+2. **小批分组并发规约（Batch Requesting，单批限 4~8 URLs）**：
    - 严禁单次向 `mcp__scrapling__bulk_get` 传入数十个长连接重型页面；
-   - 批量矩阵请求严格按 **4~8 个 URL 为一组分批（Chunking）并发**，各批间无缝秒级流转，杜绝 IPC 缓冲区溢出与 MCP 崩溃。
+   - 批量矩阵请求严格按 **4~8 个 URL 为一组分批（Batching）并发**，各批间无缝秒级流转，杜绝 IPC 缓冲区溢出与 MCP 崩溃。
 3. **抓取时流式内存截流 (In-Flight Hook，严禁 Raw JS 倾倒)**：
-   - 请求 `1x2d.js` 时，数据流入内存第一时间使用法定 23 家 ID 集合直接切片；
+   - 请求 `1x2d.js` 时，数据流入内存第一时间使用法定 23 家 ID 集合直接筛选提纯；
    - 抛弃其余 140+ 家机构数据，向外交付仅包含法定 23 家初即盘的紧凑结构，单场数据严格压在 **5KB 以内**。
 4. **防封与防火墙穿透 (TLS Fingerprint)**：
    - 必须标配 `impersonate="chrome"` + `stealthy_headers=True`；
@@ -206,7 +206,7 @@ mcp__scrapling__bulk_get({
   3. **等待异步渲染**：对需浏览器渲染的 DOM 元素必须设置 `wait-selector` 等待数据真实装载，严禁保存未渲染的静态 HTML 空骨架（`<!DOCTYPE...`）。
   4. **法定 23 家白名单精准提纯（严禁算术平均陷阱）**：
      - **严禁算术平均**：系统严禁计算百家赔率的算术平均数！不同机构抽水率完全不同，直接平均违背概率公理且抹杀做市商意图。基准对账一律遵循「同公司三项去水（OO-EPC）后才聚合」；
-     - **直接过滤落盘**：`1x2d.js` 流入后，直接按法定 23 家白名单（核心 14 家做市商 + 2 家终端 + 2 家老庄 + 5 家论文样本）切片写入 `markets.europeCompanies`；
+     - **直接过滤落盘**：`1x2d.js` 流入后，直接按法定 23 家白名单（核心 14 家做市商 + 2 家终端 + 2 家老庄 + 5 家论文样本）筛选提纯写入 `markets.europeCompanies`；
      - **彻底抛弃垃圾小庄**：其余 140+ 家抄盘跟风小白标直接丢弃，不存明细，不折算伪平均，保持【推演源数据】纯净与高信噪比。
 - 无论通过 Scrapling 提取还是 BrowserOS neo 渲染，均必须包含：
   1. `european1x2Text` 与 `markets.europeCompanies`：主流机构百家初即盘、返还率与凯利指数（法定 23 家提纯，严禁算术平均）；

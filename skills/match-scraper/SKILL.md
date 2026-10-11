@@ -179,7 +179,7 @@ metadata: { "emoji": "📆" }
 - 请求端点：`https://1x2d.titan007.com/{matchId}.js`
 - **【Scrapling 官方抓取时提纯铁律（In-Flight Targeted Extraction）】**：
   1. **禁止直接回传 Raw JS**：`1x2d.js` 包含全网 163 家机构数万行变盘，严禁将原始大包作为工具输出抛给 Agent；
-  2. **流入内存即刻切片**：在获取响应流的第一时间，强制使用预编译法定 23 家 ID 集合（`80, 545, 281, 90, 177, 115, 82, 81, 104, 255, 110, 432, 976, 2, 474, 649, 800, 482, 386, 826, 16, 1129`）进行单次正则直取；
+  2. **流入内存即刻提纯**：在获取响应流的第一时间，强制使用预编译法定 23 家 ID 集合（`80, 545, 281, 90, 177, 115, 82, 81, 104, 255, 110, 432, 976, 2, 474, 649, 800, 482, 386, 826, 16, 1129`）进行单次正则直取；
   3. **丢弃外来野鸡机构**：其余 140+ 家机构在内存中立即抛弃，向外传递的欧指结构严格控制在 23 家以内；
   4. **单场数据预算硬顶**：单场提取结果向外交付体积严格限制在 **5KB 以内（约 1,000 Tokens）**，超过 10KB 视为严重采集违规。
 
@@ -195,8 +195,13 @@ metadata: { "emoji": "📆" }
 - 组装写入单文件 `data/{销售日}/{matchId}.md`（即本场法定的【推演源数据】；全天赛程总览汇总于 `data/{销售日}/meta.md`）；
 - 执行门禁物理命令：
   - 单场核验：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`
-  - 批量核验：`python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30`
+  - 批量核验：`python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`
 - 若返回 `FAIL`（如法定做市商流水覆盖不足、缺少时序、字段错位或摘要与流水冲突），物理熔断停止流程，必须补齐原材料并拿到 `exit 0` 后方可交接给推演分析师。
+
+### 5. 多场与全量场次分批进货规约（Batch Ingest Protocol）
+1. **分组分批（Batching）**：全天赛事（如13场或26场）必须按 4~6 场为一组分批拉取，单组构造 4~8 个核心数据端点并发拉取并下推选择器，严禁一次性狂发数十个 URL 导致底层 Scrapling 进程溢出超时；
+2. **装配与同步**：每组数据落地后立即调用 SnapshotAssembler 装配落盘至 `data/{销售日}/{matchId}.md`，并自动调用 `cli.py --sync-meta data/{销售日}` 同步索引状态；
+3. **故障隔离放行**：运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`，异常场次自动移入 `.quarantine` 隔离区，合格集群放行推进推演阶段！
 
 ---
 

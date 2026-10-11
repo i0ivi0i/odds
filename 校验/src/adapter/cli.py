@@ -104,7 +104,7 @@ def run_system_check(root_dir: str, print_ok: bool) -> int:
     return 0
 
 
-def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None) -> int:
+def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None, isolate_failed: bool = False) -> int:
     p = Path(dir_path)
     if not p.is_dir():
         print(f"❌ 批量安检失败: 目录不存在 ({dir_path})", file=sys.stderr)
@@ -116,6 +116,7 @@ def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None) -> in
 
     uc = VerifySnapshotUseCase()
     failed = []
+    failed_files = set()
     seen_ts = {}
 
     for f in md_files:
@@ -123,6 +124,7 @@ def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None) -> in
         if not receipt.is_valid:
             fail_msgs = [r.message for r in receipt.results if r.status == CheckStatus.FAIL]
             failed.append(f"{f.name}: 门禁安检未通过 ({receipt.overall_status.value}) - {'; '.join(fail_msgs)}")
+            failed_files.add(f)
             continue
 
         # 跨场次时序去重防作弊核验 (同一批次不同比赛的时间戳不得完全碰撞)
@@ -131,6 +133,7 @@ def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None) -> in
         if timestamps and len(timestamps) >= 3:
             if timestamps in seen_ts:
                 failed.append(f"{f.name}: 与 {seen_ts[timestamps]} 变盘时间戳完全相同，判定为跨场次克隆作弊！")
+                failed_files.add(f)
             else:
                 seen_ts[timestamps] = f.name
 
@@ -138,8 +141,10 @@ def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None) -> in
         body_id = re.search(r"-\s*\*\*比赛\s*ID\*\*[：:]\s*(\d+)", content)
         if not body_id:
             failed.append(f"{f.name}: 正文缺少明确的比赛 ID 声明 (格式: - **比赛 ID**：xxx)！")
+            failed_files.add(f)
         elif body_id.group(1) != f.stem:
             failed.append(f"{f.name}: 文件名 ID ({f.stem}) 与正文声明 ID ({body_id.group(1)}) 冲突，判定为冒名顶替！")
+            failed_files.add(f)
 
         # 跨场次对阵重复核验
         title_m = re.search(r"#\s*【(.*?)】\S+\s+(\S+)\s+vs\s+(\S+)", content)
@@ -147,12 +152,38 @@ def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None) -> in
             teams = f"{title_m.group(2)} vs {title_m.group(3)}"
             if teams in seen_ts.get("_teams", {}):
                 failed.append(f"{f.name}: 对阵双方 ({teams}) 与 {seen_ts['_teams'][teams]} 完全相同，判定为跨场次文件复制造假！")
+                failed_files.add(f)
             else:
                 if "_teams" not in seen_ts:
                     seen_ts["_teams"] = {}
                 seen_ts["_teams"][teams] = f.name
 
     if failed:
+        if isolate_failed:
+            quarantine_dir = p / ".quarantine"
+            quarantine_dir.mkdir(parents=True, exist_ok=True)
+            isolated_names = []
+            for ff in failed_files:
+                target = quarantine_dir / ff.name
+                if target.exists():
+                    target.unlink()
+                ff.rename(target)
+                isolated_names.append(ff.name)
+
+            valid_files = [f for f in md_files if f not in failed_files]
+            print(f"⚠️ 故障隔离触发: 已自动隔离 {len(isolated_names)} 场违规快照至 {quarantine_dir}: {', '.join(isolated_names)}")
+            for err in failed:
+                print(f"  ❌ [已隔离] {err}", file=sys.stderr)
+
+            if valid_files:
+                valid_ids = [f.stem for f in valid_files]
+                print(f"✅ 批量安检通过 (故障隔离放行): 剩余 {len(valid_files)} 场【推演源数据】合法且无跨场克隆")
+                print(f"📋 放行合格场次列表: {', '.join(valid_ids)}")
+                return 0
+            else:
+                print(f"🚫 批量安检失败: 隔离后无有效【推演源数据】文件！", file=sys.stderr)
+                return 1
+
         print(f"🚫 批量安检失败 ({len(failed)} 项违规):", file=sys.stderr)
         for err in failed:
             print(f"  ❌ {err}", file=sys.stderr)
@@ -263,6 +294,11 @@ def main() -> int:
         default=None,
         help="【推演源数据】文件物理新鲜度最大允许分钟数 (如 30)，超期直接判定 STALE_SNAPSHOT 熔断",
     )
+    parser.add_argument(
+        "--isolate-failed",
+        action="store_true",
+        help="批量安检模式下启用故障隔离：将违规快照自动移入 .quarantine，若剩余快照有效则放行 (返回 0)",
+    )
 
     args = parser.parse_args()
 
@@ -276,7 +312,7 @@ def main() -> int:
 
     # 优先级 3: 批量安检
     if args.batch:
-        return run_batch_verify(args.batch, max_age_minutes=args.max_age_minutes)
+        return run_batch_verify(args.batch, max_age_minutes=args.max_age_minutes, isolate_failed=args.isolate_failed)
 
     # 优先级 3: 指定了单场比赛【推演源数据】进行安检
     if args.match:
