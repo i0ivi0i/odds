@@ -1,7 +1,7 @@
 # Graph Report - 倍率分析推演  (2026-10-11)
 
 ## Corpus Check
-- 271 files · ~1,859,364 words
+- 271 files · ~1,859,780 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 7 file(s) not represented in the graph (top: (none) 6, .json5 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4297f9db`
+- Built from commit: `e49cf7ac`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -253,8 +253,8 @@
 10. `极小化最大损失` - 51 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `SnapshotAssembler` --references--> `问题背景与现象`  [INFERRED]
-  校验/src/domain/assembler.py → docs/solutions/pipeline/2026-10-11-scrapling-chunking-and-stale-snapshot-gate-lock.md
+- `问题背景与现象` --references--> `SnapshotAssembler`  [INFERRED]
+  docs/solutions/pipeline/2026-10-11-scrapling-chunking-and-stale-snapshot-gate-lock.md → 校验/src/domain/assembler.py
 - `2. 站在庄家视角精准预测「胜平负」的核心方法` --semantically_synonymous_庄家_机构_精算师--> `Strategic Bookmaker Pricing & Bettor Bias Exploitation`  [INFERRED]
   AGENTS.md → docs/论文/2004_Levitt_NBER_w9422.pdf
 - `2. 站在庄家视角精准预测「胜平负」的核心方法` --semantically_synonymous_庄家_机构_精算师--> `Bookmaker Stake Limiting & Discrimination`  [INFERRED]
@@ -1104,14 +1104,14 @@ Nodes (3): 候补观察场次, 初筛结果（21:30）, 推荐深度分析场次
   docs/倍率时序波动分析手册.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **936 isolated node(s):** `二、基础战绩与攻防客观底牌`, `三、欧洲指数百家做市商清单（法定 23 家）`, `【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】`, `六、中国体育彩票官方竞彩数据`, `Hegarty/Whelan：论文方法与执行落点` (+931 more)
+- **936 isolated node(s):** `根因与官方规范对标`, `Hegarty/Whelan：论文方法与执行落点`, `德甲首球研究：论文方法与执行落点`, `表格：三、技能流程指引 / skill_stage_matrix`, `赔率时序动态转折表（示例）` (+931 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1272 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Work-memory lessons
 
 **Preferred sources** — corroborated by past sessions; start here.
-- `poisson_lib.py` (2× useful, score=1.89069196)
+- `poisson_lib.py` (2× useful, score=1.890610572)
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -1119,14 +1119,14 @@ _Questions this graph is uniquely positioned to answer:_
 - **What is the exact relationship between `paper-integration-v1（旧留存标签）` and `paper-application-v2（当前执行）`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `Outcomes Affect` connect `Outcomes Affect` to `2981440/平博.md`, `2. 站在庄家视角精准预测「胜平负」的核心方法`, `.verify`, `poisson_lib.py`, `AGENTS.md - 足彩分析工作流操作手册`, `第三部分：盘口分类体系速查（主人亲授）`, `胜／平／负三端裁决`, `Comparing Sequential Forecasters`, `极小化最大损失`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `执行步骤`, `校验/src/adapter/cli.py`, `OddsVector`, `泊松概率计算手册（足彩用）`, `2026-10-06 每日记忆`, `Polymarket 链接查找教程`, `buildAnalysisContext`, `条件预测能力与滚动样本外检验`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `累计战绩`, `2026-10-07 每日记忆`, `4. 存档原始赔率数据`, `赛后复盘（post-review）`, `算法/src/application/use_cases.py`, `ConvertOddsUseCase`, `verifier.py`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `泊松概率分析：赫尔蒙德 vs 坎布尔`, `injury-service.js`, `下注决策手册（版本 1）`, `杯赛防守脆断与进球肥尾`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `SAFETY.md`, `浅盘阻上 vs 浅盘诱上 对比`, `推荐输出（recommendation）`, `四、从 λ 到各项概率的计算步骤`, `ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）`, `泊松概率分析：克雷莫纳 vs 佛罗伦萨`, `泊松概率分析：布伦特福德 vs 狼队`, `十九篇的执行落点与原文锚点`, `fetchMatchData`, `2981440/易胜博.md`, `模型扩展与组合手册（除泊松之外）`, `五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南`, `Favorite-Longshot Bias (FLB)`, `Consensus Probability Estimation`, `Sub-Exponential E-Process (Theorem 3)`, `AGENTS.md Footy Analysis Workflow`, `步骤 1.5：先审过程，再揭比分（Aiyer 决策审计与认知契约卡对账）`, `泊松概率分析：巴列卡诺 vs 莱万特`, `输出 2：写入记忆`, `赛程抓取（match-scraper）`, `四、模拟示例（周日 018 巴萨 vs 塞维利亚）`, `三、海外免费储备 API 矩阵`, `步骤 3：10 步分析过程（固定顺序）`, `赛事初筛（match-screening）`, `欧国联 克罗地亚 vs 西班牙（编号: 周二008 比赛ID: 2981455，开球: 2026-10-07 02:45，分析: 2026-10-06 21:20）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `Q: 复盘如何与九篇论文打通且不把每句话变成门禁`, `澳门 (cid=1)`, `ProfilingParser`, `变动历史分析示例（大小球，必须像这样写）`, `执行流程`, `Do Betting Markets Sense a Goal Coming? Evidence from the German Bundesliga`, `二、全周期五阶段生命周期划分 (T0 ~ T4)`, `CorrectScoreParser`, `Stable reliability diagrams for probabilistic classifiers`, `执行流程`, `联赛配置手册（泊松 + 盘口）`, `皇冠 (cid=3)`, `TestAdapterCli`, `Idea: 足球盘口倍率分析推演出胜负平`, `1. 澳彩`, `TOOLS.md`, `2. 皇冠`, `论文与知识图谱应用：高频深广检索与自愈自进化推演体系`, `比分建模与投注手册（泊松版）`, `3. Bet365`, `5. 平博`, `7. 香港马会`, `输出 1：综合评估与推荐`, `概率分源与裁决一致性`, `第 4 段：大小球 + 第 6-10 步摘要`, `计算方法`, `Betting Against Integrity: Identifying Match-Fixing Through In-Play Market Dynamics (Winkelmann et al., 2026)`, `Asian Handicap & 1X2 Market Efficiency in Football (Constantinou, 2022)`, `输入`, `澳彩 (cid=1)`, `皇冠 (cid=3)`, `皇冠 (cid=545)`, `澳彩 (cid=1)`, `皇冠 (cid=3)`, `Q: 2026-10-10 德甲 RB莱比锡 6:0 法兰克福`, `欧国联 克罗地亚 vs 英格兰（编号: - 比赛ID: 2981447，开球: 2026-10-04 00:00，分析: 2026-10-03 22:15）`, `欧国联 瑞士 vs 斯洛文尼亚（编号: - 比赛ID: 2981497，开球: 2026-10-04 02:45，分析: 2026-10-03 22:25）`, `欧国联 北马其顿 vs 苏格兰（编号: - 比赛ID: 2981498，开球: 2026-10-04 02:45，分析: 2026-10-03 22:15）`, `赛后复盘`, `澳彩 (cid=1)`, `皇冠 (cid=3)`, `澳门 (cid=1)`, `皇冠 (cid=3)`, `Q: 2026-10-10 德甲 斯图加特 0:2 帕德博恩`, `load_params`?**
-  _High betweenness centrality (0.278) - this node is a cross-community bridge._
+  _High betweenness centrality (0.251) - this node is a cross-community bridge._
 - **Are the 697 inferred relationships involving `Outcomes Affect` (e.g. with `表格：三、浅盘三种形态（重点） / shallow_outcomes` and `胜／平／负三端裁决`) actually correct?**
   _`Outcomes Affect` has 697 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `二、基础战绩与攻防客观底牌`, `三、欧洲指数百家做市商清单（法定 23 家）`, `【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】` to the rest of the system?**
+- **What connects `根因与官方规范对标`, `Hegarty/Whelan：论文方法与执行落点`, `德甲首球研究：论文方法与执行落点` to the rest of the system?**
   _936 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Outcomes Affect` be split into smaller, more focused modules?**
   _Cohesion score 0.03227722772277228 - nodes in this community are weakly interconnected._
 - **What is the exact relationship between `2. 跨市场几何联动战区（严禁单看亚盘）` and `两项AH报价不唯一识别退款率`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `深度分析（deep-analysis）` connect `深度分析（deep-analysis）` to `2981440/平博.md`, `2. 站在庄家视角精准预测「胜平负」的核心方法`, `poisson_lib.py`, `AGENTS.md - 足彩分析工作流操作手册`, `第三部分：盘口分类体系速查（主人亲授）`, `Comparing Sequential Forecasters`, `极小化最大损失`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `Data Mining and Knowledge Discovery (2023) 37:788–832`, `泊松概率计算手册（足彩用）`, `Polymarket 链接查找教程`, `buildAnalysisContext`, `条件预测能力与滚动样本外检验`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `累计战绩`, `赛后复盘（post-review）`, `贝叶斯动态离散时间加权`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `泊松概率分析：赫尔蒙德 vs 坎布尔`, `杯赛防守脆断与进球肥尾`, `titan007.test.js`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `推荐输出（recommendation）`, `ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）`, `泊松概率分析：克雷莫纳 vs 佛罗伦萨`, `泊松概率分析：布伦特福德 vs 狼队`, `十九篇的执行落点与原文锚点`, `各场景的 Subagent 用法`, `2981440/易胜博.md`, `模型扩展与组合手册（除泊松之外）`, `五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南`, `Favorite-Longshot Bias (FLB)`, `Consensus Probability Estimation`, `泊松概率分析：巴列卡诺 vs 莱万特`, `三、海外免费储备 API 矩阵`, `赛事初筛（match-screening）`, `比赛快照深层语义安检与泊松算法零偏差迁移实践`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `澳门 (cid=1)`, `titan007 欧冠杯 CupMatch c103.js 数据结构分析`, `titan007.js`, `Do Betting Markets Sense a Goal Coming? Evidence from the German Bundesliga`, `Stable reliability diagrams for probabilistic classifiers`, `执行流程`, `今日全量赛程与【推演源数据】索引表`, `一、发现的 BUG / 漏洞`, `[欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告`, `赔率与泊松比较：何时值得下注（案例详解）`, `皇冠 (cid=3)`, `value`, `基本面（分析页）`, `算法/src/adapter/cli.py`, `TOOLS.md`, `比分建模与投注手册（泊松版）`, `ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）`, `2026-10-11-scrapling-chunking-and-stale-snapshot-gate-lock.md`, `深度分析推送通知模板`, `2026-10-10/meta.md`, `异常处理`, `Asian Handicap & 1X2 Market Efficiency in Football (Constantinou, 2022)`, `深度分析报告：马洛卡 VS 西班牙人`, `输入`, `澳彩 (cid=1)`, `皇冠 (cid=3)`, `皇冠 (cid=545)`, `澳彩 (cid=1)`, `皇冠 (cid=3)`, `澳彩 (cid=1)`, `皇冠 (cid=3)`, `澳门 (cid=1)`, `皇冠 (cid=3)`, `load_params`, `二、五大博弈支柱专项体检结论`?**
-  _High betweenness centrality (0.182) - this node is a cross-community bridge._
+  _High betweenness centrality (0.195) - this node is a cross-community bridge._

@@ -112833,8 +112833,8 @@
       "weight": 1.0
     },
     {
-      "source": "\u6821\u9a8c_src_domain_assembler_snapshotassembler",
-      "target": "docs_solutions_pipeline_2026_10_11_scrapling_chunking_and_stale_snapshot_gate_lock_\u95ee\u9898\u80cc\u666f\u4e0e\u73b0\u8c61",
+      "source": "docs_solutions_pipeline_2026_10_11_scrapling_chunking_and_stale_snapshot_gate_lock_\u95ee\u9898\u80cc\u666f\u4e0e\u73b0\u8c61",
+      "target": "\u6821\u9a8c_src_domain_assembler_snapshotassembler",
       "relation": "references",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -112845,8 +112845,8 @@
       "weight": 1.0
     },
     {
-      "source": "\u6821\u9a8c_src_domain_verifier_snapshotverifier_check_authenticity",
-      "target": "docs_solutions_pipeline_2026_10_11_scrapling_chunking_and_stale_snapshot_gate_lock_\u6839\u6cbb\u65b9\u6848",
+      "source": "docs_solutions_pipeline_2026_10_11_scrapling_chunking_and_stale_snapshot_gate_lock_\u6839\u6cbb\u65b9\u6848",
+      "target": "\u6821\u9a8c_src_domain_verifier_snapshotverifier_check_authenticity",
       "relation": "references",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -153266,5 +153266,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4297f9db2d8328a5c95eeebb3230d0339c0c2ccb"
+  "built_at_commit": "e49cf7acf41dc88046e42e537caf2ccccb5fdbc4"
 }
