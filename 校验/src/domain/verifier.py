@@ -666,6 +666,15 @@ class SnapshotVerifier:
                 detail={"matched_companies": list(matched_core_companies)},
             )
 
+        if snapshot.get("is_markdown_baseline"):
+            raw_c = snapshot.get("_raw_content", "")
+            if "### 第一战区：" not in raw_c or "### 第二战区：" not in raw_c or "### 第三战区：" not in raw_c:
+                return DimensionResult(
+                    dimension=DimensionType.TREND_HISTORY,
+                    status=CheckStatus.FAIL,
+                    message="变盘时序三大战区不完整！必须全量包含第一战区(7家)、第二战区(14家)与第三战区(2家)，严禁截断漏项！",
+                )
+
         return DimensionResult(
             dimension=DimensionType.TREND_HISTORY,
             status=CheckStatus.PASS,

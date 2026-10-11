@@ -3,6 +3,7 @@
 【推演源数据】组装器单元测试: 确保 SnapshotAssembler 输出的 Markdown 能 100% 通过物理门禁
 """
 
+import re
 import unittest
 from pathlib import Path
 from 校验.src.domain.assembler import SnapshotAssembler
@@ -165,6 +166,34 @@ class TestSnapshotAssembler(unittest.TestCase):
                 self.assertIn("mtime=", out)
                 self.assertTrue(md_p.exists())
 
+    def test_assembled_markdown_contains_full_23_companies_in_section_4(self):
+        """测试组装器第四节必须全量输出三大战区法定 23 家机构的时序生命周期矩阵"""
+        data = {
+            "matchId": "2989999",
+            "league": "英超",
+            "homeTeam": "曼城",
+            "awayTeam": "切尔西",
+            "kickoffTime": "2026-10-10 22:00",
+            "sportteryCode": "周六020",
+        }
+        md_text = self.assembler.assemble(data)
+
+        # 严格断言三大战区标头齐全
+        self.assertIn("### 第一战区：欧亚双盘全能做市商", md_text)
+        self.assertIn("### 第二战区：欧洲大陆与国际纯欧指做市商", md_text)
+        self.assertIn("### 第三战区：终端履约实盘标的", md_text)
+
+        # 严格断言法定 23 家机构全部有独立章节时序
+        from 校验.src.domain.assembler import LEGAL_23_COMPANIES
+        for cname in LEGAL_23_COMPANIES.keys():
+            self.assertIn(f"{cname}", md_text, f"缺少机构章节: {cname}")
+
+        # 校验第四节内章节数量严格对应 23 家
+        sec4_content = md_text.split("## 四、")[1].split("## 五、")[0]
+        sec4_blocks = [x.strip() for x in re.findall(r"\n###\s+\d+[\.、\s]+([^\n\(]+)", sec4_content)]
+        self.assertEqual(len(sec4_blocks), 23, f"时序章节数量不符 (期望23家, 实际{len(sec4_blocks)}家: {sec4_blocks})")
+
 
 if __name__ == "__main__":
     unittest.main()
+
