@@ -1,4 +1,5 @@
 import os
+os.environ['GRAPHIFY_VIZ_NODE_LIMIT'] = '20000'
 import json
 import re
 from pathlib import Path
@@ -484,7 +485,10 @@ def run_deep_graphify():
     # 6. Export graph.json, graph.html, GRAPH_REPORT.md, sidecars
     print("Exporting graphify outputs...")
     to_json(G, comm_dict, str(out_dir / 'graph.json'), force=True, community_labels=labels)
-    to_html(G, comm_dict, str(out_dir / 'graph.html'), community_labels=labels)
+    try:
+        to_html(G, comm_dict, str(out_dir / 'graph.html'), community_labels=labels)
+    except Exception as e:
+        print(f"Warning: HTML export skipped ({e})")
     
     # Generate GRAPH_REPORT.md
     report_md = generate(
