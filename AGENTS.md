@@ -18,6 +18,7 @@
      - **严禁翻书铁律**：在 `data/{销售日}/meta.md` 确立前，**绝对禁止调用 `view_file` 阅读《skills/deep-analysis/SKILL.md》、绝对禁止查看任何 Python 源码（如 assembler.py/cli.py/use_cases.py）或初筛细节**！
    - **【阶段 1：纯物理分批进货与故障隔离门禁（Phase 1 Ingest Gate）】**：
      主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper` 模式二（Scrapling MCP `bulk_get` 并发直取 5 大接口）组装落盘至 `data/{销售日}/{matchId}.md` ➔ 运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 拿到 `exit 0`！严禁搬运工思考盘赔逻辑或定性胜负！
+     **推演证据界定宪法与零前置单测禁令（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**唯一法定证据必须且只能是：`data/{销售日}/{matchId}.md` 物理文件与门禁收据**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”！在无代码改动时，主会话或搬运工执行任何 pytest、unittest、git diff 或 graph.json 检查均属严重违纪！
    - **【阶段 2：纯逻辑首席分析师（Phase 2 Deduction Brain）】**：
      只有且仅当批量门禁通过（exit 0）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 Graphify 三大战区与运行 OO-EPC 去水模型，开展 10 步深度推演与冻结认知契约卡！未见门禁 exit 0 放行，**绝对禁止调用 Graphify 三大战区、绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
    - **三大战区标准化检索规范（仅在阶段二执行）**：
@@ -133,6 +134,7 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
 | 「多推几场」「今天来 4 场」                                 | 放宽精选数量                                                 | ❌           |
 | 「今天不分析了」「今天休息」                                | 写入跳过标记，心跳不再触发当日赛前分析                       | ❌           |
 | 「还是分析吧」「恢复分析」                                  | 删除跳过标记，恢复心跳触发                                   | ❌           |
+| 「你只是口头放心吗」「跑一下看看」「验证给我看」「一个数字都不要错」「修复完走一遍」 | 绝对禁止单测漫游！第0秒推送状态 ➔ 派发搬运工按顺序分批进货（001~010）过验 ➔ 唤醒分析师 | ✅ 阶段工种硬隔离 |
 
 #### 单场推演两阶段硬隔离执行标准（严禁单体兼职、严禁黑盒盲等与视觉倒置）
 
@@ -454,7 +456,7 @@ MEMORY.md 维护规则：
 1. 推送「⚡ 正在分析 N 场比赛…」
 1.5 【阶段一：前置【推演源数据】真实性与门禁核验（无物理原材料不下锅）】：
    - 检查 `data/{销售日}/{matchId}.md`【推演源数据】是否已存在并通过门禁（`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30` 返回退出码 0）；
-   - 若源数据不存在、门禁未过、数据过期，或主人指令包含「重新分析/刷新/重看」：必须强制调用 Skill `match-scraper` ↔ MCP `scrapling` 全量并发抓取此时此刻最新活水数据（落实选择器下推与4~6场分组分批进货），经 SnapshotAssembler 组装落盘并过验；
+   - 若源数据不存在、门禁未过、数据过期，或主人指令包含「重新分析/刷新/重看」：必须强制调用 Skill `match-scraper` ↔ MCP `scrapling` 全量并发抓取此时此刻最新活水数据（落实选择器下推与 4~6 场物理分组切片），直接调用 `write_to_file` 组装写入黄金 Markdown 【推演源数据】落盘并过验；
    - 确认源数据门禁通过（exit 0）后，方可进入步骤 2 分发 Worker。若数据缺失导致门禁返回 1 (FAIL)，立即物理熔断并置顶报警，严禁分发 Worker。
 2. 【阶段二：纯逻辑深度推演】：对每场比赛分发一个 depth-1 worker subagent（并行），不得在主会话中执行深度分析。Worker 纯只读读取【推演源数据】推理。**若本批场次 > 1**，在分发的 **task 中必须写明**：「本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果」，避免多 worker 并发写同一文件导致只保留部分场次。
 3. 保持空闲，收齐所有结果后：**仅对含 memory 摘要的回传结果**（排除因「比赛已开始」等跳过的简要回传）按 deep-analysis 输出 2 的规则合并写入 `## 深度分析`；再执行 recommendation。若本批只有 1 场则直接执行 recommendation。
@@ -505,7 +507,7 @@ MEMORY.md 维护规则：
 1. 从当日 memory **最后一个以 `## 初筛结果` 开头的 section** 得到当前候选列表；主人说的「1,3,5」指**该列表中的序号**（第 1 场、第 3 场、第 5 场），不是竞彩编号；若主人说「精选 001 003 005」则按编号在列表中定位对应场次。
 2. 推送「⚡ 正在精选分析…」
 2.5 【阶段一：纯物理进货搬运工（前置【推演源数据】落盘与批量门禁过验）】：
-   - 检查所选场次的 `data/{销售日}/{matchId}.md`【推演源数据】是否已落盘并通过门禁；若尚未落盘、源数据过期或包含「重新分析/刷新」，必须先构造 URL 矩阵调用 Skill `match-scraper`（Skill `/scrapling-official` ↔ MCP `scrapling` `bulk_get`）并发秒取（落实选择器下推与4~6场分组分批进货），批量组装为【推演源数据】落盘并运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`（或 `--match ... --max-age-minutes 30`）确认返回退出码 0；
+   - 检查所选场次的 `data/{销售日}/{matchId}.md`【推演源数据】是否已落盘并通过门禁；若尚未落盘、源数据过期或包含「重新分析/刷新」，必须先构造 URL 矩阵调用 Skill `match-scraper`（Skill `/scrapling-official` ↔ MCP `scrapling` `bulk_get`）并发秒取（落实选择器下推与 4~6 场物理分组切片），直接调用 `write_to_file` 组装为【推演源数据】落盘并运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`（或 `--match ... --max-age-minutes 30`）确认返回退出码 0；
    - 未通过门禁或源数据过期（exit 1）立即物理熔断并置顶报警，严禁进入步骤 3 分发 Worker。
 3. 【阶段二：纯逻辑首席分析师】：对上述已过门禁的场次，每场分发一个 depth-1 worker subagent 执行纯只读深度分析。**若场次 > 1**，在分发的 **task 中必须写明**：「本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果」。
 4. 保持空闲，收齐回传后：**仅对含 memory 摘要的回传**（排除因「比赛已开始」等跳过的简要回传）按 deep-analysis 输出 2 的规则合并写入 `## 深度分析`，再执行 recommendation（精选 + 汇总推送 + 步骤 5 写入 memory）。
