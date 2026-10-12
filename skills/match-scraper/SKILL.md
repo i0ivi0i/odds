@@ -23,7 +23,9 @@ metadata: { "emoji": "📆" }
 
 ---
 
-# 第一部分：模式一·赛程抓取与索引初始化
+# 第一部分：模式一·赛程抓取与索引初始化（第 0 步极速原子落盘）
+
+**严禁漫游翻书铁律**：在执行模式一落盘 `meta.md` 前，**严禁阅读 `deep-analysis` 技能、严禁查看任何 Python 装配源码（如 assembler/cli/use_cases）、严禁进行任何盘口推演思考**！本模式唯一职责是快速完成赛程索引物理落盘（全程 < 2 秒）。
 
 ## 销售窗口检查（定时任务触发时必须执行）
 
@@ -34,44 +36,33 @@ metadata: { "emoji": "📆" }
 
 **如果当前时间不在销售窗口内 → 直接终止，不抓取数据，不执行后续流程。** 向主人发送一条简短通知：「当前不在竞彩销售时间内，跳过本次执行。」
 
-用户手动询问（如"今天有什么比赛"）不受此限制，任何时间都可以查询。
+用户手动询问（如"今天有什么比赛"或"分析今天比赛"）不受此限制，任何时间都可以查询。
 
-## 执行步骤
+## 极速单动执行规约（Scrapling MCP 官方极速通道）
 
-### 步骤 1：打开球探竞足页
+### 步骤 1：协议流直取球探竞足页
+调用 MCP `scrapling` 工具：
+```json
+{
+  "url": "https://jc.titan007.com/index.aspx",
+  "extraction_type": "markdown",
+  "network_idle": true
+}
+```
+**若打不开，必须立即向主人置顶发出严重警报提示「🚨 球探赛程页无法打开，数据通道受阻！」**，同时记录工具错误、失败状态与恢复待办。严禁静默或掩盖。
 
-用 `/scrapling-official`（或 `/browseros-neo` 备用辅助）抓取 `https://jc.titan007.com/index.aspx`。**若打不开，必须立即向主人置顶发出严重警报提示「🚨 球探赛程页无法打开，数据通道受阻！」**，同时记录工具错误、失败状态与恢复待办；不写有效赛程，不覆盖上次有效记录。严禁静默或掩盖。
+### 步骤 2：直接解析 Markdown 表格行
+从返回的 Markdown 表格中逐行提取当日比赛（匹配 `| 周[一二三四五六日]\d{3} | ... |`）：
+- **竞彩编号**：`周*NNN`（如 `周一001`）
+- **联赛**：赛事名称（如 `亚冠精英`、`意甲`、`英超`）
+- **开球时间**：`YYYY-MM-DD HH:MM`（页面跨日时间自动对齐）
+- **主队 vs 客队**：队名
+- **比赛 ID**：从分析页链接正则提取（`analysis/(\d+)cn` 或 `linkmatch/\d+/(\d+)`）
 
-### 步骤 2：抽出当日赛程
-
-销售日期使用当前自然日（`YYYY-MM-DD`）。手动查询非当天赛程时，在页面上切到该日。抽出后落盘赛程索引汇总文件 `data/{YYYY-MM-DD}/meta.md`，结构对齐 `agent.schedule`。
-
-`matches` 必须为数组。仅在成功完整读取并核实当日确无场次时允许空数组，进入后文有效零场分支。失败、未读完整或编号对不上：报告具体错误，留失败状态与恢复待办，不写有效赛程或覆盖旧记录；不把失败空返回当零场。禁止先跑 `npm run schedule`。
-
-### 步骤 3：解析抽出结果
-
-从 `agent.schedule` JSON 中读取：
-
-| JSON 字段 | 写入 memory 字段 |
-| --- | --- |
-| `matches[].no` | 编号 |
-| `matches[].matchId` | 比赛ID |
-| `matches[].league` | 联赛 |
-| `matches[].leagueLevel` | 联赛层级 |
-| `matches[].kickoffTime` | 开球 |
-| `matches[].status` | 状态 |
-| `matches[].homeTeam` | 主队 |
-| `matches[].score` | 比分 |
-| `matches[].awayTeam` | 客队 |
-| `matches[].analysisUrl` | 分析页 |
-
-同时读取 `summary.total/notStarted/inProgress/finished` 作为汇总计数。若某些字段为空，用「无数据」或 `-` 标记，不要臆造。
-
-### 步骤 4：格式化输出并写入 memory
-
-按「结构化输出」和「写入每日记忆」章节格式生成赛程摘要，追加写入 `memory/{今天日期}.md`。
-
-抽出结果已按销售日过滤；指定日期以页面当日为准。若 `matches.length = 0`，执行「当日无比赛」流程。
+### 步骤 3：原子落盘 `meta.md` 与追加 `memory.md`
+1. 立即写入赛程索引总览：`data/{YYYY-MM-DD}/meta.md`；
+2. 立即追加写入每日记忆：`memory/{YYYY-MM-DD}.md`（Section 标题 `## 赛程抓取（{HH:MM}）`）；
+3. **完成标准**：耗时 < 2 秒，一次工具调用完成两文件落盘，立即放行进入阶段一（初筛与进货）。禁止先跑 `npm run schedule`。
 
 ### 步骤 5：结构化输出
 
@@ -155,7 +146,7 @@ metadata: { "emoji": "📆" }
 2. **批次二：并发拉取 7 大法定做市商双盘流水**：
    调用 MCP `scrapling` `bulk_get` 一次性并发获取 7 家亚盘与 7 家大小球变盘流水（cid: 1, 3, 8, 12, 47, 42, 48）；
 3. **组装落盘与同步索引**：
-   将上述真实活水数据按法定规范组装为 `data/{销售日}/{matchId}.md`（并同步更新 `data/{销售日}/meta.md`）；
+   将上述真实活水数据按法定规范组装为 `data/{销售日}/{matchId}.md`（Polymarket 链接定位与核验严格按 `docs/Polymarket链接查找教程.md` 执行，并同步更新 `data/{销售日}/meta.md`）；
 4. **门禁过验与回传**：
    终端物理运行 `python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`；
    拿到 exit 0 (PASS) 后，立即向主会话 announce 汇报：「✅ 【{matchId}】推演源数据已落盘并过验放行 (exit 0)」，结束阶段一。

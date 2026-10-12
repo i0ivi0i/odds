@@ -1,6 +1,6 @@
 # Polymarket 链接查找教程
 
-赛前 6 列表最后一格必须是**可点击**的下单链接。读盘用图上数字；找链接是第二步，**不准拿网上赔率改图上的数**。对不上就写「无链接」，禁止瞎编地址。
+赛前 7 列表最后一格必须是**可点击**的下单链接。读盘用图上数字；找链接是第二步，**不准拿网上赔率改图上的数**。对不上就写「无链接」，禁止瞎编地址。
 
 主人买的是预测市场里的胜/平/负（尤其是平），**不推国内让球对冲**。
 
@@ -37,24 +37,34 @@ curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" -H "Referer: https://www.lottery.g
 2. **标签碎片化**：Polymarket 联赛标签极细（如英冠是 `efl-championship`，英超是 `premier-league`），只查 `soccer` 会漏掉大量次级与杯赛市场！
 3. **严禁只调 API 碰壁即放弃**：严禁仅凭 API 返回 `[]` 就草率判定“未开盘”！
 
-### 第一步（绝对强制首选）：实网全网精准检索
-必须先使用 `web_search` 或 Google 检索，由搜索引擎自动完成中英文映射与最新 slug 定位：
+### 第一步（绝对强制首选）：实网精准检索与官方 API 秒级定位
+双轨并行，优先调用 Polymarket 官方免密发现 API：
+1. **官方秒级发现 API（最快最准）**：将球探分析页获取的球队英文名（如 Coventry, Newcastle, Atalanta 等）直接送入搜索接口：
+```bash
+curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/public-search?q=英文队名"
+```
+直接返回对应比赛事件、`slug`（如 `epl-cov-new-2026-10-12`）与 `gameId`。
+2. **全网搜索引擎兜底检索**：若 API 缩写不明确，使用 `web_search` 由搜索引擎自动完成中英文映射与最新 slug 定位：
 ```bash
 # 语法：site:polymarket.com/event "主队英文名/别名" "客队英文名/别名"
 site:polymarket.com/event "West Ham" "Queens Park Rangers"
 ```
-或直接由 `BrowserOS neo` 访问 `https://polymarket.com/sports` 在页面顶端搜索框输入英文队名查找。
+或由 `BrowserOS neo` 访问 `https://polymarket.com/sports` 在页面顶端搜索框输入英文队名查找。
 
-### 第二步：拿到页面 slug 后，核查流动性与可买报价
-拿到 Google 检索出的链接或 slug 后，再调用官方接口或 BrowserOS neo 校验实盘交易池：
+### 第二步：拿到页面 slug 后，核查流动性与全系市场（波胆/半场）
+拿到检索出的 slug 后，调用官方接口校验实盘交易池及衍生波胆市场：
 ```bash
-curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" "https://gamma-api.polymarket.com/events?slug=检索到的完整slug"
+# 1. 胜平负主盘报价
+curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/events/slug/完整slug"
+
+# 2. 衍生全系市场（波胆 Exact Score、半场 Halftime、总进球）
+curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/events/keyset?game_id=第一步获取的gameId"
 ```
 
 ### 第三步：门禁判定标准
-- 只有在：① `web_search (site:polymarket.com/event)` 查无此赛；② BrowserOS neo 页面搜索确认无池；③ Gamma API 英文全称无记录。
+- 只有在：① `public-search?q={英文名}` 查无记录；② `web_search (site:polymarket.com/event)` 查无此赛；③ BrowserOS neo 确认无池。
 - **三者全部落空时**，才准许打标【Polymarket 未开放独立交易池】！
-- 凡未经第一步全网实网检索就敢写“未开放”的，一律按作弊与虚假汇报严肃处理！
+- 凡未经第一步实网检索与官方 API 检索就敢写“未开放”的，一律按作弊与虚假汇报严肃处理！
 
 ### 3）读价钱
 
@@ -92,4 +102,4 @@ curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" "https://gamma-api.polymarket.com/
 1. 读本文件。  
 2. 有图无队名 → 对体彩现价 → 再查接口。  
 3. 先 `events?slug=`，空了再 `public-search`。  
-4. 6 列表最后一格放可点击链接或诚实写无。  
+4. 7 列表最后一格放可点击链接或诚实写无。  

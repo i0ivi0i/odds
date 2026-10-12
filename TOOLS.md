@@ -14,9 +14,12 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 数据采集采用**大模型自主调度的双轨敏捷架构**：系统正式装载并明确绑定两大核心 Skill 与其对应 MCP 服务。AI 大模型根据目标页面特性与即时网络状况，拥有完全自主、聪明智慧的决断权，灵活调度两军协同。
 
-### 1. 技能与 MCP 主辅架构（Scrapling 100% 全包主力 × BrowserOS 备用辅助）
-- **批量赛事分批并发矩阵与第 0 秒落盘规约（First-Action Batch Matrix）**：
-  - 凡触发赛前分析或重新推演，大模型唤醒后**第 0 秒第一工具动作**必须是构造候选场次分批矩阵（严格按 4~6 场为一组 Batch、4~8 URLs 协议流并发 + 选择器下推），调用 `mcp__scrapling__bulk_get` 分批秒取全部数据并批量组装落盘至 `data/{销售日}/{matchId}.md`；
+- **阶段 0：赛程索引确定性自检与 Scrapling 极速直落（Zero-State Hard Lock）**：
+  - 凡触发赛前分析、赛程同步或手动推演，大模型唤醒后**第 0 秒第一工具动作**必须且只能先检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；
+  - 若缺失或超期，调用 `mcp__scrapling__fetch(url="https://jc.titan007.com/index.aspx", extraction_type="markdown", network_idle=true)` 秒级提取全天场次 ➔ 原子落盘 `data/{销售日}/meta.md` 与追加 `memory/{销售日}.md`（全程 < 2 秒）；
+  - **严禁漫游翻书铁律**：在 `data/{销售日}/meta.md` 确立前，绝对禁止阅读 `skills/deep-analysis` 技能、绝对禁止查看任何 Python 源码、绝对禁止思考盘赔逻辑！
+- **批量赛事分批并发矩阵与进货门禁规约（First-Action Batch Matrix）**：
+  - 赛程索引就绪后，构造候选场次分批矩阵（严格按 4~6 场为一组 Batch、4~8 URLs 协议流并发 + 选择器下推），调用 `mcp__scrapling__bulk_get` 分批秒取全部数据并批量组装落盘至 `data/{销售日}/{matchId}.md`；
   - 严禁单场串行磨洋工，严禁单批超载倾倒，未见快照落盘并通过 `cli.py --batch ... --isolate-failed` 门禁（exit 0）前，绝对禁止开脑推演！
 - **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（1~2 秒全量并发直取）**：
   - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，通过 `mcp__scrapling__bulk_get` 一次性并发秒取单场全部 5 大数据源：
@@ -290,7 +293,7 @@ python 校验/src/adapter/cli.py --system
   - 变盘页 `companyID` 以当场页面链接为准。`config/datasources.json` 的 `tracked_bookmakers.id` 是另一套接口编号，不得直接套到变盘页。
 - **缺失与冲突口径**：未检查、读取失败或未读完整、来源已查但未填、尚未发生、计算未执行、内部不可见。**凡已发生而读取失败、或读取不完整的，必须在报告开头向主人明确提示**；【推演源数据】顶层 `fetchedAt` 早于内部嵌入报价时间、静态摘要与原始流水反向冲突或市场字段错位时，标记证据冲突并禁止签发完整通过收据。
 - **其他来源**：亚盘/欧指流水、机构盘口、主客场/近6数字齐全、没错、对得上 → 可以代。错了、空了、少了一截 → 不能代。伤停格「暂无数据」不是缺数据，如实标注未核实，不挡十步推演。
-- **体彩官方网关**：核对场次编号、开售窗口、节假日休市（见 `config/datasources.json` 的 `sporttery_match_codes`）。三项静态赔本身不是完整盘口资料。找 6 列表链接时用它对照现价对场次。
+- **体彩官方网关**：核对场次编号、开售窗口、节假日休市（见 `config/datasources.json` 的 `sporttery_match_codes`）。三项静态赔本身不是完整盘口资料。找 7 列表链接时用它对照现价对场次。
 
 ### 2. 阵容伤停独立双引擎 (Lineup & Injury Engine)
 - **英超官方 FPL 数据库**：通过 `injury-service.js` 直连英超官方数据，零等待获取主力伤情与出战概率。
