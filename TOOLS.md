@@ -6,8 +6,8 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 ## 核心系统：双轨敏捷数据采集（Skill scrapling-official / browseros-neo 与对应 MCP）
 
-**绝对刚性红线**：**全流程严禁任何临时 `.py` 脚本、跑批脚本或 `python -c` 采集数据！**
-严禁在根目录或任何位置自写散装爬虫脚本。数据采集必须严格使用且只能使用：
+**绝对刚性红线**：**全流程严禁任何临时 `.py` 脚本、跑批脚本、数据清洗脚本、复盘对账脚本或 `python -c`！**
+严禁在根目录或任何位置自写散装爬虫、解析或对账脚本。数据采集必须严格使用且只能使用：
 1. **`BrowserOS neo`**（真实 Chromium 浏览器环境，MCP 工具）；
 2. **`Scrapling MCP`**（官方 MCP 极速协议通道）。
 违者视为严重工程违规与作弊。
@@ -29,6 +29,11 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 - **备用辅助兜底：Skill `/browseros-neo` ↔ MCP `browseros_neo`（仅限异常降级辅助）**：
   - 由于浏览器渲染速度慢、资源消耗高，**仅作为辅助备用通道**；
   - 仅当 Scrapling 遭遇极端反爬锁死、接口改版或必须执行前端点击交互时，才降级调用 BrowserOS neo 兜底。
+- **赛后复盘赛果极速提取规约（赋能 skills/post-review 的 Scrapling 选择器下推通道）**：
+  - 赛后复盘获取已完场比分时，作为 `skills/post-review` 的底层数据通道，调用 `mcp__scrapling__bulk_get` 批量并发抓取 `https://live.titan007.com/detail/{matchId}cn.htm`；
+  - **强制配置选择器下推**：指定 `css_selector=".score, .analyhead, .team-name"` 仅提取比分与主客队名核心节点，彻底过滤百 KB 庞杂 HTML；
+  - **百字节极速直出**：每场仅返回数十至百余字节的纯净文本直接作为技能输入送入模型上下文，由 `skills/post-review` 规约直接驱动对账与概率打分；
+  - **全流程严禁编写任何 `.py` 正则提取脚本、清洗脚本或中间统计代码！**
 - **自主智能调度与职责界限（物理门禁不僭越大脑）**：
   - AI 大模型拥有完全自主的选择、切换与组合调度权；
   - 无论选用哪一个工具，最终组装的目标文件必须落盘至工整单文件 `data/YYYY-MM-DD/{matchId}.md`（即本场法定的【推演源数据】；全天赛程索引与元数据明细统一汇总于 `data/YYYY-MM-DD/meta.md`），必须 100% 通过 `python 校验/src/adapter/cli.py --match ...` 物理安检门禁。
