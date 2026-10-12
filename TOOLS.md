@@ -19,7 +19,9 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
   - 若缺失或超期，调用 `mcp__scrapling__fetch(url="https://jc.titan007.com/index.aspx", extraction_type="markdown", network_idle=true)` 秒级提取全天场次 ➔ 原子落盘 `data/{销售日}/meta.md` 与追加 `memory/{销售日}.md`（全程 < 2 秒）；
   - **严禁漫游翻书铁律**：在 `data/{销售日}/meta.md` 确立前，绝对禁止阅读 `skills/deep-analysis` 技能、绝对禁止查看任何 Python 源码、绝对禁止思考盘赔逻辑！
 - **批量赛事分批并发矩阵与进货门禁规约（First-Action Batch Matrix）**：
-  - 赛程索引就绪后，构造候选场次分批矩阵（严格按 4~6 场为一组 Batch、4~8 URLs 协议流并发 + 选择器下推），调用 `mcp__scrapling__bulk_get` 分批秒取全部数据并批量组装落盘至 `data/{销售日}/{matchId}.md`；
+  - 赛程索引就绪后，由主人指令锁定推演范围（全部/早盘/晚盘/指定，严禁任何 AI 将分批大小当成推演总数！）；
+  - 构造候选场次分批矩阵（严格按 4~6 场为一组 Batch、4~8 URLs 协议流并发 + 选择器下推），调用 `mcp__scrapling__bulk_get` 分批秒取数据；
+  - **法定直写装配落盘**：大模型/搬运工直接调用 `write_to_file` 工具将符合第四节黄金契约规范的文本批量写入 `data/{销售日}/{matchId}.md`，无需编写任何临时 Python 脚本；
   - 严禁单场串行磨洋工，严禁单批超载倾倒，未见快照落盘并通过 `cli.py --batch ... --isolate-failed` 门禁（exit 0）前，绝对禁止开脑推演！
 - **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（1~2 秒全量并发直取）**：
   - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，通过 `mcp__scrapling__bulk_get` 一次性并发秒取单场全部 5 大数据源：
