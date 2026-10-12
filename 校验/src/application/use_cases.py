@@ -152,6 +152,7 @@ class VerifySnapshotUseCase:
                 pass
         if max_age_minutes is not None:
             data["_max_age_minutes"] = max_age_minutes
+        data["_raw_content"] = content
 
         receipt = self.verifier.verify(data)
         receipt.metadata["content_hash"] = content_hash

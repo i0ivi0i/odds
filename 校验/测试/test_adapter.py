@@ -73,6 +73,14 @@ class TestAdapterCli(unittest.TestCase):
         self.assertEqual(res.returncode, 1)
         self.assertIn("STALE_SNAPSHOT", res.stderr + res.stdout)
 
+    def test_cli_rejects_excessive_max_age_minutes(self):
+        """测试 CLI 严禁传入超过 45 分钟的新鲜度阈值，防止擅自调大逃避过期"""
+        cmd = [sys.executable, str(self.cli_py), "--match", str(self.valid_snapshot), "--max-age-minutes", "300"]
+        res = subprocess.run(cmd, cwd=str(self.repo_root), capture_output=True, text=True, encoding="utf-8", errors="replace")
+        self.assertEqual(res.returncode, 1)
+        self.assertIn("超过系统法定允许最大值", res.stderr + res.stdout)
+
+
     def test_cli_batch_isolate_failed_quarantines_and_passes_valid(self):
         """测试 CLI 批量安检模式下启用 --isolate-failed：自动隔离违规快照并放行合格集群"""
         import shutil

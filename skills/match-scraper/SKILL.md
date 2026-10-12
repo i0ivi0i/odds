@@ -25,7 +25,7 @@ metadata: { "emoji": "📆" }
 
 # 第一部分：模式一·赛程抓取与索引初始化（第 0 步极速原子落盘）
 
-**严禁漫游翻书铁律**：在执行模式一落盘 `meta.md` 前，**严禁阅读 `deep-analysis` 技能、严禁查看任何 Python 装配源码（如 assembler/cli/use_cases）、严禁进行任何盘口推演思考**！本模式唯一职责是快速完成赛程索引物理落盘（全程 < 2 秒）。
+**模式一极速专注规约**：本模式唯一职责是秒级拉取并落盘赛程索引 `meta.md`（全程 < 2 秒）。推演心法《skills/deep-analysis/SKILL.md》留在阶段二进货过验后深度通读，模式一专注于快速建立赛程索引！
 
 ## 销售窗口检查（定时任务触发时必须执行）
 
@@ -152,9 +152,10 @@ metadata: { "emoji": "📆" }
    调用 MCP `scrapling` `bulk_get` 一次性并发获取 7 家亚盘与 7 家大小球变盘流水（cid: 1, 3, 8, 12, 47, 42, 48）；
 3. **法定直写落盘与同步索引（破除脚本死锁）**：
    大模型直接调用内置 `write_to_file` 工具，将获取到的真实活水数据按 TOOLS.md 第四节黄金契约规范组装写入 `data/{销售日}/{matchId}.md`（Polymarket 链接定位与核验严格按 `docs/Polymarket链接查找教程.md` 执行，并同步更新 `data/{销售日}/meta.md`）。**严禁编写任何临时 Python 脚本，直接用 write_to_file 落盘即为系统法定装配！**
-4. **门禁过验与回传**：
+4. **门禁过验与回传（契约专注原则）**：
    终端物理运行 `python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`（或批量安检 `--batch`）；
-   拿到 exit 0 (PASS) 后，立即向主会话 announce 汇报：「✅ 【{matchId}】推演源数据已落盘并过验放行 (exit 0)」，结束阶段一。
+   - 若门禁未通过 (exit 1)：门禁报错信息已在终端清晰指明缺失项，对照终端提示与 `TOOLS.md` 黄金契约补正 Markdown 即可，无需在推演进货时分心研读底层代码；
+   - 拿到 exit 0 (PASS) 后，立即向主会话 announce 汇报：「✅ 【{matchId}】推演源数据已落盘并过验放行 (exit 0)」，结束阶段一。
 
 ### 1. 亚盘与大小球 7 大法定机构并发直取
 调用 Scrapling `bulk_get` 单次并发拉取 7 大法定做市商的分钟级变盘流水：

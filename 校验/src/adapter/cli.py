@@ -302,6 +302,13 @@ def main() -> int:
 
     args = parser.parse_args()
 
+    # 门禁安全硬上限：严禁篡改 --max-age-minutes 传入超大数值逃避新鲜度熔断
+    MAX_ALLOWABLE_FRESHNESS = 45
+    if (args.batch or args.match) and args.max_age_minutes is not None:
+        if args.max_age_minutes > MAX_ALLOWABLE_FRESHNESS or args.max_age_minutes <= 0:
+            print(f"❌ 门禁安全违规: --max-age-minutes ({args.max_age_minutes}) 超过系统法定允许最大值 ({MAX_ALLOWABLE_FRESHNESS} 分钟)！严禁篡改参数绕过新鲜度核验！", file=sys.stderr)
+            return 1
+
     # 优先级 1: 【推演源数据】装配
     if args.assemble:
         return run_assemble(args.assemble, args.output)

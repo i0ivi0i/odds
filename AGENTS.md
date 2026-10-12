@@ -15,10 +15,14 @@
    - **【阶段 0：赛程索引确定性自检与极速直落（Zero-State Hard Lock）】**：凡触发任何赛程同步、赛前分析、手动推演（如“今天买什么/全面分析推演/分析010”）等任何分析任务，唤醒后的**第 0 步绝对硬死锁必须先检查磁盘 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）**：
      - 若**不存在或超期**：主会话第 0 秒推送「⚡ 今日赛程索引未初始化，正在秒级拉取落盘 meta.md...」，立即调度 Skill `match-scraper` 模式一，调用 Scrapling MCP `fetch(url="https://jc.titan007.com/index.aspx", extraction_type="markdown", network_idle=true)` 秒级提取比赛列表 ➔ 立即原子落盘 `data/{销售日}/meta.md` 并追加 `memory/{销售日}.md`（全程 < 2 秒）！
      - 若**已存在且有效**：直接放行进入阶段一；
-     - **严禁翻书铁律**：在 `data/{销售日}/meta.md` 确立前，**绝对禁止调用 `view_file` 阅读《skills/deep-analysis/SKILL.md》、绝对禁止查看任何 Python 源码（如 assembler.py/cli.py/use_cases.py）或初筛细节**！
+     - **推演态契约专注原则**：
+       ① **序贯衔接与必读心法**：阶段 0 专注于极速落盘 `meta.md`；《skills/deep-analysis/SKILL.md》是全系统核心推演大脑，在阶段 2（源数据门禁 PASS 后）**绝对强制调用 `view_file` 深度全精读并执行**，阶段 0～1 仅是不提前空转偷跑，绝非不读；
+       ② **业务态与工程态分工**：推演态专注于业务流本身，数据规范以 `TOOLS.md` 为准，Python 脚本通过 CLI 命令行高效运行。推演过程中无需分心研读内部代码实现；当任务是代码重构与维护时，再自然进入工程态。
    - **【阶段 1：纯物理分批进货与故障隔离门禁（Phase 1 Ingest Gate）】**：
      主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper` 模式二（Scrapling MCP `bulk_get` 并发直取 5 大接口）组装落盘至 `data/{销售日}/{matchId}.md` ➔ 运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 拿到 `exit 0`！严禁搬运工思考盘赔逻辑或定性胜负！
-     **推演证据界定宪法与零前置单测禁令（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**唯一法定证据必须且只能是：`data/{销售日}/{matchId}.md` 物理文件与门禁收据**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”！在无代码改动时，主会话或搬运工执行任何 pytest、unittest、git diff 或 graph.json 检查均属严重违纪！
+     **重新推演物理清空与严禁局部打补丁（Clean-Slate Anti-Patch Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧快照文件】，全量调用 Scrapling MCP 并发抓取 5 大接口从零装配全新落盘！**绝对严禁直接拿磁盘已有旧文件跑门禁跳过抓取，更绝对严禁在旧快照上使用 replace_file_content 仅修改 T4 时间戳或少数赔率做局部伪装（作弊打补丁）！**门禁参数严格锁定 `--max-age-minutes 30`，严禁擅自调大逃避过期！
+     **门禁排错专注心智**：当 `cli.py --match` 或 `cli.py --batch` 门禁返回退出码 1 时，错误原因已在终端以清晰中文明确打印，格式标准已在 `TOOLS.md` 第四节详尽列出。排错依据终端提示与 `TOOLS.md` 黄金契约直接修正 Markdown 数据文件即可，保持推演流畅节奏，无需走神研读底层代码。
+     **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**唯一法定证据必须且只能是：`data/{销售日}/{matchId}.md` 物理文件与门禁收据**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何 pytest、unittest、git diff 或 graph.json 检查，直接进入抓取进货，杜绝空转！
    - **【阶段 2：纯逻辑首席分析师（Phase 2 Deduction Brain）】**：
      只有且仅当批量门禁通过（exit 0）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 Graphify 三大战区与运行 OO-EPC 去水模型，开展 10 步深度推演与冻结认知契约卡！未见门禁 exit 0 放行，**绝对禁止调用 Graphify 三大战区、绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
    - **三大战区标准化检索规范（仅在阶段二执行）**：
@@ -44,7 +48,10 @@
      - **`/ddd-hexagonal-architecture`（六边形端口与适配器架构）**：坚守领域层极致纯净，外部输入输出（HTTP/Scrapling/DB/CLI）严格通过端口（Port）与适配器（Adapter）解耦，依赖永远向内指向领域核心；
      - **`/domain-driven-design`（领域驱动设计）**：以统一语言（Ubiquitous Language）、限界上下文（Bounded Context）和聚合根（Aggregate Root）建模业务，坚决消灭贫血模型与技术黑话，代码即模型、模型即代码。
 
-不要问许可。直接做。
+12. **双态权限契约与规划交权立宪（严格区分业务态与工程规划态）**：
+   - **推演业务态（放行）**：当主人下达明确的推演指令（如“分析010”、“给推荐”、“全面推演”）且数据门禁合格时，自动化流水线自主运转，不问琐碎操作；
+   - **规划与工程态（硬锁）**：凡触发 `/ce-plan` 规划、系统架构重构或核心代码修改，PLAN 编写完毕后**绝对必须就地终止会话交还权杖，严禁传 RequestFeedback: true 诱发平台 Stop hook 自动放行，绝对只认主人在聊天框输入的亲自指令（如“批准执行/修一下”）方准动工**！严禁擅自提前偷跑或越权实现；
+   - **重新推演先物理清空（Clean Slate Re-ingest）**：凡触发重新推演，严禁在旧快照上使用 replace_file_content 偷懒局部修改时间戳；第一动作必须物理清空旧文件，由专职搬运工从网络全新并发抓取并全量装配！
 
 ## 一、工作流程总览
 
@@ -81,9 +88,9 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
   否则：
   【阶段一：纯物理分批进货（分组并发 ➔ 【推演源数据】落盘 ➔ 故障隔离门禁）】
   编排者/搬运工职责仅限调用 `match-scraper`（Scrapling MCP 官方通道）分批并发进货与质检过验，**严禁动脑思考盘赔逻辑、严禁做比赛推演**！
-  严格按【分批进货规约】将全量目标场次按 4~6 场划分为一组（Batch），每组调用 Skill `match-scraper`（选择器下推 + 4~8 URLs 协议流并发）分批秒取 5 大接口数据。
+  严格按【分批进货规约】将全量目标场次按 4~6 场划分为一组（Batch），每组调用 Skill `match-scraper`（选择器下推 + 4~8 URLs 协议流并发）分批秒取 5 大接口数据。凡触发重新分析或距上次分析 > 30 分钟，必须强制执行真实网络并发抓取覆盖旧快照，严禁直接拿磁盘旧文件跑门禁！
   **法定 Markdown 直写装配（破除脚本死锁）**：大模型/搬运工在获取真实数据后，直接调用 `write_to_file` 工具将符合 TOOLS.md 第四节黄金契约规范的 Markdown 文本写入 `data/{销售日}/{matchId}.md`！这就是系统法定的装配落盘方式，**严禁编写任何临时 Python 脚本，也严禁因找不到装配命令而停滞**；落盘后自动同步 `data/{销售日}/meta.md` 索引状态；
-  **验收门禁前置死锁（支持故障隔离）**：分批进货完成后，立即在终端物理运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 执行终审安检（亚盘/大小球七家变盘全行 + 欧指依据公司流水 + 主客场/近6进失球数字 + 真实性防克隆核验 + 物理修改时间戳新鲜度核验）。异常场次就地隔离至 `.quarantine`，合格集群放行！
+  **验收门禁前置死锁（支持故障隔离）**：分批进货完成后，立即在终端物理运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 执行终审安检（亚盘/大小球七家变盘全行 + 欧指依据公司流水 + 主客场/近6进失球数字 + 真实性防克隆核验 + 物理修改时间戳新鲜度核验）。门禁严格锁定 `--max-age-minutes 30`，严禁随意调大参数！异常场次就地隔离至 `.quarantine`，合格集群放行！
   **铁律**：若无任何场次合格或批量门禁返回退出码 1：**必须立即彻底物理熔断中止，严禁分发 Worker、严禁输出任何推演结论与预测表格！绝对禁止在数据缺失或门禁未过时偷懒继续十步！**（无物理源数据不下锅；伤停格「暂无数据」只写未核实、贴原句、允许继续十步，禁止写成无伤停）。
   【阶段二：纯逻辑首席分析师（大模型深度推演）】
   仅当批量门禁返回退出码 0 (PASS) 时，才准切换为分析师身份，对每场 spawn worker 深度分析（纯逻辑推理，纯只读加载当场物理【推演源数据】，此时方可检索 Graphify 三大战区与运行 OO-EPC，深度消化源数据并逐一引用真实盘口、水位、时序与技统数字证据，每场回传证据，主会话/编排验收后逐场推送）→
@@ -145,7 +152,7 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
    收到单场指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动场次【{matchId} {对阵}】推演源数据抓取，专职搬运工进货中...`，杜绝黑盒盲等；
 2. **阶段一：派发专职搬运工 Subagent（纯物理进货）**：
-   主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 专职调用 Skill `match-scraper`（Scrapling MCP `bulk_get` 极速并发）秒取 5 大接口数据 ➔ 组装落盘至 `data/{销售日}/{matchId}.md` ➔ 终端物理运行 `python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30` 验证拿到 exit 0 ➔ announce 回传主会话。严禁搬运工在未过验前思考盘赔或定性胜负！
+   主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 专职调用 Skill `match-scraper`（Scrapling MCP `bulk_get` 极速并发）秒取 5 大接口数据 ➔ 组装落盘至 `data/{销售日}/{matchId}.md` ➔ 终端物理运行 `python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30` 验证拿到 exit 0 ➔ announce 回传主会话。严禁搬运工在未过验前思考盘赔或定性胜负，专注于高效进货与数据装配！
 3. **主会话中转放行反馈**：
    主会话收到搬运工 announce 的 `exit 0 (PASS)` 放行报告后，立即推送：
    `🛡️ 【{matchId}】推演源数据已 100% 验收通过，正在唤醒首席分析师进入阶段二深度推演...`
@@ -163,7 +170,7 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
 2. **阶段一：纯物理分批进货（分组并发 + 故障隔离门禁）**：
    - **分批进货（Batching）**：严格以 4~6 场为一组（Batch），每个批次调用 Skill `match-scraper`（选择器下推 + 4~8 URLs 协议流并发）分批秒取 5 大接口数据，严禁一次性堆叠数十个 URL 导致底层超载；
    - **装配落盘**：调用 `SnapshotAssembler` 批量组装落盘至 `data/{销售日}/{matchId}.md`，并自动更新同步 `data/{销售日}/meta.md`；
-   - **批量故障隔离门禁**：在终端物理运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`。若个别场次数据异常，门禁自动将其隔离至 `.quarantine` 并放行合格集群，杜绝木桶短板拖垮全天流程；
+   - **批量故障隔离门禁**：在终端物理运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`。若个别场次数据异常，门禁自动将其隔离至 `.quarantine` 并放行合格集群，杜绝木桶短板拖垮全天流程；门禁未过时对照终端提示与 TOOLS.md 修正数据，保持推演流畅推进！
 3. **主会话中转放行反馈**：
    主会话收到放行报告后，立即推送：
    `🛡️ 【全量 X 场】推演源数据批量验收通过（放行 Y 场，隔离 Z 场），正在唤醒首席分析师队列进入阶段二深度推演...`

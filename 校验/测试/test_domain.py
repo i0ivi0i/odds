@@ -825,6 +825,91 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertEqual(auth_res.status, CheckStatus.FAIL)
         self.assertIn("STALE_SNAPSHOT", auth_res.message)
 
+    def test_verify_stale_timeline_watermark_fails(self):
+        """测试变盘流水时间戳水印核验：当正文流水时间戳落后文件修改时间超过 120 分钟时必须判定 FAIL (STALE_TIMELINE_WATERMARK)"""
+        import time
+        from datetime import datetime, timedelta
+        snap = dict(self.valid_snapshot)
+        now_dt = datetime.now()
+        snap["_file_mtime"] = now_dt.timestamp()  # 文件刚刚修改
+        snap["_max_age_minutes"] = 30
+        # 构造一个 3 小时前的旧时序流水内容，包含合法主客队名
+        old_time_str = (now_dt - timedelta(hours=3)).strftime("%m-%d %H:%M")
+        home = snap.get("match", {}).get("homeTeam", "主队")
+        away = snap.get("match", {}).get("awayTeam", "客队")
+        snap["_raw_content"] = f"# 【测试】{home} vs {away}\n- **比赛 ID**：2981506\n| **T4 终盘关门** | {old_time_str} | 2.50 | 3.30 | 2.40 |"
+
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        auth_res = [r for r in receipt.results if r.dimension == DimensionType.AUTHENTICITY][0]
+        self.assertEqual(auth_res.status, CheckStatus.FAIL)
+        self.assertIn("STALE_TIMELINE_WATERMARK", auth_res.message)
+
+    def test_detect_single_company_patch_cheat(self):
+        """测试反打补丁作弊：当仅有 1 家核心机构修改为最新时间戳而其余机构严重滞后时必须判定 FAIL (SUSPECTED_PATCH_CHEAT)"""
+        from datetime import datetime, timedelta
+        snap = dict(self.valid_snapshot)
+        now_dt = datetime.now()
+        snap["_file_mtime"] = now_dt.timestamp()
+        snap["_max_age_minutes"] = 30
+        home = snap.get("match", {}).get("homeTeam", "主队")
+        away = snap.get("match", {}).get("awayTeam", "客队")
+        recent_ts = now_dt.strftime("%m-%d %H:%M")
+        old_ts = (now_dt - timedelta(hours=3)).strftime("%m-%d %H:%M")
+        
+        # 仅 Crown 被打了补丁为最新时间，澳彩/Bet365/易胜博/平博全停留在 3 小时前
+        content = f"""# 【测试】{home} vs {away}
+- **比赛 ID**：2981506
+### 1. 澳彩
+| T4 | {old_ts} | 0.90 | 0.90 |
+### 2. Crown 皇冠
+| T4 | {recent_ts} | 0.92 | 0.88 |
+### 3. Bet365
+| T4 | {old_ts} | 0.90 | 0.90 |
+### 4. 易胜博
+| T4 | {old_ts} | 0.91 | 0.89 |
+### 5. 平博
+| T4 | {old_ts} | 0.93 | 0.87 |
+"""
+        snap["_raw_content"] = content
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        auth_res = [r for r in receipt.results if r.dimension == DimensionType.AUTHENTICITY][0]
+        self.assertEqual(auth_res.status, CheckStatus.FAIL)
+        self.assertIn("SUSPECTED_PATCH_CHEAT", auth_res.message)
+
+    def test_genuine_multi_company_freshness_passes(self):
+        """测试真实多机构活水同步：当 3 家以上核心机构均处于最新区间时必须 PASS"""
+        from datetime import datetime, timedelta
+        snap = dict(self.valid_snapshot)
+        now_dt = datetime.now()
+        snap["_file_mtime"] = now_dt.timestamp()
+        snap["_max_age_minutes"] = 30
+        home = snap.get("match", {}).get("homeTeam", "主队")
+        away = snap.get("match", {}).get("awayTeam", "客队")
+        t1 = (now_dt - timedelta(minutes=5)).strftime("%m-%d %H:%M")
+        t2 = (now_dt - timedelta(minutes=10)).strftime("%m-%d %H:%M")
+        t3 = (now_dt - timedelta(minutes=15)).strftime("%m-%d %H:%M")
+        t4 = (now_dt - timedelta(minutes=20)).strftime("%m-%d %H:%M")
+        
+        content = f"""# 【测试】{home} vs {away}
+- **比赛 ID**：2981506
+### 1. 澳彩
+| T4 | {t1} | 0.90 | 0.90 |
+### 2. Crown 皇冠
+| T4 | {t2} | 0.92 | 0.88 |
+### 3. Bet365
+| T4 | {t3} | 0.90 | 0.90 |
+### 4. 易胜博
+| T4 | {t4} | 0.91 | 0.89 |
+### 5. 平博
+| T4 | {t1} | 0.93 | 0.87 |
+"""
+        snap["_raw_content"] = content
+        receipt = self.verifier.verify(snap)
+        auth_res = [r for r in receipt.results if r.dimension == DimensionType.AUTHENTICITY][0]
+        self.assertEqual(auth_res.status, CheckStatus.PASS)
+
 
 if __name__ == "__main__":
     unittest.main()

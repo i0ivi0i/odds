@@ -943,6 +943,76 @@ class SnapshotVerifier:
             except Exception:
                 pass
 
+        # 5. 【变盘流水时间戳水印与反打补丁作弊核验】
+        if max_age is not None and file_mtime is not None:
+            raw_content = snapshot.get("_raw_content") or ""
+            ts_matches = re.findall(r"\b(\d{2}-\d{2}\s+\d{2}:\d{2})\b", raw_content)
+            if ts_matches:
+                try:
+                    file_dt = datetime.fromtimestamp(float(file_mtime))
+                    year = file_dt.year
+
+                    # 提取各大核心做市商在正文中的最新变盘时序时间戳
+                    core_companies = {
+                        "澳彩": ["澳彩", "澳门"],
+                        "Crown": ["皇冠", "Crown", "crown"],
+                        "Bet365": ["Bet365", "bet365", "365"],
+                        "易胜博": ["易胜博"],
+                        "平博": ["平博", "Pinnacle", "pinnacle"],
+                    }
+                    company_latest_dts = {}
+                    for cname, aliases in core_companies.items():
+                        c_pat = rf"(?:###\s*(?:\d+[\.、\s]*)?(?:{'|'.join(aliases)})).*?(?=(?:\n###|\Z))"
+                        m_block = re.search(c_pat, raw_content, re.DOTALL | re.I)
+                        if m_block:
+                            c_ts = re.findall(r"\b(\d{2}-\d{2}\s+\d{2}:\d{2})\b", m_block.group(0))
+                            if c_ts:
+                                c_max_s = max(c_ts)
+                                company_latest_dts[cname] = datetime.strptime(f"{year}-{c_max_s}", "%Y-%m-%d %H:%M")
+
+                    if len(company_latest_dts) >= 3:
+                        overall_latest_dt = max(company_latest_dts.values())
+
+                        # 5.1 最新时序不能落后文件保存时间超过 120 分钟
+                        overall_lag = (file_dt - overall_latest_dt).total_seconds() / 60.0
+                        if overall_lag > 120.0:
+                            return DimensionResult(
+                                dimension=DimensionType.AUTHENTICITY,
+                                status=CheckStatus.FAIL,
+                                message=f"STALE_TIMELINE_WATERMARK: 正文核心机构最新变盘时间戳停滞于 {overall_latest_dt.strftime('%m-%d %H:%M')}，落后文件保存时间 {overall_lag:.1f} 分钟 (> 120 分钟)！判定为未拉取最新活水行情的假刷新！",
+                                detail={"match_id": match_id, "latest_timeline": overall_latest_dt.strftime('%m-%d %H:%M'), "file_mtime": file_dt.strftime("%Y-%m-%d %H:%M:%S"), "lag_minutes": round(overall_lag, 1)},
+                            )
+
+                        # 5.2 反局部打补丁作弊核验 (SUSPECTED_PATCH_CHEAT)
+                        sync_count = sum(
+                            1 for dt in company_latest_dts.values()
+                            if (overall_latest_dt - dt).total_seconds() / 60.0 <= 60.0
+                        )
+                        lagging_count = sum(
+                            1 for dt in company_latest_dts.values()
+                            if (overall_latest_dt - dt).total_seconds() / 60.0 > 90.0
+                        )
+                        if sync_count < 3 and lagging_count >= 2:
+                            return DimensionResult(
+                                dimension=DimensionType.AUTHENTICITY,
+                                status=CheckStatus.FAIL,
+                                message=f"SUSPECTED_PATCH_CHEAT: 疑似局部打补丁作弊！核心做市商时序严重不同步 (仅 {sync_count} 家机构更新至最新区间，而有 {lagging_count} 家机构严重滞后超 90 分钟)！重跑推演必须全量并发重抓所有核心机构！",
+                                detail={"match_id": match_id, "sync_count": sync_count, "lagging_count": lagging_count, "company_timestamps": {k: v.strftime('%m-%d %H:%M') for k, v in company_latest_dts.items()}},
+                            )
+                    else:
+                        latest_ts_str = max(ts_matches)
+                        latest_ts_dt = datetime.strptime(f"{year}-{latest_ts_str}", "%Y-%m-%d %H:%M")
+                        lag_minutes = (file_dt - latest_ts_dt).total_seconds() / 60.0
+                        if lag_minutes > 120.0:
+                            return DimensionResult(
+                                dimension=DimensionType.AUTHENTICITY,
+                                status=CheckStatus.FAIL,
+                                message=f"STALE_TIMELINE_WATERMARK: 正文变盘时序时间戳停滞于 {latest_ts_str}，落后文件保存时间 {lag_minutes:.1f} 分钟 (> 120 分钟)！判定为未拉取最新活水行情的假刷新！",
+                                detail={"match_id": match_id, "latest_timeline_time": latest_ts_str, "file_mtime": file_dt.strftime("%Y-%m-%d %H:%M:%S"), "lag_minutes": round(lag_minutes, 1)},
+                            )
+                except Exception:
+                    pass
+
         return DimensionResult(
             dimension=DimensionType.AUTHENTICITY,
             status=CheckStatus.PASS,
