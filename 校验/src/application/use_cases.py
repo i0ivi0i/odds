@@ -321,9 +321,18 @@ class VerifySnapshotUseCase:
             snap["matchTime"] = m_time.group(1).strip()
             snap["match"]["kickoffTime"] = snap["matchTime"]
 
-        m_poly = re.search(r"Polymarket 预测市场.*?\[(https://[^\s\]]+)\]", content)
-        if m_poly:
-            snap["polymarket"] = {"status": "active", "url": m_poly.group(1).strip()}
+        # 解析 Polymarket
+        m_poly_line = re.search(r"Polymarket.*?预测市场[^\r\n]*?[：:]\s*([^\r\n]+)", content)
+        if m_poly_line:
+            poly_text = m_poly_line.group(1).strip()
+            # 优先提取 URL (支持 [text](url) 或裸 url)
+            url_m = re.search(r"\]\((https?://[^\s\)]+)\)", poly_text)
+            if not url_m:
+                url_m = re.search(r"\b(https?://[^\s\)\],]+)", poly_text)
+            if url_m:
+                snap["polymarket"] = {"status": "active", "url": url_m.group(1).strip(), "raw": poly_text}
+            else:
+                snap["polymarket"] = {"status": "unopened", "url": poly_text, "raw": poly_text}
         else:
             snap["polymarket"] = {"status": "unopened", "url": "未开放"}
 

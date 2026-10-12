@@ -357,12 +357,17 @@ class SnapshotVerifier:
 
         if snapshot.get("is_markdown_baseline"):
             euro_list = snapshot.get("europe1x2") or []
-            if len(euro_list) < 23:
+            pm = snapshot.get("polymarket") or {}
+            pm_url = (pm.get("url") or "").strip()
+            pm_status = str(pm.get("status") or "")
+            is_pm_unopened = not pm_url or "未开放" in pm_url or "未开盘" in pm_url or pm_status == "unopened"
+            required_count = 22 if is_pm_unopened else 23
+            if len(euro_list) < required_count:
                 return DimensionResult(
                     dimension=DimensionType.EUROPE_1X2,
                     status=CheckStatus.FAIL,
-                    message=f"欧洲指数(1X2)法定机构数量不足 (当前仅{len(euro_list)}家，法定必须满23家，严禁漏项！)",
-                    detail={"count": len(euro_list)},
+                    message=f"欧洲指数(1X2)法定机构数量不足 (当前仅{len(euro_list)}家，法定必须满{required_count}家，严禁漏项！)",
+                    detail={"count": len(euro_list), "required": required_count},
                 )
 
         return DimensionResult(
@@ -790,7 +795,20 @@ class SnapshotVerifier:
         pm = snapshot.get("polymarket") or {}
         url = (pm.get("url") or "").strip()
         slug = (pm.get("slug") or "").strip()
-        status_val = pm.get("status") or ""
+        status_val = str(pm.get("status") or "")
+        league = str(get_match_property(snapshot, "league") or "").strip()
+        raw_content = str(snapshot.get("_raw_content") or "")
+
+        # 核心主流活跃联赛白名单 (预测市场常态化开设标的，严禁任何形式的未开盘声明)
+        core_leagues = {
+            "英超", "意甲", "西甲", "德甲", "法甲", "法乙",
+            "英冠", "德乙", "意乙", "西乙",
+            "欧冠", "欧洲冠军联赛", "欧联杯", "欧联", "欧协联",
+            "葡超", "巴西甲", "巴甲", "亚冠", "亚冠精英",
+            "瑞典超", "挪超", "荷甲", "美职联", "MLS",
+            "EPL", "SERIE A", "LA LIGA", "BUNDESLIGA", "LIGUE 1"
+        }
+        is_core_league = any(c.lower() in league.lower() for c in core_leagues) if league else False
 
         # 如果没有填写任何 polymarket 字段，或者标明未开放/无流动性
         is_unopened = (
@@ -800,12 +818,55 @@ class SnapshotVerifier:
             or "未开盘" in url
             or status_val == "unopened"
         )
+
+        # 1. 快照内部自洽性检查：顶部标明未开盘/未开放，但正文或欧指表格中又编造了 Polymarket 挂单数据
         if is_unopened:
+            has_fabricated_odds = False
+            if re.search(r"\|\s*(?:\*\*\d+\*\*|\d+)\s*\|\s*[\*]*Polymarket[\*]*.*?\|\s*\d+¢", raw_content, re.I):
+                has_fabricated_odds = True
+            euro_list = snapshot.get("europe1x2") or []
+            for row in euro_list:
+                if isinstance(row, dict) and "polymarket" in str(row.get("company", "")).lower():
+                    init = row.get("initial") or {}
+                    latest = row.get("latest") or {}
+                    if (init.get("odds") and any(init.get("odds"))) or (latest.get("odds") and any(latest.get("odds"))):
+                        has_fabricated_odds = True
+                        break
+            if has_fabricated_odds:
+                return DimensionResult(
+                    dimension=DimensionType.POLYMARKET_LIQUIDITY,
+                    status=CheckStatus.FAIL,
+                    message="快照内部逻辑矛盾：顶部标明 Polymarket 未开盘/未开放，但正文表格中又编造了 Polymarket 挂单赔率！严禁自相矛盾伪造数据！",
+                    detail={"url": url, "league": league},
+                )
+
+            # 2. 主流核心活跃联赛严禁随意标记未开盘
+            if is_core_league:
+                return DimensionResult(
+                    dimension=DimensionType.POLYMARKET_LIQUIDITY,
+                    status=CheckStatus.FAIL,
+                    message=f"Polymarket 门禁拦截：当前赛事联赛为【{league}】，属于主流核心联赛，预测市场常态化开盘撮合，严禁偷懒标记未开盘逃避过验！必须提供真实链上事件链接或详尽核验证据",
+                    detail={"league": league, "url": url},
+                )
+
+            # 3. 非核心冷门联赛：必须出具双向检索或确定性探测存证，严禁口头空头逃逸
+            has_dual_proof = bool(
+                re.search(r"(?:双向|双向核验|双向检索|q_home.*q_away|q=.*(?:与|and|及).*q=)", url, re.I)
+                or (re.search(r"经Gamma.*核验", url) and len(url) >= 15)
+            )
+            if not has_dual_proof:
+                return DimensionResult(
+                    dimension=DimensionType.POLYMARKET_LIQUIDITY,
+                    status=CheckStatus.FAIL,
+                    message=f"Polymarket 未开盘存证不足：非核心联赛未开盘声明必须附带真实双向检索凭据（如『经Gamma双向核验q=Home与q=Away均无活跃标的』），严禁口头逃逸！(当前为: {url})",
+                    detail={"url": url, "league": league},
+                )
+
             return DimensionResult(
                 dimension=DimensionType.POLYMARKET_LIQUIDITY,
                 status=CheckStatus.WARN,
-                message="Polymarket 当前未开放独立交易池或暂无流动性 (实事求是标注，允许推演)",
-                detail={"url": url or "未开放", "status": "unopened"},
+                message="Polymarket 当前未开放独立交易池或暂无流动性 (已具备真实双向核验凭据，允许推演)",
+                detail={"url": url or "未开放", "status": "unopened", "league": league},
             )
 
         # 检查是否包含虚构的模板占位符 (例如 {league}, {slug}, fake 等)
@@ -814,6 +875,15 @@ class SnapshotVerifier:
                 dimension=DimensionType.POLYMARKET_LIQUIDITY,
                 status=CheckStatus.FAIL,
                 message=f"Polymarket 检测到包含模板占位符的伪造链接 ({url})，严禁编造链接！未开盘必须实事求是标注",
+                detail={"url": url},
+            )
+
+        # 检查 URL 域名与格式规范
+        if not re.search(r"https?://(?:www\.)?polymarket\.com/(?:event|zh/sports|sports)/[a-zA-Z0-9_\-]+", url):
+            return DimensionResult(
+                dimension=DimensionType.POLYMARKET_LIQUIDITY,
+                status=CheckStatus.FAIL,
+                message=f"Polymarket 链接格式不合规 ({url})，必须为形如 https://polymarket.com/event/{{slug}} 的有效事件链接！",
                 detail={"url": url},
             )
 

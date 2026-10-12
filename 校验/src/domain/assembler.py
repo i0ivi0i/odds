@@ -161,8 +161,11 @@ class SnapshotAssembler:
                 f"| {zone} | {norm_name} | {init_odds[0]:.2f} | {init_odds[1]:.2f} | {init_odds[2]:.2f} | {init_ret:.2f}% | "
                 f"{live_odds[0]:.2f} | {live_odds[1]:.2f} | {live_odds[2]:.2f} | {live_ret:.2f}% | {kelly_str} |"
             )
-        # 严格补齐法定 23 家机构，杜绝任何一家漏行
+        # 严格补齐法定机构，若 Polymarket 未开放则不盲目伪造其赔率行
+        is_poly_unopened = not poly_url.startswith("http")
         for comp, z in LEGAL_23_COMPANIES.items():
+            if comp == "Polymarket" and is_poly_unopened:
+                continue
             if comp not in seen_companies:
                 seen_companies.add(comp)
                 md_lines.append(

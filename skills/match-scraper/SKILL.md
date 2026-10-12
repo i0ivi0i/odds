@@ -150,9 +150,12 @@ metadata: { "emoji": "📆" }
    调用 MCP `scrapling` `bulk_get` 一次性并发获取：分析页、Crown波胆、体彩HAD/HHAD、1x2d.js百家欧指；
 2. **批次二：并发拉取 7 大法定做市商双盘流水**：
    调用 MCP `scrapling` `bulk_get` 一次性并发获取 7 家亚盘与 7 家大小球变盘流水（cid: 1, 3, 8, 12, 47, 42, 48）；
-3. **法定直写落盘与同步索引（破除脚本死锁）**：
-   大模型直接调用内置 `write_to_file` 工具，将获取到的真实活水数据按 TOOLS.md 第四节黄金契约规范组装写入 `data/{销售日}/{matchId}.md`（Polymarket 链接定位与核验严格按 `docs/Polymarket链接查找教程.md` 执行，并同步更新 `data/{销售日}/meta.md`）。**严禁编写任何临时 Python 脚本，直接用 write_to_file 落盘即为系统法定装配！**
-4. **门禁过验与回传（契约专注原则）**：
+3. **批次三：并发拉取 Polymarket 活跃标的与链上价格（第 6 大法定接口）**：
+   按官方 Discover-Markets 规范，优先调用 `https://gamma-api.polymarket.com/events/slug/{league}-{home3}-{away3}-{YYYY-MM-DD}` 瞬时直探；直探未命中时发起主队 `q={HomeTeamEn}` 与客队 `q={AwayTeamEn}` 双向搜索回退（**⚠️ 纯英文铁律**：Polymarket 数据库 100% 纯英文，严禁使用任何中文队名或中文联赛发请求，必须提取球探分析页 `#headTeam` 英文名或官方 3 字编码）。命中后提取 `slug`、撮合价格、`gameId`（用于伴生波胆/大小球盘口）与 `teams` 权威主客 `ordering`，拼接标准事件链接 `https://polymarket.com/event/{slug}`。
+   **门禁硬红线**：主流核心联赛（英超/西甲/意甲/德甲/法甲/法乙/英冠/德乙/意乙/西乙/欧冠/欧联/欧协联/葡超/巴西甲/瑞典超/挪超/荷甲/美职联/亚冠）常态化活跃，门禁绝对禁止写未开盘；仅非核心冷门联赛经三阶真实检索确实无标的时，方准记录双向核验证据（如 `未开放（经Gamma双向核验q=Home与q=Away均无活跃标的）`）；
+4. **法定直写落盘与同步索引（破除脚本死锁）**：
+   大模型直接调用内置 `write_to_file` 工具，将获取到的真实活水数据按 TOOLS.md 第四节黄金契约规范组装写入 `data/{销售日}/{matchId}.md`（真实 Polymarket 事件链接直接归位，并同步更新 `data/{销售日}/meta.md`）。**严禁编写任何临时 Python 脚本，直接用 write_to_file 落盘即为系统法定装配！**
+5. **门禁过验与回传（契约专注原则）**：
    终端物理运行 `python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`（或批量安检 `--batch`）；
    - 若门禁未通过 (exit 1)：门禁报错信息已在终端清晰指明缺失项，对照终端提示与 `TOOLS.md` 黄金契约补正 Markdown 即可，无需在推演进货时分心研读底层代码；
    - 拿到 exit 0 (PASS) 后，立即向主会话 announce 汇报：「✅ 【{matchId}】推演源数据已落盘并过验放行 (exit 0)」，结束阶段一。

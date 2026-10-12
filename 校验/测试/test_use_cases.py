@@ -132,6 +132,30 @@ class TestUseCases(unittest.TestCase):
             if temp_md.exists():
                 temp_md.unlink()
 
+    def test_parse_markdown_polymarket_with_reason(self):
+        """测试 Markdown 解析器在未开盘时完整保留举证理由文本"""
+        md_text = """# 【周一003】瑞典超 马尔默 vs 卡尔马
+- **比赛 ID**：3013720
+- **开球时间**：2026-10-12 23:00
+- **Polymarket 预测市场**：未开放（经Gamma API真实核验q=Malmo FF返回空）
+- **体彩官方玩法**：HAD / HHAD 齐全
+"""
+        snap = self.verify_use_case._parse_markdown_snapshot(md_text, "3013720")
+        self.assertEqual(snap["polymarket"]["status"], "unopened")
+        self.assertIn("经Gamma API真实核验q=Malmo FF返回空", snap["polymarket"]["url"])
+
+    def test_parse_markdown_polymarket_bare_url(self):
+        """测试 Markdown 解析器支持不带方括号的裸 URL 提取"""
+        md_text = """# 【周一002】意甲 亚特兰大 vs 威尼斯
+- **比赛 ID**：3013718
+- **开球时间**：2026-10-12 22:30
+- **Polymarket 预测市场**：https://polymarket.com/event/sea-ata-ven-2026-10-12
+- **体彩官方玩法**：HAD / HHAD 齐全
+"""
+        snap = self.verify_use_case._parse_markdown_snapshot(md_text, "3013718")
+        self.assertEqual(snap["polymarket"]["status"], "active")
+        self.assertEqual(snap["polymarket"]["url"], "https://polymarket.com/event/sea-ata-ven-2026-10-12")
+
 
 if __name__ == "__main__":
     unittest.main()

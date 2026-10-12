@@ -273,12 +273,46 @@ python 校验/src/adapter/cli.py --match data/2026-10-07/2981506.md --json
 python 校验/src/adapter/cli.py --system
 ```
 
-## Polymarket 下单链接
+## Polymarket 下单链接与法定第 6 接口（三阶确定性探测标准）
 
-7 列表最后一格必须物理调用 Gamma API 核查（严禁脑补与跳过）：
-1. 关键词快查：`curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/public-search?q={球队名}"`
-2. 联赛全量查：`curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/events?series_slug={series_slug}&active=true&closed=false"`
-3. 直达链接规则：`https://polymarket.com/zh/sports/{series_slug}/{event_slug}`，附带实时价格（¢）。查无结果方可标注“确认未开盘”。详细步骤见 `docs/Polymarket链接查找教程.md`。
+7 列表最后一格必须物理调用 Gamma API 真实核查（严禁脑补与跳过）：
+
+### 1. 三阶确定性检索与探测规约（官方 Discover-Markets 规范）
+1. **阶梯一（官方 Slug 直探，首选）**：调用官方精准端点 `https://gamma-api.polymarket.com/events/slug/{league}-{home3}-{away3}-{YYYY-MM-DD}`。O(1) 瞬时直达，零排序干扰；
+2. **阶梯二（Game ID 衍生盘全景裂变）**：直探成功后提取主事件 `gameId`（如 5107619），调用 `https://gamma-api.polymarket.com/events/keyset?game_id={gameId}`，一键解锁该场伴生衍生盘口：
+   - 胜负平：`{slug}`
+   - 半场盘：`{slug}-halftime-result`
+   - 波胆比分：`{slug}-exact-score`（对齐 Crown 全指数波胆）
+   - 大小球进球数：`{slug}-more-markets`（对齐 7 大做市商 OU）
+3. **阶梯三（双向搜索回退）**：若 Slug 直探未中，先搜主队 `public-search?q={HomeTeamEn}`；若被高流动性杯赛挤占，立即回退搜客队 `public-search?q={AwayTeamEn}`；
+4. **主客队权威仲裁**：读取事件顶层 `teams` 数组中的 `ordering` 字段（`"home"` 与 `"away"`），100% 消除主客对调风险。
+
+### 2. Polymarket 足球联赛 3 字标准代码字典
+| 联赛全称 | 标准代码 | 示例 Slug |
+| :--- | :--- | :--- |
+| 英超 | `epl` | `epl-cov-new-2026-10-12` |
+| 西甲 | `lal` | `lal-lev-sev-2026-10-12` |
+| 意甲 | `sea` | `sea-ata-ven-2026-10-12` |
+| 德甲 | `bun` | `bun-bay-dor-2026-10-12` |
+| 法甲 | `fl1` / `lig` | `fl1-psg-mar-2026-10-12` |
+| 法乙 | `fr2` | `fr2-dij-met-2026-10-12` |
+| 瑞典超 | `swe` | `swe-mal-kal-2026-10-12` |
+| 挪超 | `nor` | `nor-kfu-vif-2026-10-12` |
+| 葡超 | `por` | `por-fam-alv-2026-10-12` |
+| 巴西甲 | `bra` | `bra-cor-bot-2026-10-12` |
+| 亚冠精英 | `acle` | `acle-alw-aas-2026-10-12` |
+| 美职联 | `mls` | `mls-mia-orl-2026-10-12` |
+
+### 3. 门禁硬红线与防逃逸存证
+1. **主流核心联赛一律严禁声明未开盘**：英超、意甲、西甲、德甲、法甲、法乙、英冠、德乙、意乙、西乙、欧冠、欧联、欧协联、葡超、巴西甲、瑞典超、挪超、荷甲、美职联、亚冠精英等核心联赛预测市场常态化开盘，**门禁绝对禁止标为“未开盘”，违者直接触发 FAIL 物理熔断**；
+2. **小众次级联赛必须出具双向核验证据**：仅当冷门次级联赛（如芬超、罗甲等）经真实三阶检索确实查无标的时，方准在源数据标注未开盘凭据（例如：`未开放（经Gamma双向核验q_home与q_away均无活跃标的）`）；门禁严格校验双向检索存证格式，缺凭据直接 FAIL；
+3. **合规未开盘下的欧指对齐**：合规出具双向核验证据的未开盘小众赛事，欧指门禁法定要求自动对齐为 22 家传统机构，严禁编造虚假 Polymarket 赔率凑数！详细步骤见 `docs/Polymarket链接查找教程.md`。
+
+### 4. 纯英文环境铁律（English-Only Wire Protocol）
+Polymarket 链上智能合约、标的名称及底层 Gamma 数据库 **100% 为纯英文环境**：
+- **严禁用中文发请求**：严禁将任何中文队名或中文联赛用于 `q=` 搜索（如 `q=马尔默` 必返回空导致误判未开盘）；
+- **英文队名精准提取**：必须从球探分析页顶部 `#headTeam` 容器或队徽英文属性提取官方英文名（`HomeTeamEn` / `AwayTeamEn`）；
+- **Slug 纯英文小写**：所有 Slug 命名（如 `swe-mal-kal-2026-10-12`）一律为纯英文小写与连字符，严禁包含任何非 ASCII 字符。
 
 ## 数据源与主源失败处理
 

@@ -219,9 +219,9 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertIn("进失球", stats_res.message)
 
     def test_verify_polymarket_unopened_returns_warn(self):
-        """测试 Polymarket 真实标注未开盘时应返回 WARN 并允许推演"""
+        """测试 Polymarket 真实标注未开盘且带双向核验证据时应返回 WARN 并允许推演"""
         warn_snapshot = dict(self.valid_snapshot)
-        warn_snapshot["polymarket"] = {"status": "unopened", "url": "【平台未开放交易池/暂无流动性】"}
+        warn_snapshot["polymarket"] = {"status": "unopened", "url": "【平台未开放交易池/暂无流动性（经Gamma双向核验均无活跃标的）】"}
         receipt = self.verifier.verify(warn_snapshot)
         self.assertTrue(receipt.is_valid)
         pm_res = [r for r in receipt.results if r.dimension == DimensionType.POLYMARKET_LIQUIDITY][0]
@@ -696,7 +696,7 @@ class TestSnapshotVerifier(unittest.TestCase):
                 "identicalOddsHistory": {"home": {"winRate": 0.52}},
                 "handicapTrends": {"home": "平稳"}
             },
-            "polymarket": {"status": "unopened", "url": "未开放"}
+            "polymarket": {"status": "active", "url": "https://polymarket.com/event/swe-got-vas-2026-10-09"}
         }
         receipt = self.verifier.verify(snap)
         self.assertTrue(receipt.is_valid)
@@ -907,8 +907,96 @@ class TestSnapshotVerifier(unittest.TestCase):
 """
         snap["_raw_content"] = content
         receipt = self.verifier.verify(snap)
-        auth_res = [r for r in receipt.results if r.dimension == DimensionType.AUTHENTICITY][0]
-        self.assertEqual(auth_res.status, CheckStatus.PASS)
+    def test_polymarket_major_league_unopened_must_fail(self):
+        """测试主流核心联赛（英超/意甲等）标记未开盘时必须判定 FAIL 阻断"""
+        snap = dict(self.valid_snapshot)
+        snap["match"] = dict(snap.get("match", {}))
+        snap["match"]["league"] = "英超"
+        snap["polymarket"] = {"status": "unopened", "url": "未开盘"}
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        pm_res = [r for r in receipt.results if r.dimension == DimensionType.POLYMARKET_LIQUIDITY][0]
+        self.assertEqual(pm_res.status, CheckStatus.FAIL)
+        self.assertIn("主流核心联赛", pm_res.message)
+
+    def test_polymarket_expanded_core_leagues_unopened_must_fail(self):
+        """测试扩充后的核心联赛（瑞典超/挪超/法乙/荷甲等）标记未开盘时必须判定 FAIL 阻断"""
+        for lg in ["瑞典超", "挪超", "法乙", "荷甲", "美职联"]:
+            snap = dict(self.valid_snapshot)
+            snap["match"] = dict(snap.get("match", {}))
+            snap["match"]["league"] = lg
+            snap["polymarket"] = {"status": "unopened", "url": "未开放"}
+            receipt = self.verifier.verify(snap)
+            self.assertFalse(receipt.is_valid)
+            pm_res = [r for r in receipt.results if r.dimension == DimensionType.POLYMARKET_LIQUIDITY][0]
+            self.assertEqual(pm_res.status, CheckStatus.FAIL)
+            self.assertIn("主流核心联赛", pm_res.message)
+
+    def test_polymarket_unopened_allow_22_companies(self):
+        """测试小众联赛合规双向检索未开盘时，允许欧指22家传统机构全齐而无需伪造第23家"""
+        snap = dict(self.valid_snapshot)
+        snap["match"] = dict(snap.get("match", {}))
+        snap["match"]["league"] = "芬超"
+        snap["is_markdown_baseline"] = True
+        snap["polymarket"] = {"status": "unopened", "url": "未开放（经Gamma双向核验q=Haka与q=VPS均无活跃标的）"}
+        comps = [
+            "澳彩", "Bet365", "Crown", "易胜博", "平博", "188Bet", "香港马会", "威廉希尔",
+            "立博", "Bwin", "Interwetten", "SNAI", "伟德", "必发", "SBO", "沙巴",
+            "Marathon", "Betway", "Unibet", "Paddy Power", "10Bet", "中国体彩"
+        ]
+        snap["europe1x2"] = [
+            {
+                "company": c,
+                "initial": {"odds": [2.0, 3.2, 3.4], "returnRate": 91.0},
+                "latest": {"odds": [2.0, 3.2, 3.4], "returnRate": 91.0, "kelly": [0.92, 0.93, 0.95]},
+            }
+            for c in comps
+        ]
+        pm_res = self.verifier._check_polymarket(snap)
+        self.assertEqual(pm_res.status, CheckStatus.WARN)
+        euro_res = self.verifier._check_europe_1x2(snap)
+        self.assertEqual(euro_res.status, CheckStatus.PASS)
+
+    def test_polymarket_minor_league_without_dual_proof_fails(self):
+        """测试次级冷门联赛若未开盘理由缺乏双向检索存证，必须判定 FAIL 阻断口头逃逸"""
+        snap = dict(self.valid_snapshot)
+        snap["match"] = dict(snap.get("match", {}))
+        snap["match"]["league"] = "芬超"
+        # 仅模糊写未开盘，无双向检索证据
+        snap["polymarket"] = {"status": "unopened", "url": "未开盘"}
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        pm_res = [r for r in receipt.results if r.dimension == DimensionType.POLYMARKET_LIQUIDITY][0]
+        self.assertEqual(pm_res.status, CheckStatus.FAIL)
+        self.assertIn("存证不足", pm_res.message)
+
+    def test_polymarket_internal_contradiction_must_fail(self):
+        """测试内部逻辑矛盾：顶部标明未开盘，但正文/欧指编造 Polymarket 挂单数据必须 FAIL"""
+        snap = dict(self.valid_snapshot)
+        snap["match"] = dict(snap.get("match", {}))
+        snap["match"]["league"] = "瑞典超"
+        snap["polymarket"] = {"status": "unopened", "url": "未开盘"}
+        snap["_raw_content"] = (
+            "# 【周一003】瑞典超 马尔默 vs 卡尔马\n"
+            "- **Polymarket 预测市场**：未开放\n"
+            "| **23** | **Polymarket** | **T0** | 27¢ | 25¢ | 48¢ |"
+        )
+        receipt = self.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        pm_res = [r for r in receipt.results if r.dimension == DimensionType.POLYMARKET_LIQUIDITY][0]
+        self.assertEqual(pm_res.status, CheckStatus.FAIL)
+        self.assertIn("矛盾", pm_res.message)
+
+    def test_polymarket_valid_event_url_passes(self):
+        """测试合法可点击的 Polymarket 事件链接必须判定 PASS"""
+        snap = dict(self.valid_snapshot)
+        snap["polymarket"] = {
+            "status": "active",
+            "url": "https://polymarket.com/event/sea-ata-ven-2026-10-12",
+        }
+        res = self.verifier._check_polymarket(snap)
+        self.assertEqual(res.status, CheckStatus.PASS)
+        self.assertIn("https://polymarket.com/event/sea-ata-ven-2026-10-12", res.message)
 
 
 if __name__ == "__main__":
