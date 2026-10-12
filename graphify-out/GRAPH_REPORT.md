@@ -1,17 +1,17 @@
-# Graph Report - 倍率分析推演  (2026-10-12)
+# Graph Report - 倍率分析推演  (2026-10-13)
 
 ## Corpus Check
-- 285 files · ~1,921,006 words
+- 286 files · ~1,901,505 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 7 file(s) not represented in the graph (top: (none) 6, .json5 1)
 
 ## Summary
-- 5308 nodes · 9511 edges · 405 communities (300 shown, 105 thin omitted)
-- Extraction: 60% EXTRACTED · 40% INFERRED · 0% AMBIGUOUS · INFERRED: 3815 edges (avg confidence: 0.92)
+- 5045 nodes · 9247 edges · 241 communities (223 shown, 18 thin omitted)
+- Extraction: 59% EXTRACTED · 41% INFERRED · 0% AMBIGUOUS · INFERRED: 3815 edges (avg confidence: 0.92)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `96b07c57`
+- Built from commit: `d5abc019`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -27,7 +27,7 @@
 - TOOLS.md
 - 第三部分：盘口分类体系速查（主人亲授）
 - cleanText
-- [巴西甲] 博塔弗戈 vs 达伽马（编号: 周三006 比赛ID: 2910908，开球: 2026-10-08 07:30，分析: 2026-10-07 21:35）
+- TOOLS.md - 工具使用指南
 - Comparing Sequential Forecasters
 - 极小化最大损失
 - 泊松概率分析：朴茨茅斯 vs 德比郡
@@ -35,8 +35,8 @@
 - 校验/src/adapter/cli.py
 - OddsVector
 - Data Mining and Knowledge Discovery (2023) 37:788–832
-- 泊松概率分析：巴列卡诺 vs 莱万特
-- load_params
+- 泊松概率分析：阿纳西 vs 特鲁瓦
+- verify_poisson.py
 - 2026-10-06 每日记忆
 - Polymarket 链接查找教程
 - 深度分析（欧国联10场，17:35）
@@ -66,9 +66,9 @@
 - 2026-10-07 每日记忆
 - 4. 存档原始赔率数据
 - Evaluating probabilistic forecasts of football
-- PoissonEngine
+- .calculate
 - 贝叶斯动态离散时间加权
-- ConvertOddsUseCase
+- OddsConversionResult
 - verifier.py
 - 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
@@ -78,26 +78,26 @@
 - 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 2026-10-04 每日记忆
 - 2981440/易胜博.md
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- value
 - injury-service.js
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- 四、模拟示例（周日 018 巴萨 vs 塞维利亚）
 - 杯赛防守脆断与进球肥尾
-- cli.js
+- titan007.test.js
 - 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 二、已落盘赛事元数据明细 (Match Meta Details)
 - SAFETY.md
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- 输出 2：写入记忆
 - 推荐输出（recommendation）
 - 泊松概率计算手册（足彩用）
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- json
 - 深度分析
 - Conditional Predictive Ability (CPA) Testing Framework
 - 泊松概率分析：布伦特福德 vs 狼队
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- cli.py (OO-EPC去水CLI)
 - 十九篇的执行落点与原文锚点
 - 各场景的 Subagent 用法
 - 深度分析（17:28 & 21:55）
-- titan007.test.js
+- fetchMatchData
 - 第一部分：赛前分析模板
 - 模型扩展与组合手册（除泊松之外）
 - 五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南
@@ -108,10 +108,10 @@
 - TacticsParser
 - AGENTS.md Footy Analysis Workflow
 - 步骤 1.5：先审过程，再揭比分（Aiyer 决策审计与认知契约卡对账）
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
-- 输出 2：写入记忆
+- 盘赔分析系统化框架（2026-03-17 整理 · 主人亲授）
+- 执行步骤
 - 三、λ 的计算（核心流程）
-- 【周六025】沙特联 利雅得新月 vs 吉达联合
+- 二、五大博弈支柱专项体检结论
 - 赛程抓取（match-scraper）
 - 深度分析推送通知模板
 - 三、海外免费储备 API 矩阵
@@ -123,13 +123,13 @@
 - 深度分析（晚盘 22:30 · 15 场全量从头推演）
 - 二、建议修补的漏洞 / 不一致
 - 赛后复盘
+- 二、四大架构级增补落地方案
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- 【周六004】日职联 京都不死鸟 vs 町田泽维亚
 - 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）
+- 预测 → 推荐 → 复盘的实际闭环
 - 赛后复盘
 - titan007 欧冠杯 CupMatch c103.js 数据结构分析
 - titan007.js
@@ -137,10 +137,10 @@
 - 变动历史分析示例（大小球，必须像这样写）
 - 执行流程
 - Do Betting Markets Sense a Goal Coming? Evidence from the German Bundesliga
-- 二、全周期五阶段生命周期划分 (T0 ~ T4)
+- Levitt（2004）：NFL博彩定价
 - 深度分析（早盘 17:00）
 - CorrectScoreParser
-- Stable reliability diagrams for probabilistic classifiers
+- 二、全周期五阶段生命周期划分 (T0 ~ T4)
 - 执行流程
 - 今日全量赛程与【推演源数据】索引表
 - 一、发现的 BUG / 漏洞
@@ -151,270 +151,108 @@
 - [欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告
 - 联赛配置手册（泊松 + 盘口）
 - 赔率与泊松比较：何时值得下注（案例详解）
+- 下注决策手册（版本 1）
 - 2026-10-03 每日记忆
-- 极小化最大损失（项目风险动机模型）
+- 胜／平／负三端裁决
 - 一、工作流程总览
 - 基本面（分析页）
 - Poisson Probability Calculation Manual
 - Idea: 足球盘口倍率分析推演出胜负平
 - 球队风格判定手册（简版）
-- 算法/src/adapter/cli.py
+- test_poisson.py
 - parseCrowFullIndexData
 - 2026-10-05 每日记忆
 - 赛后复盘
 - 赛后复盘
 - 赛后复盘
-- 战意核实（重点，独立展示）
+- 比赛快照深层语义安检与泊松算法零偏差迁移实践
 - TOOLS.md
 - 输出 1：综合评估与推荐
 - 步骤 1.5：校验快照赔率与数据完整性
 - 论文与知识图谱应用：高频深广检索与自愈自进化推演体系
-- 1. 澳彩 (欧亚双盘核心, 核心做市, cid=80)
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - Sporttery Sniper 数据提取工具
 - 2026-10-10/meta.md
-- 【周一007】英超 考文垂 vs 纽卡斯尔
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 核心系统：双轨敏捷数据采集（Scrapling ↔ BrowserOS neo）
-- 预测 → 推荐 → 复盘的实际闭环
-- SOUL.md - 你是谁
-- 【周一009】巴西甲 科里蒂巴 vs 博塔弗戈
-- 【周一003】瑞典超 马尔默 vs 卡尔马
+- 四、Memory 写入规则
+- 【周六019】意甲 国际米兰 vs 帕尔马
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 赛后复盘
 - 深度分析（欧国联夜场，22:30）
 - 2026-10-11-scrapling-chunking-and-stale-snapshot-gate-lock.md
-- 【周一004】挪超 奥斯KFUM vs 瓦勒伦加
-- 【周一002】意甲 亚特兰大 vs 威尼斯
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- 【周六001】日职联 大阪樱花 vs 横滨水手
 - 概率分源与裁决一致性
-- 【周一005】意甲 都灵 vs 乌迪内斯
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 003 场完整分析案例（2026-03-18 反思）
-- 【周一006】法乙 第戎 vs 梅斯
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 赛后复盘
 - 2784765 场（意甲 拉齐奥 1-0 AC 米兰）复盘总结
-- 【周一008】西甲 莱万特 vs 塞维利亚
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 第 4 段：大小球 + 第 6-10 步摘要
-- 【周一010】葡超 法马利康 vs 阿尔维卡
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 计算方法
-- 【周一001】亚冠精英 迪拜祈祷 vs 吉达国民
+- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
 - 八、赔率与泊松概率的比较
-- 【周六030】巴西甲 圣保罗 vs 维多利亚
+- 【周六013】英超 伊普斯维奇 vs 富勒姆
 - 2026-10-11 每日记忆
 - 【周六027】意甲 那不勒斯 vs 弗洛西诺尼
 - Betting Against Integrity: Identifying Match-Fixing Through In-Play Market Dynamics (Winkelmann et al., 2026)
-- 【周六026】荷甲 福图纳锡塔德 vs 特温特
+- 【周六022】西甲 巴塞罗那 vs 赫塔菲
 - 异常处理
-- 【周六014】英超 切尔西 vs 伯恩茅斯
-- 【周六029】西甲 皇家马德里 vs 比利亚雷亚尔
+- 【周六012】德甲 霍芬海姆 vs 汉堡
+- 易胜博 (cid=12)
 - 2026-10-12 每日记忆
 - 【周六011】德甲 帕德博恩 vs 斯图加特
 - 【周六010】德甲 美因茨 vs 勒沃库森
-- 倍率分析推演 (Pansuan Engine) Strategy
+- ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）
 - Skill: Deep Analysis
 - 澳彩 (cid=1)
-- createHumanLikeFetch
-- 皇冠 (cid=3)
+- Q: 【豪门客战中盘跳档诱多型 (Head-Fake 假摔)】欧指单边造势客胜，亚盘中盘强升半一挂满水诱多出货（案例：巴西甲桑托斯2:2弗拉门戈）
+- Q: 【深盘热门欧深亚浅避险型】欧指主胜<1.45且亚盘卡死一球超低水不升盘设障，面对密集防守弱旅时的尾部偷袭风险（案例：芬超冠古比斯0:1奥卢）
 - 澳门 (cid=1)
 - 皇冠 (cid=3)
-- 1. 澳彩
+- Q: 【均势浅盘底线低平赔型】主流机构平赔初盘极限低开(<2.90)，即时平赔抬升制造两头分流假象（案例：巴西甲巴拉纳竞技2:2米内罗竞技）
 - Asian Handicap & 1X2 Market Efficiency in Football (Constantinou, 2022)
-- 2. 皇冠
+- Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水防穿（案例：芬超冠赫尔辛基6:0VPS瓦萨）
 - 深度分析（临盘 21:15 德甲重审）
 - 深度分析报告：马洛卡 VS 西班牙人
 - 输入
-- 3. Bet365
+- Q: 2026-10-10 西甲 阿拉维斯 1:2 马德里竞技
 - 输入
-- 4. 易胜博
+- 澳门 (cid=1)
 - 皇冠 (cid=3)
-- 皇冠 (cid=545)
-- 澳彩 (cid=1)
+- 决策内容 (Decision)
+- 优质胜负平 2 串 1 组合建议
 - 皇冠 (cid=3)
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 1. 澳彩
+- 让球胜平负 (HHAD `[-1]`) 终端对冲基准
+- 让球胜平负 (HHAD `[+1]`) 终端对冲基准
+- Asian Handicap Probability & Refund Modeling Methodology
 - 欧国联 克罗地亚 vs 英格兰（编号: - 比赛ID: 2981447，开球: 2026-10-04 00:00，分析: 2026-10-03 22:15）
 - 欧国联 瑞士 vs 斯洛文尼亚（编号: - 比赛ID: 2981497，开球: 2026-10-04 02:45，分析: 2026-10-03 22:25）
 - 欧国联 北马其顿 vs 苏格兰（编号: - 比赛ID: 2981498，开球: 2026-10-04 02:45，分析: 2026-10-03 22:15）
 - 推荐
 - 深度分析
-- 2. 皇冠
+- 🎯 优质胜负平 2 串 1 组合建议
 - ⚠️ 基本面分析强制规则（2026-03-18 主人强调）
-- 3. Bet365
-- 4. 易胜博
 - 澳彩 (cid=1)
-- 皇冠 (cid=3)
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 1. 澳彩
-- 2. 皇冠
-- 3. Bet365
-- 4. 易胜博
-- 赛后复盘
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 1. 澳彩
-- 2. 皇冠
-- 3. Bet365
-- 4. 易胜博
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 1. 澳彩
-- 2. 皇冠
-- 3. Bet365
-- 4. 易胜博
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 1. 澳彩
-- 2. 皇冠
-- 3. Bet365
-- 4. 易胜博
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 1. 澳彩
-- 2. 皇冠
-- 3. Bet365
-- 4. 易胜博
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 1. 澳彩
-- 2. 皇冠
-- 3. Bet365
-- 4. 易胜博
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 1. 澳彩
-- 2. 皇冠
-- 3. Bet365
-- 4. 易胜博
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 1. 澳彩
-- 2. 皇冠
-- 3. Bet365
-- 4. 易胜博
-- 5. 平博
-- 6. 188Bet
-- 7. 香港马会
-- 22. 中国体彩
-- 22. 中国体彩
-- 22. 中国体彩
-- 22. 中国体彩
-- 22. 中国体彩
-- 22. 中国体彩
 - 浅盘阻上 vs 浅盘诱上 对比
-- 22. 中国体彩
-- 22. 中国体彩
 - 推荐
-- 22. 中国体彩
-- 22. 中国体彩
 - 欧国联 西班牙 vs 捷克（编号: - 比赛ID: 2981448，开球: 2026-10-04 02:45，分析: 2026-10-03 22:50）
 - 推荐（17:30）
-- 11. Interwetten
 - 欧国联 塞浦路斯 vs 拉脱维亚（编号: 周一001 比赛ID: 2981548，开球: 2026-10-06 00:00，分析: 2026-10-05 21:40）
 - 欧国联 法国 vs 比利时（编号: 周一002 比赛ID: 2981453，开球: 2026-10-06 02:45，分析: 2026-10-05 21:55）
 - 欧国联 罗马尼亚 vs 瑞典（编号: 周一003 比赛ID: 2981503，开球: 2026-10-06 02:45，分析: 2026-10-05 21:45）
 - [欧国联] 意大利 vs 土耳其（编号: 周一004 比赛ID: 2981454，开球: 2026-10-06 02:45，分析: 2026-10-05 21:55）
 - 欧国联 黑山 vs 亚美尼亚（编号: 周一006 比赛ID: 2981547，开球: 2026-10-06 02:45，分析: 2026-10-05 21:50）
 - 欧国联 波黑 vs 波兰（编号: 周一007 比赛ID: 2981504，开球: 2026-10-06 02:45，分析: 2026-10-05 22:05）
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
 - 初筛结果（21:30）
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
-- 23. Polymarket
-- 8. 威廉希尔
 - 欧国联 爱沙尼亚 vs 卢森堡（编号: - 比赛ID: 2981546，开球: 2026-10-04 00:00，分析: 2026-10-03 22:50）
-- 11. Interwetten
 - 初筛结果（17:30）
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
 - 初筛结果（21:30）
-- 23. Polymarket
-- 8. 威廉希尔
-- 11. Interwetten
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
-- 23. Polymarket
-- 8. 威廉希尔
-- 11. Interwetten
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
-- 23. Polymarket
-- 8. 威廉希尔
-- 11. Interwetten
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
-- 23. Polymarket
-- 8. 威廉希尔
-- 11. Interwetten
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
-- 23. Polymarket
-- 8. 威廉希尔
-- 11. Interwetten
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
-- 18. Betway
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
-- 23. Polymarket
-- 11. Interwetten
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
-- 23. Polymarket
-- 8. 威廉希尔
-- 11. Interwetten
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
-- 23. Polymarket
-- 8. 威廉希尔
-- 11. Interwetten
-- 13. 伟德
-- 15. SBO
-- 16. 沙巴
-- 19. Unibet
-- 20. Paddy Power
-- 21. 10Bet
-- 23. Polymarket
-- 8. 威廉希尔
 - footBayes R Package
 
 ## God Nodes (most connected - your core abstractions)
@@ -436,43 +274,43 @@
   AGENTS.md → docs/论文/2004_Levitt_NBER_w9422.pdf
 - `2. 站在庄家视角精准预测「胜平负」的核心方法` --semantically_synonymous_庄家_机构_精算师--> `Bookmaker Stake Limiting & Discrimination`  [INFERRED]
   AGENTS.md → docs/论文/2017_Kaunitz_用庄家赔率寻找足球错价_arXiv_v2.pdf
-- `2. 站在庄家视角精准预测「胜平负」的核心方法` --semantically_synonymous_客胜_负_客赢--> `【推演源数据】完整性领域聚合根 负责对 6 大黄金维度 + 1 阵容容错维度进行纯规则判定`  [INFERRED]
-  AGENTS.md → 校验/src/domain/verifier.py
-- `2. 站在庄家视角精准预测「胜平负」的核心方法` --semantically_synonymous_庄家_机构_精算师--> `测试欧洲指数若仅有 3 个静态赔率而缺失凯利指数与返还率时必须判定 FAIL 熔断`  [INFERRED]
-  AGENTS.md → 校验/测试/test_domain.py
+- `2. 站在庄家视角精准预测「胜平负」的核心方法` --semantically_synonymous_客胜_负_客赢--> `校验/src/domain/profiling_parser.py 操盘画像纯领域结构化解析服务 (Profiling Parser) 负责将球探分析页中的…`  [INFERRED]
+  AGENTS.md → 校验/src/domain/profiling_parser.py
+- `2. 站在庄家视角精准预测「胜平负」的核心方法` --semantically_synonymous_客胜_负_客赢--> `校验/src/domain/tactics_parser.py 战术技统与攻防压制力领域解析服务 (TacticsParser) 负责将球探【推演源数据】中…`  [INFERRED]
+  AGENTS.md → 校验/src/domain/tactics_parser.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (405 total, 105 thin omitted)
+## Communities (241 total, 18 thin omitted)
 
 ### Community 0 - "Outcomes Affect"
 Cohesion: 0.03
-Nodes (111): 2.1 基本思路, 2.2 操作步骤, 二、如何从比分表中选「主攻比分」, 5.1 大小球方向, 5.2 比分权重（用在 w(i:j) 上）, 五、风格对比分和大小球的具体影响, Outcomes Affect, Page 01: Outcomes Affect (+103 more)
+Nodes (105): 1.1 单场比分概率 P(i:j), 1.2 胜平负与比分的关系, 2.1 基本思路, 2.2 操作步骤, 一、从 λ 到比分概率, 二、如何从比分表中选「主攻比分」, 5.1 大小球方向, 5.2 比分权重（用在 w(i:j) 上） (+97 more)
 
 ### Community 1 - "2981440/平博.md"
-Cohesion: 0.02
-Nodes (124): 表格：4.2 欧指 vs 亚盘一致性 / european_asian_alignment, 表格：4.1 欧指数据（威廉/365 交叉认证） / european_prices, 第 2 段：欧指分析, 第 3 步：欧洲指数（胜平负）赔率分析, 威廉希尔欧指变化, 欧指隐含概率（即时盘）, 📊 第 3 步：欧指分析（威廉 +365 交叉认证）, 365 (cid=8 / 欧指281) (+116 more)
+Cohesion: 0.05
+Nodes (58): 表格：4.2 欧指 vs 亚盘一致性 / european_asian_alignment, 表格：4.1 欧指数据（威廉/365 交叉认证） / european_prices, 威廉希尔欧指变化, 欧指隐含概率（即时盘）, 📊 第 3 步：欧指分析（威廉 +365 交叉认证）, 365 (cid=8 / 欧指281), 亚盘, 大小球 (+50 more)
 
 ### Community 2 - "2. 站在庄家视角精准预测「胜平负」的核心方法"
-Cohesion: 0.03
-Nodes (65): CLAUDE.md - AI Pair Programming & Knowledge Rules, 核心推演准则（胜平负精准分析）, 知识图谱（graphify）, 亚盘, 大小球, 易胜博 (cid=12), 亚盘, 大小球 (+57 more)
+Cohesion: 0.07
+Nodes (30): 亚盘, 大小球, 易胜博 (cid=12), 亚盘, 大小球, 易胜博 (cid=12), 欧指, 亚盘 (+22 more)
 
 ### Community 3 - ".verify"
-Cohesion: 0.03
-Nodes (5): get_match_property(), _is_valid_kelly(), _is_valid_rate(), SnapshotVerifier, TestSnapshotVerifier
+Cohesion: 0.04
+Nodes (6): DimensionResult, get_match_property(), _is_valid_kelly(), _is_valid_rate(), SnapshotVerifier, TestSnapshotVerifier
 
 ### Community 4 - "poisson_lib.py"
-Cohesion: 0.05
-Nodes (66): λ 与预期总进球, 一、原始数据整理, 七、总进球数概率, 三、掺入近六场（0.7 主客场 + 0.3 近六场）, 主队, 主队（λ₁=1.34）, 主队 / 客队进球数, 主队 赫尔蒙德 (+58 more)
+Cohesion: 0.06
+Nodes (61): λ 与预期总进球, 一、原始数据整理, 七、总进球数概率, 三、掺入近六场（0.7 主客场 + 0.3 近六场）, 主队, 主队（λ₁=1.34）, 主队 / 客队进球数, 主队 赫尔蒙德 (+53 more)
 
 ### Community 5 - "AGENTS.md - 足彩分析工作流操作手册"
-Cohesion: 0.02
-Nodes (27): Graphify 知识图谱, 表格：六、可配置参数 / parameter_defaults, Architecture: Algorithm Module (DDD Onion), Compound Engineering Config (.compound-engineering/config.yaml), AGENTS.md - 足彩分析工作流操作手册, IDENTITY.md - Who Am I?, 赫尔蒙德 vs 坎布尔 泊松分析, 克雷莫纳 vs 佛罗伦萨 泊松分析 (+19 more)
+Cohesion: 0.03
+Nodes (25): Graphify 知识图谱, 表格：六、可配置参数 / parameter_defaults, Architecture: Algorithm Module (DDD Onion), Compound Engineering Config (.compound-engineering/config.yaml), AGENTS.md - 足彩分析工作流操作手册, IDENTITY.md - Who Am I?, 赫尔蒙德 vs 坎布尔 泊松分析, 克雷莫纳 vs 佛罗伦萨 泊松分析 (+17 more)
 
 ### Community 6 - "比分建模与投注手册（泊松版）"
-Cohesion: 0.12
-Nodes (21): 1.1 单场比分概率 P(i:j), 1.2 胜平负与比分的关系, 一、从 λ 到比分概率, 三、用泊松 + 赔率筛选「有价值的比分」, 六、一句话策略, 比分建模与投注手册（泊松版）, Convex Combination Poisson Intensity Formulation (Eq 3.3), Combining Historical Data and Bookmakers' Odds in Modelling Football Scores (+13 more)
+Cohesion: 0.13
+Nodes (21): 三、用泊松 + 赔率筛选「有价值的比分」, 六、一句话策略, 比分建模与投注手册（泊松版）, Convex Combination Poisson Intensity Formulation (Eq 3.3), Combining Historical Data and Bookmakers' Odds in Modelling Football Scores, Skellam-Inverted Implicit Scoring Rates (Eq 3.2), Strategic Bookmaker Pricing & Bettor Bias Exploitation, How Do Markets Function? An Empirical Analysis of Gambling on the NFL (+13 more)
 
 ### Community 7 - "泊松概率分析：克雷莫纳 vs 佛罗伦萨"
 Cohesion: 0.09
@@ -483,16 +321,16 @@ Cohesion: 0.20
 Nodes (9): 1. 赔率与赛程, 2. 阵容伤停独立双引擎 (Lineup & Injury Engine), 3. 海外免费开放 API 矩阵储备, Polymarket 下单链接, sessions_spawn — 历史平台接口（非当前Hermes调用）, Subagent 工具, 当前Hermes入口：delegate_task, 数据源与主源失败处理 (+1 more)
 
 ### Community 9 - "第三部分：盘口分类体系速查（主人亲授）"
-Cohesion: 0.03
-Nodes (49): 深盘, 强让盘, 缺口盘, 错盘, 生死盘, 实盘, 名气盘, 浅盘 (+41 more)
+Cohesion: 0.05
+Nodes (34): 深盘, 强让盘, 缺口盘, 错盘, 生死盘, 实盘, 名气盘, 浅盘 (+26 more)
 
 ### Community 10 - "cleanText"
-Cohesion: 0.15
-Nodes (24): absolutizeVipUrl(), attrOfFirst(), cleanText(), detectHistoryRowFormat(), extractCells(), extractFormation(), findFirstPositiveIndex(), firstMatch() (+16 more)
+Cohesion: 0.22
+Nodes (17): absolutizeVipUrl(), attrOfFirst(), cleanText(), extractFormation(), findFirstPositiveIndex(), firstMatch(), normalizeCompany(), parseDetailHtml() (+9 more)
 
-### Community 11 - "[巴西甲] 博塔弗戈 vs 达伽马（编号: 周三006 比赛ID: 2910908，开球: 2026-10-08 07:30，分析: 2026-10-07 21:35）"
-Cohesion: 0.12
-Nodes (16): 基本面摘要, 基本面摘要, 基本面摘要, [巴西甲] 博塔弗戈 vs 达伽马（编号: 周三006 比赛ID: 2910908，开球: 2026-10-08 07:30，分析: 2026-10-07 21:35）, [巴西甲] 巴西国际 vs 科林蒂安（编号: 周三002 比赛ID: 2910912，开球: 2026-10-08 06:30，分析: 2026-10-07 22:30）, 深度分析（晚盘 21:00）, 独立泊松比分简表（复盘用）, 独立泊松比分简表（复盘用） (+8 more)
+### Community 11 - "TOOLS.md - 工具使用指南"
+Cohesion: 0.09
+Nodes (7): 球探数据采集引擎 (sporttery-sniper), Data Sources and API Matrix Manual, 欧冠杯资料库抓取测试样例 (cup-html.txt), 欧冠杯页面网络请求日志 (network.txt), 欧冠杯无障碍快照 (snapshot.md), TOOLS.md - 工具使用指南, Handbook: Data Integrity Standards
 
 ### Community 12 - "Comparing Sequential Forecasters"
 Cohesion: 0.03
@@ -503,32 +341,32 @@ Cohesion: 0.11
 Nodes (50): NBER WORKING PAPER SERIES, Page 01: NBER WORKING PAPER SERIES, Page 02: How Do Markets Function? An Empirical Analysis of, Page 03: There are many parallels between trading in financial markets and sports wagerin, Page 04: of bettors whose skills allow them to achieve positive expected profits could pr, Page 05: probability that a bet placed on either side of a wager is a winner). Although t, Page 06: allows me to determine whether the bookmaker appears to be equalizing the amount, Page 07: are able to set odds such that favorites and home teams win less than fifty perc (+42 more)
 
 ### Community 14 - "泊松概率分析：朴茨茅斯 vs 德比郡"
-Cohesion: 0.12
-Nodes (16): 一、原始数据整理, 七、总进球数概率, 三、掺入近六场（0.7 主客场 + 0.3 近六场）, 主队, 主队（λ₁=1.27）, 主队 朴茨茅斯, 二、基础 λ（主队主场 + 客队客场）, 五、比分概率 P(i:j) = P(主=i)×P(客=j) (+8 more)
+Cohesion: 0.09
+Nodes (21): λ 与预期总进球, 一、原始数据整理, 七、总进球数概率, 三、掺入近六场（0.7 主客场 + 0.3 近六场）, 主队, 主队（λ₁=1.27）, 主队 / 客队进球数, 主队 朴茨茅斯 (+13 more)
 
 ### Community 15 - "赛后复盘（post-review）"
-Cohesion: 0.06
-Nodes (40): 表格：第二步：基本面 8 维度复盘 / fundamental_verification, 五、提升比分命中率的几点实战建议, 执行步骤, 步骤 1：读取推荐记录, 步骤 2：获取比赛结果, 步骤 3.5：分析质量自评（泊松模型质量）, 步骤 3：逐场核对, 步骤 4.5：反事实分析 (+32 more)
+Cohesion: 0.05
+Nodes (45): 表格：第二步：基本面 8 维度复盘 / fundamental_verification, 五、提升比分命中率的几点实战建议, 执行步骤, 步骤 1：读取推荐记录, 步骤 2：获取比赛结果, 步骤 3.5：分析质量自评（泊松模型质量）, 步骤 3：逐场核对, 步骤 4.5：反事实分析 (+37 more)
 
 ### Community 16 - "校验/src/adapter/cli.py"
 Cohesion: 0.06
-Nodes (11): main(), run_assemble(), run_batch_verify(), run_match_verify(), run_sync_meta(), run_system_check(), CheckConsistencyUseCase, VerifySnapshotUseCase (+3 more)
+Nodes (12): format_receipt_console(), main(), run_assemble(), run_batch_verify(), run_match_verify(), run_sync_meta(), run_system_check(), CheckConsistencyUseCase (+4 more)
 
 ### Community 17 - "OddsVector"
-Cohesion: 0.11
-Nodes (6): MarginCalculatorStrategy, OoEpcCalculator, ImpliedProbabilities, OddsVector, TestDomainOddsVector, TestDomainOoEpcCalculator
+Cohesion: 0.08
+Nodes (8): Semantic Gate and Poisson Zero Drift Solution, ConvertOddsUseCase, MarginCalculatorStrategy, OoEpcCalculator, ImpliedProbabilities, OddsVector, TestDomainOddsVector, TestDomainOoEpcCalculator
 
 ### Community 18 - "Data Mining and Knowledge Discovery (2023) 37:788–832"
 Cohesion: 0.04
 Nodes (46): Data Mining and Knowledge Discovery (2023) 37:788–832, Page 01: Data Mining and Knowledge Discovery (2023) 37:788–832, Page 02: Forecast evaluation for... 789, Page 03: 790 H. Hewamalage et al., Page 04: Forecast evaluation for... 791, Page 05: 792 H. Hewamalage et al., Page 06: Forecast evaluation for... 793, Page 07: 794 H. Hewamalage et al. (+38 more)
 
-### Community 19 - "泊松概率分析：巴列卡诺 vs 莱万特"
+### Community 19 - "泊松概率分析：阿纳西 vs 特鲁瓦"
 Cohesion: 0.09
-Nodes (21): λ 与预期总进球, 一、原始数据整理, 七、总进球数概率, 三、掺入近六场（0.7 主客场 + 0.3 近六场）, 主队, 主队（λ₁=1.49）, 主队 / 客队进球数, 主队 巴列卡诺 (+13 more)
+Nodes (21): λ 与预期总进球, 一、原始数据整理, 七、总进球数概率, 三、掺入近六场（0.7 主客场 + 0.3 近六场）, 主队, 主队（λ₁=1.22）, 主队 / 客队进球数, 主队 阿纳西 (+13 more)
 
-### Community 20 - "load_params"
-Cohesion: 0.15
-Nodes (13): 泊松比分预测模型 (Dixon-Coles & Poisson Modeling), main(), anchor_lambda_tot(), format_top(), implied_line_half(), load_params(), _parse_score_key(), poisson_cdf_leq() (+5 more)
+### Community 20 - "verify_poisson.py"
+Cohesion: 0.18
+Nodes (10): 泊松比分预测模型 (Dixon-Coles & Poisson Modeling), main(), anchor_lambda_tot(), format_top(), implied_line_half(), poisson_cdf_leq(), poisson_pmf(), score_probs() (+2 more)
 
 ### Community 21 - "2026-10-06 每日记忆"
 Cohesion: 0.05
@@ -551,8 +389,8 @@ Cohesion: 0.11
 Nodes (36): Econometrica, Vol. 74, No. 6 (November, 2006), 1545–1578, Page 01: Econometrica, Vol. 74, No. 6 (November, 2006), 1545–1578, Page 02: 1546 R. GIACOMINI AND H. WHITE, Page 03: TESTS OF PREDICTIVE ABILITY 1547, Page 04: 1548 R. GIACOMINI AND H. WHITE, Page 05: TESTS OF PREDICTIVE ABILITY 1549, Page 06: 1550 R. GIACOMINI AND H. WHITE, Page 07: TESTS OF PREDICTIVE ABILITY 1551 (+28 more)
 
 ### Community 26 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.06
-Nodes (31): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点） (+23 more)
+Cohesion: 0.05
+Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 27 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.06
@@ -572,43 +410,43 @@ Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet,
 
 ### Community 31 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.05
-Nodes (38): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会 (+30 more)
+Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 32 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.04
-Nodes (47): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+39 more)
+Cohesion: 0.05
+Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 33 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.05
 Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 34 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.06
-Nodes (31): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点） (+23 more)
+Cohesion: 0.05
+Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 35 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.05
-Nodes (38): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会 (+30 more)
+Cohesion: 0.06
+Nodes (31): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点） (+23 more)
 
 ### Community 36 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.05
 Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 37 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.05
-Nodes (38): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会 (+30 more)
-
-### Community 38 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.06
 Nodes (31): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点） (+23 more)
+
+### Community 38 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.05
+Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 39 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.05
 Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 40 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.05
-Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
+Cohesion: 0.06
+Nodes (31): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点） (+23 more)
 
 ### Community 41 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.06
@@ -627,16 +465,16 @@ Cohesion: 0.05
 Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 45 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.06
-Nodes (31): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点） (+23 more)
+Cohesion: 0.05
+Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 46 - "累计战绩"
 Cohesion: 0.04
-Nodes (35): 球探数据采集引擎 (sporttery-sniper), 2981440 Meta, 2981490 Meta, 欧国联 苏格兰 vs 瑞士, 3095738 Meta, 亚运男足 韩国U23 vs 中国U23, 3095760 Meta, 亚运男足 乌兹别克斯坦U23 vs 日本U23 (+27 more)
+Nodes (43): 2981440 Meta, 2981490 Meta, 欧国联 苏格兰 vs 瑞士, 亚盘, 大小球, 皇冠 (cid=3), 3095738 Meta, 亚运男足 韩国U23 vs 中国U23 (+35 more)
 
 ### Community 47 - "2026-10-07 每日记忆"
-Cohesion: 0.06
-Nodes (35): 1. 周三001 [芬超冠] 格尼斯坦 vs 图尔库国际 (ID: 3085210), 2026-10-07 每日记忆, 2. 周三002 [巴西甲] 巴西国际 vs 科林蒂安 (ID: 2910912), 3. 周三003 [巴西甲] 瑞模贝雷 vs 格雷米奥 (ID: 2910914), 4. 周三004 [巴西甲] 布拉干蒂诺RB vs 米拉索 (ID: 2910909), 5. 周三005 [巴西甲] 维多利亚 vs 沙佩科恩斯 (ID: 2910916), 6 列表格汇总推荐, 6. 周三006 [巴西甲] 博塔弗戈 vs 达伽马 (ID: 2910908) (+27 more)
+Cohesion: 0.05
+Nodes (41): 1. 周三001 [芬超冠] 格尼斯坦 vs 图尔库国际 (ID: 3085210), 2026-10-07 每日记忆, 2. 周三002 [巴西甲] 巴西国际 vs 科林蒂安 (ID: 2910912), 3. 周三003 [巴西甲] 瑞模贝雷 vs 格雷米奥 (ID: 2910914), 4. 周三004 [巴西甲] 布拉干蒂诺RB vs 米拉索 (ID: 2910909), 5. 周三005 [巴西甲] 维多利亚 vs 沙佩科恩斯 (ID: 2910916), 6. 周三006 [巴西甲] 博塔弗戈 vs 达伽马 (ID: 2910908), 串关组合 (+33 more)
 
 ### Community 48 - "4. 存档原始赔率数据"
 Cohesion: 0.25
@@ -646,21 +484,17 @@ Nodes (7): 4. 存档原始赔率数据, {联赛} {主队} vs {客队}, 澳彩 (c
 Cohesion: 0.11
 Nodes (33): Evaluating probabilistic forecasts of football, Page 01: Evaluating probabilistic forecasts of football, Page 02: 1 Introduction, Page 03: ordinal. Ordinal events have a natural ordering. For example, a question on, Page 04: tended to events with more than two possible outcomes. The ignorance score, Page 05: on the RPS that also have this property. Murphy [1970] compared the for-, Page 06: 2 Background, Page 07: distribution is taken into account by the score, it is non-local. The ignorance (+25 more)
 
-### Community 50 - "PoissonEngine"
-Cohesion: 0.15
-Nodes (4): PoissonEngine, PoissonParams, ScoreItem, TestPoissonDomain
-
 ### Community 51 - "贝叶斯动态离散时间加权"
 Cohesion: 0.11
 Nodes (32): Bayesian weighted discrete-time dynamic models for association, Page 01: Bayesian weighted discrete-time dynamic models for association, Page 02: Bayesian weighted discrete-time dynamic models for association football predicti, Page 03: Bayesian weighted discrete-time dynamic models for association football predicti, Page 04: Bayesian weighted discrete-time dynamic models for association football predicti, Page 05: Bayesian weighted discrete-time dynamic models for association football predicti, Page 06: Bayesian weighted discrete-time dynamic models for association football predicti, Page 07: Bayesian weighted discrete-time dynamic models for association football predicti (+24 more)
 
-### Community 52 - "ConvertOddsUseCase"
+### Community 52 - "OddsConversionResult"
 Cohesion: 0.08
-Nodes (4): ConvertOddsUseCase, OddsConversionResult, TestAcademicBenchmarks, TestApplicationUseCases
+Nodes (3): OddsConversionResult, TestAcademicBenchmarks, TestApplicationUseCases
 
 ### Community 53 - "verifier.py"
-Cohesion: 0.07
-Nodes (9): format_receipt_console(), CheckStatus, DimensionResult, DimensionType, VerificationReceipt, clean_a11y_noise(), convert_a11y_table_to_tsv(), TestAdapterCli (+1 more)
+Cohesion: 0.06
+Nodes (7): CheckStatus, DimensionType, VerificationReceipt, clean_a11y_noise(), convert_a11y_table_to_tsv(), TestAdapterCli, TestDomainModel
 
 ### Community 54 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.06
@@ -671,48 +505,48 @@ Cohesion: 0.05
 Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 56 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.06
-Nodes (31): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点） (+23 more)
-
-### Community 57 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.05
 Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
+
+### Community 57 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.06
+Nodes (31): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点） (+23 more)
 
 ### Community 58 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.05
 Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
 
 ### Community 59 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.05
-Nodes (36): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 一、微观阵容与首发伤停 (+28 more)
+Cohesion: 0.06
+Nodes (31): 1. 澳彩, 2. 皇冠, 3. Bet365, 4. 易胜博, 5. 平博, 6. 188Bet, 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点） (+23 more)
 
 ### Community 60 - "2026-10-04 每日记忆"
 Cohesion: 0.06
 Nodes (30): 2026-10-04 每日记忆, 串关组合, 串关组合, 候补场次, 初筛结果（17:30）, 初筛结果（21:30）, 推荐, 推荐（21:30 欧国联全量推演） (+22 more)
 
 ### Community 61 - "2981440/易胜博.md"
-Cohesion: 0.10
-Nodes (15): 六、胜平负, λ 与预期总进球, 主队 / 客队进球数, 九、最终结果汇总, 六、胜平负, 总进球数, 胜平负, λ 与预期总进球 (+7 more)
+Cohesion: 0.07
+Nodes (21): CLAUDE.md - AI Pair Programming & Knowledge Rules, 核心推演准则（胜平负精准分析）, 知识图谱（graphify）, 第 2 段：欧指分析, 第 3 步：欧洲指数（胜平负）赔率分析, 3.1 Logistic / 多项 Logit, 3.2 树模型 / 集成模型（Random Forest / XGBoost / LightGBM）, 三、胜平负层面的分类模型 (+13 more)
 
-### Community 62 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 18. Betway, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
+### Community 62 - "value"
+Cohesion: 0.16
+Nodes (19): extractArrayLiteral(), handicapName(), isPreMatchPhase(), leagueKey(), matchStatusName(), pad2(), parseCompanyOdds(), parseCorrectScoreOdds() (+11 more)
 
 ### Community 63 - "injury-service.js"
-Cohesion: 0.08
-Nodes (28): 第 1 步：基本面分析, 第 1 段：基本面 + 伤停 + 自开盘, 第 2 步：伤停分析, 自开盘（合理区间）, 博德闪耀缺阵, 🏥 第 2 步：伤停分析, 葡萄牙体育缺阵, 一、微观阵容与首发伤停 (+20 more)
+Cohesion: 0.13
+Nodes (18): 第 1 步：基本面分析, 第 1 段：基本面 + 伤停 + 自开盘, 第 2 步：伤停分析, 自开盘（合理区间）, 博德闪耀缺阵, 🏥 第 2 步：伤停分析, 葡萄牙体育缺阵, Big Balls伤停辅源 (+10 more)
 
-### Community 64 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+### Community 64 - "四、模拟示例（周日 018 巴萨 vs 塞维利亚）"
 Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 18. Betway, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
+Nodes (10): 表格：2.1 盘口数据 / handicap_open_current, 表格：第三步：盘口类型复盘 / handicap_verification, 表格：2.3 错盘分类（如为错盘） / mispricing_types, 表格：2.4 浅盘形态细分（如为浅盘） / shallow_shapes, 四、模拟示例（周日 018 巴萨 vs 塞维利亚）, 【深度分析 周日 018 第 1 段/共 5 段】, 【深度分析 周日 018 第 2 段/共 5 段】, 【深度分析 周日 018 第 3 段/共 5 段】 (+2 more)
 
 ### Community 65 - "杯赛防守脆断与进球肥尾"
-Cohesion: 0.14
-Nodes (26): Page 01: Research article, Page 02: 2 Journal of Sports Analytics, Page 03: Wilkens 3, Page 04: 4 Journal of Sports Analytics, Page 05: Wilkens 5, Page 06: 6 Journal of Sports Analytics, Page 07: Wilkens 7, Page 08: 8 Journal of Sports Analytics (+18 more)
-
-### Community 66 - "cli.js"
 Cohesion: 0.13
-Nodes (26): formatHistoryWindow(), localDateString(), main(), parseCliArgs(), parseFormat(), printHelp(), tryParseFormat(), buildAgentAnalysisPayload() (+18 more)
+Nodes (27): Page 01: Research article, Page 02: 2 Journal of Sports Analytics, Page 03: Wilkens 3, Page 04: 4 Journal of Sports Analytics, Page 05: Wilkens 5, Page 06: 6 Journal of Sports Analytics, Page 07: Wilkens 7, Page 08: 8 Journal of Sports Analytics (+19 more)
+
+### Community 66 - "titan007.test.js"
+Cohesion: 0.15
+Nodes (23): formatHistoryWindow(), localDateString(), main(), parseCliArgs(), parseFormat(), printHelp(), tryParseFormat(), buildAgentAnalysisPayload() (+15 more)
 
 ### Community 67 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.05
@@ -726,21 +560,17 @@ Nodes (27): 二、已落盘赛事元数据明细 (Match Meta Details), 【周六
 Cohesion: 0.08
 Nodes (24): 1.1 操作分级定义, 1.2 高危操作清单 🔴, 1.3 中危操作清单 🟡, 1.4 低危操作清单 🟢, 1.5 操作预览与确认规范, 1. 回滚前创建保护性备份, 1. 操作分级与确认机制, 2026-03-10 14:32 (+16 more)
 
-### Community 70 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 18. Betway, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
+### Community 70 - "输出 2：写入记忆"
+Cohesion: 0.17
+Nodes (9): 输出 2：写入记忆, 独立泊松比分简表（复盘用）, 市场组合／盘口锚定结果（仅实际执行时留存）, 深度分析, 综合评估, 基本面摘要, {联赛} {主队} vs {客队}（编号: {编号} 比赛ID: {matchId}，开球: {开球时间}，分析: {YYYY-MM-DD HH:mm}）, 赔率摘要 (+1 more)
 
 ### Community 71 - "推荐输出（recommendation）"
-Cohesion: 0.09
-Nodes (14): cli.py (OO-EPC去水CLI), OoEpcCalculator (Goto 2026), 推荐输出（recommendation）, 无推荐场景, 特殊场景处理, 用户追问单场, 输出, USER.md - About Your Human (+6 more)
+Cohesion: 0.11
+Nodes (13): 推荐输出（recommendation）, 无推荐场景, 特殊场景处理, 用户追问单场, 输出, USER.md - About Your Human, SOUL.md - 你是谁, 核心原则 (+5 more)
 
 ### Community 72 - "泊松概率计算手册（足彩用）"
 Cohesion: 0.09
 Nodes (7): 泊松概率计算手册（足彩用）, Dixon–Coles经验草案, 独立泊松基准, 独立双泊松比分矩阵, 比分二次加权 S=P×w, 表格：九、公式速查 / formula_reference, 表格：二、足彩中的输出项 / probability_outputs
-
-### Community 73 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 18. Betway, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
 
 ### Community 74 - "深度分析"
 Cohesion: 0.09
@@ -751,36 +581,36 @@ Cohesion: 0.13
 Nodes (14): 论文应用回检, Conditional Predictive Ability (CPA) Testing Framework, Two-Step Adaptive Forecast Selection Decision Rule, Tests of Conditional Predictive Ability, Macroeconomic Parameter-Reduction Forecast Evaluation, Theorem 1: One-Step Conditional Predictive Ability Test, Theorem 3: Multistep Conditional Predictive Ability Test, Theorem 4: Multistep Unconditional Predictive Ability Test (+6 more)
 
 ### Community 76 - "泊松概率分析：布伦特福德 vs 狼队"
-Cohesion: 0.10
-Nodes (20): 一、原始数据整理, 七、总进球数概率, 三、掺入近六场（0.7 主客场 + 0.3 近六场）, 与泊松概率对比, 主队, 主队（λ₁=1.53）, 主队 布伦特福德, 二、基础 λ（主队主场 + 客队客场） (+12 more)
+Cohesion: 0.07
+Nodes (26): λ 与预期总进球, 一、原始数据整理, 七、总进球数概率, 三、掺入近六场（0.7 主客场 + 0.3 近六场）, 与泊松概率对比, 主队, 主队（λ₁=1.53）, 主队 / 客队进球数 (+18 more)
 
-### Community 77 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 18. Betway, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
+### Community 77 - "cli.py (OO-EPC去水CLI)"
+Cohesion: 0.18
+Nodes (5): cli.py (OO-EPC去水CLI), OoEpcCalculator (Goto 2026), OO-EPC (Equal Profit for Confidence Odds-Only Model), odds-1x2-sniper (时序破盘狙击手), pansuan-workflow (全局工作流)
 
 ### Community 78 - "十九篇的执行落点与原文锚点"
-Cohesion: 0.14
-Nodes (22): Aiyer（2023）：结果偏见与决策评价, Andrikogiannopoulou（2011）：效率与偏差, 布莱尔平方和与可选对数损失, 德甲首球前赔率研究（2025）, Choe（2023）：序贯预测者比较, Constantinou（2022）：AH与1X2效率, 历史与市场进球参数凸组合, Dimitriadis（2021）：CORP可靠性校准 (+14 more)
+Cohesion: 0.16
+Nodes (20): Aiyer（2023）：结果偏见与决策评价, Andrikogiannopoulou（2011）：效率与偏差, 布莱尔平方和与可选对数损失, 德甲首球前赔率研究（2025）, Choe（2023）：序贯预测者比较, Constantinou（2022）：AH与1X2效率, 历史与市场进球参数凸组合, Dimitriadis（2021）：CORP可靠性校准 (+12 more)
 
 ### Community 80 - "深度分析（17:28 & 21:55）"
 Cohesion: 0.10
 Nodes (20): 2026-10-09 每日记忆, 2912286 - 瑞典超 - 哥德堡 vs 韦斯特罗 (周五004), 2912908 - 挪超 - 布兰 vs 维京 (周五005), 2995354 - 法甲 - 朗斯 vs 里昂 (周五009), 2996161 - 荷甲 - 埃因霍温 vs 海伦芬 (周五006), 2996498 - 荷乙 - 赫拉克勒 vs 瓦尔韦克 (周五007), 3000478 - 日职联 - 柏太阳神 vs 神户胜利船 (周五002), 3008256 - 英冠 - 西汉姆联 vs 女王巡游 (周五010) (+12 more)
 
-### Community 81 - "titan007.test.js"
-Cohesion: 0.15
-Nodes (18): fetchMatchDataWithFailover(), fetchScheduleWithFailover(), fetchWithTimeout(), buildOddsHistoryUrls(), buildRequestHeaders(), cleanTeamLabel(), fetchJcSchedule(), fetchMatchData() (+10 more)
+### Community 81 - "fetchMatchData"
+Cohesion: 0.17
+Nodes (18): fetchMatchDataWithFailover(), fetchScheduleWithFailover(), fetchWithTimeout(), buildOddsHistoryUrls(), createHumanLikeFetch(), launchLoop(), launchPendingRequests(), runRequest() (+10 more)
 
 ### Community 82 - "第一部分：赛前分析模板"
 Cohesion: 0.07
 Nodes (13): 表格：第五步：综合判断 / final_judgments, 表格：第一步：基本面 8 维度分析（必须逐项填写，缺一不可） / fundamental_dimensions, 表格：比赛信息 / postmatch_identity, 表格：第一步：赛前预测回顾 / predictions_results, 表格：比赛信息 / prematch_identity, 表格：推荐汇总 / recommendation_markets, 表格：第六步：风险评估 / risk_types, 表格：第五步：更新追踪表 / shape_tracking (+5 more)
 
 ### Community 83 - "模型扩展与组合手册（除泊松之外）"
-Cohesion: 0.11
-Nodes (18): 1.1 双泊松模型（Bivariate Poisson）, 1.2 Dixon–Coles 修正, 2.1 Poisson 回归 / 负二项回归, 3.1 Logistic / 多项 Logit, 3.2 树模型 / 集成模型（Random Forest / XGBoost / LightGBM）, 4.1 多家赔率反演的「综合隐含概率」, 7.1 总体原则, 7.2 程序层（服务 / 库）职责 (+10 more)
+Cohesion: 0.12
+Nodes (15): 1.1 双泊松模型（Bivariate Poisson）, 1.2 Dixon–Coles 修正, 2.1 Poisson 回归 / 负二项回归, 4.1 多家赔率反演的「综合隐含概率」, 7.1 总体原则, 7.2 程序层（服务 / 库）职责, 7.3 Agent Skill 层职责, 7.4 分层带来的好处 (+7 more)
 
 ### Community 84 - "五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南"
-Cohesion: 0.09
-Nodes (21): 九篇论文转写核对（未完成项写明）, Data Leakage in Time Series Evaluation, Naïve and Baseline Benchmarking Pitfall, Time Series Cross-Validation & Partitioning Best Practices, Data Leakage in Time Series Forecasting, Hewamalage et al. (2023) Forecast Evaluation Pitfalls and Best Practices, Mean Absolute Scaled Error (MASE) & Scaled Errors, Naïve Persistence Benchmark (+13 more)
+Cohesion: 0.05
+Nodes (35): Page 01: Stable reliability diagrams for probabilistic classifiers, Page 02: ENS / Binning and Counting ENS / CORP, Page 03: A EMOS / 9 Equidistant Bins B EMOS / 10 Equidistant Bins, Page 04: constitutes both the nonparametric isotonic least squares and operate in the dis, Page 05: 1.00 1.00, Page 06: Here, we adopt the general score decomposition introduced n1 , . . . , nk times,, Page 07: Table 1. Scoring rules for probability forecasts of binary events, Page 08: and associated realizations y1 , . . . , yn ∈ {0, 1} from an order n α for α ∈ ( (+27 more)
 
 ### Community 85 - "Favorite-Longshot Bias (FLB)"
 Cohesion: 0.11
@@ -806,21 +636,21 @@ Nodes (17): AGENTS.md Footy Analysis Workflow, OO-EPC Odds De-juicing Calculator
 Cohesion: 0.12
 Nodes (15): Aiyer Decision Evaluation Process Decoupling, 步骤 1.5：先审过程，再揭比分（Aiyer 决策审计与认知契约卡对账）, Baron and Hershey (1988) Experiment 1, Outcome Bias Replication Study, Perceived Social Norms Mediation, Perceived Decision-Maker Responsibility, Between-Participants Replication Design, Outcome Bias and Evaluations of Decisions (Aiyer et al., 2023) (+7 more)
 
-### Community 92 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 18. Betway, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
+### Community 92 - "盘赔分析系统化框架（2026-03-17 整理 · 主人亲授）"
+Cohesion: 0.18
+Nodes (11): 001 场案例分析, 判断速查表, 升盘 + 升水的双重性（难点）, 后续行动, 如何区分阻 vs 诱？, 我们的局限与应对, 核心认知（庄家视角）, 案例验证表（持续更新） (+3 more)
 
-### Community 93 - "输出 2：写入记忆"
-Cohesion: 0.06
-Nodes (20): 输出 2：写入记忆, 执行步骤, 步骤 1：逐场推送分析报告（内容格式规范）, 步骤 2：精选（全部分析完成后执行）, 步骤 4：推送汇总, 步骤 5：写入记忆, 独立泊松比分简表（复盘用）, 市场组合／盘口锚定结果（仅实际执行时留存） (+12 more)
+### Community 93 - "执行步骤"
+Cohesion: 0.11
+Nodes (9): 执行步骤, 步骤 1：逐场推送分析报告（内容格式规范）, 步骤 2：精选（全部分析完成后执行）, 步骤 4：推送汇总, 步骤 5：写入记忆, 候补场次, 串关组合, {推荐 / 推荐（HH:MM）} (+1 more)
 
 ### Community 94 - "三、λ 的计算（核心流程）"
 Cohesion: 0.18
 Nodes (3): 主客场攻防λ, 表格：3.4 步骤三：伤停修正（可选） / injury_adjustment_ranges, 表格：3.1 所需数据 / sample_recommendations
 
-### Community 95 - "【周六025】沙特联 利雅得新月 vs 吉达联合"
-Cohesion: 0.33
-Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六025】沙特联 利雅得新月 vs 吉达联合
+### Community 95 - "二、五大博弈支柱专项体检结论"
+Cohesion: 0.20
+Nodes (9): 1. 第一大梁：庄家精算第一性原理（算账本，不算球技）, 2. 第二大梁：初盘原始物理基准锚点, 3. 第三大梁：双盘联动张力与让球防守底线, 4. 第四大梁：五阶段动态时序与假摔破译（T0～T4）, 5. 第五大梁：物理三维落槌与胜负平 2 串 1 交付, 一、10 个 Commit 逐项体检总览表, 三、一锤定音总结, 二、五大博弈支柱专项体检结论 (+1 more)
 
 ### Community 96 - "赛程抓取（match-scraper）"
 Cohesion: 0.12
@@ -835,24 +665,24 @@ Cohesion: 0.12
 Nodes (5): 数据源与全网 API 矩阵手册 (Data Sources & API Matrix Manual), Football-Data.org, The Odds API, Sofascore xG与站位, 表格：一、系统多源数据架构总览 / source_roles_matrix
 
 ### Community 99 - "步骤 3：10 步分析过程（固定顺序）"
-Cohesion: 0.15
-Nodes (10): 步骤 3：10 步分析过程（固定顺序）, 第 1 步：基本面分析, 第 2 步：伤情分析, 第 3 步：泊松建模（比分概率）, 第 4 步：欧洲指数（胜平负）赔率分析, Andrikogiannopoulou, Goto, Levitt (+2 more)
+Cohesion: 0.12
+Nodes (11): 步骤 3：10 步分析过程（固定顺序）, 第 1 步：基本面分析, 第 2 步：伤情分析, 第 3 步：泊松建模（比分概率）, 第 4 步：欧洲指数（胜平负）赔率分析, 阶段 3：杯赛、战意与特殊标记, Andrikogiannopoulou, Goto (+3 more)
 
 ### Community 100 - "赛事初筛（match-screening）"
 Cohesion: 0.13
 Nodes (10): 写入记忆, 初筛本意与分析逻辑, 赛事初筛（match-screening）, 输入, 输出, 输出格式, 被筛除的场次摘要（折叠）, 推荐深度分析场次 (+2 more)
 
 ### Community 101 - "赛后复盘"
-Cohesion: 0.12
-Nodes (16): 1. 八场赛前依据的事后质量审计（不能补作揭果前过程分）, 2. 精选场次逐场核对与客观评估, 3. 候补场次核对（参考，不计入主命中率）, 4. 反事实问题（不计算不存在的交易收益）, 5. 今日教训（基于赛前记录，均待未来样本验证）, 6. 待验证表回检（本批不追加支持计数）, 7. 📈 概率打分与战绩统计, 8. 闭环验收（独立复核：未通过；不得声称八项全完成） (+8 more)
+Cohesion: 0.18
+Nodes (11): 1. 八场赛前依据的事后质量审计（不能补作揭果前过程分）, 2. 精选场次逐场核对与客观评估, 3. 候补场次核对（参考，不计入主命中率）, 4. 反事实问题（不计算不存在的交易收益）, 5. 今日教训（基于赛前记录，均待未来样本验证）, 6. 待验证表回检（本批不追加支持计数）, 8. 闭环验收（独立复核：未通过；不得声称八项全完成）, 9. 样本数据（结构化，供后续程序抽取） (+3 more)
 
 ### Community 102 - "欧国联 克罗地亚 vs 西班牙（编号: 周二008 比赛ID: 2981455，开球: 2026-10-07 02:45，分析: 2026-10-06 21:20）"
 Cohesion: 0.12
 Nodes (16): 003 五页重抓（18:15）, 基本面摘要, 基本面摘要, 基本面摘要, 欧国联 克罗地亚 vs 西班牙（编号: 周二008 比赛ID: 2981455，开球: 2026-10-07 02:45，分析: 2026-10-06 21:20）, 欧国联 卢森堡 vs 保加利亚（编号: 周二005 比赛ID: 2981553，开球: 2026-10-07 02:45，分析: 2026-10-06 21:30）, 欧国联 苏格兰 vs 斯洛文尼亚（编号: 周二006 比赛ID: 2981506，开球: 2026-10-07 02:45，分析: 2026-10-06 21:25）, 泊松比分简表（复盘用） (+8 more)
 
 ### Community 103 - "深度分析（deep-analysis）"
-Cohesion: 0.06
-Nodes (40): 数据抓取方式（强制）, 深度分析（deep-analysis）, 输出, 2981498 Meta, 欧国联 北马其顿 vs 苏格兰, Bet365 (cid=8/281), 亚盘, 大小球 (+32 more)
+Cohesion: 0.09
+Nodes (31): 数据抓取方式（强制）, 深度分析（deep-analysis）, 输出, Match Market Data 2981454 (2026-10-05), Match Market Data 2981490 (2026-09-29), Match Market Data 2981498 (2026-10-03), Match Market Data 2981504 (2026-10-05), Match Market Data 2981549 (2026-10-06) (+23 more)
 
 ### Community 104 - "深度分析（晚盘 22:30 · 15 场全量从头推演）"
 Cohesion: 0.12
@@ -866,33 +696,33 @@ Nodes (9): 1. MEMORY.md 中 CLV 用词与「各玩法」不统一, 2. 主会话�
 Cohesion: 0.25
 Nodes (8): 一、实战对账汇总表, 七、结构化样本数据, 三、串关组合对账, 二、核心玩法统计, 五、论文原文引用与经验教训, 六、闭环验收清单, 四、Aiyer 决策审计与认知基因对账, 赛后复盘
 
-### Community 107 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 8. 威廉希尔, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
+### Community 107 - "二、四大架构级增补落地方案"
+Cohesion: 0.22
+Nodes (8): 1. 核心端点分层架构（Gamma API）, 1. 采集链路：从“模糊搜索”升级为“Slug直探 + GameId裂变”, 2. 盘口维度穿透：去中心化流动性全面赋能 4 大推演维度, 3. 主客队权威校验：利用 `teams[].ordering` 消除对调与倒挂, 4. 字典权威化：利用 `/teams` 建立本地官方缩写缓存库, Polymarket 官方 API 深度研读与足球系统架构增补方案, 一、官方 API 核心架构发现, 二、四大架构级增补落地方案
 
 ### Community 108 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.03
-Nodes (60): 10. 伟德, 12. Bwin, 13. SNAI, 14. 必发, 15. SBO, 16. 沙巴, 17. Marathon, 18. Betway (+52 more)
+Nodes (66): 10. 伟德, 11. Interwetten, 12. Bwin, 13. SNAI, 14. 必发, 15. SBO, 16. 沙巴, 17. Marathon (+58 more)
 
-### Community 109 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 18. Betway, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
+### Community 109 - "【周六004】日职联 京都不死鸟 vs 町田泽维亚"
+Cohesion: 0.25
+Nodes (7): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 六、中国体育彩票官方竞彩数据, 【周六004】日职联 京都不死鸟 vs 町田泽维亚
 
 ### Community 110 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
 Cohesion: 0.03
-Nodes (60): 10. 伟德, 12. Bwin, 13. SNAI, 14. 必发, 15. SBO, 16. 沙巴, 17. Marathon, 18. Betway (+52 more)
+Nodes (66): 10. 伟德, 11. Interwetten, 12. Bwin, 13. SNAI, 14. 必发, 15. SBO, 16. 沙巴, 17. Marathon (+58 more)
 
 ### Community 111 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.04
-Nodes (55): 10. 伟德, 12. Bwin, 13. SNAI, 14. 必发, 15. SBO, 16. 沙巴, 17. Marathon, 18. Betway (+47 more)
+Cohesion: 0.03
+Nodes (66): 10. 伟德, 11. Interwetten, 12. Bwin, 13. SNAI, 14. 必发, 15. SBO, 16. 沙巴, 17. Marathon (+58 more)
 
-### Community 112 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 18. Betway, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
+### Community 112 - "ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）"
+Cohesion: 0.25
+Nodes (7): ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）, 代价：, 决策内容 (Decision), 收益：, 收益与代价 (Consequences), 状态 (Status), 背景与问题陈述 (Context)
 
-### Community 113 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
-Cohesion: 0.12
-Nodes (17): 10. Bwin, 12. SNAI, 14. 必发, 17. Marathon, 18. Betway, 9. 立博, 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+9 more)
+### Community 113 - "预测 → 推荐 → 复盘的实际闭环"
+Cohesion: 0.29
+Nodes (4): paper-integration-v1（旧留存标签）, Giacomini（2006）：条件预测能力检验, paper-application-v2（当前执行）, Wilkens（2026）：德甲预测滚动验证
 
 ### Community 114 - "赛后复盘"
 Cohesion: 0.13
@@ -903,11 +733,11 @@ Cohesion: 0.13
 Nodes (14): arrCup：赛事基础信息, arrCupKind：阶段与轮次定义, arrTeam：球队字典, extraInfo：加时、点球与晋级说明, G：赛程与赛果, jh：核心业务数据, S：分组积分榜, titan007 欧冠杯 CupMatch c103.js 数据结构分析 (+6 more)
 
 ### Community 116 - "titan007.js"
-Cohesion: 0.09
-Nodes (38): applyLatestEuropeHistoryToCompanies(), applyLatestHistoryToCompanies(), clearMarketCurrent(), DEFAULT_REQUEST_DELAY_RANGE_MS, defaultFetch(), extractArrayFunctionStrings(), extractArrayLiteral(), HANDICAP_NAMES (+30 more)
+Cohesion: 0.11
+Nodes (27): applyLatestEuropeHistoryToCompanies(), applyLatestHistoryToCompanies(), buildRequestHeaders(), clearMarketCurrent(), DEFAULT_REQUEST_DELAY_RANGE_MS, defaultFetch(), detectHistoryRowFormat(), extractArrayFunctionStrings() (+19 more)
 
 ### Community 118 - "变动历史分析示例（大小球，必须像这样写）"
-Cohesion: 0.19
+Cohesion: 0.18
 Nodes (9): 变动历史分析示例（大小球，必须像这样写）, 第 10 步：风险提示, 第 7 步：赔率合理性评估, 第 8 步：赔率变动解读, 第 9 步：关键点 / 疑点 / 矛盾分析, 2025 德甲进球预感研究, Constantinou (2022), Feng (+1 more)
 
 ### Community 119 - "执行流程"
@@ -918,17 +748,13 @@ Nodes (7): 执行流程, 阶段 0：预处理与标签, 阶段 1：联赛层级�
 Cohesion: 0.15
 Nodes (14): Bayesian Weighted Discrete-Time Dynamic Football Model, Commensurate Priors with Spike-and-Slab Hyperpriors, Goal-Based Count Distributions (Poisson, NB, Skellam), Bettor Relative Stakes State-Space Model with BEINF Distribution, Bookmaker Implied Probability Regression Models, German Bundesliga 1 Hz In-Play Betting Dataset, State-Space Numerical Approximation via HMM Forward Recursion, Do Betting Markets Sense a Goal Coming? Evidence from the German Bundesliga (+6 more)
 
-### Community 121 - "二、全周期五阶段生命周期划分 (T0 ~ T4)"
-Cohesion: 0.11
-Nodes (6): T0–T4相对开球时钟, 赔率时序动态转折表（示例）, 足球倍率全周期五阶段时序形态学手册, Levitt（2004）：NFL博彩定价, Macri（2025）：足球贝叶斯加权动态模型, Winkelmann（2026）：异常赔率与状态空间
+### Community 121 - "Levitt（2004）：NFL博彩定价"
+Cohesion: 0.14
+Nodes (5): 赔率时序动态转折表（示例）, 足球倍率全周期五阶段时序形态学手册, Levitt（2004）：NFL博彩定价, Macri（2025）：足球贝叶斯加权动态模型, Winkelmann（2026）：异常赔率与状态空间
 
 ### Community 122 - "深度分析（早盘 17:00）"
 Cohesion: 0.14
 Nodes (14): 10. 【周日013】意甲 拉齐奥 vs 蒙扎 (2993810), 11. 【周日014】意甲 莱切 vs 博洛尼亚 (2993811), 12. 【周日015】法甲 尼斯 vs 斯特拉斯堡 (2995358), 13. 【周日016】德甲 科隆 vs 门兴 (3018824), 1. 【周日004】荷甲 乌德勒支 vs 威廉二世 (2996166), 2. 【周日005】意甲 科莫 vs 罗马 (2993807), 3. 【周日006】英冠 南安普敦 vs 朴次茅斯 (3008253), 4. 【周日007】西甲 埃尔切 vs 塞尔塔 (3013714) (+6 more)
-
-### Community 124 - "Stable reliability diagrams for probabilistic classifiers"
-Cohesion: 0.15
-Nodes (12): Page 01: Stable reliability diagrams for probabilistic classifiers, Page 02: ENS / Binning and Counting ENS / CORP, Page 03: A EMOS / 9 Equidistant Bins B EMOS / 10 Equidistant Bins, Page 04: constitutes both the nonparametric isotonic least squares and operate in the dis, Page 05: 1.00 1.00, Page 06: Here, we adopt the general score decomposition introduced n1 , . . . , nk times,, Page 07: Table 1. Scoring rules for probability forecasts of binary events, Page 08: and associated realizations y1 , . . . , yn ∈ {0, 1} from an order n α for α ∈ ( (+4 more)
 
 ### Community 125 - "执行流程"
 Cohesion: 0.12
@@ -959,8 +785,8 @@ Cohesion: 0.15
 Nodes (12): engines, node, name, private, scripts, analyze, review, schedule (+4 more)
 
 ### Community 132 - "[欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告"
-Cohesion: 0.17
-Nodes (11): 三线一致性, 价值评估, 关键点, [欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告, 疑点, 矛盾, ⚠️ 第 11 步：风险提示, ⚖️ 第 8 步：合理性检验 (+3 more)
+Cohesion: 0.11
+Nodes (17): 三线一致性, 交锋往绩, 价值评估, 关键点, 战意分析, [欧冠杯] 葡萄牙体育 vs 博德闪耀 深度分析报告, 球队级别与定位, 疑点 (+9 more)
 
 ### Community 133 - "联赛配置手册（泊松 + 盘口）"
 Cohesion: 0.17
@@ -974,10 +800,6 @@ Nodes (11): 总结：怎么比较才叫“值得下注”, 案例一：布伦特
 Cohesion: 0.15
 Nodes (12): 2026-10-03 每日记忆, 串关组合, 串关组合, 候补场次, 推荐（21:30）, 推荐（22:30）, 精选场次, 精选场次 (+4 more)
 
-### Community 137 - "极小化最大损失（项目风险动机模型）"
-Cohesion: 0.17
-Nodes (5): 表格：三、技能流程指引 / skill_stage_matrix, Asian Handicap Probability & Refund Modeling Methodology, Favorite-Longshot Bias, Hegarty & Whelan (2023) Football Odds Forecasting & Two Markets, Levitt：论文方法与执行落点
-
 ### Community 140 - "基本面（分析页）"
 Cohesion: 0.18
 Nodes (10): 下一步, 交锋往绩, 伤停, 基本面（分析页）, 已获取数据, 待抓取, 深度分析进度 - 2950955 里斯本 vs 博德闪耀, 状态 (+2 more)
@@ -987,20 +809,20 @@ Cohesion: 0.22
 Nodes (11): 2950955 Analysis Report, Betting Decision Manual, Handicap and Trend Reading Manual, League Configuration Manual, Model Expansion and Combination Manual, Odds Time Series Fluctuation Analysis Manual, Odds vs Poisson Comparison Cases, Poisson Probability Calculation Manual (+3 more)
 
 ### Community 142 - "Idea: 足球盘口倍率分析推演出胜负平"
-Cohesion: 0.22
-Nodes (9): 马洛卡 vs 西班牙人深度分析报告 (2804569), 里斯本 vs 博德闪耀分析进度 (2950955), 泊松分析与期望值(EV)计算统一流程, 论文 1802.08848: 结合历史数据与庄家赔率预测足球比分, Shin 赔率转概率算法 (Shin's Method), 单例浏览器与快照落盘解耦架构, Pansuan Engine 智能体体系, 多平台 AI Agent 原生适配架构 (+1 more)
+Cohesion: 0.18
+Nodes (11): 马洛卡 vs 西班牙人深度分析报告 (2804569), 里斯本 vs 博德闪耀分析进度 (2950955), 泊松分析与期望值(EV)计算统一流程, 论文 1802.08848: 结合历史数据与庄家赔率预测足球比分, Shin 赔率转概率算法 (Shin's Method), Idea: 足球盘口倍率分析推演出胜负平, 足球庄家倍率精算师 (Pansuan Actuary), 单例浏览器与快照落盘解耦架构 (+3 more)
 
 ### Community 143 - "球队风格判定手册（简版）"
 Cohesion: 0.22
 Nodes (8): 2.1 判定总进球倾向, 2.2 进攻 / 防守强弱, 2.3 主客场 & 近况修正, 一、你到底需要什么级别的「风格」？, 二、从硬数据判定球队风格, 六、最低可执行版本（给自己一个懒人流程）, 四、把风格归类为 A / B / C, 球队风格判定手册（简版）
 
-### Community 144 - "算法/src/adapter/cli.py"
-Cohesion: 0.11
-Nodes (7): Semantic Gate and Poisson Zero Drift Solution, bridge(), run_deep_graphify(), main(), CalculatePoissonUseCase, PoissonResult, TestPoissonUseCase
+### Community 144 - "test_poisson.py"
+Cohesion: 0.15
+Nodes (7): main(), CalculatePoissonUseCase, PoissonEngine, PoissonParams, PoissonResult, TestPoissonDomain, TestPoissonUseCase
 
 ### Community 145 - "parseCrowFullIndexData"
-Cohesion: 0.33
-Nodes (9): alignedOddsRow(), findTableByLabel(), parseCrowCorrectScores(), parseCrowFullIndexData(), parseCrowGoalBands(), parseCrowTeamTotals(), reverseScore(), tableRows() (+1 more)
+Cohesion: 0.29
+Nodes (10): alignedOddsRow(), extractCells(), findTableByLabel(), parseCrowCorrectScores(), parseCrowFullIndexData(), parseCrowGoalBands(), parseCrowTeamTotals(), reverseScore() (+2 more)
 
 ### Community 146 - "2026-10-05 每日记忆"
 Cohesion: 0.17
@@ -1018,13 +840,13 @@ Nodes (11): 1. 复盘主体：精选 4 场（计入累计战绩）, 2. 观察组
 Cohesion: 0.18
 Nodes (11): 1. [芬超冠] 格尼斯坦 0:0 图尔库国际 (ID: 3085210), 2. [巴西甲] 巴西国际 2:1 科林蒂安 (ID: 2910912), 3. [巴西甲] 博塔弗戈 1:2 达伽马 (ID: 2910908), 一、实战对账汇总表, 三、观察组与候补场次核对, 二、逐场深度复盘与认知契约卡倒查, 五、今日教训提炼, 六、待验证回检与战绩统计 (+3 more)
 
-### Community 150 - "战意核实（重点，独立展示）"
-Cohesion: 0.22
-Nodes (7): 交锋往绩, 战意分析, 球队级别与定位, 积分排名对比, 🕐 第 1 步：基本面分析, 近期战绩（葡萄牙体育近 10 场）, 阶段 3：杯赛、战意与特殊标记
+### Community 150 - "比赛快照深层语义安检与泊松算法零偏差迁移实践"
+Cohesion: 0.29
+Nodes (6): 1. 升级 `校验/` 领域模型与语义规则 (8 大黄金维度), 2. 迁移并封装 `算法/` 独立泊松引擎 (100% 零偏差平移), 比赛快照深层语义安检与泊松算法零偏差迁移实践, 解决方案, 问题背景, 验证结论
 
 ### Community 151 - "TOOLS.md"
-Cohesion: 0.21
-Nodes (13): cli.py (校验数据完整性守门人CLI), CorrectScoreParser (Crown波胆比分矩阵解析), ProfilingParser (相同初盘/盘路走势解析), TacticsParser (场上压制力技统与进球时段解析), SnapshotVerifier (6大黄金维度安检聚合), 数据纯净与防错位红线 (Schema Hygiene), browseros-neo (爱马仕浏览器Skill), scrapling-official (官方Skill) (+5 more)
+Cohesion: 0.13
+Nodes (19): cli.py (校验数据完整性守门人CLI), CorrectScoreParser (Crown波胆比分矩阵解析), ProfilingParser (相同初盘/盘路走势解析), TacticsParser (场上压制力技统与进球时段解析), SnapshotVerifier (6大黄金维度安检聚合), 数据纯净与防错位红线 (Schema Hygiene), cleanTeamLabel(), parseAnalysisHtml() (+11 more)
 
 ### Community 152 - "输出 1：综合评估与推荐"
 Cohesion: 0.25
@@ -1038,9 +860,9 @@ Nodes (4): 1. 确认分析依据公司列表, 2. 赔率数据归属与整理, 3.
 Cohesion: 0.20
 Nodes (8): 1. 高频多触点深广检索（三大战区主动调兵）, 2. 可自愈机制（脱靶自愈与理论矛盾收敛）, 3. 各阶段论文与心法执行准则, 论文与知识图谱应用：高频深广检索与自愈自进化推演体系, graphify-out/graph.json, docs/论文/README.md, Kaunitz, Macri (2025)
 
-### Community 155 - "1. 澳彩 (欧亚双盘核心, 核心做市, cid=80)"
-Cohesion: 0.21
-Nodes (8): 1. 澳彩 (欧亚双盘核心, 核心做市, cid=80), 6. 188Bet (欧亚双盘核心, 核心做市, cid=976), 亚盘五阶段时序生命周期（T0~T4 节点）, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+### Community 155 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.03
+Nodes (61): 10. 伟德 (纯欧指做市, 核心做市, cid=81), 11. Interwetten (纯欧指做市, 核心做市, cid=104), 12. Bwin (纯欧指做市, 核心做市, cid=255), 14. 必发 (纯欧指做市, 核心做市, cid=2), 15. SBO(利记) (纯欧指做市, 老庄机构, cid=474), 16. 沙巴(IBC) (纯欧指做市, 老庄机构, cid=649), 17. Marathon(马拉松) (纯欧指做市, 论文样本, cid=800), 18. Betway(必威) (纯欧指做市, 论文样本, cid=482) (+53 more)
 
 ### Community 156 - "Sporttery Sniper 数据提取工具"
 Cohesion: 0.20
@@ -1050,29 +872,25 @@ Nodes (9): 2026-10-08 每日记忆, CHANGELOG.md 变更日志, Sporttery Sniper 
 Cohesion: 0.10
 Nodes (17): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六018】瑞典超 米亚尔比 vs 代格福什, 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌 (+9 more)
 
-### Community 158 - "【周一007】英超 考文垂 vs 纽卡斯尔"
-Cohesion: 0.25
-Nodes (7): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 六、中国体育彩票官方竞彩数据, 【周一007】英超 考文垂 vs 纽卡斯尔
+### Community 158 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (45): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+37 more)
 
 ### Community 159 - "核心系统：双轨敏捷数据采集（Scrapling ↔ BrowserOS neo）"
 Cohesion: 0.20
 Nodes (10): 单场深度分析数据抓取, 数据安全规则, 数据完整性质量守门人（校验/src/adapter/cli.py）, 数据范围, 核心系统：双轨敏捷数据采集（Scrapling ↔ BrowserOS neo）, 纯数学去水算法工具（算法/src/adapter/cli.py）, 赛后复盘数据抓取, 赛程同步 (+2 more)
 
-### Community 160 - "预测 → 推荐 → 复盘的实际闭环"
-Cohesion: 0.15
-Nodes (3): 认知契约卡, paper-integration-v1（旧留存标签）, paper-application-v2（当前执行）
+### Community 161 - "【周六019】意甲 国际米兰 vs 帕尔马"
+Cohesion: 0.33
+Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六019】意甲 国际米兰 vs 帕尔马
 
-### Community 161 - "SOUL.md - 你是谁"
-Cohesion: 0.25
-Nodes (7): SOUL.md - 你是谁, 性格, 核心原则, 核心特质, 沟通风格, 行为边界, 连续性
+### Community 162 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (45): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+37 more)
 
-### Community 162 - "【周一009】巴西甲 科里蒂巴 vs 博塔弗戈"
-Cohesion: 0.29
-Nodes (6): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 【周一009】巴西甲 科里蒂巴 vs 博塔弗戈
-
-### Community 163 - "【周一003】瑞典超 马尔默 vs 卡尔马"
-Cohesion: 0.29
-Nodes (6): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 【周一003】瑞典超 马尔默 vs 卡尔马
+### Community 163 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (44): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+36 more)
 
 ### Community 164 - "赛后复盘"
 Cohesion: 0.40
@@ -1086,29 +904,33 @@ Nodes (9): 基本面摘要, 基本面摘要, 欧国联 冰岛 vs 保加利亚（
 Cohesion: 0.50
 Nodes (3): 根因与官方规范对标, 根治方案, 问题背景与现象
 
-### Community 167 - "【周一004】挪超 奥斯KFUM vs 瓦勒伦加"
-Cohesion: 0.29
-Nodes (6): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 【周一004】挪超 奥斯KFUM vs 瓦勒伦加
+### Community 167 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (45): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+37 more)
 
-### Community 168 - "【周一002】意甲 亚特兰大 vs 威尼斯"
-Cohesion: 0.29
-Nodes (6): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 【周一002】意甲 亚特兰大 vs 威尼斯
+### Community 168 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (45): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+37 more)
+
+### Community 169 - "【周六001】日职联 大阪樱花 vs 横滨水手"
+Cohesion: 0.33
+Nodes (5): 一、微观阵容与首发伤停, 三、法定23家机构初即盘与凯利总表, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠全指数波胆与比分矩阵, 【周六001】日职联 大阪樱花 vs 横滨水手
 
 ### Community 170 - "概率分源与裁决一致性"
 Cohesion: 0.25
 Nodes (5): 步骤 3.6：概率打分（有数才算，不当对错本）, Dimitriadis, Wheatcroft, 2021_Dimitriadis_稳定可靠性图_CORP.pdf, 2019_Wheatcroft_足球概率预测评分.pdf
 
-### Community 171 - "【周一005】意甲 都灵 vs 乌迪内斯"
-Cohesion: 0.29
-Nodes (6): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 【周一005】意甲 都灵 vs 乌迪内斯
+### Community 171 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (45): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+37 more)
 
 ### Community 172 - "003 场完整分析案例（2026-03-18 反思）"
 Cohesion: 0.25
 Nodes (8): 003 场完整分析案例（2026-03-18 反思）, 8 维度完整分析, 关键信号识别, 反思（核心教训）, 实际结果：1-1 平局 ✅, 比赛信息, 盘赔分析, 综合判断
 
-### Community 173 - "【周一006】法乙 第戎 vs 梅斯"
-Cohesion: 0.29
-Nodes (6): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 【周一006】法乙 第戎 vs 梅斯
+### Community 173 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (45): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+37 more)
 
 ### Community 174 - "赛后复盘"
 Cohesion: 0.25
@@ -1118,25 +940,25 @@ Nodes (8): 一、实战对账汇总表, 七、结构化样本数据, 三、串�
 Cohesion: 0.25
 Nodes (8): 2784765 场（意甲 拉齐奥 1-0 AC 米兰）复盘总结, 主人点评, 亚盘数据, 基本面 8 维度, 核心教训, 浅盘形态判断, 盘口类型判断, 赛果验证
 
-### Community 176 - "【周一008】西甲 莱万特 vs 塞维利亚"
-Cohesion: 0.29
-Nodes (6): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 【周一008】西甲 莱万特 vs 塞维利亚
+### Community 176 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (45): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+37 more)
 
 ### Community 177 - "第 4 段：大小球 + 第 6-10 步摘要"
 Cohesion: 0.29
 Nodes (7): 第 10 步：泊松比分建模, 第 4 段：大小球 + 第 6-10 步摘要, 第 5 步：进球数赔率分析, 第 6 步：赔率合理性评估, 第 7 步：赔率变动解读, 第 8 步：关键点/疑点/矛盾, 第 9 步：风险提示
 
-### Community 178 - "【周一010】葡超 法马利康 vs 阿尔维卡"
-Cohesion: 0.29
-Nodes (6): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 【周一010】葡超 法马利康 vs 阿尔维卡
+### Community 178 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (45): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+37 more)
 
-### Community 180 - "【周一001】亚冠精英 迪拜祈祷 vs 吉达国民"
-Cohesion: 0.29
-Nodes (6): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 五、Crown 皇冠波胆全指数比分矩阵, 【周一001】亚冠精英 迪拜祈祷 vs 吉达国民
+### Community 180 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+Cohesion: 0.04
+Nodes (45): 1. 比分波胆 (0:0 ~ 4:4 完整矩阵), 1. 澳彩, 22. 中国体彩, 23. Polymarket, 2. Crown, 3. Bet365, 4. 易胜博, 5. 平博 (+37 more)
 
-### Community 182 - "【周六030】巴西甲 圣保罗 vs 维多利亚"
+### Community 182 - "【周六013】英超 伊普斯维奇 vs 富勒姆"
 Cohesion: 0.33
-Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六030】巴西甲 圣保罗 vs 维多利亚
+Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六013】英超 伊普斯维奇 vs 富勒姆
 
 ### Community 183 - "2026-10-11 每日记忆"
 Cohesion: 0.20
@@ -1150,25 +972,25 @@ Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商�
 Cohesion: 0.40
 Nodes (6): Winkelmann State Space Head Fake Identification, Numerical Likelihood Approximation via Discretised HMM, Two-Component Mixture Hurdle Model for Stakes, Fraud and Outlier Detection via Model Residuals, Betting Against Integrity: Identifying Match-Fixing Through In-Play Market Dynamics (Winkelmann et al., 2026), State-Space Model for Live Betting Turnover
 
-### Community 186 - "【周六026】荷甲 福图纳锡塔德 vs 特温特"
+### Community 186 - "【周六022】西甲 巴塞罗那 vs 赫塔菲"
 Cohesion: 0.33
-Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六026】荷甲 福图纳锡塔德 vs 特温特
+Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六022】西甲 巴塞罗那 vs 赫塔菲
 
 ### Community 187 - "异常处理"
 Cohesion: 0.33
 Nodes (5): 异常处理, 抓取异常, 数据源限流/网络异常, 部分完成场景, 频率控制
 
-### Community 188 - "【周六014】英超 切尔西 vs 伯恩茅斯"
+### Community 188 - "【周六012】德甲 霍芬海姆 vs 汉堡"
 Cohesion: 0.33
-Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六014】英超 切尔西 vs 伯恩茅斯
+Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六012】德甲 霍芬海姆 vs 汉堡
 
-### Community 189 - "【周六029】西甲 皇家马德里 vs 比利亚雷亚尔"
-Cohesion: 0.33
-Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六029】西甲 皇家马德里 vs 比利亚雷亚尔
+### Community 189 - "易胜博 (cid=12)"
+Cohesion: 0.40
+Nodes (4): 亚盘, 大小球, 易胜博 (cid=12), 欧指
 
 ### Community 190 - "2026-10-12 每日记忆"
 Cohesion: 0.17
-Nodes (10): 2026-10-12 竞彩足球赛程与【推演源数据】总览 (meta.md), 今日全量赛程与【推演源数据】索引表, 2026-10-12 每日记忆, 🎯 2 串 1 组合推荐, 📊 全量 10 场深度推演总表（法定 7 列规范）, 赛前分析推演（21:05 全量10场全面重新推演）, 赛程列表, 赛程列表 (+2 more)
+Nodes (10): 2026-10-12 竞彩足球赛程与【推演源数据】总览 (meta.md), 今日全量赛程与【推演源数据】索引表, 2026-10-12 每日记忆, 🎯 2 串 1 组合推荐, 📊 全量 10 场深度推演总表（法定 7 列规范）, 赛前分析推演（22:30 物理全量重取·深度推演与认知契约）, 赛程列表, 赛程列表 (+2 more)
 
 ### Community 191 - "【周六011】德甲 帕德博恩 vs 斯图加特"
 Cohesion: 0.33
@@ -1178,6 +1000,10 @@ Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商�
 Cohesion: 0.33
 Nodes (5): 一、微观阵容与首发伤停, 三、欧洲指数百家做市商清单（法定 23 家）, 二、基础战绩与攻防客观底牌, 六、中国体育彩票官方竞彩数据, 【周六010】德甲 美因茨 vs 勒沃库森
 
+### Community 193 - "ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）"
+Cohesion: 0.40
+Nodes (4): ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）, 决策背景 (Context), 收益与代价 (Consequences), 状态 (Status)
+
 ### Community 194 - "Skill: Deep Analysis"
 Cohesion: 0.50
 Nodes (4): Skill: Deep Analysis, Skill: Match Screening, Skill: Post Review, Skill: Recommendation
@@ -1186,13 +1012,13 @@ Nodes (4): Skill: Deep Analysis, Skill: Match Screening, Skill: Post Review, Ski
 Cohesion: 0.40
 Nodes (4): 亚盘, 大小球, 欧指, 澳彩 (cid=1)
 
-### Community 196 - "createHumanLikeFetch"
-Cohesion: 0.53
-Nodes (6): createHumanLikeFetch(), launchLoop(), launchPendingRequests(), runRequest(), normalizeConcurrency(), randomDelayMs()
+### Community 196 - "Q: 【豪门客战中盘跳档诱多型 (Head-Fake 假摔)】欧指单边造势客胜，亚盘中盘强升半一挂满水诱多出货（案例：巴西甲桑托斯2:2弗拉门戈）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【豪门客战中盘跳档诱多型 (Head-Fake 假摔)】欧指单边造势客胜，亚盘中盘强升半一挂满水诱多出货（案例：巴西甲桑托斯2:2弗拉门戈）, Source Nodes
 
-### Community 197 - "皇冠 (cid=3)"
-Cohesion: 0.50
-Nodes (3): 亚盘, 大小球, 皇冠 (cid=3)
+### Community 197 - "Q: 【深盘热门欧深亚浅避险型】欧指主胜<1.45且亚盘卡死一球超低水不升盘设障，面对密集防守弱旅时的尾部偷袭风险（案例：芬超冠古比斯0:1奥卢）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【深盘热门欧深亚浅避险型】欧指主胜<1.45且亚盘卡死一球超低水不升盘设障，面对密集防守弱旅时的尾部偷袭风险（案例：芬超冠古比斯0:1奥卢）, Source Nodes
 
 ### Community 198 - "澳门 (cid=1)"
 Cohesion: 0.50
@@ -1202,17 +1028,17 @@ Nodes (3): 亚盘, 大小球, 澳门 (cid=1)
 Cohesion: 0.50
 Nodes (3): 亚盘, 大小球, 皇冠 (cid=3)
 
-### Community 201 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+### Community 201 - "Q: 【均势浅盘底线低平赔型】主流机构平赔初盘极限低开(<2.90)，即时平赔抬升制造两头分流假象（案例：巴西甲巴拉纳竞技2:2米内罗竞技）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【均势浅盘底线低平赔型】主流机构平赔初盘极限低开(<2.90)，即时平赔抬升制造两头分流假象（案例：巴西甲巴拉纳竞技2:2米内罗竞技）, Source Nodes
 
 ### Community 202 - "Asian Handicap & 1X2 Market Efficiency in Football (Constantinou, 2022)"
-Cohesion: 0.47
-Nodes (6): Beta-Binomial Hybrid Bayesian Network Model, Asian Handicap (AH) Betting Mechanism, Odds Discrepancy (θ) Betting Simulation, Asian Handicap & 1X2 Market Efficiency in Football (Constantinou, 2022), Hybrid Bayesian Network Model, Modified Pi-Rating System
+Cohesion: 0.20
+Nodes (11): Favorite-Longshot Bias in Fixed-Odds Soccer Betting, Home Bias in Soccer Wagering Markets, Individual-Level Wagering Return and Bias Heterogeneity, Market Efficiency and Behavioral Biases: Evidence from an Online Betting Exchange, Beta-Binomial Hybrid Bayesian Network Model, Asian Handicap (AH) Betting Mechanism, Odds Discrepancy (θ) Betting Simulation, Asian Handicap & 1X2 Market Efficiency in Football (Constantinou, 2022) (+3 more)
 
-### Community 203 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+### Community 203 - "Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水防穿（案例：芬超冠赫尔辛基6:0VPS瓦萨）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水防穿（案例：芬超冠赫尔辛基6:0VPS瓦萨）, Source Nodes
 
 ### Community 204 - "深度分析（临盘 21:15 德甲重审）"
 Cohesion: 0.33
@@ -1226,45 +1052,41 @@ Nodes (4): Memory 摘要, 深度分析报告：马洛卡 VS 西班牙人, 第 5 
 Cohesion: 0.40
 Nodes (5): 方式 1：来自初筛流程（默认）, 方式 2：主人指定比赛 ID, 方式 3：主人提供分析页 URL, 方式 4：主人指定竞彩编号, 输入
 
-### Community 207 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+### Community 207 - "Q: 2026-10-10 西甲 阿拉维斯 1:2 马德里竞技"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 2026-10-10 西甲 阿拉维斯 1:2 马德里竞技, Source Nodes
 
-### Community 209 - "4. 易胜博"
+### Community 209 - "澳门 (cid=1)"
 Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+Nodes (3): 亚盘, 大小球, 澳门 (cid=1)
 
 ### Community 210 - "皇冠 (cid=3)"
 Cohesion: 0.40
 Nodes (4): 亚盘, 大小球, 欧指, 皇冠 (cid=3)
 
-### Community 211 - "皇冠 (cid=545)"
-Cohesion: 0.40
-Nodes (4): 亚盘, 大小球, 欧指, 皇冠 (cid=545)
+### Community 211 - "决策内容 (Decision)"
+Cohesion: 0.50
+Nodes (4): 决策内容 (Decision), 第一道锁：数学与客观数据基线 (Lock 1 - Quantitative Baseline), 第二道锁：庄家博弈与逆向破译 (Lock 2 - Bookmaker Reverse Engineering), 裁决准则：双路证据闭环 (Synthesis Gate)
 
-### Community 212 - "澳彩 (cid=1)"
-Cohesion: 0.40
-Nodes (4): 亚盘, 大小球, 欧指, 澳彩 (cid=1)
+### Community 212 - "优质胜负平 2 串 1 组合建议"
+Cohesion: 0.50
+Nodes (4): 优质胜负平 2 串 1 组合建议, 候补场次（2 场）, 推荐（晚盘 21:00）, 精选场次（6 列表）
 
 ### Community 213 - "皇冠 (cid=3)"
 Cohesion: 0.40
 Nodes (4): 亚盘, 大小球, 欧指, 皇冠 (cid=3)
 
-### Community 214 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+### Community 215 - "让球胜平负 (HHAD `[-1]`) 终端对冲基准"
+Cohesion: 0.67
+Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[-1]`) 终端对冲基准
 
-### Community 215 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+### Community 216 - "让球胜平负 (HHAD `[+1]`) 终端对冲基准"
+Cohesion: 0.67
+Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[+1]`) 终端对冲基准
 
-### Community 216 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 217 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+### Community 217 - "Asian Handicap Probability & Refund Modeling Methodology"
+Cohesion: 0.67
+Nodes (3): Asian Handicap Probability & Refund Modeling Methodology, Favorite-Longshot Bias, Hegarty & Whelan (2023) Football Odds Forecasting & Two Markets
 
 ### Community 218 - "欧国联 克罗地亚 vs 英格兰（编号: - 比赛ID: 2981447，开球: 2026-10-04 00:00，分析: 2026-10-03 22:15）"
 Cohesion: 0.40
@@ -1286,317 +1108,25 @@ Nodes (5): 串关组合, 候补场次, 推演终审 6 列表格（全局硬性�
 Cohesion: 0.40
 Nodes (5): 基本面摘要, 欧国联 北爱尔兰 vs 格鲁吉亚（编号: 周一005 比赛ID: 2981502，开球: 2026-10-06 02:45，分析: 2026-10-05 21:50）, 深度分析, 综合评估, 赔率摘要
 
-### Community 223 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+### Community 223 - "🎯 优质胜负平 2 串 1 组合建议"
+Cohesion: 0.67
+Nodes (3): 6 列表格汇总推荐, 🎯 优质胜负平 2 串 1 组合建议, 推荐（全真端到端推演 02:15）
 
 ### Community 224 - "⚠️ 基本面分析强制规则（2026-03-18 主人强调）"
 Cohesion: 0.40
 Nodes (5): 8 维度清单（每次分析必须逐项填写）, 为什么必须完整？, ⚠️ 基本面分析强制规则（2026-03-18 主人强调）, 案例：001 场完整分析, 综合评估方法
 
-### Community 225 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 226 - "4. 易胜博"
-Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
 ### Community 227 - "澳彩 (cid=1)"
 Cohesion: 0.50
 Nodes (3): 亚盘, 大小球, 澳彩 (cid=1)
 
-### Community 228 - "皇冠 (cid=3)"
-Cohesion: 0.50
-Nodes (3): 亚盘, 大小球, 皇冠 (cid=3)
-
-### Community 229 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 230 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 231 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 232 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 233 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 234 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 235 - "4. 易胜博"
-Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 236 - "赛后复盘"
-Cohesion: 0.40
-Nodes (5): 一、实战对账汇总表, 三、串关方案实战兑现, 二、核心玩法统计, 四、Aiyer 决策审计与系统自进化沉淀, 赛后复盘
-
-### Community 237 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 238 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 239 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 240 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 241 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 242 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 243 - "4. 易胜博"
-Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 244 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 245 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 246 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 247 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 248 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 249 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 250 - "4. 易胜博"
-Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 251 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 252 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 253 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 254 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 255 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 256 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 257 - "4. 易胜博"
-Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 258 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 259 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 260 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 261 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 262 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 263 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 264 - "4. 易胜博"
-Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 265 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 266 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 267 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 268 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 269 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 270 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 271 - "4. 易胜博"
-Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 272 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 273 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 274 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 275 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 276 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 277 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 278 - "4. 易胜博"
-Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 279 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 280 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 281 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 282 - "1. 澳彩"
-Cohesion: 0.50
-Nodes (4): 1. 澳彩, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 283 - "2. 皇冠"
-Cohesion: 0.50
-Nodes (4): 2. 皇冠, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 284 - "3. Bet365"
-Cohesion: 0.50
-Nodes (4): 3. Bet365, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 285 - "4. 易胜博"
-Cohesion: 0.50
-Nodes (4): 4. 易胜博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 286 - "5. 平博"
-Cohesion: 0.50
-Nodes (4): 5. 平博, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 287 - "6. 188Bet"
-Cohesion: 0.50
-Nodes (4): 6. 188Bet, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 288 - "7. 香港马会"
-Cohesion: 0.50
-Nodes (4): 7. 香港马会, 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
-
-### Community 289 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[+1]`) 终端对冲基准
-
-### Community 290 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[-1]`) 终端对冲基准
-
-### Community 291 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[+1]`) 终端对冲基准
-
-### Community 292 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[-1]`) 终端对冲基准
-
-### Community 293 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[-1]`) 终端对冲基准
-
-### Community 294 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[+1]`) 终端对冲基准
-
 ### Community 295 - "浅盘阻上 vs 浅盘诱上 对比"
-Cohesion: 0.07
-Nodes (29): 浅盘阻上（历史高水分类）, 浅盘诱上（历史低水分类）, 表格：三、浅盘三种形态（重点） / shallow_outcomes, 表格：浅盘阻上 vs 浅盘诱上 对比 / shallow_water_contrast, 1. 第一大梁：庄家精算第一性原理（算账本，不算球技）, 2. 第二大梁：初盘原始物理基准锚点, 3. 第三大梁：双盘联动张力与让球防守底线, 4. 第四大梁：五阶段动态时序与假摔破译（T0～T4） (+21 more)
-
-### Community 296 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[+1]`) 终端对冲基准
-
-### Community 297 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[+1]`) 终端对冲基准
+Cohesion: 0.10
+Nodes (20): 浅盘阻上（历史高水分类）, 浅盘诱上（历史低水分类）, 表格：三、浅盘三种形态（重点） / shallow_outcomes, 表格：浅盘阻上 vs 浅盘诱上 对比 / shallow_water_contrast, Answer, Outcome, Q: 【超高水逆向打出型】亚盘让球方挂满水超1.05+是否等于出货诱买一票否决（案例：巴西甲巴西国际2:1科林蒂安）, Source Nodes (+12 more)
 
 ### Community 298 - "推荐"
 Cohesion: 0.50
 Nodes (4): 串关组合, 候补场次, 推荐, 精选场次
-
-### Community 299 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[-1]`) 终端对冲基准
-
-### Community 300 - "22. 中国体彩"
-Cohesion: 0.67
-Nodes (3): 22. 中国体彩, 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[+1]`) 终端对冲基准
 
 ### Community 301 - "欧国联 西班牙 vs 捷克（编号: - 比赛ID: 2981448，开球: 2026-10-04 02:45，分析: 2026-10-03 22:50）"
 Cohesion: 0.50
@@ -1653,30 +1183,30 @@ Nodes (3): 候补观察场次, 初筛结果（21:30）, 推荐深度分析场次
   docs/倍率时序波动分析手册.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **1404 isolated node(s):** `一、微观阵容与首发伤停`, `二、基础战绩与攻防客观底牌`, `三、欧洲指数百家做市商清单（法定 23 家）`, `【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】`, `第一战区：欧亚双盘全能做市商（亚盘 / 大小球 / 欧指 全量三盘）` (+1399 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1713 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **105 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **1287 isolated node(s):** `一、微观阵容与首发伤停`, `二、基础战绩与攻防客观底牌`, `三、欧洲指数百家做市商清单（法定 23 家）`, `【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】`, `第一战区：欧亚双盘全能做市商（亚盘 / 大小球 / 欧指 全量三盘）` (+1282 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1597 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Work-memory lessons
 
 **Preferred sources** — corroborated by past sessions; start here.
-- `poisson_lib.py` (2× useful, score=1.851435845)
-- `赛后复盘（post-review）` (2× useful, score=1.730082911)
+- `poisson_lib.py` (2× useful, score=1.847213435)
+- `赛后复盘（post-review）` (2× useful, score=1.72613726)
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `paper-integration-v1（旧留存标签）` and `paper-application-v2（当前执行）`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `Outcomes Affect` connect `Outcomes Affect` to `2981440/平博.md`, `2. 站在庄家视角精准预测「胜平负」的核心方法`, `.verify`, `poisson_lib.py`, `AGENTS.md - 足彩分析工作流操作手册`, `比分建模与投注手册（泊松版）`, `泊松概率分析：克雷莫纳 vs 佛罗伦萨`, `第三部分：盘口分类体系速查（主人亲授）`, `[巴西甲] 博塔弗戈 vs 达伽马（编号: 周三006 比赛ID: 2910908，开球: 2026-10-08 07:30，分析: 2026-10-07 21:35）`, `Comparing Sequential Forecasters`, `极小化最大损失`, `泊松概率分析：朴茨茅斯 vs 德比郡`, `赛后复盘（post-review）`, `校验/src/adapter/cli.py`, `泊松概率分析：巴列卡诺 vs 莱万特`, `load_params`, `2026-10-06 每日记忆`, `Polymarket 链接查找教程`, `buildAnalysisContext`, `条件预测能力与滚动样本外检验`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `累计战绩`, `4. 存档原始赔率数据`, `Evaluating probabilistic forecasts of football`, `PoissonEngine`, `ConvertOddsUseCase`, `verifier.py`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `2981440/易胜博.md`, `injury-service.js`, `杯赛防守脆断与进球肥尾`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `SAFETY.md`, `推荐输出（recommendation）`, `泊松概率计算手册（足彩用）`, `泊松概率分析：布伦特福德 vs 狼队`, `十九篇的执行落点与原文锚点`, `titan007.test.js`, `模型扩展与组合手册（除泊松之外）`, `五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南`, `Favorite-Longshot Bias (FLB)`, `Consensus Probability Estimation`, `Sub-Exponential E-Process (Theorem 3)`, `AGENTS.md Footy Analysis Workflow`, `步骤 1.5：先审过程，再揭比分（Aiyer 决策审计与认知契约卡对账）`, `输出 2：写入记忆`, `赛程抓取（match-scraper）`, `三、海外免费储备 API 矩阵`, `步骤 3：10 步分析过程（固定顺序）`, `欧国联 克罗地亚 vs 西班牙（编号: 周二008 比赛ID: 2981455，开球: 2026-10-07 02:45，分析: 2026-10-06 21:20）`, `深度分析（deep-analysis）`, `二、建议修补的漏洞 / 不一致`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `ProfilingParser`, `变动历史分析示例（大小球，必须像这样写）`, `执行流程`, `Do Betting Markets Sense a Goal Coming? Evidence from the German Bundesliga`, `二、全周期五阶段生命周期划分 (T0 ~ T4)`, `CorrectScoreParser`, `Stable reliability diagrams for probabilistic classifiers`, `执行流程`, `联赛配置手册（泊松 + 盘口）`, `Idea: 足球盘口倍率分析推演出胜负平`, `球队风格判定手册（简版）`, `算法/src/adapter/cli.py`, `TOOLS.md`, `输出 1：综合评估与推荐`, `论文与知识图谱应用：高频深广检索与自愈自进化推演体系`, `1. 澳彩 (欧亚双盘核心, 核心做市, cid=80)`, `SOUL.md - 你是谁`, `赛后复盘`, `概率分源与裁决一致性`, `第 4 段：大小球 + 第 6-10 步摘要`, `计算方法`, `Betting Against Integrity: Identifying Match-Fixing Through In-Play Market Dynamics (Winkelmann et al., 2026)`, `倍率分析推演 (Pansuan Engine) Strategy`, `澳彩 (cid=1)`, `皇冠 (cid=3)`, `澳门 (cid=1)`, `皇冠 (cid=3)`, `Asian Handicap & 1X2 Market Efficiency in Football (Constantinou, 2022)`, `输入`, `皇冠 (cid=3)`, `皇冠 (cid=545)`, `澳彩 (cid=1)`, `皇冠 (cid=3)`, `欧国联 克罗地亚 vs 英格兰（编号: - 比赛ID: 2981447，开球: 2026-10-04 00:00，分析: 2026-10-03 22:15）`, `欧国联 瑞士 vs 斯洛文尼亚（编号: - 比赛ID: 2981497，开球: 2026-10-04 02:45，分析: 2026-10-03 22:25）`, `欧国联 北马其顿 vs 苏格兰（编号: - 比赛ID: 2981498，开球: 2026-10-04 02:45，分析: 2026-10-03 22:15）`, `澳彩 (cid=1)`, `皇冠 (cid=3)`, `浅盘阻上 vs 浅盘诱上 对比`?**
-  _High betweenness centrality (0.232) - this node is a cross-community bridge._
+- **Why does `Outcomes Affect` connect `Outcomes Affect` to `2981440/平博.md`, `2. 站在庄家视角精准预测「胜平负」的核心方法`, `.verify`, `poisson_lib.py`, `AGENTS.md - 足彩分析工作流操作手册`, `比分建模与投注手册（泊松版）`, `泊松概率分析：克雷莫纳 vs 佛罗伦萨`, `第三部分：盘口分类体系速查（主人亲授）`, `TOOLS.md - 工具使用指南`, `Comparing Sequential Forecasters`, `极小化最大损失`, `泊松概率分析：朴茨茅斯 vs 德比郡`, `赛后复盘（post-review）`, `校验/src/adapter/cli.py`, `OddsVector`, `泊松概率分析：阿纳西 vs 特鲁瓦`, `verify_poisson.py`, `2026-10-06 每日记忆`, `Polymarket 链接查找教程`, `buildAnalysisContext`, `条件预测能力与滚动样本外检验`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `累计战绩`, `2026-10-07 每日记忆`, `4. 存档原始赔率数据`, `Evaluating probabilistic forecasts of football`, `.calculate`, `OddsConversionResult`, `verifier.py`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `2981440/易胜博.md`, `injury-service.js`, `四、模拟示例（周日 018 巴萨 vs 塞维利亚）`, `杯赛防守脆断与进球肥尾`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `SAFETY.md`, `输出 2：写入记忆`, `推荐输出（recommendation）`, `泊松概率计算手册（足彩用）`, `泊松概率分析：布伦特福德 vs 狼队`, `十九篇的执行落点与原文锚点`, `fetchMatchData`, `模型扩展与组合手册（除泊松之外）`, `五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南`, `Favorite-Longshot Bias (FLB)`, `Consensus Probability Estimation`, `Sub-Exponential E-Process (Theorem 3)`, `AGENTS.md Footy Analysis Workflow`, `步骤 1.5：先审过程，再揭比分（Aiyer 决策审计与认知契约卡对账）`, `赛程抓取（match-scraper）`, `三、海外免费储备 API 矩阵`, `步骤 3：10 步分析过程（固定顺序）`, `欧国联 克罗地亚 vs 西班牙（编号: 周二008 比赛ID: 2981455，开球: 2026-10-07 02:45，分析: 2026-10-06 21:20）`, `二、建议修补的漏洞 / 不一致`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `【周六004】日职联 京都不死鸟 vs 町田泽维亚`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）`, `ProfilingParser`, `变动历史分析示例（大小球，必须像这样写）`, `执行流程`, `Do Betting Markets Sense a Goal Coming? Evidence from the German Bundesliga`, `Levitt（2004）：NFL博彩定价`, `CorrectScoreParser`, `执行流程`, `联赛配置手册（泊松 + 盘口）`, `下注决策手册（版本 1）`, `胜／平／负三端裁决`, `Idea: 足球盘口倍率分析推演出胜负平`, `球队风格判定手册（简版）`, `test_poisson.py`, `TOOLS.md`, `输出 1：综合评估与推荐`, `论文与知识图谱应用：高频深广检索与自愈自进化推演体系`, `四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）`, `赛后复盘`, `【周六001】日职联 大阪樱花 vs 横滨水手`, `概率分源与裁决一致性`, `第 4 段：大小球 + 第 6-10 步摘要`, `计算方法`, `Betting Against Integrity: Identifying Match-Fixing Through In-Play Market Dynamics (Winkelmann et al., 2026)`, `易胜博 (cid=12)`, `澳彩 (cid=1)`, `Q: 【豪门客战中盘跳档诱多型 (Head-Fake 假摔)】欧指单边造势客胜，亚盘中盘强升半一挂满水诱多出货（案例：巴西甲桑托斯2:2弗拉门戈）`, `Q: 【深盘热门欧深亚浅避险型】欧指主胜<1.45且亚盘卡死一球超低水不升盘设障，面对密集防守弱旅时的尾部偷袭风险（案例：芬超冠古比斯0:1奥卢）`, `澳门 (cid=1)`, `皇冠 (cid=3)`, `Q: 【均势浅盘底线低平赔型】主流机构平赔初盘极限低开(<2.90)，即时平赔抬升制造两头分流假象（案例：巴西甲巴拉纳竞技2:2米内罗竞技）`, `Asian Handicap & 1X2 Market Efficiency in Football (Constantinou, 2022)`, `Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水防穿（案例：芬超冠赫尔辛基6:0VPS瓦萨）`, `Q: 2026-10-10 西甲 阿拉维斯 1:2 马德里竞技`, `输入`, `澳门 (cid=1)`, `皇冠 (cid=3)`, `皇冠 (cid=3)`, `二、价值扫描（泊松 + 欧指平均）`, `欧国联 克罗地亚 vs 英格兰（编号: - 比赛ID: 2981447，开球: 2026-10-04 00:00，分析: 2026-10-03 22:15）`, `欧国联 瑞士 vs 斯洛文尼亚（编号: - 比赛ID: 2981497，开球: 2026-10-04 02:45，分析: 2026-10-03 22:25）`, `欧国联 北马其顿 vs 苏格兰（编号: - 比赛ID: 2981498，开球: 2026-10-04 02:45，分析: 2026-10-03 22:15）`, `澳彩 (cid=1)`, `浅盘阻上 vs 浅盘诱上 对比`?**
+  _High betweenness centrality (0.200) - this node is a cross-community bridge._
 - **Are the 697 inferred relationships involving `Outcomes Affect` (e.g. with `表格：三、浅盘三种形态（重点） / shallow_outcomes` and `胜／平／负三端裁决`) actually correct?**
   _`Outcomes Affect` has 697 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `一、微观阵容与首发伤停`, `二、基础战绩与攻防客观底牌`, `三、欧洲指数百家做市商清单（法定 23 家）` to the rest of the system?**
-  _1404 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1287 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Outcomes Affect` be split into smaller, more focused modules?**
-  _Cohesion score 0.028393452122265683 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.029858215179316097 - nodes in this community are weakly interconnected._
 - **What is the exact relationship between `2. 跨市场几何联动战区（严禁单看亚盘）` and `两项AH报价不唯一识别退款率`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `AGENTS.md - 足彩分析工作流操作手册` connect `AGENTS.md - 足彩分析工作流操作手册` to `Outcomes Affect`, `深度分析（17:15）`, `2. 站在庄家视角精准预测「胜平负」的核心方法`, `.verify`, `2026-10-03 每日记忆`, `第三部分：盘口分类体系速查（主人亲授）`, `极小化最大损失（项目风险动机模型）`, `一、工作流程总览`, `Poisson Probability Calculation Manual`, `赛后复盘（post-review）`, `2026-10-05 每日记忆`, `2026-10-06 每日记忆`, `Polymarket 链接查找教程`, `深度分析（欧国联10场，17:35）`, `TOOLS.md`, `Sporttery Sniper 数据提取工具`, `预测 → 推荐 → 复盘的实际闭环`, `SOUL.md - 你是谁`, `浅盘阻上 vs 浅盘诱上 对比`, `累计战绩`, `2026-10-07 每日记忆`, `ConvertOddsUseCase`, `2026-10-11 每日记忆`, `2026-10-04 每日记忆`, `杯赛防守脆断与进球肥尾`, `倍率分析推演 (Pansuan Engine) Strategy`, `SAFETY.md`, `推荐输出（recommendation）`, `八、心跳机制`, `各场景的 Subagent 用法`, `深度分析（17:28 & 21:55）`, `五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南`, `通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)`, `赛程抓取（match-scraper）`, `赛事初筛（match-screening）`, `赛后复盘`, `深度分析（deep-analysis）`, `深度分析（晚盘 22:30 · 15 场全量从头推演）`, `二、建议修补的漏洞 / 不一致`, `赛后复盘`, `深度分析（早盘 17:00）`, `一、发现的 BUG / 漏洞`?**
-  _High betweenness centrality (0.135) - this node is a cross-community bridge._
+- **Why does `AGENTS.md - 足彩分析工作流操作手册` connect `AGENTS.md - 足彩分析工作流操作手册` to `Outcomes Affect`, `深度分析（17:15）`, `2. 站在庄家视角精准预测「胜平负」的核心方法`, `.verify`, `2026-10-03 每日记忆`, `第三部分：盘口分类体系速查（主人亲授）`, `胜／平／负三端裁决`, `TOOLS.md - 工具使用指南`, `一、工作流程总览`, `Poisson Probability Calculation Manual`, `Idea: 足球盘口倍率分析推演出胜负平`, `赛后复盘（post-review）`, `2026-10-05 每日记忆`, `2026-10-06 每日记忆`, `Polymarket 链接查找教程`, `TOOLS.md`, `深度分析（欧国联10场，17:35）`, `Sporttery Sniper 数据提取工具`, `四、Memory 写入规则`, `累计战绩`, `2026-10-07 每日记忆`, `OddsConversionResult`, `2026-10-11 每日记忆`, `2026-10-04 每日记忆`, `2981440/易胜博.md`, `ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）`, `SAFETY.md`, `推荐输出（recommendation）`, `八、心跳机制`, `cli.py (OO-EPC去水CLI)`, `各场景的 Subagent 用法`, `深度分析（17:28 & 21:55）`, `五、19 篇博弈学术论文在多机构、跨市场与全时序的深度融合指南`, `通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)`, `二、五大博弈支柱专项体检结论`, `赛程抓取（match-scraper）`, `赛事初筛（match-screening）`, `赛后复盘`, `深度分析（deep-analysis）`, `深度分析（晚盘 22:30 · 15 场全量从头推演）`, `二、建议修补的漏洞 / 不一致`, `ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）`, `赛后复盘`, `深度分析（早盘 17:00）`, `一、发现的 BUG / 漏洞`?**
+  _High betweenness centrality (0.177) - this node is a cross-community bridge._
