@@ -999,5 +999,61 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertIn("https://polymarket.com/event/sea-ata-ven-2026-10-12", res.message)
 
 
+class TestMemoryCognitiveCardsVerifier(unittest.TestCase):
+    def setUp(self):
+        self.valid_card = """## 深度分析
+
+### 意甲 亚特兰大 vs 威尼斯（编号: 周一002 比赛ID: 2993805，开球: 2026-10-13 00:30，分析: 2026-10-12 21:00）
+🔗 https://zq.titan007.com/analysis/2993805cn.htm
+
+#### 赔率摘要
+- 欧指方向：一致看胜，主胜1.25/平5.50/客胜11.00
+
+#### 综合评估
+- 胜平负：首选 主胜｜次选 平局
+- 胜/平/负点概率（OO-EPC去水）：胜 77.57% / 平 14.16% / 负 8.27%
+- 【图谱认知基因】：[Egidi 攻防参数凸组合, 赔率分析推演十大公理] ｜ 演绎链：火力碾压 -> 深盘阻热 -> 正路设防
+- 【认知契约卡】：
+  - 选择与排除依据：亚特兰大火力与射正压制显著，威尼斯客场防线崩塌，排除客胜
+  - 关键拍板依据：做市商球半超低水升球半两球，高门槛有效阻热
+  - 庄家博弈假说与竞争解释：借深盘门槛阻挡主胜过热筹码，实控主胜赔付
+  - 可推翻反证与改变条件：若临盘退盘至一球/球半高水，且主力射手突发缺阵，则推翻大胜假设降级防平
+"""
+
+    def test_valid_memory_passes(self):
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+        ok, errors, count = verify_memory_cognitive_cards(self.valid_card, expected_matches=1)
+        self.assertTrue(ok)
+        self.assertEqual(count, 1)
+        self.assertEqual(len(errors), 0)
+
+    def test_missing_deep_analysis_section_fails(self):
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+        ok, errors, count = verify_memory_cognitive_cards("## 赛前分析推演\n一些表格", expected_matches=1)
+        self.assertFalse(ok)
+        self.assertIn("深度分析", errors[0])
+
+    def test_missing_graphify_gene_fails(self):
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+        broken = self.valid_card.replace("【图谱认知基因】", "一些其他基因")
+        ok, errors, count = verify_memory_cognitive_cards(broken, expected_matches=1)
+        self.assertFalse(ok)
+        self.assertTrue(any("图谱认知基因" in e for e in errors))
+
+    def test_missing_dimension_in_contract_card_fails(self):
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+        broken = self.valid_card.replace("可推翻反证与改变条件", "其他条件")
+        ok, errors, count = verify_memory_cognitive_cards(broken, expected_matches=1)
+        self.assertFalse(ok)
+        self.assertTrue(any("可推翻反证与改变条件" in e for e in errors))
+
+    def test_expected_matches_count_mismatch_fails(self):
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+        ok, errors, count = verify_memory_cognitive_cards(self.valid_card, expected_matches=2)
+        self.assertFalse(ok)
+        self.assertTrue(any("低于预期场次" in e for e in errors))
+
+
 if __name__ == "__main__":
     unittest.main()
+

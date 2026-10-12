@@ -244,6 +244,39 @@ def run_sync_meta(dir_path: str) -> int:
     return 0
 
 
+def run_verify_memory(memory_path: str, expected_matches: Optional[int] = None) -> int:
+    path = Path(memory_path)
+    if not path.exists():
+        print(f"❌ 门禁拦截: 每日记忆文件不存在: {memory_path}", file=sys.stderr)
+        return 1
+
+    try:
+        content = path.read_text(encoding="utf-8")
+    except Exception as e:
+        print(f"❌ 门禁拦截: 每日记忆文件读取失败: {e}", file=sys.stderr)
+        return 1
+
+    from 校验.src.domain.verifier import verify_memory_cognitive_cards
+
+    ok, errors, count = verify_memory_cognitive_cards(content, expected_matches=expected_matches)
+
+    print("============================================================")
+    print(f" 🛡️ 足球系统认知契约卡与图谱自愈前置门禁收据 ({path.name})")
+    print("============================================================")
+    if ok:
+        print(f"🎉 状态: 验收全部通过 (PASS) - 共成功验证 {count} 场四维认知契约卡与图谱认知基因！")
+        print("💡 结论: 赛前博弈假说与反证条件已 100% 冻结，学术论文审计链完整，放行对外交付与复盘！")
+        print("============================================================")
+        return 0
+    else:
+        print(f"❌ 状态: 验收拦截失败 (FAIL) - 发现 {len(errors)} 项契约违规：", file=sys.stderr)
+        for err in errors:
+            print(f"  - 🚫 {err}", file=sys.stderr)
+        print("============================================================", file=sys.stderr)
+        print("🛑 熔断警告: 认知契约卡未规范落盘前，严禁向前台发送任何表格，严禁汇报完成！", file=sys.stderr)
+        return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="pansuan 校验守门人：单场【推演源数据】安检与全系统一致性巡检",
@@ -267,6 +300,16 @@ def main() -> int:
     parser.add_argument(
         "--sync-meta",
         help="指定日期目录 (如 data/2026-10-10)，将所有已落盘【推演源数据】状态同步至 meta.md",
+    )
+    parser.add_argument(
+        "--verify-memory",
+        help="指定待核验的每日记忆文件路径 (如 memory/2026-10-12.md)，对【认知契约卡】与【图谱认知基因】执行硬门禁核验",
+    )
+    parser.add_argument(
+        "--expected-matches",
+        type=int,
+        default=None,
+        help="核验每日记忆时指定的期望深度分析场次数量 (如 10)",
     )
     parser.add_argument(
         "--json",
@@ -309,6 +352,10 @@ def main() -> int:
             print(f"❌ 门禁安全违规: --max-age-minutes ({args.max_age_minutes}) 超过系统法定允许最大值 ({MAX_ALLOWABLE_FRESHNESS} 分钟)！严禁篡改参数绕过新鲜度核验！", file=sys.stderr)
             return 1
 
+    # 优先级 0: 每日记忆认知契约卡门禁
+    if args.verify_memory:
+        return run_verify_memory(args.verify_memory, expected_matches=args.expected_matches)
+
     # 优先级 1: 【推演源数据】装配
     if args.assemble:
         return run_assemble(args.assemble, args.output)
@@ -321,11 +368,11 @@ def main() -> int:
     if args.batch:
         return run_batch_verify(args.batch, max_age_minutes=args.max_age_minutes, isolate_failed=args.isolate_failed)
 
-    # 优先级 3: 指定了单场比赛【推演源数据】进行安检
+    # 优先级 4: 指定了单场比赛【推演源数据】进行安检
     if args.match:
         return run_match_verify(args.match, args.json, max_age_minutes=args.max_age_minutes)
 
-    # 优先级 3: 系统巡检 (传了 --system 或默认行为)
+    # 优先级 5: 系统巡检 (传了 --system 或默认行为)
     return run_system_check(args.root, args.print_ok or args.system)
 
 

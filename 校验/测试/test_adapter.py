@@ -5,6 +5,7 @@
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -112,7 +113,51 @@ class TestAdapterCli(unittest.TestCase):
             self.assertTrue((tmp_path / ".quarantine" / "9999999.md").exists())
             self.assertFalse(corrupt_dest.exists())
 
+    def test_cli_verify_memory_success(self):
+        """测试 CLI 使用 --verify-memory 核验合法认知契约卡，返回退出码 0"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_mem = Path(tmpdir) / "test_memory.md"
+            content = """# 测试记忆
+## 深度分析
+
+### 意甲 亚特兰大 vs 威尼斯（编号: 周一002 比赛ID: 2993805，开球: 2026-10-13 00:30，分析: 2026-10-12 21:00）
+#### 综合评估
+- 胜平负：首选 主胜｜次选 平局
+- 胜/平/负点概率（OO-EPC去水）：胜 77.57% / 平 14.16% / 负 8.27%
+- 【图谱认知基因】：[Egidi 攻防参数凸组合, 赔率分析推演十大公理] ｜ 演绎链：火力碾压 -> 深盘阻热 -> 正路设防
+- 【认知契约卡】：
+  - 选择与排除依据：火力碾压排除客胜
+  - 关键拍板依据：深盘高门槛有效阻热
+  - 庄家博弈假说与竞争解释：实控主胜赔付
+  - 可推翻反证与改变条件：若退盘则推翻
+"""
+            tmp_mem.write_text(content, encoding="utf-8")
+            cmd = [sys.executable, str(self.cli_py), "--verify-memory", str(tmp_mem), "--expected-matches", "1"]
+            res = subprocess.run(cmd, cwd=str(self.repo_root), capture_output=True, text=True, encoding="utf-8", errors="replace")
+            self.assertEqual(res.returncode, 0)
+            self.assertIn("验收全部通过", res.stdout)
+
+    def test_cli_verify_memory_failure_missing_dimension_exit_1(self):
+        """测试 CLI 使用 --verify-memory 核验缺失维度的残缺契约卡，必须退出码 1 熔断"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_mem = Path(tmpdir) / "test_memory.md"
+            content = """# 测试记忆
+## 深度分析
+
+### 意甲 亚特兰大 vs 威尼斯（编号: 周一002 比赛ID: 2993805）
+#### 综合评估
+- 胜平负：首选 主胜
+- 【认知契约卡】：
+  - 选择与排除依据：火力碾压
+"""
+            tmp_mem.write_text(content, encoding="utf-8")
+            cmd = [sys.executable, str(self.cli_py), "--verify-memory", str(tmp_mem)]
+            res = subprocess.run(cmd, cwd=str(self.repo_root), capture_output=True, text=True, encoding="utf-8", errors="replace")
+            self.assertEqual(res.returncode, 1)
+            self.assertIn("验收拦截失败", res.stderr + res.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 

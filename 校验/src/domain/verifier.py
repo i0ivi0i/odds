@@ -1089,3 +1089,98 @@ class SnapshotVerifier:
             message="数据真实性与防克隆指纹核验通过 (无模板造假、无测试夹具克隆)",
             detail={"match_id": match_id},
         )
+
+
+def verify_memory_cognitive_cards(
+    content: str,
+    expected_matches: Optional[int] = None,
+) -> tuple[bool, list[str], int]:
+    """
+    纯领域检验函数：验证每日记忆 (memory/YYYY-MM-DD.md) 中的【认知契约卡】与【图谱认知基因】。
+
+    法定学术论文契约 (Aiyer/Wheatcroft/Giacomini/Choe/Levitt):
+    1. 必须包含 '## 深度分析' 章节（禁止未写深度分析或仅有简表）；
+    2. 每一场必须具备明确的 matchId / 比赛ID（防别名与脱靶）；
+    3. 每一场必须具备【图谱认知基因】（关联 Graphify 知识图谱节点与演绎链）；
+    4. 每一场必须具备【认知契约卡】且 100% 涵盖四大法定维度：
+       - 选择与排除依据
+       - 关键拍板依据
+       - 庄家博弈假说与竞争解释
+       - 可推翻反证与改变条件
+    5. 每一场必须保留去水概率（胜/平/负点概率或 OO-EPC 去水）；
+    6. 若指定 expected_matches，实际合规场次必须 >= expected_matches。
+    """
+    errors: list[str] = []
+    if not content or not content.strip():
+        return False, ["每日记忆文本为空，无法核验认知契约卡"], 0
+
+    # 1. 检查是否存在 ## 深度分析 (或带有时间的 ## 深度分析)
+    section_pattern = r"(?m)^##\s+深度分析.*$"
+    match_section = re.search(section_pattern, content)
+    if not match_section:
+        return False, ["缺失 '## 深度分析' 章节，未见赛前冻结深度分析与认知契约卡底账"], 0
+
+    # 提取 ## 深度分析 之后的内容，截断到下一个同级 ## 标题（如果有）
+    start_pos = match_section.end()
+    next_section = re.search(r"(?m)^##\s+(?!深度分析).*$", content[start_pos:])
+    if next_section:
+        analysis_block = content[start_pos : start_pos + next_section.start()]
+    else:
+        analysis_block = content[start_pos:]
+
+    # 2. 切分各场子块 (以 ### 为界)
+    match_blocks = re.split(r"(?m)^###\s+", analysis_block)
+    actual_blocks = [b.strip() for b in match_blocks[1:] if b.strip()]
+
+    if not actual_blocks:
+        return False, ["'## 深度分析' 章节下未解析出任何单场比赛分析块 (缺少 '### {场次}' 标题)"], 0
+
+    valid_matches_count = 0
+    mandatory_dimensions = [
+        "选择与排除依据",
+        "关键拍板依据",
+        "庄家博弈假说与竞争解释",
+        "可推翻反证与改变条件",
+    ]
+
+    for idx, block in enumerate(actual_blocks, start=1):
+        header_line = block.splitlines()[0] if block.splitlines() else f"第 {idx} 场"
+        
+        # 提取 matchId
+        id_match = re.search(r"(?:比赛ID|matchId)\s*[:：]\s*(\d+)", block, re.IGNORECASE)
+        match_id_str = id_match.group(1) if id_match else f"未知ID({header_line})"
+
+        block_errors = []
+
+        # 检查图谱认知基因
+        if "【图谱认知基因】" not in block and "图谱认知基因" not in block:
+            block_errors.append(f"【{match_id_str}】缺少【图谱认知基因】，未关联 Graphify 知识图谱节点与演绎链")
+
+        # 检查认知契约卡标题
+        if "【认知契约卡】" not in block and "认知契约卡" not in block:
+            block_errors.append(f"【{match_id_str}】缺少【认知契约卡】主体")
+        else:
+            # 检查认知契约卡四大法定维度
+            for dim in mandatory_dimensions:
+                if dim not in block:
+                    block_errors.append(f"【{match_id_str}】认知契约卡缺少核心维度：'{dim}'")
+
+        # 检查去水点概率
+        prob_match = re.search(r"(?:点概率|OO-EPC|胜/平/负|概率)\s*.*?\d+(\.\d+)?%", block)
+        if not prob_match and "胜/平/负点概率" not in block:
+            block_errors.append(f"【{match_id_str}】缺少去水点概率数值（必须保留 OO-EPC 去水概率，Wheatcroft 2019 铁律）")
+
+        if block_errors:
+            errors.extend(block_errors)
+        else:
+            valid_matches_count += 1
+
+    # 3. 检查场次数量
+    if expected_matches is not None and valid_matches_count < expected_matches:
+        errors.append(
+            f"实际合格深度分析场次 ({valid_matches_count}) 低于预期场次 ({expected_matches})！严禁部分场次缺卡发布"
+        )
+
+    is_ok = len(errors) == 0 and valid_matches_count > 0
+    return is_ok, errors, valid_matches_count
+
