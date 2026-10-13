@@ -1,11 +1,11 @@
 """
 校验/src/domain/timeseries_denoiser.py
-时序数据微观结构噪音抽稀、做市商箱体防抖与多维 ZigZag 极值滤波领域服务
-理论依据：
-1. Winkelmann (2026) State-Space Models & Microstructure Noise in Sports Betting Markets
-2. Wheatcroft (2019) Effective Information Rate & Inflection Point Filtering
-3. Engle & Russell (1998) Autoregressive Conditional Duration (ACD) & Tick Bounce Filtering
-4. Douglas-Peucker & ZigZag Trend Reversal Filtering
+时序数据物理通用不变量抽稀、做市商箱体防抖与多维 ZigZag 极值滤波领域服务
+理论依据与三大物理常识不变量：
+1. 全盘极值守恒律 (min/max): 全局最高/最低水位与极端多空博弈点 100% 物理保全 (Wheatcroft 2019)
+2. 盘口档位满射律 (set): 历史上庄家挂单的所有宏观盘口档位 100% 满射代表，杜绝档位真空
+3. 锚点单调子序列律 (head/tail/subseq): 初盘即时盘刚性锁死，每行皆为真实原始报文单调子序列 (Winkelmann 2026)
+4. 做市商微观结构高频挂单交替横跳折叠与多维 ZigZag 趋势滤波 (Engle & Russell 1998)
 """
 
 from __future__ import annotations
