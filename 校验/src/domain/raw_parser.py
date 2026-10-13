@@ -712,7 +712,23 @@ class Titan007RawParser:
 
     def parse_polymarket_json(self, raw_json_text: str) -> Dict[str, Any]:
         """解析 polymarket.json 原始数据，生成不带假凯利的欧指项与预测市场流水"""
-        data = json.loads(raw_json_text)
+        text = str(raw_json_text or "").strip()
+        if not text:
+            return {
+                "polymarketUrl": "官方未开盘（暂无链上对应预测标的）",
+                "polymarketPrices": "官方未开盘",
+                "europe1x2_entry": None,
+                "polymarket_rows": [],
+            }
+        try:
+            data = json.loads(text)
+        except Exception:
+            return {
+                "polymarketUrl": "官方未开盘（暂无链上对应预测标的）",
+                "polymarketPrices": "官方未开盘",
+                "europe1x2_entry": None,
+                "polymarket_rows": [],
+            }
         if isinstance(data, list) and data:
             data = data[0]
         if not isinstance(data, dict):

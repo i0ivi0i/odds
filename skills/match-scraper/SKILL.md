@@ -140,27 +140,21 @@ metadata: { "emoji": "📆" }
 编排者在阶段一作为纯物理进货搬运工，必须在此并发采集 5 大数据源，组装落盘并通过门禁检验后方可交付。
 
 ### 0. 单场/多场极速进货执行路径（搬运工 Subagent 专属操作规程）
-当被主会话以 `Data Ingest Worker` 派发执行进货任务时，搬运工必须严格按照以下极速 4 步走执行，严禁查阅无关技能、严禁动脑思考盘赔胜负：
+当被主会话以 `Data Ingest Worker` 派发执行进货任务时，搬运工严格按照开箱即用 2 步闭环执行，绝无任何模糊地带，严禁查阅代码源码、严禁在终端漫游：
 - **【指令范围与批次切片原则】**：
   - 推演目标场次（Scope）完全由主人指令决定（「全部」= 当日开售全量排队；「早盘」= ≤22:00；「晚盘」= >22:00；「指定」= 仅指定场次）；
   - **4~6 场仅仅是单批并发（Batch Size）的物理切片**，用于防止网络超时，**绝对不可将批次切片误当成推演总数！**
 - **【前置零漫游硬禁令（Zero Pre-flight Thrashing）】**：
-  搬运工被派发后的第 1 个工具调用必须且只能是调用 MCP `scrapling` `bulk_get` 直取网络端点！严禁在抓取前执行任何 pytest/unittest/git diff 检查；必须按赛程编号（001~010）分批顺序推进，严禁擅自挑挑拣拣单抓单场，杜绝孤立切片假象！
-1. **批次一：并发拉取 5 大主数据源**：
-   调用 MCP `scrapling` `bulk_get` 一次性并发获取：分析页、Crown波胆、体彩HAD/HHAD、1x2d.js百家欧指；
-2. **批次二：并发拉取 7 大法定做市商双盘流水**：
-   调用 MCP `scrapling` `bulk_get` 一次性并发获取 7 家亚盘与 7 家大小球变盘流水（cid: 1, 3, 8, 12, 47, 42, 48）；
-3. **批次三：并发拉取 Polymarket 活跃标的与链上价格（第 6 大法定接口）**：
-   按官方 Discover-Markets 规范，优先调用 `https://gamma-api.polymarket.com/events/slug/{league}-{home3}-{away3}-{YYYY-MM-DD}` 瞬时直探；直探未命中时发起主队 `q={HomeTeamEn}` 与客队 `q={AwayTeamEn}` 双向搜索回退（**⚠️ 纯英文铁律**：Polymarket 数据库 100% 纯英文，严禁使用任何中文队名或中文联赛发请求，必须提取球探分析页 `#headTeam` 英文名或官方 3 字编码）。命中后提取 `slug`、撮合价格、`gameId`（用于伴生波胆/大小球盘口）与 `teams` 权威主客 `ordering`，拼接标准事件链接 `https://polymarket.com/event/{slug}`。
-   **门禁硬红线**：主流核心联赛（英超/西甲/意甲/德甲/法甲/法乙/英冠/德乙/意乙/西乙/欧冠/欧联/欧协联/葡超/巴西甲/瑞典超/挪超/荷甲/美职联/亚冠）常态化活跃，门禁绝对禁止写未开盘；仅非核心冷门联赛经三阶真实检索确实无标的时，方准记录双向核验证据（如 `未开放（经Gamma双向核验q=Home与q=Away均无活跃标的）`）；
-4. **法定确定性原子包直读装配与加密封印（零大模型转抄，含网络溯源回执）**：
-   **绝对禁止大模型调用 `write_to_file` 或 `replace_file_content` 手写或修改 `data/{销售日}/{matchId}.md`，更严禁大模型在转抄 JSON 时截断变盘行或脑补体彩时间！** 搬运工将 Scrapling 抓取到的原始接口报文与网络溯源回执（包含 27 个端点 URL、HTTP 200 状态、字节长度、Server 头与 payload SHA-256）打包存为单文件 `data/{销售日}/raw/{matchId}.json`（彻底消灭28个散乱文件），在终端物理调用零转抄装配器：
-   `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md`
-   装配器由 Python 原生解析器（`Titan007RawParser`）100% 逐行原样直出 Verbatim Raw Wire Markdown（绝不漏掉任何一行变盘、绝不把 `早` 改成 `即`、绝不给缺失凯利填 `0.92`），并在 `raw/{matchId}.json` 内写入双重 SHA-256 加密封印（并自动清理旧版零散目录），同步调用 `python 校验/src/adapter/cli.py --sync-meta data/{销售日}` 更新索引状态！
-5. **门禁过验与回传（防篡改、逐行溯源与回执三重死锁）**：
-   终端物理运行 `python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`（支持 `--verify-network` 实网抽检，或批量安检 `--batch`）；
-   - 门禁自动校验 `TAMPERED_MARKDOWN_SEAL`、`TAMPERED_RAW_WIRE_SEAL`、`RECEIPT_PAYLOAD_MISMATCH` 与 `RAW_PROVENANCE_MISMATCH`（逐行核对第 4 节亚盘/大小球/欧指流水行数、时间戳、水位、状态词 `早`/`即`/`初盘` 与 `raw/{matchId}.json` 原始报文及网络回执 100% 一致）；
-   - 拿到 exit 0 (PASS) 后，立即向主会话 announce 汇报：「✅ 【{matchId}】推演源数据已确定性装配落盘并过验放行 (exit 0)」，结束阶段一。
+  搬运工被派发后的第 1 个动作必须且只能是执行进货落盘命令！严禁在抓取前执行任何 `git log`、`git status`、pytest/unittest 检查；严禁思考盘赔逻辑或定性胜负！
+- **【官方 Scrapling 原生纯净进货管道（Zero Ad-hoc Python）】**：
+  1. **步骤 1：调用官方 Scrapling MCP `bulk_get` 并发直取（分块军规 ≤6~8 URLs + 选择器下推）**：
+     直接调用官方 MCP 工具 `scrapling bulk_get`（`impersonate="chrome"`, `css_selector="table"`, `main_content_only=false`），按官方分块军规分 3~4 组并发直取 26 端点，将返回原始报文打包存入 `data/{销售日}/raw/{matchId}.json`，零手写爬虫脚本！
+  2. **步骤 2：调用现有法定离线装配器与门禁**：
+     运行现成受测命令：
+     `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md`
+     `python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`
+  3. **步骤 3：回传状态（Announce Completion）**：
+     单场门禁 exit 0 (PASS) 拿到后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】推演源数据已确定性装配落盘并过验放行 (exit 0)」，结束搬运任务！
 
 ### 1. 亚盘与大小球 7 大法定机构并发直取
 调用 Scrapling `bulk_get` 单次并发拉取 7 大法定做市商的分钟级变盘流水：

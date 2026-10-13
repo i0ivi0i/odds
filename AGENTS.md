@@ -82,15 +82,30 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
 - **手动指令最高穿透原则**：上述 17:00/21:00 与 22:00 早晚盘时间截断**仅在 Cron 定时任务自动触发时生效**。当主人在任何时间手动下达「全面分析推演」「今天买什么」「给推荐」或手动指定多场/全量时，**直接穿透 22:00 时间截断限制**，对当日开售赛事全量排队进表！
 
 ```
-主会话：检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；若无立即调度 Scrapling MCP fetch(index.aspx) 极速落盘 meta.md 与追加 memory.md (< 2秒) ➔ 第0秒推送「⚡ 已启动赛前分析」与锁定场次 ➔ 立即执行进货（严禁在主会话做任何超过 2 次的非生产性漫游！）
+主会话：检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；若无立即调度 Scrapling MCP fetch(index.aspx) 极速落盘 meta.md 与追加 memory.md (< 2秒) ➔ 第0秒推送「⚡ 已启动赛前分析」与锁定场次 ➔ 立即执行进货
+- **【主会话前置白名单绝对硬锁（Main Session Hard-Lock Protocol）】**：
+  主会话在阶段 0~1 的行为被严格约束在最简白名单：
+  ① 检查并初始化 `data/{销售日}/meta.md`；
+  ② 第 0 秒推送状态通知与锁定场次；
+  ③ 依据目标总场数 $N$ 与切片大小 $B=6$ 计算 $W=\lceil N/6 \rceil$，在宿主环境（爱马仕 `delegate_task`、反重力 `invoke_subagent`）中将全量 $W$ 个 Worker 一次性并发发射！
+  **严禁漫游违规**：主会话在数据落盘前，绝对禁止调用 `view_file` 查阅 `校验/src/` 内部代码（违规次数严格为 0）；绝对禁止在终端裸写任何临时 Python 抓取或测试脚本；绝对禁止翻阅历史 transcript 猜测抓取逻辑！
 - **确定目标场次集合（Scope）**：按主人指令（全部/早盘/晚盘/指定）瞬时锁定待推演场次列表；
   若目标场次通过 0 场：写入 ## 推荐（今日无候选场次）→ announce 回主会话 → 结束
   否则：
-  【阶段一：纯物理分批进货（分组并发 ➔ 确定性装配与加密封印 ➔ 故障隔离门禁）】
-  编排者/搬运工职责仅限调用 `match-scraper`（Scrapling MCP 官方通道）分批并发进货与质检过验，**严禁动脑思考盘赔逻辑、严禁做比赛推演**！
-  严格按【分批进货规约】将全量目标场次按 4~6 场划分为一组（Batch），每组调用 Skill `match-scraper`（选择器下推 + 4~8 URLs 协议流并发）分批秒取 5 大接口数据。凡触发重新分析或距上次分析 > 30 分钟，必须强制执行真实网络并发抓取覆盖旧快照，严禁直接拿磁盘旧文件跑门禁！
-  **法定确定性代码装配与 SHA-256 加密封印（严禁大模型手写 Markdown）**：**绝对禁止大模型调用 `write_to_file` 或 `replace_file_content` 手写或修改 `data/{销售日}/{matchId}.md`！** 搬运工将抓取到的真实数据与原始报文存入 JSON，在终端调用 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` 零脑补直出 Verbatim Raw Wire Markdown 并自动生成 `data/{销售日}/raw/{matchId}.json` 加密封印（彻底消灭 28 个碎文件）；随后运行 `python 校验/src/adapter/cli.py --sync-meta data/{销售日}` 同步索引状态；
-  **验收门禁前置死锁（支持故障隔离与溯源防篡改）**：分批进货完成后，立即在终端物理运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 执行终审安检（亚盘/大小球七家真实变盘流水 + 23家欧指初即盘 + 主客场/近6进失球数字 + SHA-256 防篡改核验 `TAMPERED_MARKDOWN_SEAL` + 原始报文溯源核验 `RAW_PROVENANCE_MISMATCH` + 物理修改时间戳新鲜度核验）。门禁严格锁定 `--max-age-minutes 30`，严禁随意调大参数！异常场次就地隔离至 `.quarantine`，合格集群放行！
+  【阶段一：Agents 蜂群纯物理进货（Swarm Ingestion ➔ 确定性装配 ➔ 故障隔离门禁）】
+  **工种代词严格解耦**：彻底废除“编排者/搬运工”混称，主会话为总调度 `Orchestrator`，进货者为专职搬运工 `Data Ingest Worker`！
+  **【多 Agent 蜂群并发四大通用军规（Swarm Parallel Laws）】**：
+  ① **军规一：单动并发齐发（Single-Turn Batch Dispatch）**：设待分析场数为 $N$，单批物理切片容量 $B=6$ 场，计算蜂群规模 $W = \lceil N/6 \rceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、爱马仕并发 `delegate_task`）一次性填入全量 $W$ 个 Worker，一枪打出，严禁分多次循环串行串烧；
+  ② **军规二：无共享状态物理隔离（Stateless Worker Isolation）**：各 Worker 承包的待抓取场次集合绝对互斥（Worker 1: 001~006, Worker 2: 007~012 ...）。数据仅写入各自的 `raw/{matchId}.json` 与 `data/{销售日}/{matchId}.md`，严禁跨 Worker 锁竞争；
+  ③ **军规三：上下文极简隔离（Strict Context Minimization ≤ 2KB）**：给 Worker 的 Prompt 必须短小精炼（≤ 2KB），仅包含比赛 ID 列表、日期与极简两步指令，严禁在 Worker Prompt 中塞入大篇幅长文本、历史记忆或无关规范；
+  ④ **军规四：响应式免轮询唤醒（Reactive Wakeup & Zero Polling）**：主会话发射完蜂群后，**必须立即停止调用任何工具，严禁主动轮询/sleep**，等待宿主系统 Reactive 自动唤醒。
+  **【Worker 行为封印三禁】**：
+  ① 严禁 Worker 在终端或主会话执行 `git log`、`git status`、`codebase inspection` 等代码工程探测；
+  ② 严禁 Worker 思考盘赔逻辑、构思分析思路或下达胜负预测；
+  ③ 严禁 Worker 自行重写、修改或 patch 系统代码。
+  **搬运工官方原生纯净进货管道（Minimal Ingestion Pipeline）**：
+  搬运工直接调用官方 Scrapling MCP `bulk_get`（分块军规 ≤6~8 URLs + 选择器下推）并发拉取 26 端点写入 `raw/{matchId}.json` ➔ 运行离线受测命令 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` ➔ 单场 `--match` 门禁（exit 0），零手写 Python 爬虫脚本！
+  **验收门禁前置死锁（支持故障隔离与溯源防篡改）**：全员回传后，主会话在终端物理运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 执行终审安检（亚盘/大小球七家真实变盘流水 + 23家欧指初即盘 + 主客场/近6进失球数字 + SHA-256 防篡改核验 `TAMPERED_MARKDOWN_SEAL` + 原始报文溯源核验 `RAW_PROVENANCE_MISMATCH` + 物理修改时间戳新鲜度核验）。门禁严格锁定 `--max-age-minutes 30`，严禁随意调大参数！异常场次就地隔离至 `.quarantine`，合格集群放行！
   **官方合法未开盘与推演到底宪法（Anti-Drop Iron Rule）**：
   ① **体彩深盘不开单固**：当实力悬殊深盘中国体彩未开普通胜负平（HAD）时，欧指门禁自动放行 22 家，大模型必须推演体彩让球胜平负（HHAD），严禁以此为借口丢弃比赛；
   ② **次级联赛未开亚盘**：当香港马会（HKJC）等对英冠等次级联赛官方未开亚盘时，标注「官方未开盘」，门禁自动放行，比赛必须推演；
@@ -417,12 +432,17 @@ MEMORY.md 维护规则：
 1. 读取 `skills/match-scraper/SKILL.md`，执行赛程抓取，写入 memory
 2. 读取 `skills/match-screening/SKILL.md`，执行初筛，写入 memory
 3. 推送候选列表给主人（通过平台消息通道）
-3.5 【阶段一：纯物理进货搬运工（match-scraper 抓取 ➔ 【推演源数据】落盘 ➔ 批量门禁过验）】：
-    - **角色硬隔离**：编排者在阶段一的身份是**纯物理进货搬运工**，职责仅限集中并发进货与质检过验，**绝对禁止在阶段一动脑思考盘赔逻辑、绝对禁止推演比赛、绝对禁止调用 Graphify**！
+3.5 【阶段一：Agents 蜂群纯物理进货（Swarm Ingestion ➔ 确定性装配 ➔ 批量门禁过验）】：
+    - **工种与角色隔离**：主会话为总调度 `Orchestrator`，进货者为专职搬运工 `Data Ingest Worker`！搬运工职责仅限集中并发进货与质检过验，**绝对禁止动脑思考盘赔逻辑、绝对禁止推演比赛、绝对禁止调用 Graphify**！
     - 若初筛通过 0 场：写入 ## 推荐（今日无候选场次）→ announce 回主会话 → 结束。
-    - 否则：编排者一次性构造全量候选场次的 URL 矩阵，调用 Skill `match-scraper`（Skill `/scrapling-official` ↔ MCP `scrapling` `bulk_get` 官方通道），并发秒取候选场次 5 大接口数据，经 SnapshotAssembler 一次性批量组装为【推演源数据】并落盘至 `data/{销售日}/{matchId}.md`；严禁一场一场串行试探、严禁边想边抓！
-    - 同步更新 `data/{销售日}/meta.md` 索引表（运行 `python 校验/src/adapter/cli.py --sync-meta data/{销售日}`）；
-    - 立即在终端运行批量安检门禁：`python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30`。
+    - **蜂群动态弹性分片与单动派发**：
+      ① 设待分析总场数为 $N$，单批安全物理切片容量 $B=6$ 场，计算蜂群规模 $W = \lceil N/6 \rceil$；
+      ② 主会话在单次任务分发中（反重力 `invoke_subagent` 数组、爱马仕并发 `delegate_task`）一次性填入全量 $W$ 个 Worker，一枪打出，严禁分多次循环串行串烧；
+      ③ 给每个 Worker 的 Prompt 必须短小精炼（≤ 2KB），仅包含当前承包的 6 场比赛 ID 与极简两步指令：
+         - 调用 Scrapling MCP `bulk_get` 并发直取（分块军规 ≤6~8 URLs + 选择器下推）➔ 存入 `raw/{matchId}.json` ➔ 运行离线受测命令 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` ➔ 单场 `--match` 门禁；
+         - 拿到 exit 0 后立即向主会话回传完成状态；
+      ④ 【Worker 行为封印三禁】：严禁 Worker 在终端或主会话执行 `git log`、`git status` 等代码工程探测；严禁思考盘赔逻辑或定性胜负；严禁自行修改或 patch 系统代码！
+    - **响应式汇聚与批量安检终审**：主会话派发完蜂群数组后立即停止调用工具，依赖 Reactive Wakeup 等待全员回传。随后在终端物理运行：`python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`。
     - **门禁准入铁律**：只有当全量候选场次【推演源数据】全部通过门禁（返回退出码 0，PASS 且修改时间在 30 分钟内）时，才准放行进入步骤 4！若有任一场次缺失关键字段、超期过期或门禁返回 1 (FAIL)，必须立即彻底物理熔断中止，向主人置顶报告缺失项与原因，绝对禁止在门禁未通过时分发 Worker 抢跑推演！（无物理原材料严禁下锅）。
 4. 【阶段二：纯逻辑首席分析师（大模型深度推演分发）】：
     - 批量门禁 100% 确认通过后，编排者方可切换为分析师并对每场初筛通过的比赛分发 worker subagent（爱马仕 `delegate_task` / 反重力 `invoke_subagent`）。**Worker 职责为纯逻辑推演，直接只读加载已经门禁过验的 `data/{销售日}/{matchId}.md` 本场专属物理【推演源数据】，严禁 Worker 访问网络抓取或编写临时脚本**。**task 中必须写明**：「本批共 N 场（N = 本场初筛通过的总场次数），你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果」，避免多 worker 并发写同一文件导致只保留部分场次。示例：
