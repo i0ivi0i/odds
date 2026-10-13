@@ -539,11 +539,16 @@ class VerifySnapshotUseCase:
                         initial, latest = _pick_init_latest(rows)
                         off_i = _row_offset(initial)
                         off_l = _row_offset(latest)
+                        def _safe_f(v):
+                            try:
+                                return float(str(v).replace("**", "").strip())
+                            except ValueError:
+                                return 0.0
                         try:
                             ah_list.append({
                                 "company": cname,
-                                "initial": {"handicap": initial[off_i+1].replace("**", "").replace("初盘", "").strip(), "home": float(initial[off_i+2].replace("**", "").strip()), "away": float(initial[off_i+3].replace("**", "").strip())},
-                                "latest": {"handicap": latest[off_l+1].replace("**", "").replace("初盘", "").strip(), "home": float(latest[off_l+2].replace("**", "").strip()), "away": float(latest[off_l+3].replace("**", "").strip())},
+                                "initial": {"handicap": initial[off_i+1].replace("**", "").replace("初盘", "").strip(), "home": _safe_f(initial[off_i+2]), "away": _safe_f(initial[off_i+3])},
+                                "latest": {"handicap": latest[off_l+1].replace("**", "").replace("初盘", "").strip(), "home": _safe_f(latest[off_l+2]), "away": _safe_f(latest[off_l+3])},
                             })
                             for r in rows:
                                 off = _row_offset(r)
@@ -564,8 +569,8 @@ class VerifySnapshotUseCase:
                                     "phase": r[0].replace("**", "").strip() if off == 1 else "",
                                     "time": raw_t,
                                     "handicap": r[off+1].replace("**", "").replace("初盘", "").strip(),
-                                    "home": float(r[off+2].replace("**", "").strip()),
-                                    "away": float(r[off+3].replace("**", "").strip()),
+                                    "home": _safe_f(r[off+2]),
+                                    "away": _safe_f(r[off+3]),
                                 })
                         except Exception:
                             pass
@@ -581,8 +586,8 @@ class VerifySnapshotUseCase:
                         try:
                             ou_list.append({
                                 "company": cname,
-                                "initial": {"goal": initial[off_i+1].replace("**", "").replace("初盘", "").strip(), "over": float(initial[off_i+2].replace("**", "").strip()), "under": float(initial[off_i+3].replace("**", "").strip())},
-                                "latest": {"goal": latest[off_l+1].replace("**", "").replace("初盘", "").strip(), "over": float(latest[off_l+2].replace("**", "").strip()), "under": float(latest[off_l+3].replace("**", "").strip())},
+                                "initial": {"goal": initial[off_i+1].replace("**", "").replace("初盘", "").strip(), "over": _safe_f(initial[off_i+2]), "under": _safe_f(initial[off_i+3])},
+                                "latest": {"goal": latest[off_l+1].replace("**", "").replace("初盘", "").strip(), "over": _safe_f(latest[off_l+2]), "under": _safe_f(latest[off_l+3])},
                             })
                             for r in rows:
                                 off = _row_offset(r)
@@ -603,8 +608,8 @@ class VerifySnapshotUseCase:
                                     "phase": r[0].replace("**", "").strip() if off == 1 else "",
                                     "time": raw_t,
                                     "goal": r[off+1].replace("**", "").replace("初盘", "").strip(),
-                                    "over": float(r[off+2].replace("**", "").strip()),
-                                    "under": float(r[off+3].replace("**", "").strip()),
+                                    "over": _safe_f(r[off+2]),
+                                    "under": _safe_f(r[off+3]),
                                 })
                         except Exception:
                             pass

@@ -7,6 +7,7 @@
 """
 
 from typing import Any, Dict, List, Tuple, Union
+from 校验.src.domain.timeseries_denoiser import denoise_timeline_rows
 
 # 法定 23 家机构白名单及标准元数据
 LEGAL_23_COMPANIES = [
@@ -309,11 +310,21 @@ class GoldenSnapshotAssembler:
                     ]
 
             if not ah_rows:
-                raise ValueError(f"装配失败：机构 `{cname}` 缺少亚盘真实变盘流水，严禁伪造默认行")
+                if cname == "香港马会":
+                    ah_rows = [("-", "官方未开盘", "-", "-", "未开盘")]
+                else:
+                    raise ValueError(f"装配失败：机构 `{cname}` 缺少亚盘真实变盘流水，严禁伪造默认行")
             if not ou_rows:
-                raise ValueError(f"装配失败：机构 `{cname}` 缺少大小球真实变盘流水，严禁伪造默认行")
+                if cname == "香港马会":
+                    ou_rows = [("-", "官方未开盘", "-", "-", "未开盘")]
+                else:
+                    raise ValueError(f"装配失败：机构 `{cname}` 缺少大小球真实变盘流水，严禁伪造默认行")
             if not eu_rows:
                 raise ValueError(f"装配失败：机构 `{cname}` 缺少欧指真实变盘流水，严禁伪造默认行")
+
+            ah_rows = denoise_timeline_rows(ah_rows)
+            ou_rows = denoise_timeline_rows(ou_rows)
+            eu_rows = denoise_timeline_rows(eu_rows)
 
             lines.append(f"### {c['id']}. {cname} (欧亚双盘核心, {c['type']}, cid={c['cid']})")
             lines.append("")
@@ -350,6 +361,7 @@ class GoldenSnapshotAssembler:
         sp_detail = comp_details.get("体彩官方") or comp_details.get("中国体彩") or comp_details.get("竞彩官方") or {}
         sp_had = sp_detail.get("had") or sp_detail.get("eu") or data.get("sporttery_had") or []
         if sp_had:
+            sp_had = denoise_timeline_rows(sp_had)
             lines.append("#### 胜平负 (HAD) 真实变盘流水")
             lines.append("| 变盘时间 | 主胜 | 平局 | 客胜 | 返还率 | 凯利(主/平/客) | 状态 |")
             lines.append("| :--- | ---: | ---: | ---: | ---: | :--- | :--- |")

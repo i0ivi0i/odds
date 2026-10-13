@@ -228,6 +228,12 @@ class Titan007RawParser:
         """
         rows: List[Tuple[str, str, str, str, str]] = []
         clean = str(raw_text or "").replace("**", "")
+        clean = re.sub(
+            r"<tr[^>]*>(.*?)</tr>",
+            lambda m: "\n" + re.sub(r"[\r\n\t]+", " ", m.group(1)) + "\n",
+            clean,
+            flags=re.I | re.S,
+        )
         # 将 Scrapling Markdown 嵌套表中的 `| |` 拆分为独立行
         clean = re.sub(r"\|\s*\|", "|\n|", clean)
         clean = re.sub(r"</tr\s*>", "\n", clean, flags=re.I)
@@ -272,6 +278,12 @@ class Titan007RawParser:
         """
         rows: List[Tuple[str, str, str, str, str, str, str]] = []
         clean = str(raw_text or "").replace("**", "")
+        clean = re.sub(
+            r"<tr[^>]*>(.*?)</tr>",
+            lambda m: "\n" + re.sub(r"[\r\n\t]+", " ", m.group(1)) + "\n",
+            clean,
+            flags=re.I | re.S,
+        )
         clean = re.sub(r"\|\s*\|", "|\n|", clean)
         clean = re.sub(r"</tr\s*>", "\n", clean, flags=re.I)
         clean = re.sub(r"</td\s*>", "\t", clean, flags=re.I)

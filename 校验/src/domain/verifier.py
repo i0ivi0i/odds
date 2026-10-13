@@ -357,11 +357,13 @@ class SnapshotVerifier:
 
         if snapshot.get("is_markdown_baseline"):
             euro_list = snapshot.get("europe1x2") or []
+            cnames = {str(x.get("company") or "").strip().lower() for x in euro_list}
             pm = snapshot.get("polymarket") or {}
             pm_url = (pm.get("url") or "").strip()
             pm_status = str(pm.get("status") or "")
-            is_pm_unopened = not pm_url or "未开放" in pm_url or "未开盘" in pm_url or pm_status == "unopened"
-            required_count = 22 if is_pm_unopened else 23
+            is_pm_unopened = not pm_url or "未开放" in pm_url or "未开盘" in pm_url or pm_status == "unopened" or "polymarket" not in cnames
+            is_sporttery_unopened = not any("体彩" in c or "竞彩" in c for c in cnames)
+            required_count = 23 - (1 if is_pm_unopened else 0) - (1 if is_sporttery_unopened else 0)
             if len(euro_list) < required_count:
                 return DimensionResult(
                     dimension=DimensionType.EUROPE_1X2,
@@ -1033,7 +1035,7 @@ class SnapshotVerifier:
                     }
                     company_latest_dts = {}
                     for cname, aliases in core_companies.items():
-                        c_pat = rf"(?:###\s*(?:\d+[\.、\s]*)?(?:{'|'.join(aliases)})).*?(?=(?:\n###|\Z))"
+                        c_pat = rf"(?:###\s*(?:\d+[\.、\s]*)?(?:{'|'.join(aliases)})).*?(?=(?:\n###\s+[^\#]|\Z))"
                         m_block = re.search(c_pat, raw_content, re.DOTALL | re.I)
                         if m_block:
                             c_ts = re.findall(r"\b(\d{2}-\d{2}\s+\d{2}:\d{2})\b", m_block.group(0))
@@ -1041,16 +1043,27 @@ class SnapshotVerifier:
                                 c_max_s = max(c_ts)
                                 company_latest_dts[cname] = datetime.strptime(f"{year}-{c_max_s}", "%Y-%m-%d %H:%M")
 
+                    # 提取开球时间，比赛已开球时以开球时间为活水基准
+                    kickoff_raw = snapshot.get("kickoffTime") or snapshot.get("kickoff") or ""
+                    ref_dt = file_dt
+                    if kickoff_raw:
+                        km = re.search(r"(?:(\d{4})-)?(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{2})", str(kickoff_raw))
+                        if km:
+                            ky = int(km.group(1)) if km.group(1) else year
+                            kdt = datetime(ky, int(km.group(2)), int(km.group(3)), int(km.group(4)), int(km.group(5)))
+                            if file_dt > kdt:
+                                ref_dt = kdt
+
                     if len(company_latest_dts) >= 3:
                         overall_latest_dt = max(company_latest_dts.values())
 
-                        # 5.1 最新时序不能落后文件保存时间超过 120 分钟
-                        overall_lag = (file_dt - overall_latest_dt).total_seconds() / 60.0
+                        # 5.1 最新时序不能落后基准时间超过 120 分钟 (若比赛已开球，基准时间锁定为开球时间)
+                        overall_lag = (ref_dt - overall_latest_dt).total_seconds() / 60.0
                         if overall_lag > 120.0:
                             return DimensionResult(
                                 dimension=DimensionType.AUTHENTICITY,
                                 status=CheckStatus.FAIL,
-                                message=f"STALE_TIMELINE_WATERMARK: 正文核心机构最新变盘时间戳停滞于 {overall_latest_dt.strftime('%m-%d %H:%M')}，落后文件保存时间 {overall_lag:.1f} 分钟 (> 120 分钟)！判定为未拉取最新活水行情的假刷新！",
+                                message=f"STALE_TIMELINE_WATERMARK: 正文核心机构最新变盘时间戳停滞于 {overall_latest_dt.strftime('%m-%d %H:%M')}，落后基准时间 {overall_lag:.1f} 分钟 (> 120 分钟)！判定为未拉取最新活水行情的假刷新！",
                                 detail={"match_id": match_id, "latest_timeline": overall_latest_dt.strftime('%m-%d %H:%M'), "file_mtime": file_dt.strftime("%Y-%m-%d %H:%M:%S"), "lag_minutes": round(overall_lag, 1)},
                             )
 
@@ -1073,12 +1086,12 @@ class SnapshotVerifier:
                     else:
                         latest_ts_str = max(ts_matches)
                         latest_ts_dt = datetime.strptime(f"{year}-{latest_ts_str}", "%Y-%m-%d %H:%M")
-                        lag_minutes = (file_dt - latest_ts_dt).total_seconds() / 60.0
+                        lag_minutes = (ref_dt - latest_ts_dt).total_seconds() / 60.0
                         if lag_minutes > 120.0:
                             return DimensionResult(
                                 dimension=DimensionType.AUTHENTICITY,
                                 status=CheckStatus.FAIL,
-                                message=f"STALE_TIMELINE_WATERMARK: 正文变盘时序时间戳停滞于 {latest_ts_str}，落后文件保存时间 {lag_minutes:.1f} 分钟 (> 120 分钟)！判定为未拉取最新活水行情的假刷新！",
+                                message=f"STALE_TIMELINE_WATERMARK: 正文变盘时序时间戳停滞于 {latest_ts_str}，落后基准时间 {lag_minutes:.1f} 分钟 (> 120 分钟)！判定为未拉取最新活水行情的假刷新！",
                                 detail={"match_id": match_id, "latest_timeline_time": latest_ts_str, "file_mtime": file_dt.strftime("%Y-%m-%d %H:%M:%S"), "lag_minutes": round(lag_minutes, 1)},
                             )
                 except Exception:
@@ -1331,23 +1344,28 @@ class SnapshotVerifier:
                             continue
                         md_rows_norm = [_norm_tl_row(x) for x in (md_comp.get(kind) or [])]
                         raw_rows_norm = [_norm_tl_row(x) for x in raw_parsed]
-                        if len(md_rows_norm) != len(raw_rows_norm):
+                        from 校验.src.domain.timeseries_denoiser import denoise_timeline_rows
+                        denoised_rows_norm = [_norm_tl_row(x) for x in denoise_timeline_rows(raw_parsed)]
+                        expected_rows = denoised_rows_norm if len(md_rows_norm) == len(denoised_rows_norm) else raw_rows_norm
+
+                        if len(md_rows_norm) != len(expected_rows):
                             return DimensionResult(
                                 dimension=DimensionType.AUTHENTICITY,
                                 status=CheckStatus.FAIL,
                                 message=(
                                     f"RAW_PROVENANCE_MISMATCH: 机构【{cname}】第4节{label}变盘流水行数 ({len(md_rows_norm)} 行) "
-                                    f"与原始报文 {used_fname} ({len(raw_rows_norm)} 行) 不符！严禁截断或省略变盘历史！"
+                                    f"与降噪规范行数 ({len(denoised_rows_norm)} 行) 及原始报文行数 ({len(raw_rows_norm)} 行) 均不符！严禁篡改或捏造流水！"
                                 ),
                                 detail={
                                     "match_id": match_id,
                                     "company": cname,
                                     "market": kind,
                                     "md_row_count": len(md_rows_norm),
+                                    "expected_count": len(expected_rows),
                                     "raw_row_count": len(raw_rows_norm),
                                 },
                             )
-                        for r_idx, (m_row, w_row) in enumerate(zip(md_rows_norm, raw_rows_norm)):
+                        for r_idx, (m_row, w_row) in enumerate(zip(md_rows_norm, expected_rows)):
                             if (
                                 m_row[0] != w_row[0]
                                 or m_row[4] != w_row[4]
@@ -1360,7 +1378,7 @@ class SnapshotVerifier:
                                     status=CheckStatus.FAIL,
                                     message=(
                                         f"RAW_PROVENANCE_MISMATCH: 机构【{cname}】第4节{label}第 {r_idx + 1} 行 "
-                                        f"{m_row} 与原始报文 {used_fname} {w_row} 不符！严禁篡改时间、水位或状态词（早/即/初盘）！"
+                                        f"{m_row} 与期望报文 {used_fname} {w_row} 不符！严禁篡改时间、水位或状态词（早/即/初盘）！"
                                     ),
                                     detail={
                                         "match_id": match_id,

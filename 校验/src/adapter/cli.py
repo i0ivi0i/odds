@@ -507,9 +507,86 @@ def run_verify_memory(
         return 1
 
 
+def run_audit_integrity(target_path: str) -> int:
+    """执行五重轮番数据纯净度、极值数学零丢失与单调子序列穿透质检"""
+    from 校验.src.domain.integrity_auditor import IntegrityAuditor, AuditStatus
+
+    auditor = IntegrityAuditor()
+    p = Path(target_path)
+    if not p.exists():
+        print(f"❌ 质检失败: 路径不存在 ({target_path})", file=sys.stderr)
+        return 1
+
+    md_files = []
+    if p.is_file() and p.suffix == ".md":
+        md_files = [p]
+    elif p.is_dir():
+        md_files = sorted([f for f in p.glob("*.md") if f.stem.isdigit()])
+    else:
+        print(f"❌ 质检失败: 无效的目标路径 ({target_path})", file=sys.stderr)
+        return 1
+
+    if not md_files:
+        print(f"❌ 质检失败: 目录下未找到任何以比赛 ID 命名的 .md 文件 ({target_path})", file=sys.stderr)
+        return 1
+
+    print("============================================================")
+    print(" 🛡️ 足球系统全链路数据纯净度与五重轮番穿透质检报告")
+    print("============================================================")
+
+    all_passed = True
+    total_extrema_lost = 0
+    total_inversions = 0
+    total_fabricated = 0
+    summary_rows = []
+
+    for md_f in md_files:
+        mid = md_f.stem
+        raw_f = md_f.parent / "raw" / f"{mid}.json"
+        if not raw_f.exists():
+            print(f"❌ [Match {mid}] 缺少原始存证包 raw/{mid}.json！", file=sys.stderr)
+            all_passed = False
+            continue
+
+        report = auditor.audit_match(str(raw_f), str(md_f))
+        status_icon = "✅ [PASS]" if report.is_valid else "❌ [FAIL]"
+        print(f"{status_icon} 比赛 {mid}:")
+        for res in report.results:
+            icon = "  ✓" if res.status == AuditStatus.PASS else "  ✗"
+            print(f"{icon} {res.dimension.value}: {res.message}")
+
+        if not report.is_valid:
+            all_passed = False
+
+        total_extrema_lost += report.extremum_lost_count
+        total_inversions += report.temporal_inversions_count
+        total_fabricated += report.fabricated_rows_count
+        summary_rows.append((mid, report.is_valid, report.extremum_coverage_rate, report.total_raw_rows, report.total_md_rows))
+
+    print("------------------------------------------------------------")
+    print(f"📊 汇总结算卡 (共全量穿透质检 {len(md_files)} 场比赛):")
+    for mid, ok, ext_rate, r_rows, m_rows in summary_rows:
+        sym = "✅" if ok else "❌"
+        pct = f"{ext_rate * 100:.1f}%"
+        ratio = ((1 - m_rows / r_rows) * 100) if r_rows else 0
+        print(f"  {sym} 比赛 {mid}: 极值保留率 {pct} | 原始流水 {r_rows}行 -> 提纯 {m_rows}行 (瘦身 {ratio:.1f}%)")
+
+    print("============================================================")
+    if all_passed and total_extrema_lost == 0 and total_inversions == 0 and total_fabricated == 0:
+        print("🎉 最终裁定: 100% 纯净保真 (PASS)！零极值丢失、零时序倒置、零伪造插值！")
+        return 0
+    else:
+        print(f"❌ 最终裁定: 发现数据失真或偏差 (FAIL)！极值丢失={total_extrema_lost}, 时序倒置={total_inversions}, 伪造插值={total_fabricated}", file=sys.stderr)
+        return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="pansuan 校验守门人：单场【推演源数据】安检与全系统一致性巡检",
+    )
+    parser.add_argument(
+        "--audit-integrity",
+        help="指定待穿透质检的【推演源数据】文件或日期目录 (如 data/2026-10-13)，执行五重轮番数据纯净度与极值零丢失对账",
     )
     parser.add_argument(
         "--match",
@@ -599,6 +676,10 @@ def main() -> int:
         if args.max_age_minutes > MAX_ALLOWABLE_FRESHNESS or args.max_age_minutes <= 0:
             print(f"❌ 门禁安全违规: --max-age-minutes ({args.max_age_minutes}) 超过系统法定允许最大值 ({MAX_ALLOWABLE_FRESHNESS} 分钟)！严禁篡改参数绕过新鲜度核验！", file=sys.stderr)
             return 1
+
+    # 优先级 -1: 数据纯净度五重轮番穿透质检
+    if args.audit_integrity:
+        return run_audit_integrity(args.audit_integrity)
 
     # 优先级 0: 每日记忆认知契约卡门禁
     if args.verify_memory:
