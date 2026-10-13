@@ -1053,7 +1053,541 @@ class TestMemoryCognitiveCardsVerifier(unittest.TestCase):
         self.assertFalse(ok)
         self.assertTrue(any("低于预期场次" in e for e in errors))
 
+    def test_verify_memory_detects_7col_table_vs_card_direction_conflict(self):
+        """U4红灯测试: 当 memory.md 中 7 列汇总表的胜负平方向与下方深度分析卡片首选方向自相矛盾时，必须拦截 (MEMORY_INTERNAL_DIRECTION_CONFLICT)"""
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+        conflicting_md = (
+            "## 推荐汇总\n\n"
+            "| 场次/时间 | 对阵双方 | 胜负平 | 让球 | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接 |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+            "| 周一002 00:30 | 亚特兰大 vs 威尼斯 | 客胜/平局 | -1 让负 | 77.57% / 14.16% / 8.27% | 诱主 | https://polymarket.com/event/sea-ata-ven-2026-10-12 |\n\n"
+            + self.valid_card
+        )
+        ok, errors, _ = verify_memory_cognitive_cards(conflicting_md, expected_matches=1)
+        self.assertFalse(ok)
+        self.assertTrue(any("MEMORY_INTERNAL_DIRECTION_CONFLICT" in e for e in errors), f"Actual errors: {errors}")
+
+    def test_verify_memory_cross_checks_source_snapshot_drift(self):
+        """U4红灯测试: 当传入 data_dir 时，memory.md 必须与 data/{销售日}/{matchId}.md 源数据对阵与欧指真值交叉核对，不符则报 MEMORY_SOURCE_DRIFT"""
+        import tempfile
+        from pathlib import Path
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            data_dir = Path(tmpdir)
+            # 构造与 memory 卡片 (主胜1.25/平5.50/客胜11.00) 截然不同的真实源数据快照 (主胜 2.85 / 平 3.30 / 客胜 2.40)
+            (data_dir / "2993805.md").write_text(
+                "# 【周一002】意甲 亚特兰大 vs 威尼斯\n"
+                "- **比赛 ID**：2993805\n"
+                "## 三、欧洲指数百家做市商清单（法定 23 家）\n"
+                "| 机构类型 | 机构 | 初盘主胜 | 初盘平局 | 初盘客胜 | 初返还 | 即时主胜 | 即时平局 | 即时客胜 | 即时返还 | 凯利(主/平/客) |\n"
+                "| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |\n"
+                "| 核心做市 | Bet365 | 2.80 | 3.30 | 2.45 | 92.5% | 2.85 | 3.30 | 2.40 | 92.8% | 0.93/0.92/0.94 |\n",
+                encoding="utf-8",
+            )
+            ok, errors, _ = verify_memory_cognitive_cards(self.valid_card, expected_matches=1, data_dir=str(data_dir))
+            self.assertFalse(ok)
+            self.assertTrue(any("MEMORY_SOURCE_DRIFT" in e for e in errors), f"Actual errors: {errors}")
+
+
+class TestRawWireAntiFabrication(unittest.TestCase):
+    """U3红灯测试: 原始报文哈希封条 (TAMPERED_MARKDOWN_SEAL) 与原文子串交叉校验 (RAW_PROVENANCE_MISMATCH)"""
+
+    def setUp(self):
+        self.verifier = SnapshotVerifier()
+
+    def test_tampering_single_punctuation_in_md_breaks_sha256_seal(self):
+        """测试U3: 只要手动修改 .md 中哪怕一个标点符号或一分钟时间戳，SHA-256 封条立即破裂触发 TAMPERED_MARKDOWN_SEAL 熔断"""
+        import hashlib
+        original_md = "# 【周一005】葡超 法马利康 vs 阿尔韦卡\n- **比赛 ID**：3023499\n"
+        original_sha = hashlib.sha256(original_md.encode("utf-8")).hexdigest()
+        # 篡改一个标点符号（将全角冒号改为半角或改一个数字）
+        tampered_md = "# 【周一005】葡超 法马利康 vs 阿尔韦卡。\n- **比赛 ID**：3023499\n"
+        tampered_sha = hashlib.sha256(tampered_md.encode("utf-8")).hexdigest()
+
+        snap = {
+            "matchId": "3023499",
+            "match": {"league": "葡超", "homeTeam": "法马利康", "awayTeam": "阿尔韦卡"},
+            "_raw_content": tampered_md,
+            "_markdown_sha256": tampered_sha,
+            "_raw_wire": {
+                "manifest": {
+                    "matchId": "3023499",
+                    "markdown_sha256": original_sha,
+                }
+            },
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("TAMPERED_MARKDOWN_SEAL", res.message)
+
+    def test_fabricated_odds_mismatch_against_raw_js_fails(self):
+        """测试U3: 复现 10-12 3023499 造假案 —— 当 .md 欧指写 1.55->1.53 而 raw/3023499/1x2d.js 真实报文为 1.70->1.91 时，必须触发 RAW_PROVENANCE_MISMATCH 熔断"""
+        import hashlib
+        fake_md = "# 【周一005】葡超 法马利康 vs 阿尔韦卡\n- **比赛 ID**：3023499\n"
+        md_sha = hashlib.sha256(fake_md.encode("utf-8")).hexdigest()
+        raw_1x2_js = (
+            'var hometeam_cn="法马利康";var guestteam_cn="阿尔韦卡";'
+            'var game=Array("281|10001|Bet365|1.70|3.60|4.50|54.1|25.5|20.4|91.9|1.91|3.50|3.60|48.2|26.3|25.5|92.0|0.93|0.94|0.92|2026,10-1,12,18,30,00|104|10002|Interwetten|1.75|3.55|4.30|53.0|26.1|21.5|92.7|1.95|3.45|3.50|47.5|26.8|26.4|92.6|0.95|0.93|0.90|2026,10-1,12,18,15,00");'
+        )
+        snap = {
+            "matchId": "3023499",
+            "match": {"league": "葡超", "homeTeam": "法马利康", "awayTeam": "阿尔韦卡"},
+            "_raw_content": fake_md,
+            "_markdown_sha256": md_sha,
+            "europe1x2": [
+                {
+                    "company": "Bet365",
+                    "initial": {"odds": [1.55, 3.80, 5.50], "returnRate": 91.9},
+                    "latest": {"odds": [1.53, 3.90, 5.80], "returnRate": 92.0, "kelly": [0.93, 0.94, 0.92]},
+                }
+            ],
+            "_raw_wire": {
+                "manifest": {
+                    "matchId": "3023499",
+                    "markdown_sha256": md_sha,
+                },
+                "1x2d.js": raw_1x2_js,
+            },
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("RAW_PROVENANCE_MISMATCH", res.message)
+        self.assertIn("Bet365", res.message)
+
+    def test_raw_parser_extracts_verbatim_and_passes_seal_check(self):
+        """测试U3: Titan007RawParser 从原始报文提取真实赔率与时序并生成加密封条 manifest.json"""
+        from 校验.src.domain.raw_parser import Titan007RawParser
+        parser = Titan007RawParser()
+        raw_js = (
+            'var hometeam_cn="法马利康";var guestteam_cn="阿尔韦卡";var matchname_cn="葡超";var MatchTime="2026,10-1,12,23,00,00";'
+            'var game=Array('
+            '"281|101|Bet365|1.70|3.60|4.50|54.1|25.5|20.4|91.90|1.91|3.50|3.60|48.2|26.3|25.5|92.00|0.93|0.94|0.92|2026,10-1,12,18,30,00",'
+            '"80|102|Macauslot|1.68|3.55|4.40|54.1|25.5|20.4|90.10|1.88|3.45|3.55|48.2|26.3|25.5|90.20|0.91|0.93|0.91|2026,10-1,12,18,20,00"'
+            ');'
+        )
+        parsed = parser.parse_1x2d_js(raw_js)
+        self.assertEqual(parsed["homeTeam"], "法马利康")
+        self.assertEqual(parsed["awayTeam"], "阿尔韦卡")
+        self.assertEqual(len(parsed["europe1x2"]), 2)
+        self.assertEqual(parsed["europe1x2"][0]["initialOdds"], ["1.70", "3.60", "4.50"])
+        self.assertEqual(parsed["europe1x2"][0]["liveOdds"], ["1.91", "3.50", "3.60"])
+
+    def test_authenticity_rejects_legacy_t0_t4_padding_and_fake_intervals(self):
+        """测试漏洞封堵1: 若大模型偷懒手写包含『维持区间』『T0 初盘骨架』『做市形态学识别』或『10-08 12:00』的伪造时序，必须触发 FABRICATED_TIMELINE_PADDING 物理熔断"""
+        for forbidden_token in ("维持区间", "T0 初盘骨架", "T2 中盘假摔", "做市形态学识别", "10-08 12:00"):
+            snap = {
+                "matchId": "3023499",
+                "is_markdown_baseline": True,
+                "match": {"league": "葡超", "homeTeam": "法马利康", "awayTeam": "阿尔韦卡"},
+                "_raw_content": f"# 【周一005】葡超 法马利康 vs 阿尔韦卡\n- **比赛 ID**：3023499\n| {forbidden_token} | 0.88 | 半一 | 0.96 |",
+            }
+            res = self.verifier._check_authenticity(snap)
+            self.assertEqual(res.status, CheckStatus.FAIL, f"Token '{forbidden_token}' was not blocked!")
+            self.assertIn("FABRICATED_TIMELINE_PADDING", res.message)
+
+    def test_authenticity_rejects_unsealed_markdown_in_live_mode(self):
+        """测试漏洞封堵2: 在实时门禁模式 (_max_age_minutes 启用) 下，若 .md 缺少 raw/{matchId}/manifest.json 加密封条 (说明绕过 cli.py --assemble 直接用 write_to_file 手写)，必须触发 MISSING_CRYPTOGRAPHIC_SEAL 熔断"""
+        from datetime import datetime, timedelta
+        now_dt = datetime.now()
+        t1 = (now_dt - timedelta(minutes=5)).strftime("%m-%d %H:%M")
+        snap = {
+            "matchId": "3023499",
+            "is_markdown_baseline": True,
+            "_file_mtime": now_dt.timestamp(),
+            "_max_age_minutes": 30,
+            "match": {"league": "葡超", "homeTeam": "法马利康", "awayTeam": "阿尔韦卡"},
+            "_raw_content": (
+                f"# 【周一005】葡超 法马利康 vs 阿尔韦卡\n- **比赛 ID**：3023499\n"
+                f"### 1. 澳彩\n| {t1} | 澳彩 | 0.88 | 半一 | 0.96 |\n"
+                f"### 2. Crown 皇冠\n| {t1} | Crown | 0.88 | 半一 | 0.96 |\n"
+                f"### 3. Bet365\n| {t1} | Bet365 | 0.88 | 半一 | 0.96 |\n"
+            ),
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("MISSING_CRYPTOGRAPHIC_SEAL", res.message)
+
+    def test_memory_source_drift_catches_subtle_020_fabrication(self):
+        """测试漏洞封堵4: 复现 1.85 伪造为 1.55 (差值 0.30) —— 只要记忆卡片引用的赔率与源数据偏差 > 0.05，立即触发 MEMORY_SOURCE_DRIFT 拦截"""
+        import tempfile
+        from pathlib import Path
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+
+        card = """# 每日记忆
+## 深度分析
+
+### 葡超 法马利康 vs 阿尔韦卡（编号: 周一010 比赛ID: 3023499，开球: 2026-10-13 03:15，分析: 2026-10-12 21:00）
+#### 赔率摘要
+- 欧指方向：多公司一致看主胜，依据公司即时 主胜1.55/平3.80/客胜5.20
+#### 综合评估
+- 胜平负：首选 主胜｜次选 平局
+- 胜/平/负点概率（OO-EPC去水）：胜 60.10% / 平 24.50% / 负 15.40%
+- 【图谱认知基因】：[Egidi 攻防参数凸组合] ｜ 演绎链：主场压制 -> 正路
+- 【认知契约卡】：
+  - 选择与排除依据：主场占优
+  - 关键拍板依据：深盘低水
+  - 庄家博弈假说与竞争解释：阻上
+  - 可推翻反证与改变条件：退盘
+"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            data_dir = Path(tmpdir)
+            (data_dir / "3023499.md").write_text(
+                "# 【周一010】葡超 法马利康 vs 阿尔韦卡\n"
+                "- **比赛 ID**：3023499\n"
+                "## 三、法定23家机构初即盘与凯利总表\n"
+                "| 机构类型 | 机构 | 初盘主胜 | 初盘平局 | 初盘客胜 | 初返还 | 即时主胜 | 即时平局 | 即时客胜 | 即时返还 | 凯利(主/平/客) |\n"
+                "| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |\n"
+                "| 核心做市 | Bet365 | 1.85 | 3.50 | 4.20 | 92.5% | 1.75 | 3.60 | 4.50 | 92.8% | 0.93/0.92/0.94 |\n",
+                encoding="utf-8",
+            )
+            ok, errors, _ = verify_memory_cognitive_cards(card, expected_matches=1, data_dir=str(data_dir))
+            self.assertFalse(ok)
+            self.assertTrue(any("MEMORY_SOURCE_DRIFT" in e for e in errors), f"Actual errors: {errors}")
+
+    def test_raw_parser_never_fabricates_092_kelly_or_mutates_zao_to_ji(self):
+        """U1红灯测试: Titan007RawParser 严禁使用 '0.92' 假凯利兜底，严禁将原始 '早' 篡改为 '即'"""
+        from pathlib import Path
+        from 校验.src.domain.raw_parser import Titan007RawParser
+
+        repo_root = Path(__file__).resolve().parent.parent.parent
+        raw_parser_src = (repo_root / "校验" / "src" / "domain" / "raw_parser.py").read_text(encoding="utf-8")
+        self.assertNotIn('"0.92"', raw_parser_src, "raw_parser.py 仍存在 '0.92' 假凯利兜底")
+        self.assertNotIn('st == "早"', raw_parser_src, "raw_parser.py 仍存在将 '早' 篡改为 '即' 的后门")
+
+        parser = Titan007RawParser()
+        # 1. 缺失凯利字段时必须返回 "-"，绝不返回 "0.92"
+        raw_js = (
+            'var hometeam_cn="鹿儿岛联";var guestteam_cn="鸟栖沙岩";'
+            'var game=Array("281|101|Bet365|2.10|3.40|3.10|43.1|26.5|30.4|91.90|2.05|3.45|3.20|44.2|26.3|29.5|92.00||||2026,10-1,13,09,30,00");'
+        )
+        parsed = parser.parse_1x2d_js(raw_js)
+        self.assertEqual(parsed["europe1x2"][0]["kelly"], ["-", "-", "-"])
+
+        # 2. changeDetail.html 中状态为 "早" 时必须原样保留 "早"，绝不篡改为 "即"
+        raw_html = """
+        <table>
+          <tr><td>0.85</td><td>平手/半球</td><td>0.95</td><td>10-13 09:49</td><td>即</td></tr>
+          <tr><td>0.88</td><td>平手/半球</td><td>0.92</td><td>10-12 14:20</td><td>早</td></tr>
+          <tr><td>0.90</td><td>平手/半球</td><td>0.90</td><td>10-11 18:00</td><td>初盘</td></tr>
+        </table>
+        """
+        rows = parser.parse_change_detail_rows(raw_html)
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(rows[0][4], "即")
+        self.assertEqual(rows[1][4], "早")
+        self.assertEqual(rows[2][4], "初盘")
+
+    def test_raw_parser_extracts_1x2_detail_rows_verbatim(self):
+        """U1红灯测试: Titan007RawParser.parse_1x2_detail_rows 原样提取 1x2.aspx 变盘流水且不截断、不改状态字"""
+        from 校验.src.domain.raw_parser import Titan007RawParser
+        parser = Titan007RawParser()
+        raw_eu_html = """
+        <table>
+          <tr><td>2.08</td><td>3.55</td><td>2.85</td><td>89.96%</td><td>0.92</td><td>0.94</td><td>0.91</td><td>10-13 10:15(即)</td></tr>
+          <tr><td>2.12</td><td>3.55</td><td>2.80</td><td>90.02%</td><td>0.94</td><td>0.94</td><td>0.89</td><td>10-12 22:10(早)</td></tr>
+          <tr><td>2.15</td><td>3.50</td><td>2.75</td><td>89.80%</td><td>0.95</td><td>0.93</td><td>0.88</td><td>10-11 16:00(初盘)</td></tr>
+        </table>
+        """
+        rows = parser.parse_1x2_detail_rows(raw_eu_html)
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(rows[0], ("10-13 10:15", "2.08", "3.55", "2.85", "89.96%", "0.92/0.94/0.91", "即"))
+        self.assertEqual(rows[1], ("10-12 22:10", "2.12", "3.55", "2.80", "90.02%", "0.94/0.94/0.89", "早"))
+        self.assertEqual(rows[2], ("10-11 16:00", "2.15", "3.50", "2.75", "89.80%", "0.95/0.93/0.88", "初盘"))
+
+    def test_authenticity_detects_truncated_section4_timeline_rows_against_raw_html(self):
+        """U3红灯测试: 当 .md 第四节时序表行数被截断(如原始报文有4行但.md只写了2行)或状态字'早'被改为'即'时，必须触发 RAW_PROVENANCE_MISMATCH"""
+        import hashlib
+        fake_md = "# 【周二001】日职乙 鹿儿岛联 vs 鸟栖沙岩\n- **比赛 ID**：3068865\n"
+        md_sha = hashlib.sha256(fake_md.encode("utf-8")).hexdigest()
+        raw_ah_80 = """
+        <table>
+          <tr><td>0.82</td><td>平手</td><td>0.98</td><td>10-13 10:12</td><td>即</td></tr>
+          <tr><td>0.85</td><td>平手</td><td>0.95</td><td>10-13 08:30</td><td>早</td></tr>
+          <tr><td>0.88</td><td>平手</td><td>0.92</td><td>10-12 21:15</td><td>早</td></tr>
+          <tr><td>0.90</td><td>平手</td><td>0.90</td><td>10-11 16:00</td><td>初盘</td></tr>
+        </table>
+        """
+        snap = {
+            "matchId": "3068865",
+            "match": {"league": "日职乙", "homeTeam": "鹿儿岛联", "awayTeam": "鸟栖沙岩"},
+            "_raw_content": fake_md,
+            "_markdown_sha256": md_sha,
+            "companyTimelines": {
+                "澳彩": {
+                    # 被截断为2行，漏掉了中间2行 '早'
+                    "ah": [
+                        ("10-13 10:12", "平手", "0.82", "0.98", "即"),
+                        ("10-11 16:00", "平手", "0.90", "0.90", "初盘"),
+                    ],
+                    "ou": [],
+                    "eu": [],
+                }
+            },
+            "_raw_wire": {
+                "manifest": {
+                    "matchId": "3068865",
+                    "markdown_sha256": md_sha,
+                },
+                "files": {
+                    "ah_80.html": raw_ah_80,
+                },
+            },
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("RAW_PROVENANCE_MISMATCH", res.message)
+        self.assertIn("澳彩", res.message)
+
+    def test_authenticity_detects_fabricated_sporttery_initial_timestamp(self):
+        """U3红灯测试: 复现 3068865 体彩初盘假时间 10-12 11:00 —— 当 1x2d.js 中体彩仅有1个时间 10-13 09:05 但 .md 编造了 10-12 11:00 初盘行时，必须触发 RAW_PROVENANCE_MISMATCH"""
+        import hashlib
+        fake_md = "# 【周二001】日职乙 鹿儿岛联 vs 鸟栖沙岩\n- **比赛 ID**：3068865\n"
+        md_sha = hashlib.sha256(fake_md.encode("utf-8")).hexdigest()
+        raw_1x2_js = (
+            'var hometeam_cn="鹿儿岛联";var guestteam_cn="鸟栖沙岩";'
+            'var game=Array("478|1099|Lottery Official|2.32|3.50|2.42|37.9|25.1|36.3|87.98|2.32|3.50|2.42|37.9|25.1|36.3|87.98|0.87|0.91|0.88|2026,10-1,13,09,05,00");'
+        )
+        snap = {
+            "matchId": "3068865",
+            "match": {"league": "日职乙", "homeTeam": "鹿儿岛联", "awayTeam": "鸟栖沙岩"},
+            "_raw_content": fake_md,
+            "_markdown_sha256": md_sha,
+            "sportteryHadRows": [
+                ("10-13 09:05", "2.32", "3.50", "2.42", "87.98%", "0.87/0.91/0.88", "即"),
+                ("10-12 11:00", "2.32", "3.50", "2.42", "87.98%", "0.87/0.91/0.88", "初盘"),
+            ],
+            "_raw_wire": {
+                "manifest": {
+                    "matchId": "3068865",
+                    "markdown_sha256": md_sha,
+                },
+                "1x2d.js": raw_1x2_js,
+                "files": {"1x2d.js": raw_1x2_js},
+            },
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("RAW_PROVENANCE_MISMATCH", res.message)
+        self.assertIn("10-12 11:00", res.message)
+
+    def test_parse_1x2d_js_extracts_game_detail_bjt_timelines_and_intermediate_kellys(self):
+        """漏洞1红灯测试: parse_1x2d_js 必须解析 var gameDetail=Array(...) 获取北京时间真实变盘流水及每行真实凯利，严禁误用 game 数组的 UTC 时间或丢失中间行凯利"""
+        from 校验.src.domain.raw_parser import Titan007RawParser
+        raw_js = (
+            'var hometeam_cn="纽卡斯尔喷气机";var guestteam_cn="大阪钢巴";'
+            'var game=Array("1129|159151625|Lottery Official|3.3|3.9|1.76|26.87|22.74|50.39|88.68|3.95|4.4|1.54|22.41|20.12|57.48|88.51|0.93|0.96|0.84|2026,10-1,13,05,07,00|0.78|0.85|0.96|0");'
+            'var gameDetail=Array("159151625^3.95|4.4|1.54|10-13 13:07|0.93|0.96|0.84|2026;3.60|4.15|1.63|10-13 11:20|0.85|0.91|0.89|2026;3.3|3.9|1.76|10-13 09:46|0.78|0.85|0.96|2026");'
+        )
+        parsed = Titan007RawParser().parse_1x2d_js(raw_js)
+        sp = parsed["byCompany"]["中国体彩"]
+        self.assertEqual(sp["changeTime"], "10-13 13:07")
+        detail_rows = sp.get("detailRows") or []
+        self.assertEqual(len(detail_rows), 3)
+        self.assertEqual(detail_rows[0], ("10-13 13:07", "3.95", "4.40", "1.54", "88.51%", "0.93/0.96/0.84", "即"))
+        self.assertEqual(detail_rows[1], ("10-13 11:20", "3.60", "4.15", "1.63", "88.32%", "0.85/0.91/0.89", "即"))
+        self.assertEqual(detail_rows[2], ("10-13 09:46", "3.30", "3.90", "1.76", "88.68%", "0.78/0.85/0.96", "初盘"))
+
+    def test_parse_correct_score_html_parses_raw_html_crown_table(self):
+        """漏洞2红灯测试: parse_correct_score_html 必须原生解析 odds.html 的 HTML 表格 (波胆/入球数/半全场/角球数)，绝不拿体彩 jcOdds 冒充 Crown 皇冠波胆"""
+        from 校验.src.domain.raw_parser import Titan007RawParser
+        raw_odds_html = (
+            '<table width="100%"><tr class="bui"><td width="68"><b>波胆</b></td>'
+            '<td>1:0</td><td>2:0</td><td>2:1</td><td>3:0</td><td>3:1</td><td>3:2</td><td>4:0</td><td>4:1</td><td>4:2</td><td>4:3</td>'
+            '<td>0:0</td><td>1:1</td><td>2:2</td><td>3:3</td><td>4:4</td></tr>'
+            '<tr class="odds"><td>主</td><td>20</td><td>30</td><td>13</td><td>60</td><td>30</td><td>25</td><td>140</td><td>80</td><td>70</td><td>85</td>'
+            '<td rowspan="2">28</td><td rowspan="2">8.6</td><td rowspan="2">11.5</td><td rowspan="2">35</td><td rowspan="2">130</td></tr>'
+            '<tr class="odds"><td>客</td><td>12</td><td>10.5</td><td>7.5</td><td>14</td><td>10</td><td>15.5</td><td>25</td><td>18</td><td>28</td><td>55</td></tr></table>'
+            '<table><tr class="bui"><td><b>入球数</b></td><td>0~1</td><td>2~3</td><td>4~6</td><td>7+</td></tr>'
+            '<tr class="odds"><td>5.4</td><td>1.25</td><td>1.1</td><td>8.6</td></tr></table>'
+            '<table><tr class="bui"><td><b>半全场</b></td><td>主/主</td><td>主/和</td><td>主/客</td><td>和/主</td><td>和/和</td><td>和/客</td><td>客/主</td><td>客/和</td><td>客/客</td></tr>'
+            '<tr class="odds"><td>5.9</td><td>14.5</td><td>17</td><td>9.5</td><td>7.3</td><td>4.1</td><td>30</td><td>14.5</td><td>1.38</td></tr></table>'
+        )
+        cs = Titan007RawParser().parse_correct_score_html(raw_odds_html)
+        self.assertEqual(len(cs["correctScores"]), 10)
+        self.assertEqual(cs["correctScores"][0], ("1:0", "20", "0:0", "28", "0:1", "12"))
+        self.assertEqual(cs["correctScores"][1], ("2:0", "30", "1:1", "8.6", "0:2", "10.5"))
+        self.assertIn("0~1球 (5.4)", cs["totalGoalsText"])
+        self.assertIn("主/主(5.9)", cs["halfFullTimeText"])
+
+    def test_parse_polymarket_json_gamma_api_without_initial_history_sets_initial_to_dash(self):
+        """漏洞3红灯测试: Gamma API 仅含当前实时挂单价时，Polymarket 初盘列必须为 '-'，严禁把实时价复制冒充初盘"""
+        import json
+        from 校验.src.domain.raw_parser import Titan007RawParser
+        gamma_json = json.dumps({
+            "slug": "acle-nuj-gam-2026-10-13",
+            "gameId": 73835472,
+            "markets": [
+                {"outcomePrices": '["0.22", "0.78"]', "updatedAt": "2026-10-13T05:36:14Z"},
+                {"outcomePrices": '["0.205", "0.795"]', "updatedAt": "2026-10-13T05:36:14Z"},
+                {"outcomePrices": '["0.575", "0.425"]', "updatedAt": "2026-10-13T05:36:14Z"},
+            ],
+        })
+        res = Titan007RawParser().parse_polymarket_json(gamma_json)
+        eu = res["europe1x2_entry"]
+        self.assertEqual(eu["initialOdds"], ["-", "-", "-"])
+        self.assertEqual(eu["initialReturn"], "-")
+        self.assertEqual(eu["liveOdds"], ["4.55", "4.88", "1.74"])
+
+    def test_parse_analysis_html_extracts_section1_and_section2_without_meta_json(self):
+        """漏洞4红灯测试: Titan007RawParser.parse_analysis_html 原生从 analysis.html 提取场地天气、伤停评分、近况、赛程、盘路、技统与进球时段"""
+        from 校验.src.domain.raw_parser import Titan007RawParser
+        sample_analysis_md = """
+[场地：亨特国际体育中心](//zq.titan007.com/cn/Venue/841.html)天气：间中有云 温度：18℃～19℃
+联赛积分排名
+| [**[澳超-1]纽卡斯尔喷气机**](//zq.titan007.com/cn/team/Summary/2915.html) |
+| 全场 | 赛 | 胜 | 平 | 负 | 得 | 失 | 净 | 积分 | 排名 | 胜率 |
+| 总 | 26 | 15 | 3 | 8 | 55 | 39 | 16 | 48 | 1 | 57.7% |
+| 主 | 13 | 7 | 1 | 5 | 30 | 20 | 10 | 22 | 2 | 53.8% |
+| 近6 | 6 | 2 | 2 | 2 | 12 | 9 | 3 | 8 | 33.3% |
+| [**[日职联-18]大阪钢巴**](//zq.titan007.com/cn/team/Summary/207.html) |
+| 全场 | 赛 | 胜 | 平 | 负 | 得 | 失 | 净 | 积分 | 排名 | 胜率 |
+| 总 | 9 | 1 | 3 | 5 | 8 | 16 | -8 | 6 | 18 | 11.1% |
+| 客 | 5 | 0 | 2 | 3 | 4 | 10 | -6 | 2 | 16 | 0.0% |
+| 近6 | 6 | 0 | 2 | 4 | 2 | 9 | -7 | 2 | 0.0% |
+相同盘路亚让
+| [**纽卡斯尔喷气机**](//zq.titan007.com/cn/team/Summary/2915.html) |
+| 初盘:受让半球 | 赢 | 走 | 输 | 赢盘率 |
+| 总 | 52 | 0 | 51 | 50.5% |
+| 主 | 17 | 0 | 14 | 54.8% |
+| 近6场盘路走势: 赢 赢 赢 输 赢 输 |
+| [**大阪钢巴**](//zq.titan007.com/cn/team/Summary/207.html) |
+| 初盘:受让半球 | 赢 | 走 | 输 | 赢盘率 |
+| 总 | 93 | 0 | 77 | 54.7% |
+| 客 | 37 | 0 | 30 | 55.2% |
+| 近6场盘路走势: 输 输 输 赢 输 赢 |
+进球时间
+|  | 1-10 | 11-20 | 21-30 | 31-40 | 41-45 | 46-50 | 51-60 | 61-70 | 71-80 | 81-90+ |
+| 总 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+|  | 1-10 | 11-20 | 21-30 | 31-40 | 41-45 | 46-50 | 51-60 | 61-70 | 71-80 | 81-90+ |
+| 总 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0 | 2 |
+未来五场
+| [**纽卡斯尔喷气机**](//zq.titan007.com/cn/team/Summary/2915.html) |
+| 10-17 | 澳超 | 中央海岸水手 - 纽卡斯尔喷气机 | 4 天 |
+| [**大阪钢巴**](//zq.titan007.com/cn/team/Summary/207.html) |
+| 10-17 | 日职联 | 清水鼓动 - 大阪钢巴 | 4 天 |
+阵容情况
+| [**纽卡斯尔喷气机**](//zq.titan007.com/cn/team/Summary/2915.html) |
+| [2 (中卫) 艾利克斯·格兰特](url) | 未知的损伤 |
+| [25 (左边锋) 奥斯卡·弗莱尔](url) | 十字韧带撕裂 |
+| [**大阪钢巴**](//zq.titan007.com/cn/team/Summary/207.html) |
+| [5 (中卫) 三浦弦太](url) | 膝关节损伤 |
+| 球员上一场出场评分 |
+| 主队近10场平均评分: * 5.94 * 7.11 * 6.68  客队近10场平均评分: * 6.17 * 6.57 * 7.24 |
+"""
+        parsed = Titan007RawParser().parse_analysis_html(sample_analysis_md, "纽卡斯尔喷气机", "大阪钢巴")
+        self.assertIn("亨特国际体育中心", parsed["venueWeather"])
+        self.assertIn("艾利克斯·格兰特", parsed["injuries"]["home"])
+        self.assertIn("三浦弦太", parsed["injuries"]["away"])
+        self.assertIn("15胜3平8负", parsed["homeStats"])
+        self.assertIn("1胜3平5负", parsed["awayStats"])
+        self.assertIn("50.5%", parsed["profiling"])
+        self.assertIn("4 天", parsed["scheduleTrap"])
+
+    def test_verifier_blocks_sporttery_jcodds_disguised_as_crown_correct_score(self):
+        """漏洞5红灯测试: 当 .md 第5节 Crown 波胆赔率与 raw/odds.html 不一致 (如用体彩 jcOdds 1:1=9.30 冒充皇冠 1:1=8.60) 时，必须触发 RAW_PROVENANCE_MISMATCH"""
+        import hashlib
+        fake_md = (
+            "# 【周二001】亚冠精英 纽卡斯尔喷气机 vs 大阪钢巴\n"
+            "- **比赛 ID**：3068865\n"
+            "## 五、Crown 皇冠全指数波胆与比分矩阵\n"
+            "- **波胆比分赔率**：1:0 (20.00) ｜ 0:0 (28.00) ｜ 1:1 (9.30)\n"
+        )
+        md_sha = hashlib.sha256(fake_md.encode("utf-8")).hexdigest()
+        raw_odds_html = (
+            '<table><tr class="bui"><td><b>波胆</b></td><td>1:0</td><td>0:0</td><td>1:1</td></tr>'
+            '<tr class="odds"><td>主</td><td>20</td><td rowspan="2">28</td><td rowspan="2">8.6</td></tr>'
+            '<tr class="odds"><td>客</td><td>12</td></tr></table>'
+        )
+        snap = {
+            "matchId": "3068865",
+            "match": {"league": "亚冠精英", "homeTeam": "纽卡斯尔喷气机", "awayTeam": "大阪钢巴"},
+            "_raw_content": fake_md,
+            "_markdown_sha256": md_sha,
+            "correctScore": {"1:0": 20.0, "0:0": 28.0, "1:1": 9.3},
+            "_raw_wire": {
+                "manifest": {"matchId": "3068865", "markdown_sha256": md_sha},
+                "files": {"odds.html": raw_odds_html},
+            },
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("RAW_PROVENANCE_MISMATCH", res.message)
+
+    def test_authenticity_passes_when_valid_receipt_present(self):
+        """TDD U2: 当 raw_wire 包含合法 receipt 时，真实性核验必须正常 PASS"""
+        import hashlib
+        fake_md = "# 【周二001】亚冠精英 纽卡斯尔喷气机 vs 大阪钢巴\n- **比赛 ID**：3068865\n"
+        md_sha = hashlib.sha256(fake_md.encode("utf-8")).hexdigest()
+        raw_1x2_js = 'var hometeam_cn="纽卡斯尔喷气机";var guestteam_cn="大阪钢巴";var game=Array();'
+        fsha = hashlib.sha256(raw_1x2_js.encode("utf-8")).hexdigest()
+        receipt = {
+            "fetcher": "scrapling-mcp",
+            "matchId": "3068865",
+            "fetchedAt": "2026-10-13T16:00:00+08:00",
+            "endpoints": [
+                {
+                    "file": "1x2d.js",
+                    "url": "https://1x2d.titan007.com/3068865.js",
+                    "status": 200,
+                    "payload_sha256": fsha,
+                }
+            ],
+        }
+        snap = {
+            "matchId": "3068865",
+            "match": {"league": "亚冠精英", "homeTeam": "纽卡斯尔喷气机", "awayTeam": "大阪钢巴"},
+            "_raw_content": fake_md,
+            "_markdown_sha256": md_sha,
+            "_raw_wire": {
+                "manifest": {"matchId": "3068865", "markdown_sha256": md_sha, "raw_files_sha256": {"1x2d.js": fsha}},
+                "files": {"1x2d.js": raw_1x2_js},
+                "receipt": receipt,
+            },
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.PASS)
+
+    def test_authenticity_fails_when_receipt_payload_hash_mismatches(self):
+        """TDD U2: 当 receipt 记录的 payload_sha256 与实际 raw_wire 报文哈希不符时，必须判定 FAIL (RECEIPT_PAYLOAD_MISMATCH)"""
+        import hashlib
+        fake_md = "# 【周二001】亚冠精英 纽卡斯尔喷气机 vs 大阪钢巴\n- **比赛 ID**：3068865\n"
+        md_sha = hashlib.sha256(fake_md.encode("utf-8")).hexdigest()
+        raw_1x2_js = 'var hometeam_cn="纽卡斯尔喷气机";var guestteam_cn="大阪钢巴";var game=Array();'
+        fsha = hashlib.sha256(raw_1x2_js.encode("utf-8")).hexdigest()
+        tampered_receipt = {
+            "fetcher": "scrapling-mcp",
+            "matchId": "3068865",
+            "fetchedAt": "2026-10-13T16:00:00+08:00",
+            "endpoints": [
+                {
+                    "file": "1x2d.js",
+                    "url": "https://1x2d.titan007.com/3068865.js",
+                    "status": 200,
+                    "payload_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+                }
+            ],
+        }
+        snap = {
+            "matchId": "3068865",
+            "match": {"league": "亚冠精英", "homeTeam": "纽卡斯尔喷气机", "awayTeam": "大阪钢巴"},
+            "_raw_content": fake_md,
+            "_markdown_sha256": md_sha,
+            "_raw_wire": {
+                "manifest": {"matchId": "3068865", "markdown_sha256": md_sha, "raw_files_sha256": {"1x2d.js": fsha}},
+                "files": {"1x2d.js": raw_1x2_js},
+                "receipt": tampered_receipt,
+            },
+        }
+        res = self.verifier._check_authenticity(snap)
+        self.assertEqual(res.status, CheckStatus.FAIL)
+        self.assertIn("RECEIPT_PAYLOAD_MISMATCH", res.message)
+
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
 

@@ -1,424 +1,441 @@
 """
-校验/src/domain/assembler.py
-【推演源数据】组装器: 将 Scrapling 采集到的多源纯净数据结构化为法定单文件 Markdown 【推演源数据】
-严格遵守 TOOLS.md 第四节【法定单场 Markdown 【推演源数据】黄金契约规范】
+领域服务：推演源数据黄金契约规范 (Golden Snapshot Schema) 确定性序列化器
+严格遵循 TOOLS.md 规范：
+1. 严禁任何硬编码假数据、假时间戳、假凯利、假返还率或主观伪文案回退（Zero Fake Fallback）。
+2. 废除 T0~T4 五阶段凑数切片、废除全周期对齐假总表、废除 14 家纯欧指凑数子表、废除主观「做市形态学识别」列。
+3. 逐行原样序列化球探网真实报文数据，缺核心字段直接抛出 ValueError 物理阻断。
 """
 
-from __future__ import annotations
-import hashlib
-import re
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Tuple, Union
 
-# 法定 23 家机构及其战区分组定义（系统立宪契约）
-LEGAL_23_COMPANIES: Dict[str, str] = {
-    # 核心做市 (14 家)
-    "澳彩": "核心做市",
-    "Crown": "核心做市",
-    "Bet365": "核心做市",
-    "易胜博": "核心做市",
-    "平博": "核心做市",
-    "188Bet": "核心做市",
-    "香港马会": "核心做市",
-    "威廉希尔": "核心做市",
-    "立博": "核心做市",
-    "Bwin": "核心做市",
-    "Interwetten": "核心做市",
-    "SNAI": "核心做市",
-    "伟德": "核心做市",
-    "必发": "核心做市",
-    # 老庄机构 (2 家)
-    "SBO": "老庄机构",
-    "沙巴": "老庄机构",
-    # 论文样本 (5 家)
-    "Marathon": "论文样本",
-    "Betway": "论文样本",
-    "Unibet": "论文样本",
-    "Paddy Power": "论文样本",
-    "10Bet": "论文样本",
-    # 终端履约 (2 家)
-    "中国体彩": "终端履约",
-    "Polymarket": "终端履约",
-}
-
-# 别名查找与归一化映射表
-COMPANY_ALIASES: Dict[str, str] = {
-    "macau": "澳彩", "澳门": "澳彩", "澳门彩票": "澳彩", "澳彩": "澳彩",
-    "crown": "Crown", "皇冠": "Crown",
-    "bet365": "Bet365", "365": "Bet365",
-    "easybets": "易胜博", "易胜博": "易胜博",
-    "pinnacle": "平博", "平博": "平博",
-    "188bet": "188Bet", "188": "188Bet",
-    "hkjc": "香港马会", "马会": "香港马会", "香港马会": "香港马会",
-    "william hill": "威廉希尔", "williamhill": "威廉希尔", "威廉": "威廉希尔", "威廉希尔": "威廉希尔",
-    "ladbrokes": "立博", "立博": "立博",
-    "bwin": "Bwin", "必赢": "Bwin",
-    "interwetten": "Interwetten",
-    "snai": "SNAI",
-    "betvictor": "伟德", "vc": "伟德", "伟德": "伟德",
-    "betfair": "必发", "必发": "必发",
-    "sbo": "SBO", "sbobet": "SBO", "利记": "SBO",
-    "沙巴": "沙巴", "ibc": "沙巴", "ibcbet": "沙巴",
-    "marathon": "Marathon", "马拉松": "Marathon", "marathonbet": "Marathon",
-    "betway": "Betway", "必威": "Betway",
-    "unibet": "Unibet", "优胜客": "Unibet",
-    "paddy power": "Paddy Power", "paddypower": "Paddy Power", "paddy": "Paddy Power",
-    "10bet": "10Bet",
-    "中国体彩": "中国体彩", "体彩": "中国体彩", "竞彩": "中国体彩", "sporttery": "中国体彩",
-    "polymarket": "Polymarket", "poly": "Polymarket",
-}
+# 法定 23 家机构白名单及标准元数据
+LEGAL_23_COMPANIES = [
+    # 第一战区：欧亚双盘全能做市商 (7家)
+    {"id": 1, "name": "澳彩", "aliases": ["Macauslot", "澳*"], "zone": 1, "type": "核心做市", "cid": "80"},
+    {"id": 2, "name": "皇冠", "aliases": ["Crown", "Crow*"], "zone": 1, "type": "核心做市", "cid": "545"},
+    {"id": 3, "name": "Bet365", "aliases": ["365"], "zone": 1, "type": "核心做市", "cid": "281"},
+    {"id": 4, "name": "易胜博", "aliases": ["Easybets", "易*"], "zone": 1, "type": "核心做市", "cid": "90"},
+    {"id": 5, "name": "平博", "aliases": ["Pinnacle", "平*"], "zone": 1, "type": "核心做市", "cid": "177"},
+    {"id": 6, "name": "188Bet", "aliases": ["金宝博", "188"], "zone": 1, "type": "核心做市", "cid": "976"},
+    {"id": 7, "name": "香港马会", "aliases": ["HKJC", "马会"], "zone": 1, "type": "核心做市", "cid": "432"},
+    # 第二战区：欧洲大陆与国际纯欧指做市商 (14家，仅在第三节初即盘总表展示，不建伪时序子表)
+    {"id": 8, "name": "威廉希尔", "aliases": ["William Hill", "威廉"], "zone": 2, "type": "核心做市", "cid": "115"},
+    {"id": 9, "name": "立博", "aliases": ["Ladbrokes"], "zone": 2, "type": "核心做市", "cid": "82"},
+    {"id": 10, "name": "伟德", "aliases": ["Vcbet", "BetVictor"], "zone": 2, "type": "核心做市", "cid": "81"},
+    {"id": 11, "name": "Interwetten", "aliases": ["Inter*"], "zone": 2, "type": "核心做市", "cid": "104"},
+    {"id": 12, "name": "Bwin", "aliases": ["bwin"], "zone": 2, "type": "核心做市", "cid": "255"},
+    {"id": 13, "name": "SNAI", "aliases": ["Snai"], "zone": 2, "type": "核心做市", "cid": "110"},
+    {"id": 14, "name": "必发", "aliases": ["Betfair"], "zone": 2, "type": "核心做市", "cid": "2"},
+    {"id": 15, "name": "SBO", "aliases": ["SBO(利记)", "利记", "SBOBET", "Sbobet"], "zone": 2, "type": "老庄机构", "cid": "474"},
+    {"id": 16, "name": "沙巴", "aliases": ["沙巴(IBC)", "IBC", "IBCBET", "明升"], "zone": 2, "type": "老庄机构", "cid": "649"},
+    {"id": 17, "name": "Marathon", "aliases": ["Marathon(马拉松)", "马拉松", "Marathonbet"], "zone": 2, "type": "论文样本", "cid": "800"},
+    {"id": 18, "name": "Betway", "aliases": ["Betway(必威)", "必威"], "zone": 2, "type": "论文样本", "cid": "482"},
+    {"id": 19, "name": "Unibet", "aliases": ["Unibet(优胜客)", "优胜客"], "zone": 2, "type": "论文样本", "cid": "386"},
+    {"id": 20, "name": "Paddy Power", "aliases": ["Paddy", "PaddyPower"], "zone": 2, "type": "论文样本", "cid": "826"},
+    {"id": 21, "name": "10Bet", "aliases": ["10bet", "10BET"], "zone": 2, "type": "论文样本", "cid": "16"},
+    # 第三战区：终端履约实盘标的 (2家)
+    {"id": 22, "name": "中国体彩", "aliases": ["体彩官方", "竞彩官方", "Sporttery", "Lottery Official", "竞彩官*"], "zone": 3, "type": "终端履约", "cid": "1129"},
+    {"id": 23, "name": "Polymarket", "aliases": ["Polymarket (去水折合)"], "zone": 3, "type": "终端履约", "cid": "PM"},
+]
 
 
-class SnapshotAssembler:
-    """
-    确定性【推演源数据】组装领域服务
-    职责:
-      1. 接收各战区结构化原始数据;
-      2. 校验关键字段不为空;
-      3. 生成符合 TOOLS.md 第四节契约的单文件 Markdown 文本.
-    """
+def _normalize_company_name(raw_name: str) -> str:
+    """将输入机构名称归一为法定 23 家标准名，不在白名单内返回空字符串"""
+    clean = str(raw_name or "").strip()
+    if not clean:
+        return ""
+    for comp in LEGAL_23_COMPANIES:
+        if clean.lower() == comp["name"].lower():
+            return comp["name"]
+        for alias in comp["aliases"]:
+            if clean.lower() == alias.lower():
+                return comp["name"]
+    for comp in LEGAL_23_COMPANIES:
+        for alias in comp["aliases"]:
+            if alias.lower() in clean.lower():
+                return comp["name"]
+    return ""
+
+
+def _require_any_non_empty_str(data: Dict[str, Any], keys: Tuple[str, ...], label: str) -> str:
+    for k in keys:
+        val = str(data.get(k) or "").strip()
+        if val:
+            return val
+    raise ValueError(f"装配失败：缺少必填真实字段 `{keys[0]}` ({label})，严禁使用默认值伪造")
+
+
+def _normalize_ah_row(r: Union[Dict[str, Any], List[Any], Tuple[Any, ...]], cname: str) -> Tuple[str, str, Any, Any, str]:
+    if isinstance(r, (list, tuple)):
+        if len(r) < 4:
+            raise ValueError(f"装配失败：`{cname}` 亚盘流水元组长度不足: {r}")
+        t_val = str(r[0]).strip()
+        line_val = str(r[1]).strip()
+        h_val = r[2]
+        a_val = r[3]
+        st_val = str(r[4]).strip() if len(r) > 4 else "即"
+    elif isinstance(r, dict):
+        t_val = str(r.get("time") or "").strip()
+        line_val = str(r.get("line") or r.get("handicap") or "").strip()
+        h_val = r.get("home")
+        a_val = r.get("away")
+        st_val = str(r.get("status") or r.get("stage") or "即").strip()
+    else:
+        raise ValueError(f"装配失败：`{cname}` 亚盘流水行格式非法: {r}")
+    if not t_val or not line_val or h_val is None or a_val is None:
+        raise ValueError(f"装配失败：`{cname}` 亚盘流水存在残缺字段: {r}")
+    return t_val, line_val, h_val, a_val, st_val
+
+
+def _normalize_ou_row(r: Union[Dict[str, Any], List[Any], Tuple[Any, ...]], cname: str) -> Tuple[str, str, Any, Any, str]:
+    if isinstance(r, (list, tuple)):
+        if len(r) < 4:
+            raise ValueError(f"装配失败：`{cname}` 大小球流水元组长度不足: {r}")
+        t_val = str(r[0]).strip()
+        line_val = str(r[1]).strip()
+        o_val = r[2]
+        u_val = r[3]
+        st_val = str(r[4]).strip() if len(r) > 4 else "即"
+    elif isinstance(r, dict):
+        t_val = str(r.get("time") or "").strip()
+        line_val = str(r.get("line") or r.get("goal") or "").strip()
+        o_val = r.get("over")
+        u_val = r.get("under")
+        st_val = str(r.get("status") or r.get("stage") or "即").strip()
+    else:
+        raise ValueError(f"装配失败：`{cname}` 大小球流水行格式非法: {r}")
+    if not t_val or not line_val or o_val is None or u_val is None:
+        raise ValueError(f"装配失败：`{cname}` 大小球流水存在残缺字段: {r}")
+    return t_val, line_val, o_val, u_val, st_val
+
+
+def _normalize_eu_row(r: Union[Dict[str, Any], List[Any], Tuple[Any, ...]], cname: str) -> Tuple[str, Any, Any, Any, str, str, str]:
+    if isinstance(r, (list, tuple)):
+        if len(r) < 4:
+            raise ValueError(f"装配失败：`{cname}` 欧指流水元组长度不足: {r}")
+        t_val = str(r[0]).strip()
+        h_val = r[1]
+        d_val = r[2]
+        a_val = r[3]
+        ret_val = str(r[4]).strip() if len(r) > 4 else "-"
+        kelly_val = str(r[5]).strip() if len(r) > 5 else "-"
+        st_val = str(r[6]).strip() if len(r) > 6 else "即"
+    elif isinstance(r, dict):
+        t_val = str(r.get("time") or "").strip()
+        h_val = r.get("h")
+        d_val = r.get("d")
+        a_val = r.get("a")
+        ret_val = str(r.get("ret") or r.get("returnRate") or "-").strip()
+        kelly_val = str(r.get("kelly") or "-").strip()
+        st_val = str(r.get("status") or r.get("stage") or "即").strip()
+    else:
+        raise ValueError(f"装配失败：`{cname}` 欧指流水行格式非法: {r}")
+    if not t_val or h_val is None or d_val is None or a_val is None:
+        raise ValueError(f"装配失败：`{cname}` 欧指流水存在残缺字段: {r}")
+    return t_val, h_val, d_val, a_val, ret_val, kelly_val, st_val
+
+
+class GoldenSnapshotAssembler:
+    """将真实解析结构化数据一对一原样序列化为黄金【推演源数据】规范 Markdown（零默认值伪造）"""
 
     def assemble(self, data: Dict[str, Any]) -> str:
-        match_id = str(data.get("matchId", "")).strip()
-        league = str(data.get("league", "")).strip()
-        home = str(data.get("homeTeam", "")).strip()
-        away = str(data.get("awayTeam", "")).strip()
-        kickoff = str(data.get("kickoffTime", "")).strip()
-        sporttery_code = str(data.get("sportteryCode", "")).strip() or "周--000"
-        poly_url = str(data.get("polymarketUrl", "未开放")).strip()
-        
-        if not (match_id and home and away):
-            raise ValueError(f"【推演源数据】组装失败: 核心信息残缺 (matchId={match_id}, home={home}, away={away})")
+        match_id = _require_any_non_empty_str(data, ("matchId",), "比赛 ID")
+        code = _require_any_non_empty_str(data, ("sportteryCode", "code"), "体彩场次编号")
+        league = _require_any_non_empty_str(data, ("league",), "联赛名称")
+        home = _require_any_non_empty_str(data, ("homeTeam",), "主队名称")
+        away = _require_any_non_empty_str(data, ("awayTeam",), "客队名称")
+        kickoff = _require_any_non_empty_str(data, ("kickoffTime", "kickoff"), "开球时间")
 
-        md_lines: List[str] = []
+        venue_weather = str(data.get("venueWeather") or "真实赛场数据未披露").strip()
+        pm_url = str(data.get("polymarketUrl") or "").strip()
+        pm_prices = str(data.get("polymarketPrices") or "").strip()
+        if not pm_url:
+            raise ValueError("装配失败：缺少 `polymarketUrl`（真实链接或 Gamma API 双向核验未开放存证）")
 
-        # 头部标题与元数据
-        md_lines.append(f"# 【{sporttery_code}】{league} {home} vs {away}")
-        md_lines.append("")
-        md_lines.append(f"> **数据纯净度契约**：本文件为系统唯一法定数据源。")
-        md_lines.append(f"> 严格遵守 23 家欧指全覆盖、7 大做市商双盘全流水，严禁空骨架与假数据。")
-        md_lines.append("")
-        md_lines.append(f"- **比赛 ID**：{match_id}")
-        md_lines.append(f"- **开球时间**：{kickoff}")
-        md_lines.append(f"- **Polymarket 预测市场**：[{poly_url}]({poly_url})" if poly_url.startswith("http") else f"- **Polymarket 预测市场**：{poly_url}")
-        md_lines.append(f"- **体彩官方玩法**：HAD / HHAD 齐全")
-        md_lines.append("")
-        md_lines.append("---")
-        md_lines.append("")
+        pm_is_unopened = any(
+            kw in pm_url or kw in pm_prices
+            for kw in ("未开盘", "未开放", "暂无", "unopened")
+        )
+        if pm_is_unopened:
+            pm_line = pm_url if not pm_prices else f"{pm_url} ({pm_prices})"
+        elif pm_url.startswith("http"):
+            pm_line = f"[{pm_url}]({pm_url})" + (f" ({pm_prices})" if pm_prices else "")
+        else:
+            pm_line = f"{pm_url}" + (f" ({pm_prices})" if pm_prices else "")
+
+        lines: List[str] = []
+        lines.append(f"# 【{code}】{league} {home} vs {away}")
+        lines.append("")
+        lines.append(f"- **比赛 ID**：{match_id}")
+        lines.append(f"- **开球时间**：{kickoff}")
+        lines.append(f"- **场地与天气**：{venue_weather}")
+        lines.append(f"- **Polymarket 预测市场**：{pm_line}")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
 
         # 一、微观阵容与首发伤停
-        md_lines.append("## 一、微观阵容与首发伤停")
-        md_lines.append("")
-        lineup = data.get("lineupData", "暂无数据").strip()
-        md_lines.append(lineup)
-        md_lines.append("")
-        md_lines.append("---")
-        md_lines.append("")
+        lines.append("## 一、微观阵容与首发伤停")
+        lines.append("")
+        lineup_text = str(data.get("lineupData") or "").strip()
+        if lineup_text:
+            lines.append(lineup_text)
+        else:
+            injuries = data.get("injuries") or {}
+            h_inj = str(injuries.get("home") or "暂无数据（球探源页面未披露具体伤停名单）").strip()
+            a_inj = str(injuries.get("away") or "暂无数据（球探源页面未披露具体伤停名单）").strip()
+            lines.append(f"- **{home}**：{h_inj}")
+            lines.append(f"- **{away}**：{a_inj}")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
 
         # 二、基础战绩与攻防客观底牌
-        md_lines.append("## 二、基础战绩与攻防客观底牌")
-        md_lines.append("")
-        basic_stats = data.get("basicStatsText", "").strip()
-        if basic_stats:
-            md_lines.append(basic_stats)
+        lines.append("## 二、基础战绩与攻防客观底牌")
+        lines.append("")
+        basic_stats_text = str(data.get("basicStatsText") or "").strip()
+        if basic_stats_text:
+            lines.append(basic_stats_text)
         else:
-            md_lines.append(f"- 主队近况（{home}）：联赛排名良好，主场进球稳定")
-            md_lines.append(f"- 客队近况（{away}）：客场战术韧性强，攻防均衡")
-            md_lines.append(f"- 赛事性质与战意博弈：常规联赛轮次积分争夺，庄家借大众战意题材进行常规做市。")
-            md_lines.append(f"- 赛程陷阱：双方体能周期正常")
-            md_lines.append(f"- 盘路画像：主客近期赢盘率均衡")
-        md_lines.append("")
-        md_lines.append("---")
-        md_lines.append("")
+            home_stats = _require_any_non_empty_str(data, ("homeStats",), "主队真实近况与场均进失球")
+            away_stats = _require_any_non_empty_str(data, ("awayStats",), "客队真实近况与场均进失球")
+            lines.append(f"- **主队近况**：{home_stats}")
+            lines.append(f"- **客队近况**：{away_stats}")
+            if data.get("scheduleTrap"):
+                lines.append(f"- **赛程间隔**：{str(data['scheduleTrap']).strip()}")
+            if data.get("profiling"):
+                lines.append(f"- **盘路画像**：{str(data['profiling']).strip()}")
+            if data.get("technicalStats"):
+                lines.append(f"- **核心技统**：{str(data['technicalStats']).strip()}")
+            if data.get("goalTimeDist"):
+                lines.append(f"- **进球时段分布**：{str(data['goalTimeDist']).strip()}")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
 
-        # 三、欧洲指数百家做市商清单 (法定 23 家)
-        md_lines.append("## 三、欧洲指数百家做市商清单（法定 23 家）")
-        md_lines.append("")
-        md_lines.append("| 战区分组 | 机构名称 | 初盘主胜 | 初盘平局 | 初盘客胜 | 初返还率 | 即时主胜 | 即时平局 | 即时客胜 | 即返还率 | 凯利指数 (主/平/客) |")
-        md_lines.append("| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |")
-        
-        euro_list = data.get("europe1x2", [])
-        seen_companies = set()
-        
-        for row in euro_list:
-            raw_cname = str(row.get("company", "")).strip()
-            # 别名归一化并核验法定白名单
-            norm_name = COMPANY_ALIASES.get(raw_cname.lower(), raw_cname)
-            if norm_name not in LEGAL_23_COMPANIES:
-                continue  # 彻底丢弃 140+ 家无用野鸡小庄
-            if norm_name in seen_companies:
+        # 三、欧洲指数百家做市商清单（法定 23 家）
+        lines.append("## 三、欧洲指数百家做市商清单（法定 23 家）")
+        lines.append("")
+        lines.append("| 机构类型 | 机构 | 初盘主胜 | 初盘平局 | 初盘客胜 | 初返还 | 即时主胜 | 即时平局 | 即时客胜 | 即时返还 | 凯利(主/平/客) |")
+        lines.append("| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |")
+
+        eu_input = data.get("europe1x2") or data.get("europe23") or []
+        if not eu_input:
+            raise ValueError("装配失败：`europe1x2` / `europe23` 为空，严禁无欧指数据生成快照")
+
+        eu_map: Dict[str, Dict[str, Any]] = {}
+        for item in eu_input:
+            std_name = _normalize_company_name(item.get("company", ""))
+            if std_name:
+                eu_map[std_name] = item
+
+        emitted_eu_count = 0
+        for comp in LEGAL_23_COMPANIES:
+            c_name = comp["name"]
+            c_type = comp["type"]
+            if c_name not in eu_map:
                 continue
-            seen_companies.add(norm_name)
-            
-            zone = LEGAL_23_COMPANIES[norm_name]
-            init_odds = row.get("initialOdds", [2.00, 3.20, 3.40])
-            init_ret = row.get("initialReturn", 91.0)
-            live_odds = row.get("liveOdds", [2.00, 3.20, 3.40])
-            live_ret = row.get("liveReturn", 91.0)
-            kelly = row.get("kelly", [0.92, 0.93, 0.95])
-            kelly_str = f"{kelly[0]:.2f}/{kelly[1]:.2f}/{kelly[2]:.2f}"
-            md_lines.append(
-                f"| {zone} | {norm_name} | {init_odds[0]:.2f} | {init_odds[1]:.2f} | {init_odds[2]:.2f} | {init_ret:.2f}% | "
-                f"{live_odds[0]:.2f} | {live_odds[1]:.2f} | {live_odds[2]:.2f} | {live_ret:.2f}% | {kelly_str} |"
+            row = eu_map[c_name]
+            init_o = row.get("initialOdds")
+            live_o = row.get("liveOdds")
+            init_r = row.get("initialReturn")
+            live_r = row.get("liveReturn")
+            kelly = row.get("kelly")
+            if kelly == "-":
+                kelly = ["-", "-", "-"]
+            if (
+                not isinstance(init_o, (list, tuple)) or len(init_o) < 3
+                or not isinstance(live_o, (list, tuple)) or len(live_o) < 3
+                or init_r is None or live_r is None
+                or not isinstance(kelly, (list, tuple)) or len(kelly) < 3
+            ):
+                raise ValueError(f"装配失败：机构 `{c_name}` 的欧指初即盘/返还率/凯利字段残缺，严禁回退假默认值")
+
+            init_r_str = f"{init_r}%" if isinstance(init_r, (int, float)) else str(init_r)
+            live_r_str = f"{live_r}%" if isinstance(live_r, (int, float)) else str(live_r)
+            if isinstance(kelly[0], (int, float)):
+                kelly_str = f"{kelly[0]:.2f}/{kelly[1]:.2f}/{kelly[2]:.2f}"
+            elif all(str(x).strip() in ("-", "") for x in kelly[:3]):
+                kelly_str = "-"
+            else:
+                kelly_str = "/".join(str(x) for x in kelly[:3])
+            lines.append(
+                f"| {c_type} | {c_name} | {init_o[0]} | {init_o[1]} | {init_o[2]} | {init_r_str} | "
+                f"{live_o[0]} | {live_o[1]} | {live_o[2]} | {live_r_str} | {kelly_str} |"
             )
-        # 严格补齐法定机构，若 Polymarket 未开放则不盲目伪造其赔率行
-        is_poly_unopened = not poly_url.startswith("http")
-        for comp, z in LEGAL_23_COMPANIES.items():
-            if comp == "Polymarket" and is_poly_unopened:
-                continue
-            if comp not in seen_companies:
-                seen_companies.add(comp)
-                md_lines.append(
-                    f"| {z} | {comp} | 2.10 | 3.25 | 3.40 | 91.50% | "
-                    f"2.05 | 3.30 | 3.50 | 91.80% | 0.92/0.93/0.95 |"
-                )
-        md_lines.append("")
-        md_lines.append("---")
-        md_lines.append("")
+            emitted_eu_count += 1
 
-        # 四、法定23家机构五阶段时序生命周期矩阵
-        md_lines.append("## 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）")
-        md_lines.append("")
-        md_lines.append("### 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】")
-        md_lines.append("")
-        md_lines.append("| 生命周期阶段 | 距开球窗口 | 澳彩 (盘口/主水/客水) | 皇冠 (盘口/主水/客水) | Bet365 (盘口/主水/客水) | 易胜博 (盘口/主水/客水) | 做市形态学识别与庄家博弈意图 |")
-        md_lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
-        
-        matrix_rows = data.get("stageMatrix", [
-            ("T0 初盘骨架", "开盘~24h前", "平半 (0.90 / 0.94)", "平半 (0.92 / 0.96)", "平半 (0.92 / 0.96)", "平半 (0.92 / 0.96)", "初始精算物理基准"),
-            ("T1 早盘试探", "24h~8h前", "平半 (0.98 / 0.86)", "平半 (0.98 / 0.88)", "平半 (0.96 / 0.92)", "平半 (0.92 / 0.96)", "早期试水微调"),
-            ("T2 中盘假摔", "8h~3h前", "平半 (0.98 / 0.86)", "平半 (0.98 / 0.88)", "平半 (1.00 / 0.88)", "平半 (0.92 / 0.96)", "中盘震荡吸筹"),
-            ("T3 临盘洗盘", "3h~1h前", "平半 (1.04 / 0.80)", "平半 (1.09 / 0.80)", "平半 (1.05 / 0.82)", "平半 (1.05 / 0.82)", "临盘变水设防"),
-            ("T4 终盘关门", "即时/分析时点", "平半 (1.04 / 0.80)", "平半 (1.09 / 0.80)", "平半 (1.05 / 0.82)", "平半 (1.05 / 0.82)", "即时终盘锁定")
-        ])
-        for r in matrix_rows:
-            md_lines.append(f"| **{r[0]}** | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} | {r[6]} |")
-        
-        md_lines.append("")
-        md_lines.append("### 第一战区：欧亚双盘全能做市商（亚盘 / 大小球 / 欧指 全量三盘）")
-        md_lines.append("")
+        if emitted_eu_count == 0:
+            raise ValueError("装配失败：没有任何合法白名单机构的欧指数据")
 
-        c_names_zone1 = ["澳彩", "Crown", "Bet365", "易胜博", "平博", "188Bet", "香港马会"]
-        for idx, cname in enumerate(c_names_zone1, start=1):
-            md_lines.append(f"### {idx}. {cname}")
-            md_lines.append("")
-            md_lines.append("#### 亚盘五阶段时序生命周期（T0~T4 节点）")
-            md_lines.append("| 生命周期 | 变盘时间 | 盘口 | 主水 | 客水 | 做市形态学识别 |")
-            md_lines.append("| :--- | :--- | :--- | ---: | ---: | :--- |")
-            ah_rows = data.get(f"{cname}_ah") or data.get(f"{cname.replace('Crown', '皇冠')}_ah")
-            if ah_rows is None:
-                ah_rows = data.get("asianOddsTimeSeries", {}).get(cname, [])
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+        # 四、核心做市商与终端标的真实变盘时序流水（逐行原样零篡改）
+        lines.append("## 四、核心做市商与终端标的真实变盘时序流水（逐行原样零篡改）")
+        lines.append("")
+        lines.append("### 第一战区：欧亚双盘全能做市商（亚盘 / 大小球 / 欧指 真实变盘流水）")
+        lines.append("")
+
+        comp_details = data.get("companyDetails") or {}
+        zone1_comps = [c for c in LEGAL_23_COMPANIES if c["zone"] == 1]
+        for c in zone1_comps:
+            cname = c["name"]
+            detail = comp_details.get(cname)
+            if not detail:
+                for k, v in comp_details.items():
+                    if _normalize_company_name(k) == cname:
+                        detail = v
+                        break
+
+            ah_rows = (detail or {}).get("ah") or data.get(f"{cname}_ah") or []
+            ou_rows = (detail or {}).get("ou") or data.get(f"{cname}_ou") or []
+            eu_rows = (detail or {}).get("eu") or data.get(f"{cname}_eu") or []
+            if not eu_rows and cname in eu_map:
+                # 若未提供独立欧指多行流水，但总表有初即盘真实数据且包含 changeTime，可转为初/即两行真实记录
+                erow = eu_map[cname]
+                ch_t = str(erow.get("changeTime") or "").strip()
+                if ch_t:
+                    init_o = erow["initialOdds"]
+                    live_o = erow["liveOdds"]
+                    init_r = erow["initialReturn"]
+                    live_r = erow["liveReturn"]
+                    kelly = erow["kelly"]
+                    k_s = "/".join(str(x) for x in kelly[:3])
+                    eu_rows = [
+                        (ch_t, live_o[0], live_o[1], live_o[2], str(live_r), k_s, "即"),
+                        (ch_t, init_o[0], init_o[1], init_o[2], str(init_r), k_s, "初盘"),
+                    ]
+
             if not ah_rows:
-                ah_rows = [
-                    ("T0 初盘骨架", "10-09 20:00", "平半", 0.92, 0.96, "初始精算物理基准"),
-                    ("T1 早盘试探", "10-10 10:00", "平半", 0.94, 0.94, "早盘微调吸筹"),
-                    ("T2 中盘假摔", "10-10 14:00", "平半", 0.96, 0.92, "中盘假摔震仓"),
-                    ("T3 临盘洗盘", "10-10 18:00", "平半", 0.97, 0.91, "临盘设防降赔"),
-                    ("T4 终盘关门", "10-10 19:30", "平半", 0.97, 0.91, "终盘定盘出清"),
-                ]
-            for r in ah_rows:
-                md_lines.append(f"| **{r[0]}** | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} |")
-            md_lines.append("")
-
-            md_lines.append("#### 大小球五阶段时序生命周期（T0~T4 节点）")
-            md_lines.append("| 生命周期 | 变盘时间 | 盘口 | 大球水 | 小球水 | 做市形态学识别 |")
-            md_lines.append("| :--- | :--- | :--- | ---: | ---: | :--- |")
-            ou_rows = data.get(f"{cname}_ou") or data.get(f"{cname.replace('Crown', '皇冠')}_ou")
-            if ou_rows is None:
-                ou_rows = data.get("overUnderOddsTimeSeries", {}).get(cname, [])
+                raise ValueError(f"装配失败：机构 `{cname}` 缺少亚盘真实变盘流水，严禁伪造默认行")
             if not ou_rows:
-                ou_rows = [
-                    ("T0 初盘骨架", "10-09 20:00", "2.5", 0.90, 0.95, "初始大小球基准"),
-                    ("T1 早盘试探", "10-10 10:00", "2.5", 0.92, 0.93, "早盘微调分流"),
-                    ("T2 中盘假摔", "10-10 14:00", "2.5", 0.93, 0.92, "均衡震荡控赔"),
-                    ("T3 临盘洗盘", "10-10 18:00", "2.5", 0.95, 0.90, "临盘平衡阻大"),
-                    ("T4 终盘关门", "10-10 19:30", "2.5", 0.95, 0.90, "终盘定格锁定"),
-                ]
+                raise ValueError(f"装配失败：机构 `{cname}` 缺少大小球真实变盘流水，严禁伪造默认行")
+            if not eu_rows:
+                raise ValueError(f"装配失败：机构 `{cname}` 缺少欧指真实变盘流水，严禁伪造默认行")
+
+            lines.append(f"### {c['id']}. {cname} (欧亚双盘核心, {c['type']}, cid={c['cid']})")
+            lines.append("")
+            lines.append("#### 亚盘真实变盘流水")
+            lines.append("| 变盘时间 | 盘口 | 主水 | 客水 | 状态 |")
+            lines.append("| :--- | :--- | ---: | ---: | :--- |")
+            for r in ah_rows:
+                t_val, line_val, h_val, a_val, st_val = _normalize_ah_row(r, cname)
+                lines.append(f"| {t_val} | {line_val} | {h_val} | {a_val} | {st_val} |")
+            lines.append("")
+
+            lines.append("#### 大小球真实变盘流水")
+            lines.append("| 变盘时间 | 盘口 | 大球水 | 小球水 | 状态 |")
+            lines.append("| :--- | :--- | ---: | ---: | :--- |")
             for r in ou_rows:
-                md_lines.append(f"| **{r[0]}** | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} |")
-            md_lines.append("")
+                t_val, line_val, o_val, u_val, st_val = _normalize_ou_row(r, cname)
+                lines.append(f"| {t_val} | {line_val} | {o_val} | {u_val} | {st_val} |")
+            lines.append("")
 
-            md_lines.append("#### 欧指五阶段时序生命周期（T0~T4 节点）")
-            md_lines.append("| 生命周期 | 变盘时间 | 主胜 | 平局 | 客胜 | 返还率 | 凯利(主/平/客) | 做市形态识别 |")
-            md_lines.append("| :--- | :--- | ---: | ---: | ---: | ---: | :--- | :--- |")
-            eu_rows = data.get(f"{cname}_eu") or data.get(f"{cname.replace('Crown', '皇冠')}_eu")
-            if eu_rows is None:
-                eu_rows = data.get("europeOddsTimeSeries", {}).get(cname, [])
-            if not eu_rows:
-                eu_rows = [
-                    ("T0 初盘骨架", "10-09 20:00", 2.05, 3.30, 3.40, "91.20%", "0.92/0.93/0.95", "初始做市定价"),
-                    ("T1 早盘试探", "10-10 10:00", 2.05, 3.30, 3.40, "91.20%", "0.92/0.93/0.95", "早盘试水微调"),
-                    ("T2 中盘假摔", "10-10 14:00", 2.25, 3.35, 3.05, "90.90%", "1.00/0.95/0.85", "中盘假摔震仓"),
-                    ("T3 临盘洗盘", "10-10 18:00", 2.25, 3.35, 3.05, "90.90%", "1.00/0.95/0.85", "临盘洗盘设防"),
-                    ("T4 终盘关门", "10-10 19:30", 2.25, 3.35, 3.05, "90.90%", "1.00/0.95/0.85", "终盘定盘出清"),
-                ]
+            lines.append("#### 欧指真实变盘流水")
+            lines.append("| 变盘时间 | 主胜 | 平局 | 客胜 | 返还率 | 凯利(主/平/客) | 状态 |")
+            lines.append("| :--- | ---: | ---: | ---: | ---: | :--- | :--- |")
             for r in eu_rows:
-                md_lines.append(f"| **{r[0]}** | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |")
-            md_lines.append("")
+                t_val, h_val, d_val, a_val, ret_val, kelly_val, st_val = _normalize_eu_row(r, cname)
+                lines.append(f"| {t_val} | {h_val} | {d_val} | {a_val} | {ret_val} | {kelly_val} | {st_val} |")
+            lines.append("")
 
-        # 第二战区：欧洲大陆与国际纯欧指做市商（共 14 家）
-        md_lines.append("---")
-        md_lines.append("")
-        md_lines.append("### 第二战区：欧洲大陆与国际纯欧指做市商（1X2 胜平负资金与凯利防守，共14家）")
-        md_lines.append("")
-        md_lines.append("> 💡 **业务定位说明**：该阵营机构为纯正欧洲固定赔率(Fixed Odds)庄家，全球做市天然不提供亚洲让球盘(AH)与亚洲大小球盘口。数据聚焦 1X2 胜平负五阶段时序与凯利指数防守。")
-        md_lines.append("")
+        lines.append("---")
+        lines.append("")
+        lines.append("### 第三战区：终端履约实盘标的（中国体育彩票官方 × Polymarket 预测市场）")
+        lines.append("")
+        lines.append("### 22. 中国体彩 (终端履约标的, 国家特许复合全玩法, cid=1129)")
+        lines.append("")
+        sp_detail = comp_details.get("体彩官方") or comp_details.get("中国体彩") or comp_details.get("竞彩官方") or {}
+        sp_had = sp_detail.get("had") or sp_detail.get("eu") or data.get("sporttery_had") or []
+        if sp_had:
+            lines.append("#### 胜平负 (HAD) 真实变盘流水")
+            lines.append("| 变盘时间 | 主胜 | 平局 | 客胜 | 返还率 | 凯利(主/平/客) | 状态 |")
+            lines.append("| :--- | ---: | ---: | ---: | ---: | :--- | :--- |")
+            for r in sp_had:
+                t_val, h_val, d_val, a_val, ret_val, kelly_val, st_val = _normalize_eu_row(r, "中国体彩")
+                lines.append(f"| {t_val} | {h_val} | {d_val} | {a_val} | {ret_val} | {kelly_val} | {st_val} |")
+            lines.append("")
 
-        zone2_names = [
-            "威廉希尔", "立博", "伟德", "Interwetten", "Bwin", "SNAI", "必发",
-            "SBO", "沙巴", "Marathon", "Betway", "Unibet", "Paddy Power", "10Bet"
-        ]
-        for idx, cname in enumerate(zone2_names, start=8):
-            md_lines.append(f"### {idx}. {cname}")
-            md_lines.append("")
-            md_lines.append("#### 欧指五阶段时序生命周期（T0~T4 节点）")
-            md_lines.append("| 生命周期 | 变盘时间 | 主胜 | 平局 | 客胜 | 返还率 | 凯利(主/平/客) | 做市形态识别 |")
-            md_lines.append("| :--- | :--- | ---: | ---: | ---: | ---: | :--- | :--- |")
-            eu_rows = data.get(f"{cname}_eu")
-            if eu_rows is None:
-                eu_rows = data.get("europeOddsTimeSeries", {}).get(cname, [])
-            if not eu_rows:
-                eu_rows = [
-                    ("T0 初盘骨架", "10-09 20:00", 2.10, 3.30, 3.40, "92.00%", "0.92/0.93/0.95", "初始精算物理基准"),
-                    ("T1 早盘试探", "10-10 10:00", 2.10, 3.30, 3.40, "92.00%", "0.92/0.93/0.95", "早盘试探散户流向"),
-                    ("T2 中盘假摔", "10-10 14:00", 2.20, 3.35, 3.10, "91.50%", "0.95/0.94/0.88", "中盘假摔震仓吸筹"),
-                    ("T3 临盘洗盘", "10-10 18:00", 2.25, 3.35, 3.05, "91.20%", "0.98/0.94/0.85", "临盘极限顶水洗盘"),
-                    ("T4 终盘关门", "10-10 19:30", 2.25, 3.35, 3.05, "91.20%", "0.98/0.94/0.85", "终盘出清关门设防"),
-                ]
-            for r in eu_rows:
-                md_lines.append(f"| **{r[0]}** | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |")
-            md_lines.append("")
+        let_ball = str(data.get("sportteryLetBall") or "").strip()
+        hhad = sp_detail.get("hhad") or data.get("sporttery_hhad") or {}
+        if isinstance(hhad, list) and hhad:
+            first_h = hhad[0]
+            if isinstance(first_h, (list, tuple)) and len(first_h) >= 4:
+                let_ball = str(first_h[0]).strip()
+                hhad = {"h": first_h[1], "d": first_h[2], "a": first_h[3]}
+        if let_ball and isinstance(hhad, dict) and hhad.get("h") is not None and hhad.get("d") is not None and hhad.get("a") is not None:
+            lines.append(f"#### 让球胜平负 (HHAD `[{let_ball}]`) 终端对冲基准")
+            lines.append("| 玩法类型 | 官方让球数 | 让胜 | 让平 | 让负 |")
+            lines.append("| :--- | :---: | ---: | ---: | ---: |")
+            lines.append(f"| **HHAD 让球盘** | `{let_ball}` | {hhad['h']} | {hhad['d']} | {hhad['a']} |")
+            lines.append("")
 
-        # 第三战区：终端履约实盘标的（共 2 家）
-        md_lines.append("---")
-        md_lines.append("")
-        md_lines.append("### 第三战区：终端履约实盘标的（中国体育彩票官方 × Polymarket 预测市场，共2家）")
-        md_lines.append("")
-        md_lines.append("> 💡 **业务定位说明**：本阵营为推演最终下注与履约实操标的。体彩官方绝非“纯欧指”，而是涵盖 **HAD (胜平负)、HHAD (让球胜平负)、TTG (总进球数)、CRS (比分)、HAFU (半全场)** 的国家特许全能复合终端；Polymarket 提供链上真金白银订单簿撮合交易。")
-        md_lines.append("")
+        lines.append("### 23. Polymarket (终端履约标的, 链上订单簿预测市场)")
+        lines.append("")
+        pm_detail = comp_details.get("Polymarket") or {}
+        pm_rows = pm_detail.get("ts") or data.get("polymarket_ts") or data.get("polymarket_rows") or []
+        if pm_is_unopened or not pm_rows:
+            lines.append("> 📌 **当前场次未开放 Polymarket 预测市场交易池或无订单簿历史切片，严禁伪造挂单时序。**")
+            lines.append("")
+        else:
+            lines.append("#### 预测市场真实挂单流水")
+            lines.append("| 观测时间 | 主胜概率(¢) | 平局概率(¢) | 客胜概率(¢) | 主胜去水折合 | 平局去水折合 | 客胜去水折合 |")
+            lines.append("| :--- | ---: | ---: | ---: | ---: | ---: | ---: |")
+            for r in pm_rows:
+                if isinstance(r, (list, tuple)) and len(r) >= 7:
+                    lines.append(f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} | {r[6]} |")
+                elif isinstance(r, dict):
+                    lines.append(
+                        f"| {r['time']} | {r['h_c']} | {r['d_c']} | {r['a_c']} | "
+                        f"{r['h_o']} | {r['d_o']} | {r['a_o']} |"
+                    )
+            lines.append("")
 
-        # 22. 中国体彩
-        md_lines.append("### 22. 中国体彩")
-        md_lines.append("")
-        md_lines.append("#### 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）")
-        md_lines.append("| 生命周期 | 变盘时间 | 主胜 | 平局 | 客胜 | 返还率 | 凯利(主/平/客) | 做市形态识别 |")
-        md_lines.append("| :--- | :--- | ---: | ---: | ---: | ---: | :--- | :--- |")
-        sporttery_had = data.get("sporttery_had") or data.get("sportteryHadTimeSeries", [])
-        if not sporttery_had:
-            sporttery_had = [
-                ("T0 初盘骨架", "10-09 20:00", 1.98, 3.15, 3.30, "88.80%", "0.87/0.92/0.89", "初始官方开售基准"),
-                ("T1 早盘试探", "10-10 10:00", 1.98, 3.15, 3.30, "88.80%", "0.87/0.92/0.89", "早盘散户资金吸纳"),
-                ("T2 中盘假摔", "10-10 14:00", 1.90, 3.20, 3.50, "88.80%", "0.85/0.93/0.91", "中盘稳定抽水控盘"),
-                ("T3 临盘洗盘", "10-10 18:00", 1.88, 3.20, 3.55, "88.81%", "0.87/0.92/0.89", "临盘抬升客胜阻热"),
-                ("T4 终盘关门", "10-10 19:30", 1.88, 3.20, 3.55, "88.81%", "0.87/0.92/0.89", "终盘关门定格设防"),
-            ]
-        for r in sporttery_had:
-            md_lines.append(f"| **{r[0]}** | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |")
-        md_lines.append("")
+        lines.append("---")
+        lines.append("")
+        lines.append("## 五、Crown 皇冠全指数波胆与比分矩阵")
+        lines.append("")
+        cs_raw = data.get("correctScores") or []
+        cs_items: List[str] = []
+        for item in cs_raw:
+            if isinstance(item, dict) and "score" in item and "odds" in item:
+                cs_items.append(f"{item['score']} ({item['odds']})")
+            elif isinstance(item, (list, tuple)):
+                for idx in range(0, len(item) - 1, 2):
+                    sc = str(item[idx]).strip()
+                    od = str(item[idx + 1]).strip()
+                    if sc and od and sc != "-" and od != "-":
+                        cs_items.append(f"{sc} ({od})")
+        if len(cs_items) < 8:
+            raise ValueError("装配失败：`correctScores` 波胆比分少于 8 项，严禁回退假波胆赔率")
+        lines.append(f"- **波胆比分赔率**：{' ｜ '.join(cs_items)}")
+        tg_text = data.get("totalGoalsOdds") or data.get("totalGoalsText")
+        if tg_text:
+            lines.append(f"- **总进球赔率**：{str(tg_text).strip()}")
+        hf_text = data.get("halfFullOdds") or data.get("halfFullTimeText")
+        if hf_text:
+            lines.append(f"- **半全场赔率**：{str(hf_text).strip()}")
+        lines.append("")
 
-        let_ball = str(data.get("sportteryLetBall", "-1"))
-        md_lines.append(f"#### 让球胜平负 (HHAD `[{let_ball}]`) 终端对冲基准")
-        md_lines.append("| 玩法类型 | 官方让球数 | 让胜 (主净胜≥2球) | 让平 (主净胜恰好1球) | 让负 (平局或客胜) | 双盘联动破译 |")
-        md_lines.append("| :--- | :---: | ---: | ---: | ---: | :--- |")
-        hhad_rows = data.get("sporttery_hhad") or [(f"{let_ball}", 4.20, 3.60, 1.65, "让平设防1球小胜，让负防客不败")]
-        for r in hhad_rows:
-            md_lines.append(f"| **HHAD 让球盘** | `{r[0]}` | {r[1]} | {r[2]} | {r[3]} | {r[4]} |")
-        md_lines.append("")
+        return "\n".join(lines)
 
-        # 23. Polymarket
-        md_lines.append("### 23. Polymarket")
-        md_lines.append("")
-        md_lines.append("#### 预测市场五阶段时序生命周期（T0~T4 节点）")
-        md_lines.append("| 生命周期 | 观测时间 | 主胜概率(¢) | 平局概率(¢) | 客胜概率(¢) | 主胜去水折合 | 平局去水折合 | 客胜去水折合 | 做市形态识别 |")
-        md_lines.append("| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | :--- |")
-        poly_ts = data.get("polymarket_ts") or data.get("polymarketTimeSeries", [])
-        if not poly_ts:
-            poly_ts = [
-                ("T0 初盘骨架", "10-09 20:00", "54¢", "35¢", "37¢", 1.85, 2.86, 2.70, "初市挂单物理平衡基准"),
-                ("T1 早盘试探", "10-10 10:00", "55¢", "35¢", "36¢", 1.82, 2.86, 2.78, "早盘撮合资金微调"),
-                ("T2 中盘假摔", "10-10 14:00", "56¢", "35¢", "36¢", 1.78, 2.86, 2.78, "中盘大单吸筹试温"),
-                ("T3 临盘洗盘", "10-10 18:00", "58¢", "34¢", "35¢", 1.72, 2.94, 2.86, "临盘热门资金涌入推高"),
-                ("T4 终盘关门", "10-10 19:30", "58¢", "34¢", "35¢", 1.72, 2.94, 2.86, "终盘挂单锁定定格"),
-            ]
-        for r in poly_ts:
-            md_lines.append(f"| **{r[0]}** | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} | {r[8]} |")
-        md_lines.append("")
+    def update_meta(self, meta_path: Any, data: Dict[str, Any]) -> None:
+        """同步更新同目录下 meta.md 的落盘状态"""
+        from pathlib import Path
+        p = Path(meta_path)
+        if not p.exists():
+            return
+        mid = str(data.get("matchId") or "").strip()
+        if not mid:
+            return
+        content = p.read_text(encoding="utf-8")
+        target = f"{mid}.md (待分析抓取)"
+        repl = f"[{mid}.md]({mid}.md) (✅已落盘)"
+        if target in content:
+            p.write_text(content.replace(target, repl), encoding="utf-8")
 
-        # 五、Crown 皇冠波胆全指数
-        md_lines.append("## 五、Crown 皇冠波胆全指数比分矩阵")
-        md_lines.append("")
-        md_lines.append("### 1. 比分波胆 (0:0 ~ 4:4 完整矩阵)")
-        md_lines.append("")
-        md_lines.append("| 比分 | 赔率 | 比分 | 赔率 | 比分 | 赔率 |")
-        md_lines.append("| :--- | ---: | :--- | ---: | :--- | ---: |")
-        scores = data.get("correctScores", [
-            ("1:0", 6.80, "0:0", 8.50, "0:1", 7.20),
-            ("2:0", 9.50, "1:1", 5.80, "0:2", 11.00),
-            ("2:1", 8.20, "2:2", 12.00, "1:2", 9.00),
-            ("3:0", 18.00, "3:3", 35.00, "0:3", 22.00)
-        ])
-        for s in scores:
-            md_lines.append(f"| {s[0]} | {s[1]:.2f} | {s[2]} | {s[3]:.2f} | {s[4]} | {s[5]:.2f} |")
-        md_lines.append("")
 
-        # 六、中国体育彩票官方玩法
-        md_lines.append("## 六、中国体育彩票官方竞彩数据")
-        md_lines.append("")
-        md_lines.append("| 玩法类型 | 盘口/让球 | 选项1 | 选项2 | 选项3 | 状态 |")
-        md_lines.append("| :--- | :--- | :--- | :--- | :--- | :--- |")
-        let_ball = str(data.get("sportteryLetBall", "-1"))
-        md_lines.append(f"| 胜平负 (HAD) | 不让球 | 胜 (2.10) | 平 (3.20) | 负 (3.10) | 开售 |")
-        md_lines.append(f"| 让球胜平负 (HHAD) | 让球 [{let_ball}] | 让胜 (4.20) | 让平 (3.60) | 让负 (1.65) | 开售 |")
-        md_lines.append("")
-        md_lines.append("---")
-        md_lines.append("")
+SnapshotAssembler = GoldenSnapshotAssembler
 
-        content = "\n".join(md_lines)
-        return content
-
-    def update_meta(self, meta_path: Path, data: Dict[str, Any]) -> bool:
-        """自动同步更新同目录下的 meta.md 总览索引表与赛事明细"""
-        if not meta_path.exists():
-            return False
-
-        match_id = str(data.get("matchId", "")).strip()
-        sporttery_code = str(data.get("sportteryCode", "")).strip() or "周--000"
-        league = str(data.get("league", "")).strip()
-        home = str(data.get("homeTeam", "")).strip()
-        away = str(data.get("awayTeam", "")).strip()
-        kickoff = str(data.get("kickoffTime", "")).strip()
-        poly_url = str(data.get("polymarketUrl", "未开放")).strip()
-        lineup = str(data.get("lineupData", "暂无数据")).strip()
-
-        content = meta_path.read_text(encoding="utf-8")
-
-        # 1. 更新索引表格中该场次状态：由 (待分析抓取) 更新为已落盘
-        # 匹配如: | 周六004 | 3000480 | 日职联 | 京都不死鸟 vs 町田泽维亚 | 18:00 | 3000480.md (待分析抓取) |
-        pattern = rf"(\|\s*{match_id}\s*\|[^|]+\|[^|]+\|[^|]+\|\s*)([^\s|]+)(\s*\(待分析抓取\)\s*\|)"
-        replacement = rf"\1[\2](\2) (✅已落盘) |"
-        new_content, n = re.subn(pattern, replacement, content)
-        if n == 0:
-            # 兼容直接替换模式
-            raw_target = f"{match_id}.md (待分析抓取)"
-            if raw_target in content:
-                new_content = content.replace(raw_target, f"[{match_id}.md]({match_id}.md) (✅已落盘)")
-
-        # 2. 在“二、已落盘赛事元数据明细”追加该场次（若尚未存在）
-        detail_header = f"### 【{sporttery_code}】{league} {home} vs {away}"
-        if detail_header not in new_content and f"**比赛 ID**：{match_id}" not in new_content:
-            detail_block = (
-                f"\n\n{detail_header}\n\n"
-                f"- **比赛 ID**：{match_id}\n"
-                f"- **竞彩编号**：{sporttery_code}\n"
-                f"- **开球时间**：{kickoff}\n"
-                f"- **抓取批次**：自动装配\n"
-                f"- **缺失公司**：无（法定23家全量覆盖）\n"
-                f"- **微观伤停情况**：\n"
-                f"  {lineup}\n"
-                f"- **Polymarket 预测市场**：{poly_url}\n"
-                f"- **对应盘赔时序档案**：[{match_id}.md]({match_id}.md)\n"
-            )
-            new_content = new_content.strip() + detail_block
-
-        meta_path.write_text(new_content, encoding="utf-8")
-        return True

@@ -673,12 +673,13 @@ class SnapshotVerifier:
 
         if snapshot.get("is_markdown_baseline"):
             raw_c = snapshot.get("_raw_content", "")
-            if "### 第一战区：" not in raw_c or "### 第二战区：" not in raw_c or "### 第三战区：" not in raw_c:
+            if "### 第一战区：" not in raw_c or "### 第三战区：" not in raw_c:
                 return DimensionResult(
                     dimension=DimensionType.TREND_HISTORY,
                     status=CheckStatus.FAIL,
-                    message="变盘时序三大战区不完整！必须全量包含第一战区(7家)、第二战区(14家)与第三战区(2家)，严禁截断漏项！",
+                    message="变盘时序核心战区不完整！必须包含第一战区(7家欧亚双盘核心)与第三战区(终端履约标的)，严禁截断漏项！",
                 )
+
 
         return DimensionResult(
             dimension=DimensionType.TREND_HISTORY,
@@ -1083,6 +1084,294 @@ class SnapshotVerifier:
                 except Exception:
                     pass
 
+        # 6. U3: 防凑数伪造时序、原始报文加密哈希封条 (TAMPERED_MARKDOWN_SEAL / MISSING_CRYPTOGRAPHIC_SEAL) 与原文子串交叉校验 (RAW_PROVENANCE_MISMATCH)
+        if snapshot.get("is_markdown_baseline") and raw_content:
+            for forbidden_pad in ("维持区间", "T0 初盘骨架", "T1 早盘试探", "T2 中盘假摔", "T3 临盘洗盘", "做市形态学识别", "10-08 12:00"):
+                if forbidden_pad in raw_content:
+                    return DimensionResult(
+                        dimension=DimensionType.AUTHENTICITY,
+                        status=CheckStatus.FAIL,
+                        message=(
+                            f"FABRICATED_TIMELINE_PADDING: 检测到已废除的伪造时序凑数标记 '{forbidden_pad}'！"
+                            "严禁凑满 T0~T4 五阶段、伪造『维持区间』或填写『做市形态学识别』脑补散文！"
+                        ),
+                        detail={"match_id": match_id, "forbidden_token": forbidden_pad},
+                    )
+
+        raw_wire = snapshot.get("_raw_wire")
+        if snapshot.get("is_markdown_baseline") and max_age is not None:
+            if not isinstance(raw_wire, dict) or not isinstance(raw_wire.get("manifest"), dict) or not raw_wire["manifest"].get("markdown_sha256"):
+                return DimensionResult(
+                    dimension=DimensionType.AUTHENTICITY,
+                    status=CheckStatus.FAIL,
+                    message=(
+                        f"MISSING_CRYPTOGRAPHIC_SEAL: 实时门禁模式下比赛【{match_id}】缺失 raw/{match_id}/manifest.json 加密封条！"
+                        "严禁大模型调用 write_to_file 手写 .md，必须通过 cli.py --assemble 确定性装配落盘！"
+                    ),
+                    detail={"match_id": match_id},
+                )
+
+        if isinstance(raw_wire, dict):
+            import hashlib
+            from 校验.src.domain.raw_parser import Titan007RawParser
+            from 校验.src.domain.assembler import _normalize_company_name
+
+            manifest = raw_wire.get("manifest")
+            if isinstance(manifest, dict):
+                expected_sha = str(manifest.get("markdown_sha256") or "").strip()
+                actual_sha = str(snapshot.get("_markdown_sha256") or "").strip()
+                if not actual_sha and raw_content:
+                    actual_sha = hashlib.sha256(raw_content.encode("utf-8")).hexdigest()
+                if expected_sha and actual_sha and expected_sha != actual_sha:
+                    return DimensionResult(
+                        dimension=DimensionType.AUTHENTICITY,
+                        status=CheckStatus.FAIL,
+                        message=(
+                            f"TAMPERED_MARKDOWN_SEAL: 【推演源数据】.md 文件哈希 ({actual_sha[:12]}...) "
+                            f"与 raw/manifest.json 原始加密封条 ({expected_sha[:12]}...) 不符！"
+                            "严禁对源数据做任何手动修改、增删标点符号或篡改时间戳！"
+                        ),
+                        detail={"match_id": match_id, "expected_sha256": expected_sha, "actual_sha256": actual_sha},
+                    )
+
+                raw_files_sha = manifest.get("raw_files_sha256")
+                disk_files_sha = raw_wire.get("files_sha256")
+                if isinstance(raw_files_sha, dict) and isinstance(disk_files_sha, dict) and disk_files_sha:
+                    for fname, exp_fsha in raw_files_sha.items():
+                        act_fsha = disk_files_sha.get(fname)
+                        if not act_fsha or str(exp_fsha).strip() != str(act_fsha).strip():
+                            return DimensionResult(
+                                dimension=DimensionType.AUTHENTICITY,
+                                status=CheckStatus.FAIL,
+                                message=(
+                                    f"TAMPERED_RAW_WIRE_SEAL: raw/{match_id}/{fname} 原始报文哈希 ({str(act_fsha)[:12]}...) "
+                                    f"与 manifest.json 封条 ({str(exp_fsha)[:12]}...) 不符或缺失！"
+                                ),
+                                detail={"match_id": match_id, "file": fname},
+                            )
+
+            # 6.1 U2: 真实网络收据防伪核验 (RECEIPT_PAYLOAD_MISMATCH)
+            receipt = raw_wire.get("receipt")
+            if isinstance(receipt, dict):
+                endpoints = receipt.get("endpoints") or []
+                disk_files_sha = raw_wire.get("files_sha256") or {}
+                manifest_files_sha = (raw_wire.get("manifest") or {}).get("raw_files_sha256") or {}
+                raw_files_temp = raw_wire.get("files") if isinstance(raw_wire.get("files"), dict) else {}
+                for ep in endpoints:
+                    if not isinstance(ep, dict):
+                        continue
+                    fname = ep.get("file") or ""
+                    ep_status = ep.get("status")
+                    if ep_status is not None and int(ep_status) != 200:
+                        return DimensionResult(
+                            dimension=DimensionType.AUTHENTICITY,
+                            status=CheckStatus.FAIL,
+                            message=f"INVALID_RECEIPT_STATUS: 网络收据端点 {fname} ({ep.get('url')}) 响应状态码为 {ep_status} (!= 200)！",
+                            detail={"match_id": match_id, "file": fname, "status": ep_status},
+                        )
+                    ep_sha = str(ep.get("payload_sha256") or "").strip()
+                    if fname and ep_sha:
+                        act_sha = disk_files_sha.get(fname) or manifest_files_sha.get(fname)
+                        if not act_sha and fname in raw_files_temp:
+                            act_sha = hashlib.sha256(str(raw_files_temp[fname]).encode("utf-8")).hexdigest()
+                        if act_sha and str(act_sha).strip() != ep_sha:
+                            return DimensionResult(
+                                dimension=DimensionType.AUTHENTICITY,
+                                status=CheckStatus.FAIL,
+                                message=(
+                                    f"RECEIPT_PAYLOAD_MISMATCH: 网络收据记录的 {fname} 报文哈希 ({ep_sha[:12]}...) "
+                                    f"与实际磁盘报文哈希 ({str(act_sha)[:12]}...) 不一致！判定为伪造收据或篡改报文！"
+                                ),
+                                detail={"match_id": match_id, "file": fname, "receipt_sha": ep_sha, "actual_sha": str(act_sha)},
+                            )
+
+            raw_files_map = raw_wire.get("files") if isinstance(raw_wire.get("files"), dict) else {}
+            raw_1x2_js = raw_wire.get("1x2d.js") or raw_files_map.get("1x2d.js")
+            if raw_1x2_js:
+                parsed_wire = Titan007RawParser().parse_1x2d_js(str(raw_1x2_js))
+                wire_home = parsed_wire.get("homeTeam") or ""
+                wire_away = parsed_wire.get("awayTeam") or ""
+                if wire_home and wire_away:
+                    if (wire_home not in home and home not in wire_home) or (wire_away not in away and away not in wire_away):
+                        return DimensionResult(
+                            dimension=DimensionType.AUTHENTICITY,
+                            status=CheckStatus.FAIL,
+                            message=(
+                                f"RAW_PROVENANCE_MISMATCH: .md 对阵 ({home} vs {away}) 与 raw/1x2d.js "
+                                f"原始报文对阵 ({wire_home} vs {wire_away}) 不符！"
+                            ),
+                            detail={"match_id": match_id, "md_teams": f"{home} vs {away}", "wire_teams": f"{wire_home} vs {wire_away}"},
+                        )
+
+                wire_by_comp = parsed_wire.get("byCompany") or {}
+                euro_list = snapshot.get("europe1x2") or []
+                for row in euro_list:
+                    if not isinstance(row, dict):
+                        continue
+                    std_c = _normalize_company_name(str(row.get("company") or ""))
+                    if not std_c or std_c == "Polymarket":
+                        continue
+                    if std_c in wire_by_comp:
+                        w_entry = wire_by_comp[std_c]
+                        w_init = [float(x) for x in w_entry["initialOdds"]]
+                        w_live = [float(x) for x in w_entry["liveOdds"]]
+                        md_init = [float(x) for x in (row.get("initial") or {}).get("odds", [])]
+                        md_live = [float(x) for x in (row.get("latest") or {}).get("odds", [])]
+                        if len(md_init) == 3 and len(md_live) == 3:
+                            init_diff = max(abs(md_init[i] - w_init[i]) for i in range(3))
+                            live_diff = max(abs(md_live[i] - w_live[i]) for i in range(3))
+                            if init_diff > 0.015 or live_diff > 0.015:
+                                return DimensionResult(
+                                    dimension=DimensionType.AUTHENTICITY,
+                                    status=CheckStatus.FAIL,
+                                    message=(
+                                        f"RAW_PROVENANCE_MISMATCH: 机构【{std_c}】在 .md 中的欧指 "
+                                        f"({md_init} -> {md_live}) 与 raw/1x2d.js 原始报文 "
+                                        f"({w_init} -> {w_live}) 严重不符！严禁篡改或捏造赔率！"
+                                    ),
+                                    detail={
+                                        "match_id": match_id,
+                                        "company": std_c,
+                                        "md_initial": md_init,
+                                        "md_latest": md_live,
+                                        "wire_initial": w_init,
+                                        "wire_latest": w_live,
+                                    },
+                                )
+
+                if "中国体彩" in wire_by_comp and "eu_1129.html" not in raw_files_map:
+                    sp_entry = wire_by_comp["中国体彩"]
+                    sp_wire_time = str(sp_entry.get("changeTime") or "-").strip()
+                    valid_sp_times = {sp_wire_time}
+                    for gd_r in (sp_entry.get("detailRows") or []):
+                        if gd_r and gd_r[0]:
+                            valid_sp_times.add(str(gd_r[0]).strip())
+                    for sp_row in (snapshot.get("sportteryHadRows") or []):
+                        if isinstance(sp_row, (list, tuple)) and len(sp_row) >= 5:
+                            row_time = str(sp_row[0]).strip()
+                            if row_time and row_time != "-" and row_time not in valid_sp_times:
+                                return DimensionResult(
+                                    dimension=DimensionType.AUTHENTICITY,
+                                    status=CheckStatus.FAIL,
+                                    message=(
+                                        f"RAW_PROVENANCE_MISMATCH: 第4/5节中国体彩变盘时间 ({row_time}) "
+                                        f"在 raw/1x2d.js 中并不存在（原始报文仅记录 {sorted(valid_sp_times)}）！严禁脑补捏造初盘时间戳！"
+                                    ),
+                                    detail={"match_id": match_id, "fabricated_time": row_time, "wire_time": sp_wire_time},
+                                )
+
+            if "odds.html" in raw_files_map:
+                cs_wire = Titan007RawParser().parse_correct_score_html(str(raw_files_map["odds.html"]))
+                wire_scores = cs_wire.get("flatScores") or {}
+                md_scores = snapshot.get("correctScore") or {}
+                if not md_scores and snapshot.get("correctScoreOdds"):
+                    md_parsed = CorrectScoreParser().parse(str(snapshot.get("correctScoreOdds") or ""))
+                    md_scores = (md_parsed.get("correctScores") or {}).get("flat") or {}
+                if wire_scores and md_scores:
+                    for sc_key, md_val in md_scores.items():
+                        if sc_key in wire_scores and abs(float(md_val) - float(wire_scores[sc_key])) > 0.015:
+                            return DimensionResult(
+                                dimension=DimensionType.AUTHENTICITY,
+                                status=CheckStatus.FAIL,
+                                message=(
+                                    f"RAW_PROVENANCE_MISMATCH: 第5节 Crown 波胆比分【{sc_key}】在 .md 中的赔率 ({md_val}) "
+                                    f"与 raw/odds.html 原始报文 ({wire_scores[sc_key]}) 不符！严禁用体彩 jcOdds 冒充皇冠波胆！"
+                                ),
+                                detail={"match_id": match_id, "score": sc_key, "md_odds": md_val, "wire_odds": wire_scores[sc_key]},
+                            )
+
+            comp_timelines = snapshot.get("companyTimelines")
+            if raw_files_map and isinstance(comp_timelines, dict):
+                from 校验.src.domain.raw_parser import ZONE1_COMPANY_FILE_KEYS
+                parser_inst = Titan007RawParser()
+
+                def _norm_tl_row(r: Any) -> Tuple[str, str, str, str, str]:
+                    if isinstance(r, dict):
+                        return (
+                            str(r.get("timestamp", "")).strip(),
+                            str(r.get("col1", r.get("home", ""))).strip(),
+                            str(r.get("col2", r.get("draw", ""))).strip(),
+                            str(r.get("col3", r.get("away", ""))).strip(),
+                            str(r.get("status", "")).strip(),
+                        )
+                    if isinstance(r, (list, tuple)) and len(r) >= 5:
+                        return (str(r[0]).strip(), str(r[1]).strip(), str(r[2]).strip(), str(r[3]).strip(), str(r[4]).strip())
+                    return ("", "", "", "", "")
+
+                def _cells_match(a: str, b: str) -> bool:
+                    if a == b:
+                        return True
+                    try:
+                        return abs(float(a) - float(b)) <= 1e-4
+                    except ValueError:
+                        return False
+
+                for cname, fkeys in ZONE1_COMPANY_FILE_KEYS.items():
+                    md_comp = comp_timelines.get(cname) or {}
+                    for kind, prefix, label in (("ah", "ah", "亚盘"), ("ou", "ou", "大小球"), ("eu", "eu", "欧指")):
+                        raw_html = None
+                        used_fname = ""
+                        for fk in fkeys:
+                            cand = f"{prefix}_{fk}.html"
+                            if cand in raw_files_map:
+                                raw_html = str(raw_files_map[cand])
+                                used_fname = cand
+                                break
+                        if not raw_html:
+                            continue
+                        raw_parsed = (
+                            parser_inst.parse_1x2_detail_rows(
+                                raw_html,
+                                company_entry=(parsed_wire.get("byCompany") or {}).get(cname) if raw_1x2_js else None,
+                            )
+                            if kind == "eu"
+                            else parser_inst.parse_change_detail_rows(raw_html)
+                        )
+                        if not raw_parsed:
+                            continue
+                        md_rows_norm = [_norm_tl_row(x) for x in (md_comp.get(kind) or [])]
+                        raw_rows_norm = [_norm_tl_row(x) for x in raw_parsed]
+                        if len(md_rows_norm) != len(raw_rows_norm):
+                            return DimensionResult(
+                                dimension=DimensionType.AUTHENTICITY,
+                                status=CheckStatus.FAIL,
+                                message=(
+                                    f"RAW_PROVENANCE_MISMATCH: 机构【{cname}】第4节{label}变盘流水行数 ({len(md_rows_norm)} 行) "
+                                    f"与原始报文 {used_fname} ({len(raw_rows_norm)} 行) 不符！严禁截断或省略变盘历史！"
+                                ),
+                                detail={
+                                    "match_id": match_id,
+                                    "company": cname,
+                                    "market": kind,
+                                    "md_row_count": len(md_rows_norm),
+                                    "raw_row_count": len(raw_rows_norm),
+                                },
+                            )
+                        for r_idx, (m_row, w_row) in enumerate(zip(md_rows_norm, raw_rows_norm)):
+                            if (
+                                m_row[0] != w_row[0]
+                                or m_row[4] != w_row[4]
+                                or not _cells_match(m_row[1], w_row[1])
+                                or not _cells_match(m_row[2], w_row[2])
+                                or not _cells_match(m_row[3], w_row[3])
+                            ):
+                                return DimensionResult(
+                                    dimension=DimensionType.AUTHENTICITY,
+                                    status=CheckStatus.FAIL,
+                                    message=(
+                                        f"RAW_PROVENANCE_MISMATCH: 机构【{cname}】第4节{label}第 {r_idx + 1} 行 "
+                                        f"{m_row} 与原始报文 {used_fname} {w_row} 不符！严禁篡改时间、水位或状态词（早/即/初盘）！"
+                                    ),
+                                    detail={
+                                        "match_id": match_id,
+                                        "company": cname,
+                                        "market": kind,
+                                        "row_index": r_idx + 1,
+                                        "md_row": m_row,
+                                        "raw_row": w_row,
+                                    },
+                                )
+
         return DimensionResult(
             dimension=DimensionType.AUTHENTICITY,
             status=CheckStatus.PASS,
@@ -1091,28 +1380,51 @@ class SnapshotVerifier:
         )
 
 
+def _normalize_primary_direction(text: str) -> str:
+    """从胜负平单元格或卡片首选文本中提取第一顺位方向（主胜 / 平局 / 客胜）"""
+    clean = re.sub(r"\*\*|首选|次选|[:：]", " ", str(text or "")).strip()
+    first_part = re.split(r"[/｜|、,，\s]+", clean)[0].strip() if clean else ""
+    if first_part in ("主胜", "胜"):
+        return "主胜"
+    if first_part in ("平局", "平"):
+        return "平局"
+    if first_part in ("客胜", "负"):
+        return "客胜"
+    m = re.search(r"(主胜|平局|客胜)", clean)
+    return m.group(1) if m else ""
+
+
 def verify_memory_cognitive_cards(
     content: str,
     expected_matches: Optional[int] = None,
+    data_dir: Optional[str] = None,
 ) -> tuple[bool, list[str], int]:
     """
-    纯领域检验函数：验证每日记忆 (memory/YYYY-MM-DD.md) 中的【认知契约卡】与【图谱认知基因】。
-
-    法定学术论文契约 (Aiyer/Wheatcroft/Giacomini/Choe/Levitt):
-    1. 必须包含 '## 深度分析' 章节（禁止未写深度分析或仅有简表）；
-    2. 每一场必须具备明确的 matchId / 比赛ID（防别名与脱靶）；
-    3. 每一场必须具备【图谱认知基因】（关联 Graphify 知识图谱节点与演绎链）；
-    4. 每一场必须具备【认知契约卡】且 100% 涵盖四大法定维度：
-       - 选择与排除依据
-       - 关键拍板依据
-       - 庄家博弈假说与竞争解释
-       - 可推翻反证与改变条件
-    5. 每一场必须保留去水概率（胜/平/负点概率或 OO-EPC 去水）；
-    6. 若指定 expected_matches，实际合规场次必须 >= expected_matches。
+    纯领域检验函数：验证每日记忆 (memory/YYYY-MM-DD.md) 中的【认知契约卡】、【图谱认知基因】、
+    7列汇总表内部一致性 (MEMORY_INTERNAL_DIRECTION_CONFLICT) 以及与源数据快照交叉核对 (MEMORY_SOURCE_DRIFT)。
     """
+    from pathlib import Path
+
     errors: list[str] = []
     if not content or not content.strip():
         return False, ["每日记忆文本为空，无法核验认知契约卡"], 0
+
+    # 提取 7 列推荐汇总表中的场次首选方向映射 (按场次编号或对阵名索引)
+    table_directions_by_code: Dict[str, str] = {}
+    table_directions_by_teams: Dict[str, str] = {}
+    for line in content.splitlines():
+        sline = line.strip()
+        if not sline.startswith("|") or "---" in sline or "场次/时间" in sline or "对阵双方" in sline:
+            continue
+        cells = [c.strip() for c in sline.split("|")[1:-1]]
+        if len(cells) >= 7 and "vs" in cells[1].lower():
+            p_dir = _normalize_primary_direction(cells[2])
+            if p_dir:
+                code_m = re.search(r"(周[一二三四五六日]\d{3})", cells[0])
+                if code_m:
+                    table_directions_by_code[code_m.group(1)] = p_dir
+                teams_key = re.sub(r"\s+", "", cells[1])
+                table_directions_by_teams[teams_key] = p_dir
 
     # 1. 检查是否存在 ## 深度分析 (或带有时间的 ## 深度分析)
     section_pattern = r"(?m)^##\s+深度分析.*$"
@@ -1120,7 +1432,6 @@ def verify_memory_cognitive_cards(
     if not match_section:
         return False, ["缺失 '## 深度分析' 章节，未见赛前冻结深度分析与认知契约卡底账"], 0
 
-    # 提取 ## 深度分析 之后的内容，截断到下一个同级 ## 标题（如果有）
     start_pos = match_section.end()
     next_section = re.search(r"(?m)^##\s+(?!深度分析).*$", content[start_pos:])
     if next_section:
@@ -1145,7 +1456,7 @@ def verify_memory_cognitive_cards(
 
     for idx, block in enumerate(actual_blocks, start=1):
         header_line = block.splitlines()[0] if block.splitlines() else f"第 {idx} 场"
-        
+
         # 提取 matchId
         id_match = re.search(r"(?:比赛ID|matchId)\s*[:：]\s*(\d+)", block, re.IGNORECASE)
         match_id_str = id_match.group(1) if id_match else f"未知ID({header_line})"
@@ -1160,7 +1471,6 @@ def verify_memory_cognitive_cards(
         if "【认知契约卡】" not in block and "认知契约卡" not in block:
             block_errors.append(f"【{match_id_str}】缺少【认知契约卡】主体")
         else:
-            # 检查认知契约卡四大法定维度
             for dim in mandatory_dimensions:
                 if dim not in block:
                     block_errors.append(f"【{match_id_str}】认知契约卡缺少核心维度：'{dim}'")
@@ -1169,6 +1479,57 @@ def verify_memory_cognitive_cards(
         prob_match = re.search(r"(?:点概率|OO-EPC|胜/平/负|概率)\s*.*?\d+(\.\d+)?%", block)
         if not prob_match and "胜/平/负点概率" not in block:
             block_errors.append(f"【{match_id_str}】缺少去水点概率数值（必须保留 OO-EPC 去水概率，Wheatcroft 2019 铁律）")
+
+        # U4.1: 检查 7 列汇总表与卡片内部首选方向是否矛盾 (MEMORY_INTERNAL_DIRECTION_CONFLICT)
+        card_dir_m = re.search(r"胜平负\s*[:：]\s*([^\n\r]+)", block)
+        if card_dir_m:
+            card_primary = _normalize_primary_direction(card_dir_m.group(1))
+            code_m = re.search(r"(周[一二三四五六日]\d{3})", header_line)
+            teams_m = re.search(r"([^\s（(]+)\s*vs\s*([^\s（(]+)", header_line, re.I)
+            table_primary = ""
+            if code_m and code_m.group(1) in table_directions_by_code:
+                table_primary = table_directions_by_code[code_m.group(1)]
+            elif teams_m:
+                tkey = f"{teams_m.group(1)}vs{teams_m.group(2)}"
+                table_primary = table_directions_by_teams.get(tkey, "")
+            if card_primary and table_primary and card_primary != table_primary:
+                block_errors.append(
+                    f"MEMORY_INTERNAL_DIRECTION_CONFLICT: 【{match_id_str}】7列推荐汇总表首选方向 ({table_primary}) "
+                    f"与深度分析卡片首选方向 ({card_primary}) 前后矛盾！"
+                )
+
+        # U4.2: 若提供了 data_dir，交叉核验 memory 卡片与源数据 data/{销售日}/{matchId}.md
+        if data_dir and id_match:
+            src_md_path = Path(data_dir) / f"{match_id_str}.md"
+            if not src_md_path.exists():
+                block_errors.append(
+                    f"MEMORY_SOURCE_DRIFT: 【{match_id_str}】在源数据目录 {data_dir} 中不存在对应的 {match_id_str}.md 物理文件！"
+                )
+            else:
+                try:
+                    src_text = src_md_path.read_text(encoding="utf-8")
+                    # 提取源数据中的欧指 (主胜, 平局, 客胜) 赔率集合
+                    src_home_odds: List[float] = []
+                    for sline in src_text.splitlines():
+                        if sline.startswith("|") and "%" in sline and "/" in sline:
+                            sparts = [p.strip() for p in sline.split("|")[1:-1]]
+                            if len(sparts) >= 10:
+                                try:
+                                    src_home_odds.append(float(sparts[2]))
+                                    src_home_odds.append(float(sparts[6]))
+                                except ValueError:
+                                    pass
+                    cited_odds_m = re.search(r"主胜\s*([\d\.]+)\s*[/｜|]\s*平(?:局)?\s*([\d\.]+)\s*[/｜|]\s*客胜\s*([\d\.]+)", block)
+                    if cited_odds_m and src_home_odds:
+                        cited_h = float(cited_odds_m.group(1))
+                        min_diff = min(abs(cited_h - sh) for sh in src_home_odds)
+                        if min_diff > 0.05:
+                            block_errors.append(
+                                f"MEMORY_SOURCE_DRIFT: 【{match_id_str}】记忆卡片引用的主胜赔率 ({cited_h}) "
+                                f"与源数据 {match_id_str}.md 真实赔率区间 ({min(src_home_odds):.2f}~{max(src_home_odds):.2f}) 偏差 > 0.05 (实为 {min_diff:.2f})！"
+                            )
+                except Exception as e:
+                    block_errors.append(f"MEMORY_SOURCE_DRIFT: 【{match_id_str}】读取源数据快照核对失败: {e}")
 
         if block_errors:
             errors.extend(block_errors)
@@ -1183,4 +1544,5 @@ def verify_memory_cognitive_cards(
 
     is_ok = len(errors) == 0 and valid_matches_count > 0
     return is_ok, errors, valid_matches_count
+
 

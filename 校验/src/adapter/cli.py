@@ -68,9 +68,48 @@ def format_receipt_console(receipt) -> str:
     return "\n".join(lines)
 
 
-def run_match_verify(match_path: str, output_json: bool, max_age_minutes: Optional[int] = None) -> int:
+def probe_remote_provenance(match_id: str, timeout: float = 3.0) -> Tuple[bool, str]:
+    """对源站轻量 1x2d.js 端点发起子秒级物理探针，核实真实物理服务器响应与场次存活状态"""
+    import urllib.request
+    url = f"https://1x2d.titan007.com/{match_id}.js"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+            "Referer": "https://titan007.com/",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            status = getattr(resp, "status", 200)
+            if status != 200:
+                return False, f"源站返回非 200 状态码: {status}"
+            content = resp.read()
+            if len(content) < 20:
+                return False, f"源站返回报文过短 ({len(content)} 字节)，疑似空盘"
+            if match_id.encode("utf-8") not in content:
+                return False, f"源站 1x2d.js 报文未包含比赛 ID {match_id}"
+            return True, f"源站物理核验通过 (HTTP 200, length={len(content)}B)"
+    except Exception as e:
+        return False, f"源站网络探针连接失败: {e}"
+
+
+def run_match_verify(
+    match_path: str,
+    output_json: bool,
+    max_age_minutes: Optional[int] = None,
+    verify_network: bool = False,
+) -> int:
     uc = VerifySnapshotUseCase()
     receipt = uc.execute(match_path, max_age_minutes=max_age_minutes)
+
+    if receipt.is_valid and verify_network:
+        ok, msg = probe_remote_provenance(receipt.match_id)
+        if not ok:
+            print(f"❌ NETWORK_PROVENANCE_DESYNC: 源站网络物理抽验失败 ({msg})！判定为伪造或断网快照！", file=sys.stderr)
+            return 1
+        if not output_json:
+            print(f"🌐 [NETWORK_PROVENANCE_PASS] {msg}")
 
     if output_json:
         print(json.dumps(receipt.to_dict(), ensure_ascii=False, indent=2))
@@ -104,7 +143,12 @@ def run_system_check(root_dir: str, print_ok: bool) -> int:
     return 0
 
 
-def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None, isolate_failed: bool = False) -> int:
+def run_batch_verify(
+    dir_path: str,
+    max_age_minutes: Optional[int] = None,
+    isolate_failed: bool = False,
+    verify_network: bool = False,
+) -> int:
     p = Path(dir_path)
     if not p.is_dir():
         print(f"❌ 批量安检失败: 目录不存在 ({dir_path})", file=sys.stderr)
@@ -126,6 +170,14 @@ def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None, isola
             failed.append(f"{f.name}: 门禁安检未通过 ({receipt.overall_status.value}) - {'; '.join(fail_msgs)}")
             failed_files.add(f)
             continue
+
+        # 联网物理探针抽验 (若启用)
+        if verify_network:
+            ok, msg = probe_remote_provenance(f.stem)
+            if not ok:
+                failed.append(f"{f.name}: 源站网络物理抽验失败 ({msg})！")
+                failed_files.add(f)
+                continue
 
         # 跨场次时序去重防作弊核验 (同一批次不同比赛的时间戳不得完全碰撞)
         content = f.read_text(encoding="utf-8")
@@ -194,6 +246,9 @@ def run_batch_verify(dir_path: str, max_age_minutes: Optional[int] = None, isola
 
 
 def run_assemble(input_json_path: str, output_md_path: Optional[str]) -> int:
+    from 校验.src.domain.raw_parser import Titan007RawParser
+    from 校验.src.domain.assembler import _normalize_company_name
+
     assembler = SnapshotAssembler()
     p = Path(input_json_path)
     if not p.exists():
@@ -201,6 +256,29 @@ def run_assemble(input_json_path: str, output_md_path: Optional[str]) -> int:
         return 1
     try:
         data = json.loads(p.read_text(encoding="utf-8"))
+        raw_files_dict = data.get("rawFiles") or {}
+        if isinstance(raw_files_dict, dict) and raw_files_dict.get("1x2d.js"):
+            parsed_wire = Titan007RawParser().parse_1x2d_js(str(raw_files_dict["1x2d.js"]))
+            wire_by_comp = parsed_wire.get("byCompany") or {}
+            euro_entries = (data.get("markets") or {}).get("europeCompanies") or data.get("europe1x2") or []
+            for row in euro_entries:
+                if not isinstance(row, dict):
+                    continue
+                std_c = _normalize_company_name(str(row.get("company") or ""))
+                if std_c in wire_by_comp:
+                    w_entry = wire_by_comp[std_c]
+                    w_init = [float(x) for x in w_entry["initialOdds"]]
+                    w_live = [float(x) for x in w_entry["liveOdds"]]
+                    init_raw = row.get("initialOdds") or (row.get("initial") or {}).get("odds") or []
+                    live_raw = row.get("liveOdds") or (row.get("latest") or {}).get("odds") or []
+                    if len(init_raw) == 3 and len(live_raw) == 3:
+                        r_init = [float(x) for x in init_raw]
+                        r_live = [float(x) for x in live_raw]
+                        if max(abs(r_init[i] - w_init[i]) for i in range(3)) > 0.015 or max(abs(r_live[i] - w_live[i]) for i in range(3)) > 0.015:
+                            raise ValueError(
+                                f"RAW_PROVENANCE_MISMATCH: 机构【{std_c}】输入欧指 ({r_init}->{r_live}) "
+                                f"与 rawFiles['1x2d.js'] 原始报文 ({w_init}->{w_live}) 不符，拒绝装配！"
+                            )
         md_content = assembler.assemble(data)
     except Exception as e:
         print(f"❌ 【推演源数据】装配失败: {e}", file=sys.stderr)
@@ -213,7 +291,30 @@ def run_assemble(input_json_path: str, output_md_path: Optional[str]) -> int:
         st = out_p.stat()
         file_sha256 = hashlib.sha256(md_content.encode("utf-8")).hexdigest()
         mtime_str = datetime.fromtimestamp(st.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
-        print(f"🧾 [PHYSICAL_RECEIPT] 黄金【推演源数据】装配落盘完成: path={out_p.resolve()}, sha256={file_sha256}, mtime={mtime_str}, size={st.st_size}B")
+
+        # U3: 自动写入 raw/{matchId}.json 单文件原子存证包与 SHA-256 封条，清理旧碎文件目录
+        mid = str(data.get("matchId") or out_p.stem).strip()
+        raw_parent = out_p.parent / "raw"
+        raw_parent.mkdir(parents=True, exist_ok=True)
+        raw_files_dict = data.get("rawFiles") or {}
+        existing_raw: dict[str, str] = {}
+        if isinstance(raw_files_dict, dict):
+            existing_raw = dict(raw_files_dict)
+
+        target_atomic_json = raw_parent / f"{mid}.json"
+        manifest_obj = Titan007RawParser.build_atomic_bundle(mid, md_content, existing_raw)
+        target_atomic_json.write_text(
+            json.dumps(manifest_obj, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+        # 彻底清理旧的 28 个碎文件目录 (如果存在)
+        legacy_loose_dir = raw_parent / mid
+        if legacy_loose_dir.exists() and legacy_loose_dir.is_dir():
+            import shutil
+            shutil.rmtree(legacy_loose_dir, ignore_errors=True)
+
+        print(f"🧾 [PHYSICAL_RECEIPT] 黄金【推演源数据】装配落盘完成: path={out_p.resolve()}, sha256={file_sha256}, mtime={mtime_str}, size={st.st_size}B, atomic_bundle={target_atomic_json.resolve()}")
         meta_p = out_p.parent / "meta.md"
         if meta_p.exists():
             assembler.update_meta(meta_p, data)
@@ -221,6 +322,127 @@ def run_assemble(input_json_path: str, output_md_path: Optional[str]) -> int:
     else:
         print(md_content)
     return 0
+
+
+def run_assemble_bundle(bundle_json_path: str, output_md_path: Optional[str]) -> int:
+    """从单文件原子存证包 raw/{matchId}.json (或输入 bundle) 离线装配黄金 Markdown 并清理旧碎文件目录"""
+    import shutil
+    from 校验.src.domain.raw_parser import Titan007RawParser
+
+    parser = Titan007RawParser()
+    assembler = SnapshotAssembler()
+    p = Path(bundle_json_path)
+    if not p.exists() or not p.is_file():
+        print(f"❌ 单文件原子包不存在: {bundle_json_path}", file=sys.stderr)
+        return 1
+
+    try:
+        bundle_obj = json.loads(p.read_text(encoding="utf-8"))
+        raw_files = bundle_obj.get("payloads") or bundle_obj.get("rawFiles") or {}
+        match_id_str = str(bundle_obj.get("matchId") or p.stem).strip()
+
+        meta_md_txt = ""
+        meta_md_path = p.parent.parent / "meta.md"
+        if meta_md_path.exists():
+            try:
+                meta_md_txt = meta_md_path.read_text(encoding="utf-8", errors="replace")
+            except Exception:
+                pass
+
+        data, extracted_raw = parser.parse_raw_payloads(match_id_str, raw_files, meta_md_txt)
+        md_content = assembler.assemble(data)
+    except Exception as e:
+        print(f"❌ 单文件原子包装配失败: {e}", file=sys.stderr)
+        return 1
+
+    if output_md_path:
+        out_p = Path(output_md_path)
+        out_p.parent.mkdir(parents=True, exist_ok=True)
+        out_p.write_text(md_content, encoding="utf-8")
+        st = out_p.stat()
+        file_sha256 = hashlib.sha256(md_content.encode("utf-8")).hexdigest()
+        mtime_str = datetime.fromtimestamp(st.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+
+        mid = str(data.get("matchId") or out_p.stem).strip()
+        raw_parent = out_p.parent / "raw"
+        raw_parent.mkdir(parents=True, exist_ok=True)
+        target_atomic_json = raw_parent / f"{mid}.json"
+
+        # 生成并落盘单文件原子存证包
+        atomic_bundle = Titan007RawParser.build_atomic_bundle(mid, md_content, extracted_raw)
+        target_atomic_json.write_text(
+            json.dumps(atomic_bundle, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+        # 彻底清理旧的 28 个碎文件目录 (如果存在)
+        legacy_loose_dir = raw_parent / mid
+        if legacy_loose_dir.exists() and legacy_loose_dir.is_dir():
+            shutil.rmtree(legacy_loose_dir, ignore_errors=True)
+
+        print(f"🧾 [PHYSICAL_RECEIPT] 单文件原子【推演源数据】装配落盘完成: path={out_p.resolve()}, sha256={file_sha256}, mtime={mtime_str}, size={st.st_size}B, atomic_bundle={target_atomic_json.resolve()}")
+        meta_p = out_p.parent / "meta.md"
+        if meta_p.exists():
+            assembler.update_meta(meta_p, data)
+            print(f"✅ 自动同步赛程总览索引: {meta_p}")
+    else:
+        print(md_content)
+    return 0
+
+
+def run_assemble_raw_dir(raw_dir_path: str, output_md_path: Optional[str]) -> int:
+    """从 raw/{matchId}/ 目录或单文件 raw/{matchId}.json 直接读取全量原始报文，直出 .md 与原子存证包"""
+    from 校验.src.domain.raw_parser import Titan007RawParser
+
+    parser = Titan007RawParser()
+    assembler = SnapshotAssembler()
+    raw_path = Path(raw_dir_path)
+    if not raw_path.exists():
+        print(f"❌ 原始报文路径不存在: {raw_dir_path}", file=sys.stderr)
+        return 1
+
+    try:
+        data, raw_files = parser.parse_raw_directory(raw_path)
+        md_content = assembler.assemble(data)
+    except Exception as e:
+        print(f"❌ 【推演源数据】原始报文直装失败: {e}", file=sys.stderr)
+        return 1
+
+    if output_md_path:
+        out_p = Path(output_md_path)
+        out_p.parent.mkdir(parents=True, exist_ok=True)
+        out_p.write_text(md_content, encoding="utf-8")
+        st = out_p.stat()
+        file_sha256 = hashlib.sha256(md_content.encode("utf-8")).hexdigest()
+        mtime_str = datetime.fromtimestamp(st.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+
+        mid = str(data.get("matchId") or out_p.stem).strip()
+        raw_parent = out_p.parent / "raw"
+        raw_parent.mkdir(parents=True, exist_ok=True)
+
+        # 写入单一原子存证包
+        target_atomic_json = raw_parent / f"{mid}.json"
+        atomic_bundle = Titan007RawParser.build_atomic_bundle(mid, md_content, raw_files)
+        target_atomic_json.write_text(
+            json.dumps(atomic_bundle, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+        # 彻底清理旧的 28 个碎文件目录 (如果存在)
+        legacy_loose_dir = raw_parent / mid
+        if legacy_loose_dir.exists() and legacy_loose_dir.is_dir():
+            import shutil
+            shutil.rmtree(legacy_loose_dir, ignore_errors=True)
+
+        print(f"🧾 [PHYSICAL_RECEIPT] 零转录原生【推演源数据】装配落盘完成: path={out_p.resolve()}, sha256={file_sha256}, mtime={mtime_str}, size={st.st_size}B, atomic_bundle={target_atomic_json.resolve()}")
+        meta_p = out_p.parent / "meta.md"
+        if meta_p.exists():
+            assembler.update_meta(meta_p, data)
+            print(f"✅ 自动同步赛程总览索引: {meta_p}")
+    else:
+        print(md_content)
+    return 0
+
 
 
 def run_sync_meta(dir_path: str) -> int:
@@ -244,7 +466,11 @@ def run_sync_meta(dir_path: str) -> int:
     return 0
 
 
-def run_verify_memory(memory_path: str, expected_matches: Optional[int] = None) -> int:
+def run_verify_memory(
+    memory_path: str,
+    expected_matches: Optional[int] = None,
+    data_dir: Optional[str] = None,
+) -> int:
     path = Path(memory_path)
     if not path.exists():
         print(f"❌ 门禁拦截: 每日记忆文件不存在: {memory_path}", file=sys.stderr)
@@ -258,7 +484,11 @@ def run_verify_memory(memory_path: str, expected_matches: Optional[int] = None) 
 
     from 校验.src.domain.verifier import verify_memory_cognitive_cards
 
-    ok, errors, count = verify_memory_cognitive_cards(content, expected_matches=expected_matches)
+    ok, errors, count = verify_memory_cognitive_cards(
+        content,
+        expected_matches=expected_matches,
+        data_dir=data_dir,
+    )
 
     print("============================================================")
     print(f" 🛡️ 足球系统认知契约卡与图谱自愈前置门禁收据 ({path.name})")
@@ -294,6 +524,14 @@ def main() -> int:
         help="指定待装配的原始结构化 JSON 路径，自动组装为黄金 Markdown 【推演源数据】",
     )
     parser.add_argument(
+        "--assemble-bundle",
+        help="指定待装配的单文件原子防伪包 (如 data/2026-10-13/raw/3068865.json)，离线装配黄金 Markdown 与单一原子包",
+    )
+    parser.add_argument(
+        "--assemble-raw-dir",
+        help="指定待装配的原始报文目录或单文件原子包 (如 data/2026-10-13/raw/3068865)，零大模型转录直出黄金 Markdown 与原子存证包",
+    )
+    parser.add_argument(
         "--output",
         help="【推演源数据】装配输出路径 (如 data/2026-10-10/3000480.md)",
     )
@@ -310,6 +548,11 @@ def main() -> int:
         type=int,
         default=None,
         help="核验每日记忆时指定的期望深度分析场次数量 (如 10)",
+    )
+    parser.add_argument(
+        "--data-dir",
+        default=None,
+        help="核验每日记忆时交叉比对的物理源数据目录 (如 data/2026-10-12)",
     )
     parser.add_argument(
         "--json",
@@ -342,6 +585,11 @@ def main() -> int:
         action="store_true",
         help="批量安检模式下启用故障隔离：将违规快照自动移入 .quarantine，若剩余快照有效则放行 (返回 0)",
     )
+    parser.add_argument(
+        "--verify-network",
+        action="store_true",
+        help="启用源站物理网络抽验 (子秒级探针核验 1x2d.js 源站存活与响应状态，杜绝离线伪造 raw.json)",
+    )
 
     args = parser.parse_args()
 
@@ -354,9 +602,13 @@ def main() -> int:
 
     # 优先级 0: 每日记忆认知契约卡门禁
     if args.verify_memory:
-        return run_verify_memory(args.verify_memory, expected_matches=args.expected_matches)
+        return run_verify_memory(args.verify_memory, expected_matches=args.expected_matches, data_dir=args.data_dir)
 
     # 优先级 1: 【推演源数据】装配
+    if args.assemble_bundle:
+        return run_assemble_bundle(args.assemble_bundle, args.output)
+    if args.assemble_raw_dir:
+        return run_assemble_raw_dir(args.assemble_raw_dir, args.output)
     if args.assemble:
         return run_assemble(args.assemble, args.output)
 
@@ -366,11 +618,21 @@ def main() -> int:
 
     # 优先级 3: 批量安检
     if args.batch:
-        return run_batch_verify(args.batch, max_age_minutes=args.max_age_minutes, isolate_failed=args.isolate_failed)
+        return run_batch_verify(
+            args.batch,
+            max_age_minutes=args.max_age_minutes,
+            isolate_failed=args.isolate_failed,
+            verify_network=args.verify_network,
+        )
 
     # 优先级 4: 指定了单场比赛【推演源数据】进行安检
     if args.match:
-        return run_match_verify(args.match, args.json, max_age_minutes=args.max_age_minutes)
+        return run_match_verify(
+            args.match,
+            args.json,
+            max_age_minutes=args.max_age_minutes,
+            verify_network=args.verify_network,
+        )
 
     # 优先级 5: 系统巡检 (传了 --system 或默认行为)
     return run_system_check(args.root, args.print_ok or args.system)

@@ -10,7 +10,7 @@
 - Token cost: 161,000 input · 38,500 output
 
 ## Community Hubs (Navigation)
-- 法定23家机构五阶段时序生命周期矩阵（T0~T4）
+- 法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）
 - TestSnapshotVerifier
 - 标准7列交付表格与Polymarket交叉验证
 - 赛后复盘先审过程再揭比分与Graphify自愈闭环
@@ -78,7 +78,7 @@
 - 执行步骤
 - 执行步骤
 - 二、8 大黄金维度法定验收规则
-- 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）
+- 四、法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）
 - 第一部分：全流程生命周期摩擦点与代码/数据级 Bug 盘点
 - ImpliedProbabilities
 - titan007 欧冠杯 CupMatch c103.js 数据结构分析
@@ -163,7 +163,7 @@
 - 赛后复盘
 - sporttery-sniper
 - 赛事初筛（match-screening）
-- 二、全周期五阶段生命周期划分 (T0 ~ T4)
+- 二、全周期全周期真实变盘时序窗口解析 (Verbatim Raw Wire)
 - 三、λ 的计算（核心流程）
 - 四、从 λ 到各项概率的计算步骤
 - Page 01: Market Efficiency and Behavioral 
@@ -387,9 +387,9 @@
 
 ## Communities (334 total, 51 thin omitted)
 
-### Community 0 - "法定23家机构五阶段时序生命周期矩阵（T0~T4）"
+### Community 0 - "法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）"
 Cohesion: 0.04
-Nodes (47): 法定23家机构五阶段时序生命周期矩阵（T0~T4）, 赛前T4终盘截断与滚球1Hz状态空间的时序物理边界（严禁赛后/滚球数据逆向污染赛前推演）, 开球时间截断与「滚」字滚球盘记录清洗守卫（--history-window 纯净赛前快照保障）, ADR 0002: 双锁博弈推演架构（A+B辩证合体）, 第二道锁：庄家博弈与逆向破译（Lock 2 Bookmaker Reverse Engineering）, 四项论文质问清单（Levitt偏见/Goto去水/Winkelmann假摔/Constantinou底线）, 欧指平均定价值、平博看冷热、亚盘四家看资金、客群盘看本地情绪的角色分工, 盘位+水位+时间序列+多家公司对比的四维看盘法 (+39 more)
+Nodes (47): 法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）, 赛前T4终盘截断与滚球1Hz状态空间的时序物理边界（严禁赛后/滚球数据逆向污染赛前推演）, 开球时间截断与「滚」字滚球盘记录清洗守卫（--history-window 纯净赛前快照保障）, ADR 0002: 双锁博弈推演架构（A+B辩证合体）, 第二道锁：庄家博弈与逆向破译（Lock 2 Bookmaker Reverse Engineering）, 四项论文质问清单（Levitt偏见/Goto去水/Winkelmann假摔/Constantinou底线）, 欧指平均定价值、平博看冷热、亚盘四家看资金、客群盘看本地情绪的角色分工, 盘位+水位+时间序列+多家公司对比的四维看盘法 (+39 more)
 
 ### Community 2 - "标准7列交付表格与Polymarket交叉验证"
 Cohesion: 0.05
@@ -639,9 +639,9 @@ Nodes (16): 🎯 2 串 1 组合推荐, skills/recommendation/SKILL.md 推荐汇�
 Cohesion: 0.12
 Nodes (15): 1. 基础战绩与攻防进失球维度 (BASIC_STATS), 2. 欧洲指数 (1X2) 维度 (EUROPE_1X2) - 【核心资金敞口与离散度】, 3. 亚洲让球盘 (AH) 维度 (ASIAN_HANDICAP), 4. 大小球进球数 (OU) 维度 (OVER_UNDER), 5. 分钟级变盘流水时序维度 (TREND_HISTORY) - 【核心防假赛与假摔】, 6. Crown 皇冠全指数波胆维度 (CROWN_CORRECT_SCORE), 7. 微观阵容与首发伤停真实性 (LINEUP_INJURY), 8. Polymarket 预测市场真实流动性 (POLYMARKET_LIQUIDITY) (+7 more)
 
-### Community 68 - "四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点）"
+### Community 68 - "四、法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）"
 Cohesion: 0.12
-Nodes (16): 10. 伟德 (纯欧指做市, 核心做市, cid=81), 12. Bwin (纯欧指做市, 核心做市, cid=255), 14. 必发 (纯欧指做市, 核心做市, cid=2), 16. 沙巴(IBC) (纯欧指做市, 老庄机构, cid=649), 9. 立博 (纯欧指做市, 核心做市, cid=82), 【全周期微观博弈动态对齐总表（T0～T4 做市形态学识别）】, 分区架构说明（乔布斯式产品设计定界）, 四、法定23家机构五阶段时序生命周期矩阵（T0~T4 节点） (+8 more)
+Nodes (16): 10. 伟德 (纯欧指做市, 核心做市, cid=81), 12. Bwin (纯欧指做市, 核心做市, cid=255), 14. 必发 (纯欧指做市, 核心做市, cid=2), 16. 沙巴(IBC) (纯欧指做市, 老庄机构, cid=649), 9. 立博 (纯欧指做市, 核心做市, cid=82), 【全周期微观博弈动态对齐总表（全周期真实变盘做市形态学识别）】, 分区架构说明（乔布斯式产品设计定界）, 四、法定23家机构全量真实变盘时序流水（Verbatim Raw Wire） (+8 more)
 
 ### Community 69 - "第一部分：全流程生命周期摩擦点与代码/数据级 Bug 盘点"
 Cohesion: 0.13
@@ -955,9 +955,9 @@ Nodes (6): sporttery-sniper, 使用方式, 抓取范围, 数据注意事项, 部
 Cohesion: 0.29
 Nodes (7): skills/match-screening/SKILL.md 比赛初筛与分批切片技能, 写入记忆, 初筛本意与分析逻辑, 赛事初筛（match-screening）, 输入, 输出, 输出格式
 
-### Community 153 - "二、全周期五阶段生命周期划分 (T0 ~ T4)"
+### Community 153 - "二、全周期全周期真实变盘时序窗口解析 (Verbatim Raw Wire)"
 Cohesion: 0.33
-Nodes (6): 1. 初盘骨架期 (T0：开盘 ～ 赛前 24 小时), 2. 早盘试探期 (T1：赛前 24 小时 ～ 赛前 8 小时), 3. 中盘拉扯期 (T2：赛前 8 小时 ～ 赛前 3 小时), 4. 临盘洗盘期 (T3：赛前 3 小时 ～ 赛前 1 小时), 5. 终局出清期 (T4：赛前 1 小时 ～ 开球), 二、全周期五阶段生命周期划分 (T0 ~ T4)
+Nodes (6): 1. 初盘骨架期 (T0：开盘 ～ 赛前 24 小时), 2. 早盘试探期 (T1：赛前 24 小时 ～ 赛前 8 小时), 3. 中盘拉扯期 (T2：赛前 8 小时 ～ 赛前 3 小时), 4. 临盘洗盘期 (T3：赛前 3 小时 ～ 赛前 1 小时), 5. 终局出清期 (T4：赛前 1 小时 ～ 开球), 二、全周期全周期真实变盘时序窗口解析 (Verbatim Raw Wire)
 
 ### Community 154 - "三、λ 的计算（核心流程）"
 Cohesion: 0.33
@@ -1469,31 +1469,31 @@ Nodes (3): USER.md - About Your Human, 投注偏好, 输出偏好
 
 ### Community 281 - "1. 澳彩 (欧亚双盘核心, 核心做市, cid=80)"
 Cohesion: 0.50
-Nodes (4): 1. 澳彩 (欧亚双盘核心, 核心做市, cid=80), 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+Nodes (4): 1. 澳彩 (欧亚双盘核心, 核心做市, cid=80), 亚盘真实变盘时序流水（Verbatim Raw Wire）, 大小球真实变盘时序流水（Verbatim Raw Wire）, 欧指真实变盘时序流水（Verbatim Raw Wire）
 
 ### Community 282 - "2. 皇冠 (欧亚双盘核心, 核心做市, cid=545)"
 Cohesion: 0.50
-Nodes (4): 2. 皇冠 (欧亚双盘核心, 核心做市, cid=545), 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+Nodes (4): 2. 皇冠 (欧亚双盘核心, 核心做市, cid=545), 亚盘真实变盘时序流水（Verbatim Raw Wire）, 大小球真实变盘时序流水（Verbatim Raw Wire）, 欧指真实变盘时序流水（Verbatim Raw Wire）
 
 ### Community 283 - "3. Bet365 (欧亚双盘核心, 核心做市, cid=281)"
 Cohesion: 0.50
-Nodes (4): 3. Bet365 (欧亚双盘核心, 核心做市, cid=281), 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+Nodes (4): 3. Bet365 (欧亚双盘核心, 核心做市, cid=281), 亚盘真实变盘时序流水（Verbatim Raw Wire）, 大小球真实变盘时序流水（Verbatim Raw Wire）, 欧指真实变盘时序流水（Verbatim Raw Wire）
 
 ### Community 284 - "4. 易胜博 (欧亚双盘核心, 核心做市, cid=90)"
 Cohesion: 0.50
-Nodes (4): 4. 易胜博 (欧亚双盘核心, 核心做市, cid=90), 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+Nodes (4): 4. 易胜博 (欧亚双盘核心, 核心做市, cid=90), 亚盘真实变盘时序流水（Verbatim Raw Wire）, 大小球真实变盘时序流水（Verbatim Raw Wire）, 欧指真实变盘时序流水（Verbatim Raw Wire）
 
 ### Community 285 - "5. 平博 (欧亚双盘核心, 核心做市, cid=177)"
 Cohesion: 0.50
-Nodes (4): 5. 平博 (欧亚双盘核心, 核心做市, cid=177), 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+Nodes (4): 5. 平博 (欧亚双盘核心, 核心做市, cid=177), 亚盘真实变盘时序流水（Verbatim Raw Wire）, 大小球真实变盘时序流水（Verbatim Raw Wire）, 欧指真实变盘时序流水（Verbatim Raw Wire）
 
 ### Community 286 - "6. 188Bet (欧亚双盘核心, 核心做市, cid=976)"
 Cohesion: 0.50
-Nodes (4): 6. 188Bet (欧亚双盘核心, 核心做市, cid=976), 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+Nodes (4): 6. 188Bet (欧亚双盘核心, 核心做市, cid=976), 亚盘真实变盘时序流水（Verbatim Raw Wire）, 大小球真实变盘时序流水（Verbatim Raw Wire）, 欧指真实变盘时序流水（Verbatim Raw Wire）
 
 ### Community 287 - "7. 香港马会 (欧亚双盘核心, 核心做市, cid=432)"
 Cohesion: 0.50
-Nodes (4): 7. 香港马会 (欧亚双盘核心, 核心做市, cid=432), 亚盘五阶段时序生命周期（T0~T4 节点）, 大小球五阶段时序生命周期（T0~T4 节点）, 欧指五阶段时序生命周期（T0~T4 节点）
+Nodes (4): 7. 香港马会 (欧亚双盘核心, 核心做市, cid=432), 亚盘真实变盘时序流水（Verbatim Raw Wire）, 大小球真实变盘时序流水（Verbatim Raw Wire）, 欧指真实变盘时序流水（Verbatim Raw Wire）
 
 ### Community 289 - "Page 11: 798 H. Hewamalage et al."
 Cohesion: 0.67
@@ -1517,7 +1517,7 @@ Nodes (3): 推荐（17:15）, 早盘精选推荐汇总, 🎯 胜负平优质 2 �
 
 ### Community 295 - "22. 体彩官方 (终端履约标的, 国家特许复合全玩法, cid=1129)"
 Cohesion: 0.67
-Nodes (3): 22. 体彩官方 (终端履约标的, 国家特许复合全玩法, cid=1129), 胜平负 (HAD) 五阶段时序生命周期（T0~T4 节点）, 让球胜平负 (HHAD `[-1]`) 终端对冲基准
+Nodes (3): 22. 体彩官方 (终端履约标的, 国家特许复合全玩法, cid=1129), 胜平负 (HAD) 真实变盘时序流水（Verbatim Raw Wire）, 让球胜平负 (HHAD `[-1]`) 终端对冲基准
 
 ## Knowledge Gaps
 - **44 isolated node(s):** `CLAUDE.md 镜像入口与工作流宪章`, `HEARTBEAT.md 定期补漏与静默检查清单`, `赛程同步/赛前分析/赛后复盘心跳补漏机制`, `IDEA.md 足彩盘赔推演系统初心与设计构想`, `IDENTITY.md 首席足彩精算与博弈分析师身份锚点` (+39 more)
@@ -1527,13 +1527,13 @@ Nodes (3): 22. 体彩官方 (终端履约标的, 国家特许复合全玩法, ci
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` connect `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防` to `法定23家机构五阶段时序生命周期矩阵（T0~T4）`, `CLAUDE.md - AI Pair Programming & Knowledg`, `赛后复盘先审过程再揭比分与Graphify自愈闭环`, `Tests of Conditional Predictive Ability`, `双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）`, `预测与复盘论文（本项目）`, `标准7列交付表格与Polymarket交叉验证`, `SOUL.md - 你是谁`, `庄家净赔付最小化（Minimax第一性原理）`, `NBER WORKING PAPER SERIES`, `第一部分：赛前分析模板`, `赔率分析推演十大公理与四大物理不变量`, `下注决策手册（版本 1）`, `Page 12: Figure 2: Average Payouts for the`, `真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松`, `sporttery-sniper`, `OO-EPC去水模型（Shin/Power/Probit合成）`, `USER.md - About Your Human`, `Page 03: Introduction (continued)`, `SAFETY.md`, `数据完整性检验与验收标准手册`, `十步深度分析推演闭环 (基本面/伤停/泊松/欧亚大小时序/合理性/三维落槌)`, `Outcome Bias and Evaluations of Decisions:`, `Choe & Ramdas (2023) 跨时间与博弈论视角下的序贯预测者比较 (O`, `OO-EPC 去水计算与推演应用手册（大模型推演教学指南）`, `AGENTS.md 足彩分析工作流操作手册`, `纠偏规则（corrected）：单一平赔极端高挂(>3.80)不可作为一票排平依据，`, `每日推演与复盘记忆（2026-10-02：国庆休市Polymarket欧国联10场专`, `通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)`, `Page 17: 804 H. Hewamalage et al.`, `injury-service.js`, `盘路母型：整球设障御敌防小胜型（让一球中低水设障+泊松共振锁1球小胜）`, `第一部分：全流程生命周期摩擦点与代码/数据级 Bug 盘点`, `titan007 欧冠杯 CupMatch c103.js 数据结构分析`, `三、海外免费储备 API 矩阵`, `Page 20: Acknowledgements`, `Stable Reliability Diagrams Using CORP and`, `Feng, Polson & Xu (2017) 英超赔率校准与动态Skellam进`, `Polymarket 链接查找教程`, `每日推演与复盘记忆（2026-09-29：图谱零孤岛与六图盲测训练）`, `package.json`, `Giacomini & White (2006) 条件预测能力检验 (Tests o`, `联赛配置手册（泊松 + 盘口）`, `Wheatcroft (2019) 足球比赛概率预测评分规则评估：批判RPS并确立对`, `二、五大博弈支柱专项体检结论`, `Aiyer et al. (2023) 结果偏见与决策评价预注册复制与扩展研究 (N`, `Dimitriadis, Gneiting & Jordan (2021) 概率分类`, `ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）`, `四大乱局识别过滤（极端伤停/战意怪局/末轮练兵/样本不足）`, `二、四大架构级增补落地方案`, `Heartbeat 检查清单`, `盘口分类体系（主人亲授 · 2026-03-18）`, `ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）`?**
+- **Why does `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` connect `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防` to `法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）`, `CLAUDE.md - AI Pair Programming & Knowledg`, `赛后复盘先审过程再揭比分与Graphify自愈闭环`, `Tests of Conditional Predictive Ability`, `双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）`, `预测与复盘论文（本项目）`, `标准7列交付表格与Polymarket交叉验证`, `SOUL.md - 你是谁`, `庄家净赔付最小化（Minimax第一性原理）`, `NBER WORKING PAPER SERIES`, `第一部分：赛前分析模板`, `赔率分析推演十大公理与四大物理不变量`, `下注决策手册（版本 1）`, `Page 12: Figure 2: Average Payouts for the`, `真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松`, `sporttery-sniper`, `OO-EPC去水模型（Shin/Power/Probit合成）`, `USER.md - About Your Human`, `Page 03: Introduction (continued)`, `SAFETY.md`, `数据完整性检验与验收标准手册`, `十步深度分析推演闭环 (基本面/伤停/泊松/欧亚大小时序/合理性/三维落槌)`, `Outcome Bias and Evaluations of Decisions:`, `Choe & Ramdas (2023) 跨时间与博弈论视角下的序贯预测者比较 (O`, `OO-EPC 去水计算与推演应用手册（大模型推演教学指南）`, `AGENTS.md 足彩分析工作流操作手册`, `纠偏规则（corrected）：单一平赔极端高挂(>3.80)不可作为一票排平依据，`, `每日推演与复盘记忆（2026-10-02：国庆休市Polymarket欧国联10场专`, `通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)`, `Page 17: 804 H. Hewamalage et al.`, `injury-service.js`, `盘路母型：整球设障御敌防小胜型（让一球中低水设障+泊松共振锁1球小胜）`, `第一部分：全流程生命周期摩擦点与代码/数据级 Bug 盘点`, `titan007 欧冠杯 CupMatch c103.js 数据结构分析`, `三、海外免费储备 API 矩阵`, `Page 20: Acknowledgements`, `Stable Reliability Diagrams Using CORP and`, `Feng, Polson & Xu (2017) 英超赔率校准与动态Skellam进`, `Polymarket 链接查找教程`, `每日推演与复盘记忆（2026-09-29：图谱零孤岛与六图盲测训练）`, `package.json`, `Giacomini & White (2006) 条件预测能力检验 (Tests o`, `联赛配置手册（泊松 + 盘口）`, `Wheatcroft (2019) 足球比赛概率预测评分规则评估：批判RPS并确立对`, `二、五大博弈支柱专项体检结论`, `Aiyer et al. (2023) 结果偏见与决策评价预注册复制与扩展研究 (N`, `Dimitriadis, Gneiting & Jordan (2021) 概率分类`, `ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）`, `四大乱局识别过滤（极端伤停/战意怪局/末轮练兵/样本不足）`, `二、四大架构级增补落地方案`, `Heartbeat 检查清单`, `盘口分类体系（主人亲授 · 2026-03-18）`, `ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）`?**
   _High betweenness centrality (0.603) - this node is a cross-community bridge._
 - **Are the 67 inferred relationships involving `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` (e.g. with `核心推演准则（胜平负精准分析）` and `定理3：次指数E-过程（E-process）与随时有效P-过程检验弱原假设 H_0^w: Delta_t <= 0`) actually correct?**
   _`四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` has 67 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `CLAUDE.md 镜像入口与工作流宪章`, `HEARTBEAT.md 定期补漏与静默检查清单`, `赛程同步/赛前分析/赛后复盘心跳补漏机制` to the rest of the system?**
   _44 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `法定23家机构五阶段时序生命周期矩阵（T0~T4）` be split into smaller, more focused modules?**
+- **Should `法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）` be split into smaller, more focused modules?**
   _Cohesion score 0.04009324009324009 - nodes in this community are weakly interconnected._
 - **Why does `比赛快照深层语义安检与泊松算法零偏差迁移实践` connect `泊松分布λ攻防建模与波胆比分矩阵` to `OO-EPC去水模型（Shin/Power/Probit合成）`, `双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）`?**
   _High betweenness centrality (0.300) - this node is a cross-community bridge._

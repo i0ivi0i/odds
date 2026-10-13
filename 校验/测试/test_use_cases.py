@@ -99,8 +99,8 @@ class TestUseCases(unittest.TestCase):
         self.assertEqual(snap["asianHandicap"][0]["initial"]["home"], 0.90)
         self.assertEqual(snap["asianHandicap"][0]["latest"]["home"], 1.04)
         self.assertEqual(len(snap["overUnder"]), 7)
-        self.assertEqual(len(snap["timeSeriesFlow"]), 180)
-        self.assertIn("庄家借战意做市破译", snap["tactics"]["motivationAndGameTheory"])
+        self.assertEqual(len(snap["timeSeriesFlow"]), 59)
+        self.assertIn("客队下周中亚冠客场远征", snap["tactics"]["futureSchedule"]["raw"])
         self.assertEqual(snap["sportteryHandicap"]["handicap"], "-1")
         self.assertEqual(len(snap["polymarketTimeSeries"]), 5)
 
@@ -114,7 +114,7 @@ class TestUseCases(unittest.TestCase):
         fixture_match_id = m_id.group(1) if m_id else "fixture_sample"
         # 模拟仅漏掉香港马会大小球
         corrupted = re.sub(
-            r"(### 7\. 香港马会.*?)\n#### 大小球五阶段时序生命周期.*?(?=\n#### 欧指五阶段)",
+            r"(### 7\. 香港马会.*?)\n#### 大小球真实变盘流水.*?(?=\n#### 欧指真实变盘流水)",
             r"\1",
             content,
             flags=re.DOTALL,
@@ -156,6 +156,51 @@ class TestUseCases(unittest.TestCase):
         self.assertEqual(snap["polymarket"]["status"], "active")
         self.assertEqual(snap["polymarket"]["url"], "https://polymarket.com/event/sea-ata-ven-2026-10-12")
 
+    def test_parse_markdown_never_injects_fake_goal_numbers_when_missing(self):
+        """测试U1: 当 Markdown 缺失真实进失球数字时，严禁静默注入 1.25/0.25/1.50/1.00 假均值"""
+        md_text = """# 【周一001】芬超 哈卡 vs 瓦萨
+- **比赛 ID**：3011111
+## 二、基础战绩与攻防客观底牌
+- **主队近况**：状态一般
+- **客队近况**：状态尚可
+"""
+        snap = self.verify_use_case._parse_markdown_snapshot(md_text, "3011111")
+        self.assertEqual(snap["tactics"]["technicalStats"]["home"]["goals"], 0.0)
+        self.assertEqual(snap["tactics"]["technicalStats"]["away"]["goals"], 0.0)
+        self.assertEqual(snap["match"]["homeGoals"], "")
+        self.assertEqual(snap["match"]["awayGoals"], "")
+
+    def test_parse_markdown_never_injects_fake_kelly_or_return_rate(self):
+        """测试U1: 当 Markdown 欧指表缺失返还率或凯利值时，严禁静默回退到 90.0 或 [0.94, 0.88, 0.84]"""
+        md_text = """# 【周一001】芬超 哈卡 vs 瓦萨
+- **比赛 ID**：3011111
+## 三、法定23家机构初即盘与凯利总表
+| 机构类型 | 机构 | 初盘主胜 | 初盘平局 | 初盘客胜 | 初返还 | 即时主胜 | 即时平局 | 即时客胜 | 即时返还 | 凯利(主/平/客) |
+| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |
+| 核心做市 | Bet365 | 2.10 | 3.40 | 3.10 | - | 2.25 | 3.50 | 3.00 | - | - |
+"""
+        snap = self.verify_use_case._parse_markdown_snapshot(md_text, "3011111")
+        self.assertEqual(len(snap["europe1x2"]), 1)
+        self.assertIsNone(snap["europe1x2"][0]["initial"]["returnRate"])
+        self.assertEqual(snap["europe1x2"][0]["latest"]["kelly"], [])
+
+    def test_system_consistency_blocks_t0_t4_pollution_in_graph_and_docs(self):
+        """U5红灯测试: 全库一致性检查必须核查 docs/倍率时序波动分析手册.md、STRATEGY.md 与 graphify-out/graph.json 中无 T0~T4 五阶段矩阵残留"""
+        manual_p = self.repo_root / "docs" / "倍率时序波动分析手册.md"
+        strategy_p = self.repo_root / "STRATEGY.md"
+        graph_p = self.repo_root / "graphify-out" / "graph.json"
+
+        manual_text = manual_p.read_text(encoding="utf-8")
+        strategy_text = strategy_p.read_text(encoding="utf-8")
+        graph_text = graph_p.read_text(encoding="utf-8")
+
+        self.assertNotIn("五阶段时序生命周期矩阵（T0~T4）", manual_text)
+        self.assertNotIn("T0~T4 五阶段分钟级时序矩阵", strategy_text)
+        self.assertNotIn("t0_t4_five_phase_matrix", graph_text)
+        self.assertNotIn("T0~T4 五阶段时序生命周期矩阵", graph_text)
+
 
 if __name__ == "__main__":
     unittest.main()
+
+
