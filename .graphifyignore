@@ -1,0 +1,16 @@
+# Graphify corpus filter — exclude transient raw match snapshots & scratch dirs
+data/
+.ky-md-work/
+.compound-engineering/
+.quarantine/
+__pycache__/
+*.pyc
+*.bak
+*.tmp
+scripts/sporttery-sniper/testdata/
+.cursorrules
+.gitattributes
+.gitignore
+.graphifyignore
+.gitkeep
+*.json5

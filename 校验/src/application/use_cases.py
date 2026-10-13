@@ -667,9 +667,9 @@ class CheckConsistencyUseCase:
                     G.add_edge(e["source"], e["target"])
                 comps = nx.number_connected_components(G)
                 isolates = len(list(nx.isolates(G)))
-                if isolates > 0:
+                if comps > 1 or isolates > 0:
                     graph_connected = False
-                    graph_err = f"图谱孤岛违规: 存在 {isolates} 个孤立节点 (连通分量={comps})"
+                    graph_err = f"图谱孤岛违规: 连通分量={comps}, 孤立节点={isolates}"
             except Exception as e:
                 # 若当前环境缺失 networkx，标记为 warning
                 graph_err = f"图谱解析库异常: {e}"

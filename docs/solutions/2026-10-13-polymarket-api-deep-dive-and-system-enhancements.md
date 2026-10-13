@@ -39,7 +39,7 @@ Polymarket 为同一场足球赛提供 6 大标准伴生事件（Companion Event
   {"name": "Malmo FF", "abbreviation": "mal", "ordering": "home"},
   {"name": "Kalmar FF", "abbreviation": "kal", "ordering": "away"}
   ```
-- 门禁 `verifier.py` 可将此字段作为主客对齐的权威仲裁标准，杜绝主客对调错误。
+- 门禁 `校验/src/domain/verifier.py::SnapshotVerifier::verify` 可将此字段作为主客对齐的权威仲裁标准，杜绝主客对调错误。
 
 ### 4. 字典权威化：利用 `/teams` 建立本地官方缩写缓存库
 - 以前团队缩写依赖经验推断，容易出现 `mal` vs `mff`、`new` vs `ncl` 的分歧；
