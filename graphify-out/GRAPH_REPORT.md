@@ -1,23 +1,28 @@
-# Graph Report - 倍率分析推演  (2026-10-13)
+# Graph Report - 倍率分析推演  (2026-10-14)
 
 ## Corpus Check
-- 172 files · ~417,483 words
+- 152 files · ~438,776 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3564 nodes · 5060 edges · 334 communities (283 shown, 51 thin omitted)
+- 3579 nodes · 5089 edges · 335 communities (296 shown, 39 thin omitted)
 - Extraction: 88% EXTRACTED · 12% INFERRED · 0% AMBIGUOUS · INFERRED: 619 edges (avg confidence: 0.88)
-- Token cost: 161,000 input · 38,500 output
+- Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `512dcbb5`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - 法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）
-- TestSnapshotVerifier
+- .verify
 - 标准7列交付表格与Polymarket交叉验证
 - 赛后复盘先审过程再揭比分与Graphify自愈闭环
 - Tests of Conditional Predictive Ability
-- 双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）
+- Polymarket Gamma API (Slug直探与GameId裂变)
 - 执行流程
-- 四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防
+- 四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）
 - AGENTS.md - 足彩分析工作流操作手册
 - 2026-10-04 每日记忆
 - titan007.js
@@ -31,50 +36,50 @@
 - 赔率分析推演十大公理与四大物理不变量
 - 下注决策手册（版本 1）
 - 深度分析（早盘 17:00）
-- TestUseCases
-- 真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松
-- PoissonEngine
+- 校验/src/application/use_cases.py
+- 真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松强度 lambda 的修正机制
+- poisson.py
 - OO-EPC去水模型（Shin/Power/Probit合成）
 - 核心系统：双轨敏捷数据采集（Skill scrapling-official / b
 - cli.js
-- Any
+- SnapshotVerifier
 - poisson_lib.py
 - verifier.py
 - SAFETY.md
 - cleanText()
-- .execute()
+- ConvertOddsUseCase
 - TestAdapterCli
 - 十步深度分析推演闭环 (基本面/伤停/泊松/欧亚大小时序/合理性/三维落槌)
 - 模型扩展与组合手册（除泊松之外）
 - Outcome Bias and Evaluations of Decisions:
 - fetchMatchData()
-- Choe & Ramdas (2023) 跨时间与博弈论视角下的序贯预测者比较 (O
+- Choe & Ramdas (2023) 跨时间与博弈论视角下的序贯预测者比较 (Operations Research)
 - OO-EPC 去水计算与推演应用手册（大模型推演教学指南）
 - 深度分析（17:28 & 21:55）
 - OddsVector
 - 2026-09-29 每日记忆
 - 变更日志
 - AGENTS.md 足彩分析工作流操作手册
-- ._check_authenticity()
-- 纠偏规则（corrected）：单一平赔极端高挂(>3.80)不可作为一票排平依据，
-- 每日推演与复盘记忆（2026-10-02：国庆休市Polymarket欧国联10场专
+- 盘口与走势阅读手册（简版）
+- 全量复盘总账：2026-10-11全量25场赛后复盘与认知契约卡对账（双选96.0%命中）
+- 每日推演与复盘记忆（2026-10-01：欧国联8场实战与Aiyer/Wheatcroft独立复盘审计）
 - 通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)
-- VerificationReceipt
+- DimensionResult
 - TacticsParser
-- 泊松分布λ攻防建模与波胆比分矩阵
+- 比赛快照深层语义安检与泊松算法零偏差迁移实践
 - 球队风格判定手册（简版）
 - 泊松概率计算手册（足彩用）
 - 亚运男足 乌兹别克斯坦U23 vs 日本U23（编号: 周三002 比赛ID: 30
 - 深度分析（欧国联10场，17:35）
 - injury-service.js
 - buildAnalysisContext()
-- Levitt (2004) 为什么博彩市场与金融市场组织结构截然不同 (Econom
+- Levitt (2004) 为什么博彩市场与金融市场组织结构截然不同 (Economic Journal / NBER w9422)
 - 赔率与泊松比较：何时值得下注（案例详解）
 - 深度分析推送通知模板
-- 比分建模与投注手册（泊松版）
+- 泊松分布λ攻防建模与波胆比分矩阵
 - 盘路母型：整球设障御敌防小胜型（让一球中低水设障+泊松共振锁1球小胜）
 - 深度分析（晚盘 22:30 · 15 场全量从头推演）
-- 算法/src/application/use_cases.py
+- 双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）
 - 执行步骤
 - 执行步骤
 - 二、8 大黄金维度法定验收规则
@@ -82,26 +87,26 @@
 - 第一部分：全流程生命周期摩擦点与代码/数据级 Bug 盘点
 - ImpliedProbabilities
 - titan007 欧冠杯 CupMatch c103.js 数据结构分析
-- .parse_handicap_trends()
+- ProfilingParser
 - 三、海外免费储备 API 矩阵
-- Stable Reliability Diagrams Using CORP and
+- Stable Reliability Diagrams Using CORP and Isotonic Recalibration
 - 盘赔分析系统化框架（2026-03-17 整理 · 主人亲授）
 - 第二部分：模式二·单场【推演源数据】采集与门禁质检（阶段一专属搬运工）
 - CorrectScoreParser
-- Kaunitz, Zhong & Kreiner (2017) 用庄家自身赔率击败庄
-- Feng, Polson & Xu (2017) 英超赔率校准与动态Skellam进
+- Kaunitz, Zhong & Kreiner (2017) 用庄家自身赔率击败庄家：47.9万场足球市场错价实证
+- 论文库实战映射总纲 (paper-application-v2)
 - Polymarket 链接查找教程
-- 每日推演与复盘记忆（2026-09-29：图谱零孤岛与六图盲测训练）
+- timeseries_denoiser.py
 - 深度分析（17:15）
 - package.json
-- CalculatePoissonUseCase
-- Giacomini & White (2006) 条件预测能力检验 (Tests o
+- test_poisson.py
+- Giacomini & White (2006) 条件预测能力检验 (Tests of Conditional Predictive Ability, Econometrica)
 - 联赛配置手册（泊松 + 盘口）
-- generate_deep_graph.py
+- json
 - 赛后复盘
 - 2026-10-07 每日记忆
 - 倍率分析推演 (Pansuan Engine) Strategy
-- Constantinou (2022) 亚洲让球盘(AH)与胜平负(1X2)足球博彩
+- Constantinou (2022) 亚洲让球盘(AH)与胜平负(1X2)足球博彩市场效率与盈利对比 (Journal of Sports Analytics)
 - 流程与文档一致性检查（漏洞与建议）
 - 2026-10-03 每日记忆
 - 赛后复盘
@@ -110,19 +115,19 @@
 - 赛后复盘
 - 赛后复盘
 - [巴西甲] 博塔弗戈 vs 达伽马（编号: 周三006 比赛ID: 2910908，
-- Wheatcroft (2019) 足球比赛概率预测评分规则评估：批判RPS并确立对
-- Egidi, Pauli & Torelli (2018) 结合历史进球数据与庄家隐
+- Wheatcroft (2019) 足球比赛概率预测评分规则评估：批判RPS并确立对数无知评分(IGN)
+- Egidi, Pauli & Torelli (2018) 结合历史进球数据与庄家隐含赔率的层次贝叶斯泊松模型
 - 二、五大博弈支柱专项体检结论
-- Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水
+- Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水防穿（案例：芬超冠赫尔辛基6:0VPS瓦萨）
 - 2026-10-06 每日记忆
 - 2026-10-08 每日记忆
 - 2026-10-10 每日记忆
 - 累计战绩
 - 校验/src/adapter/cli.py 物理防伪与时序门禁
 - Aiyer et al. (2023) 结果偏见与决策评价预注册复制与扩展研究 (N
-- Dimitriadis, Gneiting & Jordan (2021) 概率分类
+- 四项论文质问清单（Levitt偏见/Goto去水/Winkelmann假摔/Constantinou底线）
 - ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）
-- 四大乱局识别过滤（极端伤停/战意怪局/末轮练兵/样本不足）
+- 下注决策手册（版本1）
 - 二、四大架构级增补落地方案
 - Market Efficiency and Behavioral Biases: E
 - 2026-10-02 每日记忆
@@ -133,7 +138,7 @@
 - parseCrowCorrectScores()
 - 极速单动执行规约（Scrapling MCP 官方极速通道）
 - 赛后复盘（post-review）
-- verify_memory_cognitive_cards()
+- 每日推演与复盘记忆（2026-10-09：11场赛前时点盲测重推、双选90.9%覆盖与海登海姆0-0破译）
 - OddsConversionResult
 - ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）
 - 4.3 看水位：顺资金，还是反资金
@@ -162,10 +167,10 @@
 - 二、逐场深度复盘与认知契约卡倒查
 - 赛后复盘
 - sporttery-sniper
-- 赛事初筛（match-screening）
-- 二、全周期全周期真实变盘时序窗口解析 (Verbatim Raw Wire)
-- 三、λ 的计算（核心流程）
-- 四、从 λ 到各项概率的计算步骤
+- 纠偏规则（corrected）：升水不等于不出、降水不等于必出，超高水禁作一票否决去水大项的死尺子
+- 二、全周期真实变盘时序窗口解析 (Verbatim Raw Wire)
+- 无额外进球预感定理：扣除累积xG差与红牌后，庄家赔率与散户注额在进球前均无异常预测力
+- 黄金标准推演源数据样本（3000474 大阪樱花 vs 横滨水手 法定23家机构全生命周期快照）
 - Page 01: Market Efficiency and Behavioral 
 - Page 02: 1 Introduction
 - Page 03: Introduction (continued)
@@ -245,10 +250,10 @@
 - 巴西甲 帕尔梅拉斯 vs 巴伊亚（编号: 周四006 比赛ID: 2910913，开
 - 深度分析（临盘 21:15 德甲重审）
 - parseAnalysisHtml()
-- 校验/ 领域驱动洋葱六边形架构设计说明书
+- Hewamalage, Ackermann & Bergmeir (2023) 时间序列预测评估陷阱与最佳实践 (DMKD)
 - 【周六001】日职联 大阪樱花 vs 横滨水手
 - Q: 【均势浅盘底线低平赔型】主流机构平赔初盘极限低开(<2.90)，即时平赔抬升制
-- Q: 【国家队均势浅盘低平赔防守型】体彩与澳彩平赔2.85锁定防守（案例：欧国联哈萨
+- Q: 【国家队均势浅盘低平赔防守型】体彩与澳彩平赔2.85锁定防守（案例：欧国联哈萨克斯坦2:2法罗群岛）
 - Q: 2026-10-10 德甲 斯图加特 0:2 帕德博恩
 - Q: 2026-10-10 德甲 RB莱比锡 6:0 法兰克福
 - Q: 2026-10-11 全量25场赛后复盘与认知契约卡对账
@@ -268,7 +273,7 @@
 - 巴西甲 弗鲁米嫩塞 vs 科里蒂巴（编号: 周四005 比赛ID: 2910911，
 - 赛后复盘
 - ⚠️ 基本面分析强制规则（2026-03-18 主人强调）
-- CLAUDE.md - AI Pair Programming & Knowledg
+- CLAUDE.md - AI Pair Programming & Knowledge Rules
 - 预测与复盘论文（本项目）
 - 推荐
 - 推荐（17:40）
@@ -298,7 +303,7 @@
 - 5. 平博 (欧亚双盘核心, 核心做市, cid=177)
 - 6. 188Bet (欧亚双盘核心, 核心做市, cid=976)
 - 7. 香港马会 (欧亚双盘核心, 核心做市, cid=432)
-- 数据完整性检验与验收标准手册
+- 快速调用命令
 - Page 11: 798 H. Hewamalage et al.
 - MEMORY.md - 长期记忆
 - 7. 📈 概率打分与战绩统计
@@ -331,6 +336,19 @@
 - 21. 10Bet (纯欧指做市, 论文样本, cid=16)
 - 23. Polymarket (终端履约标的, 链上订单簿预测市场)
 - 8. 威廉希尔 (纯欧指做市, 核心做市, cid=115)
+- 一、发现的 BUG / 漏洞
+- 纠偏规则（corrected）：单一平赔极端高挂(>3.80)不可作为一票排平依据，须尊重去水尾部概率与防守硬度
+- 足球系统全链路实战自检与底层四大隐形淤堵诊断报告
+- Q: 复盘如何与九篇论文打通且不把每句话变成门禁
+- Q: 【豪门客战中盘跳档诱多型 (Head-Fake 假摔)】欧指单边造势客胜，亚盘中盘强升半一挂满水诱多出货（案例：巴西甲桑托斯2:2弗拉门戈）
+- Q: 【超高水逆向打出型】亚盘让球方挂满水超1.05+是否等于出货诱买一票否决（案例：巴西甲巴西国际2:1科林蒂安）
+- Q: 【极端高平赔脱靶型】全网平赔极端顶高至3.80~4.10是否代表绝对一票排平（案例：芬超冠格尼斯坦0:0图尔库国际）
+- Q: 【同城德比客让设障型】客队历史客战胜率低但在德比战客让平半挂满水（案例：巴西甲博塔弗戈1:2达伽马）
+- Q: 【豪门客战深盘让球防小胜与波胆约束型】（案例：欧国联克罗地亚1:2西班牙）
+- Q: 2026-10-10 西甲 阿拉维斯 1:2 马德里竞技
+- STRATEGY.md 足球赛事盘赔分析与赛果推演系统战略大图
+- 19篇学术论文逐页精校核对记录（536/536页全量100%对齐）
+- 核对记录.md
 
 ## God Nodes (most connected - your core abstractions)
 1. `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` - 128 edges
@@ -345,8 +363,6 @@
 10. `Market Efficiency and Behavioral Biases: Evidence from an Online Betting Exchange` - 34 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `name` --conceptually_related_to--> `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）`  [INFERRED]
-  scripts/sporttery-sniper/package.json → skills/deep-analysis/SKILL.md
 - `多场与全量场次流水线执行标准（4大护城河铁律：分批进货、故障隔离、滑动队列、单写封存）` --references--> `SnapshotAssembler`  [INFERRED]
   AGENTS.md → 校验/src/domain/assembler.py
 - `问题背景与现象` --references--> `SnapshotAssembler`  [INFERRED]
@@ -355,6 +371,8 @@
   STRATEGY.md → 校验/src/domain/assembler.py
 - `🌟 宪章级释义：什么是【推演源数据】？意味着什么？位置与生命周期？` --references--> `SnapshotAssembler`  [INFERRED]
   TOOLS.md → 校验/src/domain/assembler.py
+- `name` --conceptually_related_to--> `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）`  [INFERRED]
+  scripts/sporttery-sniper/package.json → skills/deep-analysis/SKILL.md
 
 ## Import Cycles
 - None detected.
@@ -385,35 +403,35 @@
 - **推演态三阶段硬死锁全链路闭环 (赛程索引 ➔ 物理进货与门禁 ➔ 图谱十步深推与7列交付)** — agents_three_phase_hard_lock, skills_match_scraper_skill_doc, tools_cli_verifier_gate, skills_deep_analysis_skill_doc, skills_recommendation_skill_doc [EXTRACTED 1.00]
 - **物理战力基准与泊松/Skellam动态修正共同体（Macrì尖峰平板动态先验 × Wilkens主客n=3滚动xG × 场面压制力修正）** — concept_dynamic_xg_poisson_lambda_correction, concept_spike_and_slab_commensurate_prior, concept_six_goal_count_distributions, concept_venue_specific_n3_xg_skellam, concept_charles_reep_notational_to_xg_sca_gca, rationale_adaptive_historical_borrowing_regime_shift [INFERRED 0.85]
 
-## Communities (334 total, 51 thin omitted)
+## Communities (335 total, 39 thin omitted)
 
 ### Community 0 - "法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）"
-Cohesion: 0.04
-Nodes (47): 法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）, 赛前T4终盘截断与滚球1Hz状态空间的时序物理边界（严禁赛后/滚球数据逆向污染赛前推演）, 开球时间截断与「滚」字滚球盘记录清洗守卫（--history-window 纯净赛前快照保障）, ADR 0002: 双锁博弈推演架构（A+B辩证合体）, 第二道锁：庄家博弈与逆向破译（Lock 2 Bookmaker Reverse Engineering）, 四项论文质问清单（Levitt偏见/Goto去水/Winkelmann假摔/Constantinou底线）, 欧指平均定价值、平博看冷热、亚盘四家看资金、客群盘看本地情绪的角色分工, 盘位+水位+时间序列+多家公司对比的四维看盘法 (+39 more)
+Cohesion: 0.07
+Nodes (20): 法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）, Macri (2025) 临盘洗盘期贝叶斯动态离散时间加权模型, 剧烈震荡洗盘（Volatility Wash）与死锁不动引流池（Static Trap）, 1. 假摔突破形态 (Head-Fake) —— 锚定：Winkelmann (2026) 状态空间模型, 1. 多机构协同对账战区（严禁单看皇冠）, 2. 台阶式真实防守 (Step-Defense) —— 锚定：Levitt (2004) 极小化损失定理, 2. 跨市场几何联动战区（严禁单看亚盘）, 3. 全周期时序动态战区（严禁只看初终两端） (+12 more)
 
 ### Community 2 - "标准7列交付表格与Polymarket交叉验证"
-Cohesion: 0.05
-Nodes (39): 标准7列交付表格与Polymarket交叉验证, 体彩国庆休市期间Polymarket链上预测市场无缝连续推演机制, 每日推演与复盘记忆（2026-10-04：欧国联8场双选100%全包与C罗缺阵首发战术穿透）, 爱尔兰1-1以色列(2981500)退盘-0.25高水与3.10平赔防守命中1:1, 三维物理推演框架（🎯胜者 / ⚽净胜球 / 📊总进球）正交建模, 每日推演与复盘记忆（2026-10-05：早晚盘双轨制立宪、四维认知契约卡首秀与意大利3-1大满贯）, 17:00早盘(<=22:00)与21:00晚盘(>22:00)双轨制分窗推演纪律, 意大利3-1土耳其(2981454)胜平负+亚盘-1.25+大球2.5+比分3:1四维全满贯 (+31 more)
+Cohesion: 0.07
+Nodes (25): 标准7列交付表格与Polymarket交叉验证, 每日推演与复盘记忆（2026-09-29：图谱零孤岛与六图盲测训练）, 苏格兰vs瑞士(2981490)与捷克vs英格兰(2981440)十步推演, 六图盲测第一铁律：先写初盘骨架再读变盘轨迹, 让球盘口篮子拆解法则（+1/-1篮子内分拆平局与胜负）, 体彩国庆休市期间Polymarket链上预测市场无缝连续推演机制, 三维物理推演框架（🎯胜者 / ⚽净胜球 / 📊总进球）正交建模, 每日推演与复盘记忆（2026-10-05：早晚盘双轨制立宪、四维认知契约卡首秀与意大利3-1大满贯） (+17 more)
 
 ### Community 3 - "赛后复盘先审过程再揭比分与Graphify自愈闭环"
-Cohesion: 0.04
-Nodes (37): 基于E-过程（E-process）与经验Bernstein置信序列的长期推演胜率/ROI序贯无偏审计机制, 赛后复盘先审过程再揭比分与Graphify自愈闭环, Answer, Outcome, Q: 复盘如何与九篇论文打通且不把每句话变成门禁, Source Nodes, Answer, Outcome (+29 more)
+Cohesion: 0.10
+Nodes (12): 基于E-过程（E-process）与经验Bernstein置信序列的长期推演胜率/ROI序贯无偏审计机制, 赛后复盘先审过程再揭比分与Graphify自愈闭环, Answer, Outcome, Q: 【深盘热门欧深亚浅避险型】欧指主胜<1.45且亚盘卡死一球超低水不升盘设障，面对密集防守弱旅时的尾部偷袭风险（案例：芬超冠古比斯0:1奥卢）, Source Nodes, Answer, Outcome (+4 more)
 
 ### Community 4 - "Tests of Conditional Predictive Ability"
 Cohesion: 0.04
 Nodes (48): 3.2.1. Alternative hypothesis, 3.2. One-Step Conditional Predictive Ability Test, 3.3. Multistep Conditional Predictive Ability Test, 3.4. Multistep Unconditional Predictive Ability Test, 5.1. Size Properties, Page 01: Econometrica, Vol. 74, No. 6 (November, 2006), 1545–1578, Page 02: 1546 R. GIACOMINI AND H. WHITE, Page 03: TESTS OF PREDICTIVE ABILITY 1547 (+40 more)
 
-### Community 5 - "双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）"
-Cohesion: 0.07
-Nodes (39): 双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）, Polymarket Gamma API (Slug直探与GameId裂变), ADR 0001: 赛前资料完整性闸门, 数据源与全网API矩阵手册, Football-Data.org与The Odds API海外储备验真矩阵, 英超FPL与Big Balls五大联赛伤停辅源双引擎, 中国体彩官方网关（getMatchCalculatorV1）场次代号与休市核对, 球探网（titan007）主源盘口时序与阵容伤停基准 (+31 more)
+### Community 5 - "Polymarket Gamma API (Slug直探与GameId裂变)"
+Cohesion: 0.22
+Nodes (15): Polymarket Gamma API (Slug直探与GameId裂变), ADR 0001: 赛前资料完整性闸门, 数据源与全网API矩阵手册, Football-Data.org与The Odds API海外储备验真矩阵, 英超FPL与Big Balls五大联赛伤停辅源双引擎, 中国体彩官方网关（getMatchCalculatorV1）场次代号与休市核对, 球探网（titan007）主源盘口时序与阵容伤停基准, 无队名时序图通过体彩HAD/HHAD三档现价逆向认领 (+7 more)
 
 ### Community 6 - "执行流程"
 Cohesion: 0.04
 Nodes (47): 1. 确认分析依据公司列表, 1. 高频多触点深广检索（三大战区主动调兵）, 2. 可自愈机制（脱靶自愈与理论矛盾收敛）, 2. 赔率数据归属与整理, 3. 论文主动纠偏与认知校准闭环（五步压力测试）, 3. 赔率数据整理规则, 4. 各阶段论文与心法执行准则, 4. 存档原始赔率数据 (+39 more)
 
-### Community 7 - "四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防"
+### Community 7 - "四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）"
 Cohesion: 0.05
-Nodes (38): Aiyer et al. (2023) 确认偏误：既有判断形成后对反面信号权重打折 (Step 9反证卡依据), 四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）, 19篇博弈论文真实转写核对审计记录（严禁虚报，实事求是）, IDENTITY.md - Who Am I?, 瑞士2-1斯洛文尼亚(2981497)塞斯科缺阵物理伤停核验与1.5球深盘支撑, 葡萄牙2-1挪威(2981451)C罗缺阵+贡萨洛拉莫斯首发高位逼抢核验命中2:1, 利物浦0-3曼城(3003906)红军锋线团灭+曼城客让-0.25(0.85超低水)锁死客胜, PDF原件：1802.08848_结合历史数据与庄家赔率预测足球比分.pdf (+30 more)
+Nodes (38): Aiyer et al. (2023) 确认偏误：既有判断形成后对反面信号权重打折 (Step 9反证卡依据), 四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）, IDENTITY.md - Who Am I?, 瑞士2-1斯洛文尼亚(2981497)塞斯科缺阵物理伤停核验与1.5球深盘支撑, 葡萄牙2-1挪威(2981451)C罗缺阵+贡萨洛拉莫斯首发高位逼抢核验命中2:1, 利物浦0-3曼城(3003906)红军锋线团灭+曼城客让-0.25(0.85超低水)锁死客胜, Graphify三大战区认知基因（Egidi凸组合/Winkelmann波动/Levitt做市/双盘速查表）全量挂载, PDF原件：1802.08848_结合历史数据与庄家赔率预测足球比分.pdf (+30 more)
 
 ### Community 8 - "AGENTS.md - 足彩分析工作流操作手册"
 Cohesion: 0.05
@@ -436,12 +454,12 @@ Cohesion: 0.05
 Nodes (39): 2026-10-12 每日记忆, 🎯 2 串 1 组合推荐, 亚冠精英 迪拜祈祷 vs 吉达国民（编号: 周一001 比赛ID: 3068934，开球: 2026-10-13 00:00，分析: 2026-10-12 22:30）, 📊 全量 10 场深度推演总表（法定 7 列规范）, 巴西甲 科里蒂巴 vs 博塔弗戈（编号: 周一009 比赛ID: 2910921，开球: 2026-10-13 03:00，分析: 2026-10-12 22:30）, 意甲 亚特兰大 vs 威尼斯（编号: 周一002 比赛ID: 2993805，开球: 2026-10-13 00:30，分析: 2026-10-12 22:30）, 意甲 都灵 vs 乌迪内斯（编号: 周一005 比赛ID: 2993814，开球: 2026-10-13 02:45，分析: 2026-10-12 22:30）, 挪超 奥斯KFUM vs 瓦勒伦加（编号: 周一004 比赛ID: 2912910，开球: 2026-10-13 01:00，分析: 2026-10-12 22:30） (+31 more)
 
 ### Community 13 - "庄家净赔付最小化（Minimax第一性原理）"
-Cohesion: 0.11
-Nodes (22): 庄家净赔付最小化（Minimax第一性原理）, 盘路母型：豪门客战中盘跳档诱多型（Head-Fake假摔）, 实战判例：巴西甲桑托斯2:2弗拉门戈（受让0.82超低水锁死防守+3.60冷平）, 盘路母型：均势浅盘底线低平赔型（初盘平赔<2.90+即时抬升分流两头）, 实战判例：巴西甲巴拉纳竞技2:2米内罗竞技（体彩2.85/澳彩2.97锁平读秒2:2）, 盘路母型：欧亚共振升盘降赔型（主胜破1.50+平赔4.40+关门+升一球压水防穿）, 实战判例：芬超冠赫尔辛基6:0VPS瓦萨（五巨头共振降赔升盘狂轰6球穿盘）, 盘路母型：超高水逆向打出型（亚盘让球方挂超满水>1.05阻筹打出） (+14 more)
+Cohesion: 0.09
+Nodes (27): 庄家净赔付最小化（Minimax第一性原理）, 盘路母型：豪门客战中盘跳档诱多型（Head-Fake假摔）, 实战判例：巴西甲桑托斯2:2弗拉门戈（受让0.82超低水锁死防守+3.60冷平）, 盘路母型：均势浅盘底线低平赔型（初盘平赔<2.90+即时抬升分流两头）, 实战判例：巴西甲巴拉纳竞技2:2米内罗竞技（体彩2.85/澳彩2.97锁平读秒2:2）, 盘路母型：欧亚共振升盘降赔型（主胜破1.50+平赔4.40+关门+升一球压水防穿）, 实战判例：芬超冠赫尔辛基6:0VPS瓦萨（五巨头共振降赔升盘狂轰6球穿盘）, 盘路母型：国家队均势浅盘低平赔防守型（体彩与澳彩平赔2.85锁定防守） (+19 more)
 
 ### Community 14 - "校验/src/adapter/cli.py"
 Cohesion: 0.10
-Nodes (10): format_receipt_console(), main(), run_assemble(), run_batch_verify(), run_match_verify(), run_sync_meta(), run_verify_memory(), VerifySnapshotUseCase (+2 more)
+Nodes (10): format_receipt_console(), main(), run_assemble(), run_batch_verify(), run_match_verify(), run_sync_meta(), run_system_check(), run_verify_memory() (+2 more)
 
 ### Community 15 - "NBER WORKING PAPER SERIES"
 Cohesion: 0.05
@@ -456,8 +474,8 @@ Cohesion: 0.05
 Nodes (37): 2.1 盘口数据, 2.2 判断实盘 or 错盘, 2.3 错盘分类（如为错盘）, 2.4 浅盘形态细分（如为浅盘）, 3.1 水位数据, 3.2 水位变化历史（关键时点）, 3.3 综合判断（不机械）, 4.1 欧指数据（威廉/365 交叉认证） (+29 more)
 
 ### Community 18 - "赔率分析推演十大公理与四大物理不变量"
-Cohesion: 0.08
-Nodes (26): 欧指1X2热门-冷门偏差（FLB：低概率十分位亏损17% vs 高概率仅亏2%，简单去水严重高估冷门）, 半球盘（.5）无走水解析概率公式 P_S = O_W/(O_S+O_W), mu = O_S*O_W/(O_S+O_W), 整数盘走水率不变性定律（P_S1 ≈ 0.254 跨赔率与赛季恒定 R^2=0.003）与胜率剥离公式, 四分之一球盘（.25/.75）输半/赢半非对称概率修正项 ±(P_S1/2)*O/(O_S+O_W), 亚盘整数盘退本走水率物理常数（P_S1 ≈ 25.4% 跨联赛跨赔率恒定不变量）, 亚盘AH无偏45度线校准效率（消除1X2冷门高估偏差，具备极高定价效率）, 亚盘四级庄家职能分层（皇冠Crown锚定基准 × 易胜博/平博Sharp确认 × 澳彩/365/188金宝博背离捕捉 × 马会HKJC本土偏向）, c103.js 比赛行26字段元组（jh["G..."] 含90分钟比分、红牌、上下半场角球、双回合extraInfo及积分榜jh["S..."] 13字段） (+18 more)
+Cohesion: 0.13
+Nodes (13): 欧指1X2热门-冷门偏差（FLB：低概率十分位亏损17% vs 高概率仅亏2%，简单去水严重高估冷门）, 半球盘（.5）无走水解析概率公式 P_S = O_W/(O_S+O_W), mu = O_S*O_W/(O_S+O_W), 整数盘走水率不变性定律（P_S1 ≈ 0.254 跨赔率与赛季恒定 R^2=0.003）与胜率剥离公式, 四分之一球盘（.25/.75）输半/赢半非对称概率修正项 ±(P_S1/2)*O/(O_S+O_W), 亚盘整数盘退本走水率物理常数（P_S1 ≈ 25.4% 跨联赛跨赔率恒定不变量）, 亚盘AH无偏45度线校准效率（消除1X2冷门高估偏差，具备极高定价效率）, Soft庄家（欧指高抽水6.46%/限额赢家）与Sharp庄家（Pinnacle亚盘低抽水3.61%/欢迎套利）双轨生态, 赔率分析推演十大公理与四大物理不变量 (+5 more)
 
 ### Community 19 - "下注决策手册（版本 1）"
 Cohesion: 0.06
@@ -467,21 +485,21 @@ Nodes (35): 10.1 串关：用 EV 和相关性约束, 10.2 特殊盘口的期望�
 Cohesion: 0.06
 Nodes (35): 10. 【周日013】意甲 拉齐奥 vs 蒙扎 (2993810), 10. 【周日026】西甲 桑坦德 vs 巴伦西亚 (3013718), 11. 【周日014】意甲 莱切 vs 博洛尼亚 (2993811), 11. 【周日027】巴西甲 米竞技 vs 桑托斯 (2910917), 12. 【周日015】法甲 尼斯 vs 斯特拉斯堡 (2995358), 12. 【周日028】美职足 圣路易城 vs 洛城银河 (2908832), 13. 【周日016】德甲 科隆 vs 门兴 (3018824), 1. 【周日004】荷甲 乌德勒支 vs 威廉二世 (2996166) (+27 more)
 
-### Community 21 - "TestUseCases"
-Cohesion: 0.08
-Nodes (3): run_system_check(), CheckConsistencyUseCase, TestUseCases
+### Community 21 - "校验/src/application/use_cases.py"
+Cohesion: 0.07
+Nodes (5): CheckConsistencyUseCase, VerifySnapshotUseCase, CheckStatus, DimensionType, TestUseCases
 
-### Community 22 - "真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松"
-Cohesion: 0.09
-Nodes (26): 进球冲击非对称市场动态：冷门爆冷进球引爆潜状态与注额（+0.285/+0.685），热门顺理成章进球反而平息市场（-0.379）, 客胜系统性负收益陷阱（德甲盈利10%~14.9%全部来自主胜与平局，盲目博取客胜长期亏损-16.6%）, 投注者相对注额零一膨胀Beta状态空间模型（BEINF + 潜市场活跃度AR(1)状态 phi=0.974~0.984）, 战术量化演进链：从Charles Reep长传记号分析到现代核心特征工程（xG/xGA/SCA射门创造/GCA进球创造）, 真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松强度 lambda 的修正机制, 分数凯利（Fractional Kelly f=0.50）与正期望值（EV_min）风控护盾, 两部跨栏对数正态ARX(1)状态空间模型（Hurdle pi=0.094 + 潜市场兴奋度状态 s_t=phi*s_{t-1}+x*omega+eps, phi=0.985）, 盘中隐含概率动态回归模型（improbpre + 时间t/t^2 + 红牌效应-12%/+17.3% + 累积xG差速率 xgdiff/t） (+18 more)
+### Community 22 - "真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松强度 lambda 的修正机制"
+Cohesion: 0.15
+Nodes (16): 客胜系统性负收益陷阱（德甲盈利10%~14.9%全部来自主胜与平局，盲目博取客胜长期亏损-16.6%）, 战术量化演进链：从Charles Reep长传记号分析到现代核心特征工程（xG/xGA/SCA射门创造/GCA进球创造）, 真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松强度 lambda 的修正机制, 分数凯利（Fractional Kelly f=0.50）与正期望值（EV_min）风控护盾, 机器学习窗口敏感性与平局类别极化（10周短窗准确率崩盘至38%~47%，平局F1仅0.10~0.35）, 两赛季滚动样本外保序回归校准（Isotonic Regression f:[0,1]->[0.05,0.95] 阶梯单调映射与重归一化）, 六大进球数与净胜球分布族（DP双泊松/BP二元泊松/DIBP平局膨胀/NB负二项/SM Skellam/ZISM零膨胀Skellam）, 半正态尖峰-平板（Spike-and-Slab）加权动态可公度先验 phi_{k,tau} ~ N+(100,0.1)(1-p_l) + N+(0,5)p_l (+8 more)
 
-### Community 23 - "PoissonEngine"
-Cohesion: 0.11
-Nodes (6): PoissonEngine, PoissonParams, PoissonResult, ScoreItem, TestPoissonCli, TestPoissonDomain
+### Community 23 - "poisson.py"
+Cohesion: 0.13
+Nodes (5): PoissonEngine, PoissonParams, PoissonResult, ScoreItem, TestPoissonDomain
 
 ### Community 24 - "OO-EPC去水模型（Shin/Power/Probit合成）"
-Cohesion: 0.12
-Nodes (18): 平局偏差定理与双参数FL-GLM（平局FLB弱于分胜负项，单参数去水系统性低估平局，需分离 beta_decisive 与 beta_draw）, 算法6与命题4-6（FL-GLM广义线性模型）：单参数幂律 X_ij^{-beta}/sum X_ik^{-beta} 统一乘法去水与Power去水并量化庄家FLB系数, 算法5与命题3（OO-EPC等利润条件去水）：按逆赔率标准误 sigma_i=sqrt(1-x_i^-1) 等比例扣减 z=(s-t)/sum(sigma_i), OO-EPC去水模型（Shin/Power/Probit合成）, 跨市场抽水与热门-冷门偏差（FLB）扭曲图谱：欧指高抽水强FLB vs 亚盘低抽水零FLB vs 平局弱FLB, 命题1与命题2：证伪Shin模型底层假设（Shin隐含低抽水庄家知情交易z->0更不准，与Pinnacle低水高准事实矛盾）, 数据完整性检验与验收标准手册（重定向索引与CLI速查）, Goto (2026) 等置信收益标准误差扣减公式 SE=sqrt(1-pi) (+10 more)
+Cohesion: 0.17
+Nodes (13): 平局偏差定理与双参数FL-GLM（平局FLB弱于分胜负项，单参数去水系统性低估平局，需分离 beta_decisive 与 beta_draw）, 算法6与命题4-6（FL-GLM广义线性模型）：单参数幂律 X_ij^{-beta}/sum X_ik^{-beta} 统一乘法去水与Power去水并量化庄家FLB系数, 算法5与命题3（OO-EPC等利润条件去水）：按逆赔率标准误 sigma_i=sqrt(1-x_i^-1) 等比例扣减 z=(s-t)/sum(sigma_i), OO-EPC去水模型（Shin/Power/Probit合成）, 跨市场抽水与热门-冷门偏差（FLB）扭曲图谱：欧指高抽水强FLB vs 亚盘低抽水零FLB vs 平局弱FLB, 命题1与命题2：证伪Shin模型底层假设（Shin隐含低抽水庄家知情交易z->0更不准，与Pinnacle低水高准事实矛盾）, Goto (2026) 等置信收益标准误差扣减公式 SE=sqrt(1-pi), OO-EPC去水计算与推演应用手册 (+5 more)
 
 ### Community 25 - "核心系统：双轨敏捷数据采集（Skill scrapling-official / b"
 Cohesion: 0.07
@@ -491,17 +509,17 @@ Nodes (28): 1. 三阶确定性检索与探测规约（官方 Discover-Markets �
 Cohesion: 0.13
 Nodes (26): formatHistoryWindow(), localDateString(), main(), parseCliArgs(), parseFormat(), printHelp(), tryParseFormat(), buildAgentAnalysisPayload() (+18 more)
 
-### Community 27 - "Any"
-Cohesion: 0.13
-Nodes (5): DimensionResult, get_match_property(), _is_valid_kelly(), _is_valid_rate(), SnapshotVerifier
+### Community 27 - "SnapshotVerifier"
+Cohesion: 0.06
+Nodes (7): 根因与官方规范对标, 根治方案, 问题背景与现象, get_match_property(), _is_valid_kelly(), _is_valid_rate(), SnapshotVerifier
 
 ### Community 28 - "poisson_lib.py"
 Cohesion: 0.17
 Nodes (16): main(), anchor_lambda_tot(), clamp_lambda(), format_top(), implied_line_half(), LambdaBounds, load_params(), OUAnchor (+8 more)
 
 ### Community 29 - "verifier.py"
-Cohesion: 0.15
-Nodes (4): CheckStatus, DimensionType, clean_a11y_noise(), convert_a11y_table_to_tsv()
+Cohesion: 0.14
+Nodes (4): clean_a11y_noise(), convert_a11y_table_to_tsv(), verify_memory_cognitive_cards(), TestMemoryCognitiveCardsVerifier
 
 ### Community 30 - "SAFETY.md"
 Cohesion: 0.08
@@ -511,8 +529,8 @@ Nodes (24): 1.1 操作分级定义, 1.2 高危操作清单 🔴, 1.3 中危操�
 Cohesion: 0.15
 Nodes (24): absolutizeVipUrl(), attrOfFirst(), cleanText(), detectHistoryRowFormat(), extractCells(), extractFormation(), findFirstPositiveIndex(), firstMatch() (+16 more)
 
-### Community 32 - ".execute()"
-Cohesion: 0.13
+### Community 32 - "ConvertOddsUseCase"
+Cohesion: 0.11
 Nodes (3): ConvertOddsUseCase, TestAcademicBenchmarks, TestApplicationUseCases
 
 ### Community 34 - "十步深度分析推演闭环 (基本面/伤停/泊松/欧亚大小时序/合理性/三维落槌)"
@@ -520,8 +538,8 @@ Cohesion: 0.15
 Nodes (15): Graphify 三大战区标准化检索规范 (BFS初诊/DFS物理基准/BFS时序穿透), Graphify三大战区图谱穿透检索（BFS/DFS）, 主人亲授亚盘分类体系 (实盘/错盘/深盘/浅盘阻上与浅盘诱上), 十步深度分析推演闭环 (基本面/伤停/泊松/欧亚大小时序/合理性/三维落槌), 第一步：积分排名、赛程背景与真实战意解构, 第二步：核心伤停、阵容身价与双赛体能负荷穿透, 第三步：技统压制力（控球/射正/危险进攻/角球）与球风相克, 第四步：泊松分布λ期望进球与OO-EPC去水真值碰撞 (+7 more)
 
 ### Community 35 - "模型扩展与组合手册（除泊松之外）"
-Cohesion: 0.10
-Nodes (19): Poisson回归多特征λ建模与Logit/XGBoost第二曲线交叉验证, 1.1 双泊松模型（Bivariate Poisson）, 1.2 Dixon–Coles 修正, 2.1 Poisson 回归 / 负二项回归, 3.1 Logistic / 多项 Logit, 3.2 树模型 / 集成模型（Random Forest / XGBoost / LightGBM）, 4.1 多家赔率反演的「综合隐含概率」, 7.1 总体原则 (+11 more)
+Cohesion: 0.08
+Nodes (21): 联赛五维基准参数表（G_league均值/典型大小球线/平局倾向/主场优势/盘口习惯）, 联赛配置手册（泊松+盘口）, Poisson回归多特征λ建模与Logit/XGBoost第二曲线交叉验证, 1.1 双泊松模型（Bivariate Poisson）, 1.2 Dixon–Coles 修正, 2.1 Poisson 回归 / 负二项回归, 3.1 Logistic / 多项 Logit, 3.2 树模型 / 集成模型（Random Forest / XGBoost / LightGBM） (+13 more)
 
 ### Community 36 - "Outcome Bias and Evaluations of Decisions:"
 Cohesion: 0.10
@@ -531,9 +549,9 @@ Nodes (20): Outcome Bias and Evaluations of Decisions: A Replication and Extensi
 Cohesion: 0.16
 Nodes (19): fetchMatchDataWithFailover(), fetchScheduleWithFailover(), fetchWithTimeout(), buildOddsHistoryUrls(), buildRequestHeaders(), createHumanLikeFetch(), launchLoop(), launchPendingRequests() (+11 more)
 
-### Community 38 - "Choe & Ramdas (2023) 跨时间与博弈论视角下的序贯预测者比较 (O"
-Cohesion: 0.17
-Nodes (19): 定理3：次指数E-过程（E-process）与随时有效P-过程检验弱原假设 H_0^w: Delta_t <= 0, 定理2：Empirical Bernstein方差自适应置信序列（内禀时间 hat_V_t 与次指数 Gamma-Exponential 混合边界）, 多模型非参数显著性检验（Friedman秩检验与Nemenyi/Hochberg临界距离CD图）, 博弈论序贯预测协议（Forecasters p_t/q_t × Reality r_t × Statistician 双重滤子 F_t/G_t）, 定理1：Hoeffding型次高斯置信序列（Sub-Gaussian psi_N 与正态混合边界 u_alpha^CM）, MLB十年25,165场实证：Vegas终盘赔率序贯显著击败FiveThirtyEight (E_T=2979.0), 非平稳单位根/随机游走序列Naïve基准最优定律（复杂DL模型Autoformer/Informer常败于Naïve）, 滚动起点时序交叉验证（tsCV）与Ljung-Box残差自相关检验（非平稳有状态序列严禁K折CV） (+11 more)
+### Community 38 - "Choe & Ramdas (2023) 跨时间与博弈论视角下的序贯预测者比较 (Operations Research)"
+Cohesion: 0.30
+Nodes (11): 定理3：次指数E-过程（E-process）与随时有效P-过程检验弱原假设 H_0^w: Delta_t <= 0, 定理2：Empirical Bernstein方差自适应置信序列（内禀时间 hat_V_t 与次指数 Gamma-Exponential 混合边界）, 博弈论序贯预测协议（Forecasters p_t/q_t × Reality r_t × Statistician 双重滤子 F_t/G_t）, 定理1：Hoeffding型次高斯置信序列（Sub-Gaussian psi_N 与正态混合边界 u_alpha^CM）, MLB十年25,165场实证：Vegas终盘赔率序贯显著击败FiveThirtyEight (E_T=2979.0), 时变平均严格恰当评分差 Delta_t 与经验评分差鞅差序列 S_t = t(hat_Delta_t - Delta_t), Ville (1939) 非负上鞅极大不等式与指数检验上鞅 L_t(lambda)=exp(lambda S_t - psi(lambda)V_t), Winkler (1994) 非对称标准化技能评分推广与无界损失截断控制 (+3 more)
 
 ### Community 39 - "OO-EPC 去水计算与推演应用手册（大模型推演教学指南）"
 Cohesion: 0.10
@@ -544,8 +562,8 @@ Cohesion: 0.10
 Nodes (20): 2026-10-09 每日记忆, 2912286 - 瑞典超 - 哥德堡 vs 韦斯特罗 (周五004), 2912908 - 挪超 - 布兰 vs 维京 (周五005), 2995354 - 法甲 - 朗斯 vs 里昂 (周五009), 2996161 - 荷甲 - 埃因霍温 vs 海伦芬 (周五006), 2996498 - 荷乙 - 赫拉克勒 vs 瓦尔韦克 (周五007), 3000478 - 日职联 - 柏太阳神 vs 神户胜利船 (周五002), 3008256 - 英冠 - 西汉姆联 vs 女王巡游 (周五010) (+12 more)
 
 ### Community 41 - "OddsVector"
-Cohesion: 0.18
-Nodes (3): OddsVector, TestDomainOddsVector, TestDomainOoEpcCalculator
+Cohesion: 0.15
+Nodes (4): OoEpcCalculator, OddsVector, TestDomainOddsVector, TestDomainOoEpcCalculator
 
 ### Community 42 - "2026-09-29 每日记忆"
 Cohesion: 0.11
@@ -556,36 +574,40 @@ Cohesion: 0.11
 Nodes (19): 2026-09-30 深度分析流程编号修复, 2026-09-30 移除新增套板文档的执行依赖, 2026-10-01 交付格式矛盾与覆盖命中口径对齐, 2026-10-01 恢复 Tony Bloom 价值评估法与欧指隐含概率公式, 2026-10-01 恢复庄家视角的赔率推演能力, 2026-10-01 执行真实性与迭代闭环修复, 2026-10-01 指定网页入口微调, 2026-10-01 按主人要求收敛为原结构内融合 (+11 more)
 
 ### Community 44 - "AGENTS.md 足彩分析工作流操作手册"
-Cohesion: 0.12
-Nodes (15): AGENTS.md 足彩分析工作流操作手册, CLAUDE.md 镜像入口与工作流宪章, HEARTBEAT.md 定期补漏与静默检查清单, IDEA.md 足彩盘赔推演系统初心与设计构想, IDENTITY.md 首席足彩精算与博弈分析师身份锚点, MEMORY.md 长期记忆中枢与智慧芯片, README.md 倍率分析推演系统架构总览, SAFETY.md 安全操作规范与Prompt注入防护 (+7 more)
+Cohesion: 0.15
+Nodes (14): AGENTS.md 足彩分析工作流操作手册, CLAUDE.md 镜像入口与工作流宪章, HEARTBEAT.md 定期补漏与静默检查清单, IDENTITY.md 首席足彩精算与博弈分析师身份锚点, README.md 倍率分析推演系统架构总览, SAFETY.md 安全操作规范与Prompt注入防护, skills/deep-analysis/SKILL.md 比赛深度分析十步法核心大脑, skills/post-review/SKILL.md 赛后复盘与认知契约卡回检技能 (+6 more)
 
-### Community 45 - "._check_authenticity()"
+### Community 45 - "盘口与走势阅读手册（简版）"
 Cohesion: 0.11
-Nodes (3): 根因与官方规范对标, 根治方案, 问题背景与现象
+Nodes (17): 欧指平均定价值、平博看冷热、亚盘四家看资金、客群盘看本地情绪的角色分工, 盘位+水位+时间序列+多家公司对比的四维看盘法, Kaunitz (2017) 平博/必发锐利标尺与多机构共识离群检验, 5.1 「盘深就下盘，盘浅就上盘」, 5.2 单看一瞬间的水位判断冷热, 5.3 把单家公司当作「真理」, 5.4 各种江湖口诀（降盘=必冷、低平赔=必平…）, 5.5 跟着走势买，或永远反着走势买 (+9 more)
 
-### Community 46 - "纠偏规则（corrected）：单一平赔极端高挂(>3.80)不可作为一票排平依据，"
-Cohesion: 0.16
-Nodes (11): Wilkens (2021) 与 Hewamalage (2023) 预测模型特征克制与基准校准定理, 工作记忆问答：复盘如何与九篇论文打通且不把每句话变成门禁, 盘路母型：深盘热门欧深亚浅避险型（欧指<1.45卡一球超低水不升盘）, 实战判例：芬超冠古比斯0:1奥卢（密集防守弱旅低xG偷袭12%尾部方差）, Aiyer (2023) 决策过程审计：分离12%物理尾部方差与战意叙事盲区, 盘路母型：极端高平赔脱靶型（全网平赔3.80~4.10高挂但密防0:0闷平打出）, 实战判例：芬超冠格尼斯坦0:0图尔库国际（4.10高平赔下21.45%去水尾部概率打出0:0）, Dimitriadis et al. (2021) CORP 概率可靠性校准：拒绝将21.45%尾部平局概率归零 (+3 more)
+### Community 46 - "全量复盘总账：2026-10-11全量25场赛后复盘与认知契约卡对账（双选96.0%命中）"
+Cohesion: 0.22
+Nodes (6): Wilkens (2021) 与 Hewamalage (2023) 预测模型特征克制与基准校准定理, 工作记忆问答：复盘如何与九篇论文打通且不把每句话变成门禁, Aiyer (2023) 决策过程审计：分离12%物理尾部方差与战意叙事盲区, 全量复盘总账：2026-10-11全量25场赛后复盘与认知契约卡对账（双选96.0%命中）, Wheatcroft (2020) 足球概率预测评估：双选覆盖率与期望信息增益, 结果偏见与过程审计分离（Outcome Bias vs Process Audit）
 
-### Community 47 - "每日推演与复盘记忆（2026-10-02：国庆休市Polymarket欧国联10场专"
+### Community 47 - "每日推演与复盘记忆（2026-10-01：欧国联8场实战与Aiyer/Wheatcroft独立复盘审计）"
 Cohesion: 0.14
-Nodes (10): Aiyer(2023)先审赛前推理过程再看赛果的防结果偏见准则, 每日推演与复盘记忆（2026-10-01：欧国联8场实战与Aiyer/Wheatcroft独立复盘审计）, 希腊2-2荷兰(2981441)反向盘口移动(RLM)与1.03满水诱客案例, 波黑1-1瑞典(2981496)客胜逆势抬升至2.40教科书级RLM阻诱与1:1命中, 每日推演与复盘记忆（2026-10-02：国庆休市Polymarket欧国联10场专场与赛前冻结审计表）, 10场全量赛前推理过程冻结审计表（揭晓比分前独立打分）, 每日推演与复盘记忆（2026-10-03：欧国联7场6中85.7%高光大捷与Winkelmann持续位移验证）, 冰岛3-0保加利亚(2981545)主胜2.15→1.40断崖式砸盘知情资金顺势跟进 (+2 more)
+Nodes (11): Aiyer(2023)先审赛前推理过程再看赛果的防结果偏见准则, 每日推演与复盘记忆（2026-10-01：欧国联8场实战与Aiyer/Wheatcroft独立复盘审计）, Wheatcroft(2019)概率预测Brier Score与Log Loss严格评分规则, 每日推演与复盘记忆（2026-10-02：国庆休市Polymarket欧国联10场专场与赛前冻结审计表）, 10场全量赛前推理过程冻结审计表（揭晓比分前独立打分）, 每日推演与复盘记忆（2026-10-03：欧国联7场6中85.7%高光大捷与Winkelmann持续位移验证）, 冰岛3-0保加利亚(2981545)主胜2.15→1.40断崖式砸盘知情资金顺势跟进, 北马其顿0-2苏格兰(2981498)亚盘-0.75(0.85低水)与小球0.75共振命中0:2 (+3 more)
 
 ### Community 48 - "通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)"
 Cohesion: 0.11
 Nodes (17): 1. 通用环境准备, 2. 各平台运行方式, 使用方式, 功能概览, 多平台 AI Agent 原生适配, 开发者工具：口径一致性自检（可选）, 快速上手与运行环境, 手动模式 (+9 more)
 
-### Community 51 - "泊松分布λ攻防建模与波胆比分矩阵"
-Cohesion: 0.13
-Nodes (15): 泊松分布λ攻防建模与波胆比分矩阵, 第一道锁：数学与客观数据基线（Lock 1 Quantitative Baseline）, 联赛五维基准参数表（G_league均值/典型大小球线/平局倾向/主场优势/盘口习惯）, 联赛配置手册（泊松+盘口）, 双泊松模型（Bivariate Poisson）与Dixon-Coles低比分相关性修正, 主客场(0.7)与近6场(0.3)加权合成攻防预期进球λ公式, Dixon-Coles低比分集合{0:0,1:0,0:1,1:1}经验修正系数与归一化, 1. 升级 `校验/` 领域模型与语义规则 (8 大黄金维度) (+7 more)
+### Community 49 - "DimensionResult"
+Cohesion: 0.22
+Nodes (3): DimensionResult, VerificationReceipt, TestDomainModel
+
+### Community 51 - "比赛快照深层语义安检与泊松算法零偏差迁移实践"
+Cohesion: 0.14
+Nodes (11): 数据完整性检验与验收标准手册（重定向索引与CLI速查）, 1. 升级 `校验/` 领域模型与语义规则 (8 大黄金维度), 2. 迁移并封装 `算法/` 独立泊松引擎 (100% 零偏差平移), 比赛快照深层语义安检与泊松算法零偏差迁移实践, 解决方案, 问题背景, 验证结论, 独立泊松引擎10位浮点精度零偏差平移（poisson.py） (+3 more)
 
 ### Community 52 - "球队风格判定手册（简版）"
 Cohesion: 0.12
 Nodes (16): 场均进失球相对联赛均值G_league的3×3攻防强弱矩阵, 球队A/B/C三类风格划分（偏大球对攻/中性/偏小球防守）, 2.1 判定总进球倾向, 2.2 进攻 / 防守强弱, 2.3 主客场 & 近况修正, 3.1 长期大小球盘, 3.2 让球盘表现, 5.1 大小球方向 (+8 more)
 
 ### Community 53 - "泊松概率计算手册（足彩用）"
-Cohesion: 0.12
-Nodes (16): 10.1 离线拟合思路（以后可精细化）, 10.2 日常使用规则（经验参数版）, 1.1 公式, 1.2 性质, 7.1 计算公式, 7.2 怎么比较, 7.3 意义, 一、泊松基础 (+8 more)
+Cohesion: 0.07
+Nodes (29): 主客场(0.7)与近6场(0.3)加权合成攻防预期进球λ公式, 10.1 离线拟合思路（以后可精细化）, 10.2 日常使用规则（经验参数版）, 1.1 公式, 1.2 性质, 3.1 所需数据, 3.2 步骤一：基础 λ（仅用主队主场 + 客队客场）, 3.3 步骤二：掺入近六场（加权） (+21 more)
 
 ### Community 54 - "亚运男足 乌兹别克斯坦U23 vs 日本U23（编号: 周三002 比赛ID: 30"
 Cohesion: 0.12
@@ -603,21 +625,21 @@ Nodes (9): cachedBbsLeagueInjuries, cachedBbsTeamPlayers, cleanStr(), fetchFallb
 Cohesion: 0.22
 Nodes (17): appendCompanyList(), appendCorrectScoreRows(), appendCrowFullIndex(), appendEuropeCompanyList(), appendEuropeHistories(), appendGroupedHistories(), appendHeadToHead(), appendHistory() (+9 more)
 
-### Community 58 - "Levitt (2004) 为什么博彩市场与金融市场组织结构截然不同 (Econom"
-Cohesion: 0.18
-Nodes (14): 纯汇总赔率不可识别定理：单凭公开赔率无法剥离散户认知偏差、风险偏好与庄家主动调价, 冷热偏差(FLB)三重检验：分组z检验、LPM线性概率回归(F=55.85)与Yatchew半参数差分估计 (Table 4-7), 个体投注者行为异质性：仅38%高频博冷、6%显著亏损于冷门、2%正向剥削强队 (Section 4.1), 前景理论概率权重扭曲 w(p) 与偏度偏好(Skewness Preference)博弈机制, 本土与情感忠诚偏差(Loyalty/Home Bias)：约4%玩家对本国/死忠球队承受显著超额负回报 (Table 10), 庄家主动头寸暴露机制：故意偏离中位数利用散户偏差而非平衡账面, 散户预测技术无跨期持续性检验 Rank_it = α + β·Rank_{i,t-1} (R²=0.0004, Eq. 4), 庄家期望利润方程 E[Profit] = (2+v)(f+p-2pf) - 1 与一阶最优定价条件 (Eq. 1-3) (+6 more)
+### Community 58 - "Levitt (2004) 为什么博彩市场与金融市场组织结构截然不同 (Economic Journal / NBER w9422)"
+Cohesion: 0.16
+Nodes (14): 平局与高赔冷门严重负回报：平局平均回报-11.20%、长赔平局回报低至-22.50%至-25.65% (Table 4), 冷热偏差(FLB)三重检验：分组z检验、LPM线性概率回归(F=55.85)与Yatchew半参数差分估计 (Table 4-7), 个体投注者行为异质性：仅38%高频博冷、6%显著亏损于冷门、2%正向剥削强队 (Section 4.1), 前景理论概率权重扭曲 w(p) 与偏度偏好(Skewness Preference)博弈机制, 本土与情感忠诚偏差(Loyalty/Home Bias)：约4%玩家对本国/死忠球队承受显著超额负回报 (Table 10), 比价网滞后赔率(Stale Odds)执行滑点：模拟盘30%高赔因盘口已变无法成交，收益从+9.9%降至+5.5%, 散户预测技术无跨期持续性检验 Rank_it = α + β·Rank_{i,t-1} (R²=0.0004, Eq. 4), 庄家期望利润方程 E[Profit] = (2+v)(f+p-2pf) - 1 与一阶最优定价条件 (Eq. 1-3) (+6 more)
 
 ### Community 59 - "赔率与泊松比较：何时值得下注（案例详解）"
-Cohesion: 0.12
-Nodes (15): 泊松概率对比庄家隐含概率及期望值EV>1三案例实证（布伦特福德/赫尔蒙德/巴列卡诺）, 总结：怎么比较才叫“值得下注”, 案例一：布伦特福德 vs 狼队（真实赔率）, 案例三：巴列卡诺 vs 莱万特（假设赔率：主略被低估）, 案例二：赫尔蒙德 vs 坎布尔（假设赔率：主队被低估）, 步骤 1：赔率 → 隐含概率, 步骤 1：赔率 → 隐含概率, 步骤 1：赔率 → 隐含概率 (+7 more)
+Cohesion: 0.13
+Nodes (14): 总结：怎么比较才叫“值得下注”, 案例一：布伦特福德 vs 狼队（真实赔率）, 案例三：巴列卡诺 vs 莱万特（假设赔率：主略被低估）, 案例二：赫尔蒙德 vs 坎布尔（假设赔率：主队被低估）, 步骤 1：赔率 → 隐含概率, 步骤 1：赔率 → 隐含概率, 步骤 1：赔率 → 隐含概率, 步骤 2：逐项比较 (+6 more)
 
 ### Community 60 - "深度分析推送通知模板"
 Cohesion: 0.12
-Nodes (15): 先结论后过程推送结构与4000字分段折叠规范, 十步分析过程完整性与多机构同时间点交叉认证检查清单, 1. 标题与场次信息（首段开头）, 2. 分析过程（结论之后发送，可多段）, 3. 结论（生成在十步之后，发送在第 1 段，必须含以下全部）, 一、推送结构总览, 三、检查清单（主人/复盘用）, 二、必含块（下列按编写顺序列出，发送时先结论、后过程） (+7 more)
+Nodes (16): 比分推荐Top 4与CLV适用玩法口径统一, 先结论后过程推送结构与4000字分段折叠规范, 十步分析过程完整性与多机构同时间点交叉认证检查清单, 1. 标题与场次信息（首段开头）, 2. 分析过程（结论之后发送，可多段）, 3. 结论（生成在十步之后，发送在第 1 段，必须含以下全部）, 一、推送结构总览, 三、检查清单（主人/复盘用） (+8 more)
 
-### Community 61 - "比分建模与投注手册（泊松版）"
-Cohesion: 0.12
-Nodes (15): 平局比分累积占比（0:0/1:1/2:2）辅助盘口防平决策, 基于胜平负方向、大小球与球队风格的比分二次加权筛选 S(i:j)=P(i:j)*w(i:j), 1.1 单场比分概率 P(i:j), 1.2 胜平负与比分的关系, 2.1 基本思路, 2.2 操作步骤, 4.1 从胜平负 / 亚盘反推比分范围, 4.2 用比分辅助「盘口纠结」 (+7 more)
+### Community 61 - "泊松分布λ攻防建模与波胆比分矩阵"
+Cohesion: 0.10
+Nodes (22): 泊松分布λ攻防建模与波胆比分矩阵, 双泊松模型（Bivariate Poisson）与Dixon-Coles低比分相关性修正, Dixon-Coles低比分集合{0:0,1:0,0:1,1:1}经验修正系数与归一化, 平局比分累积占比（0:0/1:1/2:2）辅助盘口防平决策, 基于胜平负方向、大小球与球队风格的比分二次加权筛选 S(i:j)=P(i:j)*w(i:j), 1.1 单场比分概率 P(i:j), 1.2 胜平负与比分的关系, 2.1 基本思路 (+14 more)
 
 ### Community 62 - "盘路母型：整球设障御敌防小胜型（让一球中低水设障+泊松共振锁1球小胜）"
 Cohesion: 0.21
@@ -627,13 +649,17 @@ Nodes (8): 盘路母型：整球设障御敌防小胜型（让一球中低水设
 Cohesion: 0.12
 Nodes (16): 10. 【周六025】沙特联 利雅得新月 VS 吉达联合 (matchId: 3046999), 11. 【周六026】荷甲 福图纳锡塔德 VS 特温特 (matchId: 2996165), 12. 【周六027】意甲 那不勒斯 VS 弗洛西诺尼 (matchId: 2993812), 13. 【周六028】法甲 摩纳哥 VS 图卢兹 (matchId: 2995357), 14. 【周六029】西甲 皇家马德里 VS 比利亚雷亚尔 (matchId: 3013720), 15. 【周六030】巴西甲 圣保罗 VS 维多利亚 (matchId: 2910925), 1. 【周六016】西甲 阿拉维斯 VS 马德里竞技 (matchId: 3013712), 2. 【周六017】法甲 里尔 VS 勒阿弗尔 (matchId: 2995355) (+8 more)
 
+### Community 64 - "双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）"
+Cohesion: 0.19
+Nodes (12): 双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）, 1. 问题现象与根因, 2. 解决方案与架构重构, 3. 预防防线, 两阶段物理硬隔离, 核心根因, 根除推演前时序倒挂：第一动作死锁与搬运工/分析师硬隔离, 落地文件与修改点 (+4 more)
+
 ### Community 65 - "执行步骤"
 Cohesion: 0.12
 Nodes (16): 执行步骤, 步骤 1.5：先审过程，再揭比分（Aiyer 决策审计与认知契约卡对账）, 步骤 1：读取推荐记录, 步骤 2：获取比赛结果, 步骤 3.5：分析质量自评（泊松模型质量）, 步骤 3.6：概率打分（有数才算，不当对错本）, 步骤 3：逐场核对, 步骤 4.5：反事实分析 (+8 more)
 
 ### Community 66 - "执行步骤"
-Cohesion: 0.12
-Nodes (16): 🎯 2 串 1 组合推荐, skills/recommendation/SKILL.md 推荐汇总与7列表格交付技能, 执行步骤, 推荐输出（recommendation）, 步骤 1：逐场推送分析报告（内容格式规范）, 步骤 2：精选与全量汇总（全部分析完成后执行）, 步骤 3：生成胜平负汇总消息（默认附带胜负平 2 串 1 组合）, 深度分析 (+8 more)
+Cohesion: 0.13
+Nodes (15): 🎯 2 串 1 组合推荐, 执行步骤, 推荐输出（recommendation）, 步骤 1：逐场推送分析报告（内容格式规范）, 步骤 2：精选与全量汇总（全部分析完成后执行）, 步骤 3：生成胜平负汇总消息（默认附带胜负平 2 串 1 组合）, 深度分析, 📊 深度推演总表（法定 7 列规范） (+7 more)
 
 ### Community 67 - "二、8 大黄金维度法定验收规则"
 Cohesion: 0.12
@@ -655,7 +681,7 @@ Nodes (14): arrCup：赛事基础信息, arrCupKind：阶段与轮次定义, arr
 Cohesion: 0.14
 Nodes (13): 1. Football-Data.org, 1. 赔率时序与全盘指数（主源：titan007）, 2. The Odds API (`the-odds-api.com`), 2. 主源失败怎么办, 3. BrowserOS neo 真实浏览器直连通道, 3. 微观阵容与伤停双引擎, 4. Sofascore 手机免密钥数据流, 4. 预测市场与美分撮合（Polymarket） (+5 more)
 
-### Community 74 - "Stable Reliability Diagrams Using CORP and"
+### Community 74 - "Stable Reliability Diagrams Using CORP and Isotonic Recalibration"
 Cohesion: 0.14
 Nodes (13): Page 01: Stable reliability diagrams for probabilistic classifiers, Page 02: ENS / Binning and Counting ENS / CORP, Page 03: A EMOS / 9 Equidistant Bins B EMOS / 10 Equidistant Bins, Page 04: constitutes both the nonparametric isotonic least squares and operate in the dis, Page 05: 1.00 1.00, Page 06: Here, we adopt the general score decomposition introduced n1 , . . . , nk times,, Page 07: Table 1: Scoring Rules & CORP Decomposition (Table 2), Page 08: and associated realizations y1 , . . . , yn ∈ {0, 1} from an order n α for α ∈ ( (+5 more)
 
@@ -667,21 +693,21 @@ Nodes (14): 001 场案例分析, 判断速查表, 升盘 + 升水的双重性（
 Cohesion: 0.14
 Nodes (14): 0. 单场/多场极速进货执行路径（搬运工 Subagent 专属操作规程）, 1. 亚盘与大小球 7 大法定机构并发直取, 2. 欧洲指数 23 家法定机构全覆盖与全时序解构（抓取时内存提纯，严禁 Raw Dump）, 3. 单场 5 大数据源抓取时精准提取规范（Scrapling 官方选择器下推）, 4. 组装落盘与物理门禁核验（进货合格线）, 5. 多场与全量场次分批进货规约（Batch Ingest Protocol）, skills/match-scraper/SKILL.md 赛程同步与五维并发进货技能, 前提条件 (+6 more)
 
-### Community 78 - "Kaunitz, Zhong & Kreiner (2017) 用庄家自身赔率击败庄"
-Cohesion: 0.22
-Nodes (8): 平局与高赔冷门严重负回报：平局平均回报-11.20%、长赔平局回报低至-22.50%至-25.65% (Table 4), 最高赔率(Max Odds)相对平均赔率(Avg Odds)将长期利润放大42%至296%（高达4倍）(Section 6.i), 庄家歧视性限额与封号风控：盈利账户遭遇$1.25-$11.11极端限红(William Hill/Betway等)与关户(Doxxbet), 临盘vs早盘[-5h,-1h]错价溢价对比：收盘回测ROI +3.5%(10.82σ)，赛前1-5小时ROI跃升至+9.9%(4.80σ) (Table 1-2), 比价网滞后赔率(Stale Odds)执行滑点：模拟盘30%高赔因盘口已变无法成交，收益从+9.9%降至+5.5%, 离群高赔错价狙击公式 max(Ω) > 1 / (p_cons - 0.05) 固定5%安全边际阈值 (Eq. 6-7), 群智共识隐含概率 p_cons = 1/mean(Ω) 与去水偏置回归 p_real ≃ p_cons - α (α=0.034,0.057,0.037) (Eq. 1-5), Kaunitz, Zhong & Kreiner (2017) 用庄家自身赔率击败庄家：47.9万场足球市场错价实证
+### Community 78 - "Kaunitz, Zhong & Kreiner (2017) 用庄家自身赔率击败庄家：47.9万场足球市场错价实证"
+Cohesion: 0.27
+Nodes (7): 最高赔率(Max Odds)相对平均赔率(Avg Odds)将长期利润放大42%至296%（高达4倍）(Section 6.i), 庄家歧视性限额与封号风控：盈利账户遭遇$1.25-$11.11极端限红(William Hill/Betway等)与关户(Doxxbet), 临盘vs早盘[-5h,-1h]错价溢价对比：收盘回测ROI +3.5%(10.82σ)，赛前1-5小时ROI跃升至+9.9%(4.80σ) (Table 1-2), 离群高赔错价狙击公式 max(Ω) > 1 / (p_cons - 0.05) 固定5%安全边际阈值 (Eq. 6-7), 群智共识隐含概率 p_cons = 1/mean(Ω) 与去水偏置回归 p_real ≃ p_cons - α (α=0.034,0.057,0.037) (Eq. 1-5), Winkelmann et al. (2021) 日内极端赔率波动过度反应与震仓识别 (Step 6依据), Kaunitz, Zhong & Kreiner (2017) 用庄家自身赔率击败庄家：47.9万场足球市场错价实证
 
-### Community 79 - "Feng, Polson & Xu (2017) 英超赔率校准与动态Skellam进"
-Cohesion: 0.24
-Nodes (11): 庄家防御知情交易者(Insiders)导致的冷门端高额内嵌抽水机制, Choe &誉 (2025) 信息陷阱：私人伤停突发消息压低受让冷门赔率 (Step 8依据), Dixon & Coles (1997) 低比分相关性修正系数τ与指数半衰期权重, 滚球盘赔率跳跃诊断：红牌(34'阿德里安)与绝杀球对隐含λ_t和P(A/D/B)的瞬时冲击 (Section 4.1), 比赛隐含波动率指标 σ_{IV,t} = √(λ_t^A + λ_t^B) 衡量总进球不确定性 (Page 18), 修正贝塞尔函数 I_|x|(2√(λ^A λ^B)) 净胜球精确概率质量函数 (Eq. 5-8), 动态Skellam净胜球随机过程 N(t)=N_A(t)-N_B(t) ~ Skellam(λ^A t, λ^B t) 与共同冲击抵消性质 (Eq. 1-10), 零膨胀Skellam模型 (Zero-Inflated Skellam Type I & II)：刻画0:0/平局概率膨胀参数 p 与 θ (Eq. 17-18) (+3 more)
+### Community 79 - "论文库实战映射总纲 (paper-application-v2)"
+Cohesion: 0.26
+Nodes (10): 庄家防御知情交易者(Insiders)导致的冷门端高额内嵌抽水机制, Choe &誉 (2025) 信息陷阱：私人伤停突发消息压低受让冷门赔率 (Step 8依据), Dixon & Coles (1997) 低比分相关性修正系数τ与指数半衰期权重, 滚球盘赔率跳跃诊断：红牌(34'阿德里安)与绝杀球对隐含λ_t和P(A/D/B)的瞬时冲击 (Section 4.1), 比赛隐含波动率指标 σ_{IV,t} = √(λ_t^A + λ_t^B) 衡量总进球不确定性 (Page 18), 修正贝塞尔函数 I_|x|(2√(λ^A λ^B)) 净胜球精确概率质量函数 (Eq. 5-8), 动态Skellam净胜球随机过程 N(t)=N_A(t)-N_B(t) ~ Skellam(λ^A t, λ^B t) 与共同冲击抵消性质 (Eq. 1-10), 零膨胀Skellam模型 (Zero-Inflated Skellam Type I & II)：刻画0:0/平局概率膨胀参数 p 与 θ (Eq. 17-18) (+2 more)
 
 ### Community 80 - "Polymarket 链接查找教程"
 Cohesion: 0.15
 Nodes (12): 3）读价钱, Polymarket 链接查找教程, 一、先有场次代号和对阵, 三、标准三步核验法（强制全网检索，严禁偷懒调死接口）, 主人只发了时序图（没队名）, 二、日期怎么取, 五、换 AI 时最少要做的, 四、怎么写成可点的链接 (+4 more)
 
-### Community 81 - "每日推演与复盘记忆（2026-09-29：图谱零孤岛与六图盲测训练）"
-Cohesion: 0.15
-Nodes (8): 每日推演与复盘记忆（2026-09-29：图谱零孤岛与六图盲测训练）, 苏格兰vs瑞士(2981490)与捷克vs英格兰(2981440)十步推演, 六图盲测第一铁律：先写初盘骨架再读变盘轨迹, 让球盘口篮子拆解法则（+1/-1篮子内分拆平局与胜负）, 赛会制淘汰赛常规时间90分钟平局防守边界, 每日推演与复盘记忆（2026-09-30：U23亚运深盘代差与历史0-0诱平破译）, 韩国U23 vs 中国U23(3095738)深盘体能代差与泊松λ推演, 学术论文PDF视觉对齐重建规范（ky-markdown-rebuilder）
+### Community 81 - "timeseries_denoiser.py"
+Cohesion: 0.27
+Nodes (7): denoise_timeline_rows(), _extract_tag_and_floats(), _fold_bouncing_regimes(), get_state(), _fold_handicap_tag_oscillations(), _normalize_handicap_name(), _safe_float()
 
 ### Community 82 - "深度分析（17:15）"
 Cohesion: 0.15
@@ -691,13 +717,13 @@ Nodes (13): 【周六004】日职联 京都不死鸟 vs 町田泽维亚 (ID: 300
 Cohesion: 0.15
 Nodes (12): engines, node, name, private, scripts, analyze, review, schedule (+4 more)
 
-### Community 84 - "CalculatePoissonUseCase"
-Cohesion: 0.23
-Nodes (3): main(), CalculatePoissonUseCase, TestPoissonUseCase
+### Community 84 - "test_poisson.py"
+Cohesion: 0.11
+Nodes (4): main(), CalculatePoissonUseCase, TestPoissonCli, TestPoissonUseCase
 
-### Community 85 - "Giacomini & White (2006) 条件预测能力检验 (Tests o"
-Cohesion: 0.23
-Nodes (9): 536页精校语料完整性门禁（源页行数/公式/图表三维对齐）, 条件预测能力原假设 H_0: E[ΔL_{m,t+τ} | G_t] = 0 与检验函数h_t (Eq. 2-3), 对Diebold-Mariano-West (DMW)无条件总体参数检验的批判：忽略滚动窗口与估计噪声, 有限滑动估计窗口设计 (m ≤ m̄ < ∞)：保留渐近非退化参数估计不确定性, 嵌套模型偏差-方差权衡定理：有限样本下精简误设模型可击败冗余真实模型 (Propositions 5-6, Eq. 9-12), 两步条件预测切换决策规则：基于当前信息集δ̂'_n h_T > c动态切换预测模型 (Section 4), 条件预测能力Wald统计量 T_{m,n}^h = n·Z̄'Ω̂⁻¹Z̄ → χ²_q 及多步HAC协方差矩阵 (Theorem 1-3, Eq. 4-6), 19篇学术论文逐页精校核对记录（536/536页全量100%对齐） (+1 more)
+### Community 85 - "Giacomini & White (2006) 条件预测能力检验 (Tests of Conditional Predictive Ability, Econometrica)"
+Cohesion: 0.29
+Nodes (8): 条件预测能力原假设 H_0: E[ΔL_{m,t+τ} | G_t] = 0 与检验函数h_t (Eq. 2-3), 对Diebold-Mariano-West (DMW)无条件总体参数检验的批判：忽略滚动窗口与估计噪声, 有限滑动估计窗口设计 (m ≤ m̄ < ∞)：保留渐近非退化参数估计不确定性, 嵌套模型偏差-方差权衡定理：有限样本下精简误设模型可击败冗余真实模型 (Propositions 5-6, Eq. 9-12), 两步条件预测切换决策规则：基于当前信息集δ̂'_n h_T > c动态切换预测模型 (Section 4), 条件预测能力Wald统计量 T_{m,n}^h = n·Z̄'Ω̂⁻¹Z̄ → χ²_q 及多步HAC协方差矩阵 (Theorem 1-3, Eq. 4-6), 受控扰动实验(ε < δ, Eq. 4)：在39,343场英格兰联赛中IGN识别真实模型的收敛速度显著快于RPS与Brier (Fig. 1-4), Giacomini & White (2006) 条件预测能力检验 (Tests of Conditional Predictive Ability, Econometrica)
 
 ### Community 86 - "联赛配置手册（泊松 + 盘口）"
 Cohesion: 0.17
@@ -715,13 +741,13 @@ Nodes (12): 2026-10-07 每日记忆, 6 列表格汇总推荐, 优质胜负平 2 
 Cohesion: 0.17
 Nodes (11): Boundaries, Key metrics, Positioning, Purpose, Tracks, Users, 倍率分析推演 (Pansuan Engine) Strategy, 博弈认知深化与学术前沿扩展 (+3 more)
 
-### Community 91 - "Constantinou (2022) 亚洲让球盘(AH)与胜平负(1X2)足球博彩"
-Cohesion: 0.27
-Nodes (9): Buhamra (2024) 概率估计误差下Kelly注码收缩因子 α∈(0,1) (Step 10仓位红线), 亚盘与欧赔价值错位异象：模型推荐的AH价值注集中于低赔让球方(均赔1.6-1.8)，而1X2价值注集中于高赔受让冷门(均赔>3.0), 亚洲让球盘(AH)整盘、半盘与四分之一拆盘(±0.25, ±0.75)收益结算矩阵 (Table 1), Beta-Binomial混合贝叶斯网络因果链：RDL → 控球率(PS) → 射门差(SD) → 射正差(STD) → 净胜球(GD) → 1X2/AH (Fig. 1), 最优出手阈值θ跨赛季剧烈漂移定律：单赛季优化ROI阈值不可外推，跨季最大化总利润(Profit)的综合ROI(12.96%)反超逐季最大化ROI(9.03%), 亚盘低风险幻觉破除(Fig. 6)：1X2利润与ROI高出亚盘2.5至5.5倍；若将AH注码放大5.59倍以匹配1X2总利润，二者回撤风险同阶, 改进型动态Pi-ratings评分系统：主客场双轨评分与最优学习率 λ=0.018, γ=0.70 (Eq. 1-6, Table 6), 基于后验预测概率超越庄家隐含概率Δ_m的择时投注规则 (Eq. 5.1) (+1 more)
+### Community 91 - "Constantinou (2022) 亚洲让球盘(AH)与胜平负(1X2)足球博彩市场效率与盈利对比 (Journal of Sports Analytics)"
+Cohesion: 0.20
+Nodes (11): 纯汇总赔率不可识别定理：单凭公开赔率无法剥离散户认知偏差、风险偏好与庄家主动调价, Buhamra (2024) 概率估计误差下Kelly注码收缩因子 α∈(0,1) (Step 10仓位红线), 亚盘与欧赔价值错位异象：模型推荐的AH价值注集中于低赔让球方(均赔1.6-1.8)，而1X2价值注集中于高赔受让冷门(均赔>3.0), 亚洲让球盘(AH)整盘、半盘与四分之一拆盘(±0.25, ±0.75)收益结算矩阵 (Table 1), Beta-Binomial混合贝叶斯网络因果链：RDL → 控球率(PS) → 射门差(SD) → 射正差(STD) → 净胜球(GD) → 1X2/AH (Fig. 1), 最优出手阈值θ跨赛季剧烈漂移定律：单赛季优化ROI阈值不可外推，跨季最大化总利润(Profit)的综合ROI(12.96%)反超逐季最大化ROI(9.03%), 亚盘低风险幻觉破除(Fig. 6)：1X2利润与ROI高出亚盘2.5至5.5倍；若将AH注码放大5.59倍以匹配1X2总利润，二者回撤风险同阶, 改进型动态Pi-ratings评分系统：主客场双轨评分与最优学习率 λ=0.018, γ=0.70 (Eq. 1-6, Table 6) (+3 more)
 
 ### Community 92 - "流程与文档一致性检查（漏洞与建议）"
-Cohesion: 0.18
-Nodes (9): 1. MEMORY.md 中 CLV 用词与「各玩法」不统一, 2. 主会话「无赛程时」行为略模糊, 3. 两套比分时「比分首选」未约定, 4. 已分析过再分析：询问 vs 跳过, 一、已确认一致的部分, 三、可选优化（非漏洞）, 二、建议修补的漏洞 / 不一致, 四、小结 (+1 more)
+Cohesion: 0.14
+Nodes (11): 1. MEMORY.md 中 CLV 用词与「各玩法」不统一, 2. 主会话「无赛程时」行为略模糊, 3. 两套比分时「比分首选」未约定, 4. 已分析过再分析：询问 vs 跳过, 一、已确认一致的部分, 三、可选优化（非漏洞）, 二、建议修补的漏洞 / 不一致, 四、小结 (+3 more)
 
 ### Community 93 - "2026-10-03 每日记忆"
 Cohesion: 0.18
@@ -751,21 +777,21 @@ Nodes (11): 1. [芬超冠] 格尼斯坦 0:0 图尔库国际 (ID: 3085210), 2. [�
 Cohesion: 0.18
 Nodes (11): 基本面摘要, 基本面摘要, [巴西甲] 博塔弗戈 vs 达伽马（编号: 周三006 比赛ID: 2910908，开球: 2026-10-08 07:30，分析: 2026-10-07 21:35）, [巴西甲] 巴西国际 vs 科林蒂安（编号: 周三002 比赛ID: 2910912，开球: 2026-10-08 06:30，分析: 2026-10-07 22:30）, 深度分析（晚盘 21:00）, 独立泊松比分简表（复盘用）, 独立泊松比分简表（复盘用）, 综合评估 (+3 more)
 
-### Community 100 - "Wheatcroft (2019) 足球比赛概率预测评分规则评估：批判RPS并确立对"
-Cohesion: 0.31
-Nodes (9): 13个英超赛季(2006/07-2018/19)预测精度基准：1X2平均RPS=0.195，亚盘平均Brier=0.248，需至少5赛季数据训练 (Table 7-8), Silver (2012) & Tetlock (2015) 显式概率颗粒度与Brier校准复盘法则, Brier评分(Eq. 1)与排序概率评分RPS(Eq. 2)的非局部性缺陷：同时受未发生事件概率分配影响, 对Constantinou & Fenton (2012) 5场假想比赛声称Brier/IGN失效的数学反驳, 受控扰动实验(ε < δ, Eq. 4)：在39,343场英格兰联赛中IGN识别真实模型的收敛速度显著快于RPS与Brier (Fig. 1-4), 无知评分(Ignorance Score) IGN = -log₂(p(Y))：唯一严格局部评分规则，均值差2^{ΔIGN}直接度量信息增益比特 (Eq. 3), RPS顺序距离敏感性谬误：当真实胜平负概率非单调(如两极分化低平局)时，RPS产生误导性排名 (Table 2-4), 基于单一赛果事后条件化评判预测优劣的逻辑谬误：必须基于真实数据生成机制(DGM)期望评分验证 (+1 more)
+### Community 100 - "Wheatcroft (2019) 足球比赛概率预测评分规则评估：批判RPS并确立对数无知评分(IGN)"
+Cohesion: 0.16
+Nodes (16): 13个英超赛季(2006/07-2018/19)预测精度基准：1X2平均RPS=0.195，亚盘平均Brier=0.248，需至少5赛季数据训练 (Table 7-8), 传统固定分箱(Binning and Counting)可靠性图的不一致性与超参数敏感性批判 (Fig. 1), 连续预测下CORP估计均方误差(MSE)最优收敛速率 O(n^{-2/3}) 与离散速率 O(n^{-1}) (Page 8), CORP精确评分分解定理 S̄_X = MCB - DSC + UNC (Theorem 1, Eq. 2-3)：保证失准度MCB≥0、区分度DSC≥0恒成立, CORP特征(Consistent, Optimally Binned, Reproducible, PAV-based)：基于池相邻违背算法(PAV)的非参数保序重校准, 失准度(MCB = S̄_X - S̄_C)与区分度(DSC = S̄_R - S̄_C)正交解耦：对角线偏离测度失准，水平台阶测度区分度丧失, Theorem 2：当经验条件事件频率单调不减时，Brier评分下CORP分解(MCB/DSC/UNC)与经典Murphy分解(REL/RES/UNC)完全等价, 后验预测检验(PPC)与净胜球分布校准验证 (Eq. 4.1, Fig. 2-3) (+8 more)
 
-### Community 101 - "Egidi, Pauli & Torelli (2018) 结合历史进球数据与庄家隐"
+### Community 101 - "Egidi, Pauli & Torelli (2018) 结合历史进球数据与庄家隐含赔率的层次贝叶斯泊松模型"
 Cohesion: 0.31
-Nodes (9): 历史统计强度θ与庄家隐含强度λ的凸组合先验 p·θ + (1-p)·λ (Eq. 3.3, 3.7), 赛季内时间段动态自回归攻防演化 att_{t,τ} ~ N(att_{t,τ-1}, σ²) (Eq. 3.9), 双泊松进球分布与对数线性攻防强度模型 θ_m1, θ_m2 (Eq. 3.3-3.4), 后验预测检验(PPC)与净胜球分布校准验证 (Eq. 4.1, Fig. 2-3), Basic基础比例去水(Eq. 2.1)与Shin知情交易占比z去水(Eq. 2.2)对比, 基于Skellam分布(PD)从欧赔去水概率反演庄家隐含进球率 θ̂_m1, θ̂_m2 (Eq. 3.2), 球队攻防参数零和可识别性约束 Σatt_t=0, Σdef_t=0 (Eq. 3.5-3.6), 由波胆(Correct Score)比分赔率矩阵反演隐含进球强度 (λ̂_t^A, λ̂_t^B) (Eq. 11-16) (+1 more)
+Nodes (9): 历史统计强度θ与庄家隐含强度λ的凸组合先验 p·θ + (1-p)·λ (Eq. 3.3, 3.7), 赛季内时间段动态自回归攻防演化 att_{t,τ} ~ N(att_{t,τ-1}, σ²) (Eq. 3.9), 双泊松进球分布与对数线性攻防强度模型 θ_m1, θ_m2 (Eq. 3.3-3.4), Basic基础比例去水(Eq. 2.1)与Shin知情交易占比z去水(Eq. 2.2)对比, 基于Skellam分布(PD)从欧赔去水概率反演庄家隐含进球率 θ̂_m1, θ̂_m2 (Eq. 3.2), 球队攻防参数零和可识别性约束 Σatt_t=0, Σdef_t=0 (Eq. 3.5-3.6), 由波胆(Correct Score)比分赔率矩阵反演隐含进球强度 (λ̂_t^A, λ̂_t^B) (Eq. 11-16), Štrumbelj (2014) Shin去水显著优于基础乘法与加法归一化 (Step 2依据) (+1 more)
 
 ### Community 102 - "二、五大博弈支柱专项体检结论"
 Cohesion: 0.20
-Nodes (9): 1. 第一大梁：庄家精算第一性原理（算账本，不算球技）, 2. 第二大梁：初盘原始物理基准锚点, 3. 第三大梁：双盘联动张力与让球防守底线, 4. 第四大梁：五阶段动态时序与假摔破译（T0～T4）, 5. 第五大梁：物理三维落槌与胜负平 2 串 1 交付, 一、10 个 Commit 逐项体检总览表, 三、一锤定音总结, 二、五大博弈支柱专项体检结论 (+1 more)
+Nodes (9): 1. 第一大梁：庄家精算第一性原理（算账本，不算球技）, 2. 第二大梁：初盘原始物理基准锚点, 3. 第三大梁：双盘联动张力与让球防守底线, 4. 第四大梁：全周期真实变盘时序与假摔破译（Verbatim Raw Wire）, 5. 第五大梁：物理三维落槌与胜负平 2 串 1 交付, 一、10 个 Commit 逐项体检总览表, 三、一锤定音总结, 二、五大博弈支柱专项体检结论 (+1 more)
 
-### Community 103 - "Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水"
-Cohesion: 0.18
-Nodes (8): Answer, Outcome, Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水防穿（案例：芬超冠赫尔辛基6:0VPS瓦萨）, Source Nodes, Answer, Outcome, Q: 2026-10-10 西甲 阿拉维斯 1:2 马德里竞技, Source Nodes
+### Community 103 - "Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水防穿（案例：芬超冠赫尔辛基6:0VPS瓦萨）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【欧亚共振升盘降赔型】欧指主胜击穿1.50且平赔高企关门，亚盘稳步升盘一球压水防穿（案例：芬超冠赫尔辛基6:0VPS瓦萨）, Source Nodes
 
 ### Community 104 - "2026-10-06 每日记忆"
 Cohesion: 0.20
@@ -784,24 +810,24 @@ Cohesion: 0.20
 Nodes (10): 串关统计, 关键教训, 各玩法命中率, 各联赛命中率, 待验证, 比分预测统计, 策略调优记录, 累计战绩 (+2 more)
 
 ### Community 108 - "校验/src/adapter/cli.py 物理防伪与时序门禁"
-Cohesion: 0.22
-Nodes (6): Subagent 编排与阶段工种硬隔离架构, 赛程同步/赛前分析/赛后复盘心跳补漏机制, skills/deep-analysis/SKILL.md 比赛深度分析十步法核心大脑, 球探网5大核心接口并发直取与推演源数据装配, 法定23家核心机构白名单与五阶段时序快照契约, 校验/src/adapter/cli.py 物理防伪与时序门禁
+Cohesion: 0.25
+Nodes (5): Subagent 编排与阶段工种硬隔离架构, 赛程同步/赛前分析/赛后复盘心跳补漏机制, 球探网5大核心接口并发直取与推演源数据装配, 法定23家核心机构白名单与五阶段时序快照契约, 校验/src/adapter/cli.py 物理防伪与时序门禁
 
 ### Community 109 - "Aiyer et al. (2023) 结果偏见与决策评价预注册复制与扩展研究 (N"
 Cohesion: 0.33
 Nodes (8): 有意识去偏失效定律（明确声明不应看结果的被试仍表现强烈结果偏见 d=0.64）, 反事实规范理论（Norm Theory）在足球爆冷/绝杀赛后归因中的认知纠偏, 结果偏见定理（Outcome Bias：相同事前概率8%下成败导致事后评价极显著背离 d=0.77~1.10）, 专业决策者失利严惩非对称性（医生失败受罚显著重于患者本人 t=-2.91, d=-0.31）, 感知社会规范对结果偏见的间接中介机制（Perceived Social Norms f=0.18）, Aiyer et al. (2023) 结果偏见与决策评价预注册复制与扩展研究 (N=692), Baron & Hershey (1988) 结果偏见经典实验1 (冠脉搭桥8%死亡率相同事前概率), Kahneman & Miller (1986) 规范理论与事后反事实可变性（Norm Theory）
 
-### Community 110 - "Dimitriadis, Gneiting & Jordan (2021) 概率分类"
-Cohesion: 0.33
-Nodes (7): 传统固定分箱(Binning and Counting)可靠性图的不一致性与超参数敏感性批判 (Fig. 1), 连续预测下CORP估计均方误差(MSE)最优收敛速率 O(n^{-2/3}) 与离散速率 O(n^{-1}) (Page 8), CORP精确评分分解定理 S̄_X = MCB - DSC + UNC (Theorem 1, Eq. 2-3)：保证失准度MCB≥0、区分度DSC≥0恒成立, CORP特征(Consistent, Optimally Binned, Reproducible, PAV-based)：基于池相邻违背算法(PAV)的非参数保序重校准, 失准度(MCB = S̄_X - S̄_C)与区分度(DSC = S̄_R - S̄_C)正交解耦：对角线偏离测度失准，水平台阶测度区分度丧失, Theorem 2：当经验条件事件频率单调不减时，Brier评分下CORP分解(MCB/DSC/UNC)与经典Murphy分解(REL/RES/UNC)完全等价, Dimitriadis, Gneiting & Jordan (2021) 概率分类器的稳定可靠性图与CORP评分分解 (PNAS)
+### Community 110 - "四项论文质问清单（Levitt偏见/Goto去水/Winkelmann假摔/Constantinou底线）"
+Cohesion: 0.18
+Nodes (14): ADR 0002: 双锁博弈推演架构（A+B辩证合体）, 第一道锁：数学与客观数据基线（Lock 1 Quantitative Baseline）, 第二道锁：庄家博弈与逆向破译（Lock 2 Bookmaker Reverse Engineering）, 四项论文质问清单（Levitt偏见/Goto去水/Winkelmann假摔/Constantinou底线）, Constantinou (2022) & Hegarty-Whelan (2023) 欧亚双盘背离与让球防守底线优先律, Levitt (2004) 台阶式真实防守与极小化最大损失做市定理, Winkelmann (2026) 隐状态空间假摔突破形态（Head-Fake瞬态流动性诱买）, OO-EPC无偏胜率与亚盘让球门槛几何折合校验 (+6 more)
 
 ### Community 111 - "ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）"
 Cohesion: 0.22
 Nodes (8): ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）, 决策内容 (Decision), 决策背景 (Context), 收益与代价 (Consequences), 状态 (Status), 第一道锁：数学与客观数据基线 (Lock 1 - Quantitative Baseline), 第二道锁：庄家博弈与逆向破译 (Lock 2 - Bookmaker Reverse Engineering), 裁决准则：双路证据闭环 (Synthesis Gate)
 
-### Community 112 - "四大乱局识别过滤（极端伤停/战意怪局/末轮练兵/样本不足）"
-Cohesion: 0.25
-Nodes (9): 保守资金管理与相关性逻辑分桶注码上限（单场<=3%B，单日<=6%B）, 四大乱局识别过滤（极端伤停/战意怪局/末轮练兵/样本不足）, 下注决策手册（版本1）, 比分推荐Top 4与CLV适用玩法口径统一, 轻微/中度/重度三档伤停对λ1与λ2的加减修正规则, 物理三维落槌（胜者×净胜球×总进球）与胜负平2串1交付, 足彩赛前预测与赛后复盘分析模板（主人亲授）, 基本面8维度逐项核查表（状态/交锋/主客/排名/伤停/战意/赛程/场外） (+1 more)
+### Community 112 - "下注决策手册（版本1）"
+Cohesion: 0.32
+Nodes (7): 保守资金管理与相关性逻辑分桶注码上限（单场<=3%B，单日<=6%B）, 四大乱局识别过滤（极端伤停/战意怪局/末轮练兵/样本不足）, 下注决策手册（版本1）, 泊松概率对比庄家隐含概率及期望值EV>1三案例实证（布伦特福德/赫尔蒙德/巴列卡诺）, 轻微/中度/重度三档伤停对λ1与λ2的加减修正规则, 物理三维落槌（胜者×净胜球×总进球）与胜负平2串1交付, 最近10个Git提交推演过程骨架专项体检报告
 
 ### Community 113 - "二、四大架构级增补落地方案"
 Cohesion: 0.22
@@ -842,6 +868,10 @@ Nodes (9): 极速单动执行规约（Scrapling MCP 官方极速通道）, 查�
 ### Community 122 - "赛后复盘（post-review）"
 Cohesion: 0.22
 Nodes (9): 比赛取消/推迟, 比赛未全部完场, 特殊场景, 论文应用回检, 赛后复盘（post-review）, 输入, 输出, 闭环验收（处理完成与方法证据分开） (+1 more)
+
+### Community 123 - "每日推演与复盘记忆（2026-10-09：11场赛前时点盲测重推、双选90.9%覆盖与海登海姆0-0破译）"
+Cohesion: 0.19
+Nodes (8): 11场全量赛前时点独立重推机制（双选覆盖10/11达90.9%，比分11中7达63.6%）, 每日推演与复盘记忆（2026-10-09：11场赛前时点盲测重推、双选90.9%覆盖与海登海姆0-0破译）, 哥德堡1-0(2912286)、布兰0-2(2912908)、埃因霍温2-0(2996161)泊松精确比分群命中, 阿拉维斯1-2马竞(3013712)Hegarty/Whelan四分之一盘(-0.75配1.11满水)锁死赢1球与[+1]让平, 每日推演与复盘记忆（2026-10-10：纯Markdown双轨架构投产、周六30场大盘与莱比锡/霍芬海姆深度复盘）, 周日25场全量推演24/25双选覆盖（96.0%命中率）与首选56.0%实战验证, 本菲卡2-0吉马良斯(3023496)[-2]让平与南安普敦1-0朴茨茅斯(3008253)[-1]让平净胜球锁死, 每日推演与复盘记忆（2026-10-11：周日25场全量推演、双选96.0%惊人覆盖与利物浦0-3曼城破译）
 
 ### Community 125 - "ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）"
 Cohesion: 0.25
@@ -884,8 +914,8 @@ Cohesion: 0.25
 Nodes (8): 2784765 场（意甲 拉齐奥 1-0 AC 米兰）复盘总结, 主人点评, 亚盘数据, 基本面 8 维度, 核心教训, 浅盘形态判断, 盘口类型判断, 赛果验证
 
 ### Community 135 - "执行流程"
-Cohesion: 0.25
-Nodes (8): 执行流程, 阶段 0：预处理与标签, 阶段 1：联赛层级筛选, 阶段 2：时间与信息可获性, 阶段 3：杯赛、战意与特殊标记, 阶段 4：基本面与伤情 → 自开盘, 阶段 5：各公司盘口对比 → 认证 → 关键点/疑点/核心矛盾, 阶段 6：综合排序与数量控制
+Cohesion: 0.13
+Nodes (15): skills/match-screening/SKILL.md 比赛初筛与分批切片技能, 写入记忆, 初筛本意与分析逻辑, 执行流程, 赛事初筛（match-screening）, 输入, 输出, 输出格式 (+7 more)
 
 ### Community 136 - "SOUL.md - 你是谁"
 Cohesion: 0.25
@@ -951,21 +981,21 @@ Nodes (7): 一、实战对账汇总表, 三、观察组与候补场次核对, �
 Cohesion: 0.29
 Nodes (6): sporttery-sniper, 使用方式, 抓取范围, 数据注意事项, 部署, 验证
 
-### Community 152 - "赛事初筛（match-screening）"
-Cohesion: 0.29
-Nodes (7): skills/match-screening/SKILL.md 比赛初筛与分批切片技能, 写入记忆, 初筛本意与分析逻辑, 赛事初筛（match-screening）, 输入, 输出, 输出格式
+### Community 152 - "纠偏规则（corrected）：升水不等于不出、降水不等于必出，超高水禁作一票否决去水大项的死尺子"
+Cohesion: 0.25
+Nodes (7): 盘路母型：超高水逆向打出型（亚盘让球方挂超满水>1.05阻筹打出）, 实战判例：巴西甲巴西国际2:1科林蒂安（主让平半1.09超满水+40.8%去水第一大项打出）, Levitt (2004) 庄家非对称定价：利用>1.05超高水制造心理畏惧以阻截上盘筹码, 盘路母型：同城德比客让设障型（客队历史客胜率低但德比战客让平半挂满水设障）, 实战判例：巴西甲博塔弗戈1:2达伽马（德比战客让平半满水设障御敌2:1客胜）, 实战判例：2026-10-10 德甲 RB莱比锡6:0法兰克福（一球退半一震仓洗盘误判诱客反思）, 失误复盘判例：2026-10-11 英超 水晶宫3:1诺丁汉森林(3003903)（平手1.06高水误判诱主漏主胜）
 
-### Community 153 - "二、全周期全周期真实变盘时序窗口解析 (Verbatim Raw Wire)"
+### Community 153 - "二、全周期真实变盘时序窗口解析 (Verbatim Raw Wire)"
 Cohesion: 0.33
-Nodes (6): 1. 初盘骨架期 (T0：开盘 ～ 赛前 24 小时), 2. 早盘试探期 (T1：赛前 24 小时 ～ 赛前 8 小时), 3. 中盘拉扯期 (T2：赛前 8 小时 ～ 赛前 3 小时), 4. 临盘洗盘期 (T3：赛前 3 小时 ～ 赛前 1 小时), 5. 终局出清期 (T4：赛前 1 小时 ～ 开球), 二、全周期全周期真实变盘时序窗口解析 (Verbatim Raw Wire)
+Nodes (6): 1. 初盘骨架期 (T0：开盘 ～ 赛前 24 小时), 2. 早盘试探期 (T1：赛前 24 小时 ～ 赛前 8 小时), 3. 中盘拉扯期 (T2：赛前 8 小时 ～ 赛前 3 小时), 4. 临盘洗盘期 (T3：赛前 3 小时 ～ 赛前 1 小时), 5. 终局出清期 (T4：赛前 1 小时 ～ 开球), 二、全周期真实变盘时序窗口解析 (Verbatim Raw Wire)
 
-### Community 154 - "三、λ 的计算（核心流程）"
-Cohesion: 0.33
-Nodes (6): 3.1 所需数据, 3.2 步骤一：基础 λ（仅用主队主场 + 客队客场）, 3.3 步骤二：掺入近六场（加权）, 3.4 步骤三：伤停修正（可选）, 3.5 伤停修正幅度建议（实战版）, 三、λ 的计算（核心流程）
+### Community 154 - "无额外进球预感定理：扣除累积xG差与红牌后，庄家赔率与散户注额在进球前均无异常预测力"
+Cohesion: 0.27
+Nodes (10): 进球冲击非对称市场动态：冷门爆冷进球引爆潜状态与注额（+0.285/+0.685），热门顺理成章进球反而平息市场（-0.379）, 投注者相对注额零一膨胀Beta状态空间模型（BEINF + 潜市场活跃度AR(1)状态 phi=0.974~0.984）, 两部跨栏对数正态ARX(1)状态空间模型（Hurdle pi=0.094 + 潜市场兴奋度状态 s_t=phi*s_{t-1}+x*omega+eps, phi=0.985）, 盘中隐含概率动态回归模型（improbpre + 时间t/t^2 + 红牌效应-12%/+17.3% + 累积xG差速率 xgdiff/t）, 中盘T2/T3假摔震仓（Head-Fake Shakeout）识别：结合状态空间残差与多庄协同背离穿透诱筹, 无额外进球预感定理：扣除累积xG差与红牌后，庄家赔率与散户注额在进球前均无异常预测力, 基于状态空间残差剥离的异常赔率波动与假摔震仓（Head-Fake / Match-Fixing）监测法, Kitagawa (1987) 网格离散化（m=100）与HMM前向递归似然算法（复杂度从 O(Tm^T) 降至 O(Tm^2)） (+2 more)
 
-### Community 155 - "四、从 λ 到各项概率的计算步骤"
-Cohesion: 0.33
-Nodes (6): 4.1 主队 / 客队进球数分布, 4.2 比分概率, 4.3 胜平负, 4.4 总进球数概率, 4.5 大 / 小 2.5 球, 四、从 λ 到各项概率的计算步骤
+### Community 155 - "黄金标准推演源数据样本（3000474 大阪樱花 vs 横滨水手 法定23家机构全生命周期快照）"
+Cohesion: 0.24
+Nodes (11): 亚盘四级庄家职能分层（皇冠Crown锚定基准 × 易胜博/平博Sharp确认 × 澳彩/365/188金宝博背离捕捉 × 马会HKJC本土偏向）, c103.js 比赛行26字段元组（jh["G..."] 含90分钟比分、红牌、上下半场角球、双回合extraInfo及积分榜jh["S..."] 13字段）, 欧指三巨头职能分工（威廉希尔William Hill定调 × Bet365高频变盘操盘 × 立博Ladbrokes体系内主客胜防守）, 微观伤停体能断崖（如横滨水手10人伤停）与庄家盘口浅开高水诱盘的物理-博弈双轮对撞, PoJie() 两回合淘汰赛晋级破译规则（区分常规时间、总比分、加时赛与点球大战获胜方）, 浅盘超高水阻退与非对称战意背离典型（横滨水手伤兵满营却受让平半主队顶在1.05~1.09超高水绝非善意回报）, 战区III双终端执行靶标（中国竞彩HAD/HHAD/TTG/CRS/HAFU全玩法矩阵 × Polymarket链上CLOB真实美元买盘深度）, 三大战区23家法定机构全景架构（战区I七家欧亚双盘全生命周期 × 战区II十四家纯欧指 × 战区III竞彩与Polymarket双终端） (+3 more)
 
 ### Community 156 - "Page 01: Market Efficiency and Behavioral "
 Cohesion: 0.33
@@ -1283,9 +1313,9 @@ Nodes (6): 【周六008】德甲 柏林联合 vs 埃弗斯堡 (ID: 3018830), 【
 Cohesion: 0.47
 Nodes (5): cleanTeamLabel(), parseAnalysisHtml(), parseHeadToHeadRecords(), parseLeagueStandings(), parseLeagueStandingsTable()
 
-### Community 235 - "校验/ 领域驱动洋葱六边形架构设计说明书"
-Cohesion: 0.33
-Nodes (5): 一、模块定位与战略使命, 三、6 大黄金维度法定判定标准, 二、10/10 纯 DDD 洋葱六边形分层架构, 四、演化路线：`scripts/` 的弱化与淘汰三步走, 校验/ 领域驱动洋葱六边形架构设计说明书
+### Community 235 - "Hewamalage, Ackermann & Bergmeir (2023) 时间序列预测评估陷阱与最佳实践 (DMKD)"
+Cohesion: 0.25
+Nodes (10): 多模型非参数显著性检验（Friedman秩检验与Nemenyi/Hochberg临界距离CD图）, 赛前T4终盘截断与滚球1Hz状态空间的时序物理边界（严禁赛后/滚球数据逆向污染赛前推演）, 非平稳单位根/随机游走序列Naïve基准最优定律（复杂DL模型Autoformer/Informer常败于Naïve）, 开球时间截断与「滚」字滚球盘记录清洗守卫（--history-window 纯净赛前快照保障）, 滚动起点时序交叉验证（tsCV）与Ljung-Box残差自相关检验（非平稳有状态序列严禁K折CV）, 滚动起点单步预测图视觉欺骗（水平滞后错觉掩盖垂直误差，严禁凭肉眼拟合图评判模型）, 无量纲误差指标黄金标准（MASE/RMSSE 与 MSE均值 vs MAE中位数泛函对应关系）, 时序数据泄露四大陷阱（全量预归一化、全序列EMD分解、外生冲击未对齐、跨测试集特征提取） (+2 more)
 
 ### Community 236 - "【周六001】日职联 大阪樱花 vs 横滨水手"
 Cohesion: 0.33
@@ -1295,7 +1325,7 @@ Nodes (5): 一、微观阵容与首发伤停, 三、法定23家机构初即盘�
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: 【均势浅盘底线低平赔型】主流机构平赔初盘极限低开(<2.90)，即时平赔抬升制造两头分流假象（案例：巴西甲巴拉纳竞技2:2米内罗竞技）, Source Nodes
 
-### Community 238 - "Q: 【国家队均势浅盘低平赔防守型】体彩与澳彩平赔2.85锁定防守（案例：欧国联哈萨"
+### Community 238 - "Q: 【国家队均势浅盘低平赔防守型】体彩与澳彩平赔2.85锁定防守（案例：欧国联哈萨克斯坦2:2法罗群岛）"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: 【国家队均势浅盘低平赔防守型】体彩与澳彩平赔2.85锁定防守（案例：欧国联哈萨克斯坦2:2法罗群岛）, Source Nodes
 
@@ -1375,7 +1405,7 @@ Nodes (5): 📋 2026-10-10 复盘报告, 待复盘, 样本数据（结构化，�
 Cohesion: 0.40
 Nodes (5): 8 维度清单（每次分析必须逐项填写）, 为什么必须完整？, ⚠️ 基本面分析强制规则（2026-03-18 主人强调）, 案例：001 场完整分析, 综合评估方法
 
-### Community 258 - "CLAUDE.md - AI Pair Programming & Knowledg"
+### Community 258 - "CLAUDE.md - AI Pair Programming & Knowledge Rules"
 Cohesion: 0.50
 Nodes (3): CLAUDE.md - AI Pair Programming & Knowledge Rules, 核心推演准则（胜平负精准分析）, 知识图谱（graphify）
 
@@ -1519,25 +1549,71 @@ Nodes (3): 推荐（17:15）, 早盘精选推荐汇总, 🎯 胜负平优质 2 �
 Cohesion: 0.67
 Nodes (3): 22. 体彩官方 (终端履约标的, 国家特许复合全玩法, cid=1129), 胜平负 (HAD) 真实变盘时序流水（Verbatim Raw Wire）, 让球胜平负 (HHAD `[-1]`) 终端对冲基准
 
+### Community 321 - "一、发现的 BUG / 漏洞"
+Cohesion: 0.20
+Nodes (10): 1. 编排写入深度分析时可能覆盖当日已有场次（中）, 2. 「去掉第3场」后精选用的列表未持久化（中）, 3. 初筛 0 场时编排写入的 ## 推荐格式未统一（低）, 4. 复盘时 memory 文件不存在未明确（低）, 5. 深度分析「此场已分析」时的行为未定义（低）, 6. 浏览器共享导致并行 worker 数据串号（高 — 待解决）, 一、发现的 BUG / 漏洞, 三、建议修改优先级 (+2 more)
+
+### Community 322 - "纠偏规则（corrected）：单一平赔极端高挂(>3.80)不可作为一票排平依据，须尊重去水尾部概率与防守硬度"
+Cohesion: 0.43
+Nodes (5): 盘路母型：深盘热门欧深亚浅避险型（欧指<1.45卡一球超低水不升盘）, 实战判例：芬超冠古比斯0:1奥卢（密集防守弱旅低xG偷袭12%尾部方差）, 盘路母型：极端高平赔脱靶型（全网平赔3.80~4.10高挂但密防0:0闷平打出）, 实战判例：芬超冠格尼斯坦0:0图尔库国际（4.10高平赔下21.45%去水尾部概率打出0:0）, Dimitriadis et al. (2021) CORP 概率可靠性校准：拒绝将21.45%尾部平局概率归零
+
+### Community 324 - "Q: 复盘如何与九篇论文打通且不把每句话变成门禁"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 复盘如何与九篇论文打通且不把每句话变成门禁, Source Nodes
+
+### Community 325 - "Q: 【豪门客战中盘跳档诱多型 (Head-Fake 假摔)】欧指单边造势客胜，亚盘中盘强升半一挂满水诱多出货（案例：巴西甲桑托斯2:2弗拉门戈）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【豪门客战中盘跳档诱多型 (Head-Fake 假摔)】欧指单边造势客胜，亚盘中盘强升半一挂满水诱多出货（案例：巴西甲桑托斯2:2弗拉门戈）, Source Nodes
+
+### Community 326 - "Q: 【超高水逆向打出型】亚盘让球方挂满水超1.05+是否等于出货诱买一票否决（案例：巴西甲巴西国际2:1科林蒂安）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【超高水逆向打出型】亚盘让球方挂满水超1.05+是否等于出货诱买一票否决（案例：巴西甲巴西国际2:1科林蒂安）, Source Nodes
+
+### Community 327 - "Q: 【极端高平赔脱靶型】全网平赔极端顶高至3.80~4.10是否代表绝对一票排平（案例：芬超冠格尼斯坦0:0图尔库国际）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【极端高平赔脱靶型】全网平赔极端顶高至3.80~4.10是否代表绝对一票排平（案例：芬超冠格尼斯坦0:0图尔库国际）, Source Nodes
+
+### Community 328 - "Q: 【同城德比客让设障型】客队历史客战胜率低但在德比战客让平半挂满水（案例：巴西甲博塔弗戈1:2达伽马）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【同城德比客让设障型】客队历史客战胜率低但在德比战客让平半挂满水（案例：巴西甲博塔弗戈1:2达伽马）, Source Nodes
+
+### Community 329 - "Q: 【豪门客战深盘让球防小胜与波胆约束型】（案例：欧国联克罗地亚1:2西班牙）"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 【豪门客战深盘让球防小胜与波胆约束型】（案例：欧国联克罗地亚1:2西班牙）, Source Nodes
+
+### Community 330 - "Q: 2026-10-10 西甲 阿拉维斯 1:2 马德里竞技"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: 2026-10-10 西甲 阿拉维斯 1:2 马德里竞技, Source Nodes
+
+### Community 331 - "STRATEGY.md 足球赛事盘赔分析与赛果推演系统战略大图"
+Cohesion: 0.50
+Nodes (3): IDEA.md 足彩盘赔推演系统初心与设计构想, MEMORY.md 长期记忆中枢与智慧芯片, STRATEGY.md 足球赛事盘赔分析与赛果推演系统战略大图
+
 ## Knowledge Gaps
-- **44 isolated node(s):** `CLAUDE.md 镜像入口与工作流宪章`, `HEARTBEAT.md 定期补漏与静默检查清单`, `赛程同步/赛前分析/赛后复盘心跳补漏机制`, `IDEA.md 足彩盘赔推演系统初心与设计构想`, `IDENTITY.md 首席足彩精算与博弈分析师身份锚点` (+39 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1938 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **51 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **44 isolated node(s):** `前景理论概率权重扭曲 w(p) 与偏度偏好(Skewness Preference)博弈机制`, `赛程同步/赛前分析/赛后复盘心跳补漏机制`, `物理不变量三：庄家抽水率（Overround）与返还率守恒边界`, `物理不变量四：T0初盘→T4终盘不可逆时间因果序`, `paper-integration-v1 十九篇论文与事前预测登记规范` (+39 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1944 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **39 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+
+## Work-memory lessons
+
+**Preferred sources** — corroborated by past sessions; start here.
+- `poisson_lib.py` (2× useful, score=1.801837532)
+- `赛后复盘（post-review）` (2× useful, score=1.683735535)
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` connect `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防` to `法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）`, `CLAUDE.md - AI Pair Programming & Knowledg`, `赛后复盘先审过程再揭比分与Graphify自愈闭环`, `Tests of Conditional Predictive Ability`, `双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）`, `预测与复盘论文（本项目）`, `标准7列交付表格与Polymarket交叉验证`, `SOUL.md - 你是谁`, `庄家净赔付最小化（Minimax第一性原理）`, `NBER WORKING PAPER SERIES`, `第一部分：赛前分析模板`, `赔率分析推演十大公理与四大物理不变量`, `下注决策手册（版本 1）`, `Page 12: Figure 2: Average Payouts for the`, `真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松`, `sporttery-sniper`, `OO-EPC去水模型（Shin/Power/Probit合成）`, `USER.md - About Your Human`, `Page 03: Introduction (continued)`, `SAFETY.md`, `数据完整性检验与验收标准手册`, `十步深度分析推演闭环 (基本面/伤停/泊松/欧亚大小时序/合理性/三维落槌)`, `Outcome Bias and Evaluations of Decisions:`, `Choe & Ramdas (2023) 跨时间与博弈论视角下的序贯预测者比较 (O`, `OO-EPC 去水计算与推演应用手册（大模型推演教学指南）`, `AGENTS.md 足彩分析工作流操作手册`, `纠偏规则（corrected）：单一平赔极端高挂(>3.80)不可作为一票排平依据，`, `每日推演与复盘记忆（2026-10-02：国庆休市Polymarket欧国联10场专`, `通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)`, `Page 17: 804 H. Hewamalage et al.`, `injury-service.js`, `盘路母型：整球设障御敌防小胜型（让一球中低水设障+泊松共振锁1球小胜）`, `第一部分：全流程生命周期摩擦点与代码/数据级 Bug 盘点`, `titan007 欧冠杯 CupMatch c103.js 数据结构分析`, `三、海外免费储备 API 矩阵`, `Page 20: Acknowledgements`, `Stable Reliability Diagrams Using CORP and`, `Feng, Polson & Xu (2017) 英超赔率校准与动态Skellam进`, `Polymarket 链接查找教程`, `每日推演与复盘记忆（2026-09-29：图谱零孤岛与六图盲测训练）`, `package.json`, `Giacomini & White (2006) 条件预测能力检验 (Tests o`, `联赛配置手册（泊松 + 盘口）`, `Wheatcroft (2019) 足球比赛概率预测评分规则评估：批判RPS并确立对`, `二、五大博弈支柱专项体检结论`, `Aiyer et al. (2023) 结果偏见与决策评价预注册复制与扩展研究 (N`, `Dimitriadis, Gneiting & Jordan (2021) 概率分类`, `ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）`, `四大乱局识别过滤（极端伤停/战意怪局/末轮练兵/样本不足）`, `二、四大架构级增补落地方案`, `Heartbeat 检查清单`, `盘口分类体系（主人亲授 · 2026-03-18）`, `ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）`?**
-  _High betweenness centrality (0.603) - this node is a cross-community bridge._
+- **Why does `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` connect `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` to `CLAUDE.md - AI Pair Programming & Knowledge Rules`, `赛后复盘先审过程再揭比分与Graphify自愈闭环`, `Tests of Conditional Predictive Ability`, `预测与复盘论文（本项目）`, `标准7列交付表格与Polymarket交叉验证`, `SOUL.md - 你是谁`, `庄家净赔付最小化（Minimax第一性原理）`, `NBER WORKING PAPER SERIES`, `第一部分：赛前分析模板`, `赔率分析推演十大公理与四大物理不变量`, `下注决策手册（版本 1）`, `Page 12: Figure 2: Average Payouts for the`, `真实攻防压制力（滚动xG/射正/角球）结合Spike-and-Slab动态先验对泊松强度 lambda 的修正机制`, `sporttery-sniper`, `OO-EPC去水模型（Shin/Power/Probit合成）`, `纠偏规则（corrected）：升水不等于不出、降水不等于必出，超高水禁作一票否决去水大项的死尺子`, `USER.md - About Your Human`, `黄金标准推演源数据样本（3000474 大阪樱花 vs 横滨水手 法定23家机构全生命周期快照）`, `Page 03: Introduction (continued)`, `SAFETY.md`, `快速调用命令`, `十步深度分析推演闭环 (基本面/伤停/泊松/欧亚大小时序/合理性/三维落槌)`, `Outcome Bias and Evaluations of Decisions:`, `Choe & Ramdas (2023) 跨时间与博弈论视角下的序贯预测者比较 (Operations Research)`, `OO-EPC 去水计算与推演应用手册（大模型推演教学指南）`, `AGENTS.md 足彩分析工作流操作手册`, `全量复盘总账：2026-10-11全量25场赛后复盘与认知契约卡对账（双选96.0%命中）`, `每日推演与复盘记忆（2026-10-01：欧国联8场实战与Aiyer/Wheatcroft独立复盘审计）`, `通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)`, `Page 17: 804 H. Hewamalage et al.`, `injury-service.js`, `盘路母型：整球设障御敌防小胜型（让一球中低水设障+泊松共振锁1球小胜）`, `一、发现的 BUG / 漏洞`, `纠偏规则（corrected）：单一平赔极端高挂(>3.80)不可作为一票排平依据，须尊重去水尾部概率与防守硬度`, `足球系统全链路实战自检与底层四大隐形淤堵诊断报告`, `第一部分：全流程生命周期摩擦点与代码/数据级 Bug 盘点`, `titan007 欧冠杯 CupMatch c103.js 数据结构分析`, `三、海外免费储备 API 矩阵`, `Page 20: Acknowledgements`, `Stable Reliability Diagrams Using CORP and Isotonic Recalibration`, `系统演化三阶总战略 (优先做减法 × 其次做微调 × 严控做加法)`, `核对记录.md`, `论文库实战映射总纲 (paper-application-v2)`, `Polymarket 链接查找教程`, `package.json`, `Giacomini & White (2006) 条件预测能力检验 (Tests of Conditional Predictive Ability, Econometrica)`, `联赛配置手册（泊松 + 盘口）`, `流程与文档一致性检查（漏洞与建议）`, `Wheatcroft (2019) 足球比赛概率预测评分规则评估：批判RPS并确立对数无知评分(IGN)`, `二、五大博弈支柱专项体检结论`, `Hewamalage, Ackermann & Bergmeir (2023) 时间序列预测评估陷阱与最佳实践 (DMKD)`, `Aiyer et al. (2023) 结果偏见与决策评价预注册复制与扩展研究 (N`, `四项论文质问清单（Levitt偏见/Goto去水/Winkelmann假摔/Constantinou底线）`, `ADR 0002: 双锁博弈推演架构（防书呆子教条 ＋ 防主观臆测）`, `下注决策手册（版本1）`, `二、四大架构级增补落地方案`, `Heartbeat 检查清单`, `盘口分类体系（主人亲授 · 2026-03-18）`, `每日推演与复盘记忆（2026-10-09：11场赛前时点盲测重推、双选90.9%覆盖与海登海姆0-0破译）`, `ADR 0001: 赛前资料完整性闸门（齐全且对得上才能代）`?**
+  _High betweenness centrality (0.630) - this node is a cross-community bridge._
 - **Are the 67 inferred relationships involving `四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` (e.g. with `核心推演准则（胜平负精准分析）` and `定理3：次指数E-过程（E-process）与随时有效P-过程检验弱原假设 H_0^w: Delta_t <= 0`) actually correct?**
   _`四维认知契约卡（Aiyer/Wheatcroft/Giacomini/Choe学术防线）` has 67 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `CLAUDE.md 镜像入口与工作流宪章`, `HEARTBEAT.md 定期补漏与静默检查清单`, `赛程同步/赛前分析/赛后复盘心跳补漏机制` to the rest of the system?**
+- **What connects `前景理论概率权重扭曲 w(p) 与偏度偏好(Skewness Preference)博弈机制`, `赛程同步/赛前分析/赛后复盘心跳补漏机制`, `物理不变量三：庄家抽水率（Overround）与返还率守恒边界` to the rest of the system?**
   _44 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `法定23家机构全量真实变盘时序流水（Verbatim Raw Wire）` be split into smaller, more focused modules?**
-  _Cohesion score 0.04009324009324009 - nodes in this community are weakly interconnected._
-- **Why does `比赛快照深层语义安检与泊松算法零偏差迁移实践` connect `泊松分布λ攻防建模与波胆比分矩阵` to `OO-EPC去水模型（Shin/Power/Probit合成）`, `双轨敏捷数据采集（Scrapling协议流↔BrowserOS渲染）`?**
-  _High betweenness centrality (0.300) - this node is a cross-community bridge._
+  _Cohesion score 0.07126436781609195 - nodes in this community are weakly interconnected._
+- **Why does `比赛快照深层语义安检与泊松算法零偏差迁移实践` connect `比赛快照深层语义安检与泊松算法零偏差迁移实践` to `OO-EPC去水模型（Shin/Power/Probit合成）`, `Polymarket Gamma API (Slug直探与GameId裂变)`, `泊松分布λ攻防建模与波胆比分矩阵`?**
+  _High betweenness centrality (0.299) - this node is a cross-community bridge._
 - **Are the 70 inferred relationships involving `赛后复盘先审过程再揭比分与Graphify自愈闭环` (e.g. with `定理2：Empirical Bernstein方差自适应置信序列（内禀时间 hat_V_t 与次指数 Gamma-Exponential 混合边界）` and `基于E-过程（E-process）与经验Bernstein置信序列的长期推演胜率/ROI序贯无偏审计机制`) actually correct?**
   _`赛后复盘先审过程再揭比分与Graphify自愈闭环` has 70 INFERRED edges - model-reasoned connections that need verification._
-- **Should `TestSnapshotVerifier` be split into smaller, more focused modules?**
-  _Cohesion score 0.05325814536340852 - nodes in this community are weakly interconnected._
+- **Should `.verify` be split into smaller, more focused modules?**
+  _Cohesion score 0.037037037037037035 - nodes in this community are weakly interconnected._
