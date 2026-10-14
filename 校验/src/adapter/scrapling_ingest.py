@@ -212,8 +212,19 @@ class ScraplingIngestPipeline:
         try:
             # 优先尝试导入官方 scrapling
             from scrapling import Fetcher, StealthyFetcher
+            # 动态计算真实浏览器访问轨迹 Referer (避免做市商子域直接来自 Google 暴露特征)
+            referer = "https://zq.titan007.com/"
+            if "changeDetail" in spec.url:
+                referer = f"https://zq.titan007.com/analysis/odds/{self.match_id}.htm"
+            elif "1x2d" in spec.url:
+                referer = "https://titan007.com/"
+            elif "jc.titan007" in spec.url:
+                referer = "https://www.titan007.com/"
+
+            extra_headers = {"Referer": referer}
+
             if tier == FetchTier.BULK_PROTOCOL or tier == FetchTier.FETCH_PRECISE:
-                page = Fetcher.get(spec.url, impersonate="chrome", stealthy_headers=True)
+                page = Fetcher.get(spec.url, impersonate="chrome", stealthy_headers=True, headers=extra_headers)
             elif tier == FetchTier.STEALTHY_FETCH:
                 page = StealthyFetcher.fetch(
                     spec.url,
@@ -221,7 +232,8 @@ class ScraplingIngestPipeline:
                     hide_canvas=True,
                     block_webrtc=True,
                     allow_webgl=True,
-                    google_search=True,
+                    google_search=False,
+                    extra_headers=extra_headers,
                 )
             else:  # INTERNAL_CHROME
                 page = StealthyFetcher.fetch(
@@ -231,7 +243,8 @@ class ScraplingIngestPipeline:
                     hide_canvas=True,
                     block_webrtc=True,
                     allow_webgl=True,
-                    google_search=True,
+                    google_search=False,
+                    extra_headers=extra_headers,
                 )
 
             if spec.css_selector:
@@ -242,11 +255,20 @@ class ScraplingIngestPipeline:
         except ImportError:
             # 环境未安装 scrapling 库时，回退到标准受控 urllib（带 Chrome 136 UA）
             import urllib.request
+            referer = "https://zq.titan007.com/"
+            if "changeDetail" in spec.url:
+                referer = f"https://zq.titan007.com/analysis/odds/{self.match_id}.htm"
+            elif "1x2d" in spec.url:
+                referer = "https://titan007.com/"
+            elif "jc.titan007" in spec.url:
+                referer = "https://www.titan007.com/"
+
             req = urllib.request.Request(
                 spec.url,
                 headers={
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
                     "Accept-Language": "zh-CN,zh;q=0.9",
+                    "Referer": referer,
                 },
             )
             with urllib.request.urlopen(req, timeout=10) as resp:
