@@ -171,9 +171,14 @@ metadata: { "emoji": "📆" }
   - **4~6 场仅仅是单批并发（Batch Size）的物理切片**，用于防止网络超时，**绝对不可将批次切片误当成推演总数！**
 - **【前置零漫游硬禁令（Zero Pre-flight Thrashing）】**：
   搬运工被派发后的第 1 个动作必须且只能是执行进货落盘命令！严禁在抓取前执行任何 `git log`、`git status`、pytest/unittest 检查；严禁思考盘赔逻辑或定性胜负！
-- **【官方 Scrapling 原生纯净进货管道（Zero Ad-hoc Python）】**：
+- **【官方 Scrapling 原生纯净进货管道（Zero Ad-hoc Python 铁律）】**：
   1. **步骤 1：调用官方 Scrapling MCP `bulk_get` 并发直取（分块军规 ≤6~8 URLs + 选择器下推）**：
-     直接调用官方 MCP 工具 `scrapling bulk_get`（`impersonate="chrome"`, `css_selector="table"`, `main_content_only=false`），按官方分块军规分 3~4 组并发直取 26 端点，将返回原始报文打包存入 `data/{销售日}/raw/{matchId}.json`，零手写爬虫脚本！
+     直接调用官方 MCP 工具 `scrapling bulk_get`（`impersonate="chrome"`, `css_selector="table"`, `main_content_only=false`, `stealthy_headers=true`），按官方分块军规分 3~4 组并发直取 26 端点，将返回原始报文打包存入 `data/{销售日}/raw/{matchId}.json`，零手写爬虫脚本！
+     - **【源站 WAF 阻断/断连三级脱困阶梯（Anti-Block Escalation）】**：
+       ① 一级阶梯（默认）：`bulk_get` 必须显式携带 `impersonate="chrome"`，拟真最新 Chrome 浏览器 TLS 握手指纹；
+       ② 二级阶梯（会话复用）：若源站频控或频繁断连，调用 `scrapling session_make_request` 复用同一会话连接池；
+       ③ 三级阶梯（隐身脱困）：若遭遇强反爬拦截，单点调用 `scrapling stealthy_fetch`（全真模拟真实浏览器指纹）单点突破；
+       ④ **【推演态零散脚本硬禁令（Zero-Script Iron Rule）】**：严禁主会话或搬运工在 `scratch/` 或任何目录创建任何 `.py` 临时脚本！所有异常排查唯一法定命令为 `python 校验/src/adapter/cli.py --diagnose-gate <file>`，违者直接视为严重违规！
   2. **步骤 2：调用现有法定离线装配器与门禁**：
      运行现成受测命令：
      `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md`

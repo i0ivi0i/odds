@@ -21,7 +21,9 @@
    - **【阶段 1：Agents 蜂群纯物理进货与故障隔离门禁（Phase 1 Ingest Gate）】**：
      主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper` 模式二（Scrapling MCP `bulk_get` 并发直取 5 大接口）组装落盘至 `data/{销售日}/{matchId}.md` ➔ 运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 拿到 `exit 0`！严禁搬运工思考盘赔逻辑或定性胜负！
      **重新推演物理清空与严禁局部打补丁（Clean-Slate Anti-Patch Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧快照文件】，全量调用 Scrapling MCP 并发抓取 5 大接口从零装配全新落盘！**绝对严禁直接拿磁盘已有旧文件跑门禁跳过抓取，更绝对严禁在旧快照上使用 replace_file_content 仅修改 T4 时间戳或少数赔率做局部伪装（作弊打补丁）！**门禁参数严格锁定 `--max-age-minutes 30`，严禁擅自调大逃避过期！
-     **门禁排错专注心智**：当 `cli.py --match` 或 `cli.py --batch` 门禁返回退出码 1 时，错误原因已在终端以清晰中文明确打印，格式标准已在 `TOOLS.md` 第四节详尽列出。排错依据终端提示与 `TOOLS.md` 黄金契约直接修正 Markdown 数据文件即可，保持推演流畅节奏，无需走神研读底层代码。
+     **门禁排错自诊断与推演态零散脚本硬禁令（Zero-Script Iron Rule）**：
+      ① **唯一法定自诊断工具**：当 `cli.py --match` 或 `cli.py --batch` 门禁返回退出码 1 时，排查唯一法定工具必须且只能是：`python 校验/src/adapter/cli.py --diagnose-gate <file>`，单命令即可输出时序、各家机构最新水位、SHA-256 存证封条与差异定位；
+      ② **推演态绝对严禁散装编写 `.py` 脚本**：推演态、进货态与排错态中，**绝对严禁**在 `scratch/` 或任何目录裸写临时 Python 脚本来抓取数据、排错或更新数据！所有数据搬运与自诊断一律调用官方 Scrapling MCP 原生工具（`bulk_get`, `stealthy_fetch`）与 `cli.py` 原生命令行，推演态零散脚本违规次数严格锁定为 0！
      **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**唯一法定证据必须且只能是：`data/{销售日}/{matchId}.md` 物理文件与门禁收据**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何 pytest、unittest、git diff 或 graph.json 检查，直接进入抓取进货，杜绝空转！
    - **【阶段 2：纯逻辑首席分析师（Phase 2 Deduction Brain）】**：
      只有且仅当批量门禁通过（exit 0）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 Graphify 三大战区与运行 OO-EPC 去水模型，开展 10 步深度推演与冻结认知契约卡！未见门禁 exit 0 放行，**绝对禁止调用 Graphify 三大战区、绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
@@ -102,9 +104,10 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
   **【Worker 行为封印三禁】**：
   ① 严禁 Worker 在终端或主会话执行 `git log`、`git status`、`codebase inspection` 等代码工程探测；
   ② 严禁 Worker 思考盘赔逻辑、构思分析思路或下达胜负预测；
-  ③ 严禁 Worker 自行重写、修改或 patch 系统代码。
+  ③ 严禁 Worker 自行重写、修改或 patch 系统代码；
+  ④ 严禁在推演/进货/排错全流程散装编写任何 `.py` 临时脚本，违规编写记录严格锁定为 0！
   **搬运工官方原生纯净进货管道（Minimal Ingestion Pipeline）**：
-  搬运工严格遵照 [`match-scraper`](skills/match-scraper/SKILL.md) 隐身自愈标准执行，直接调用官方 Scrapling MCP `bulk_get`（分块军规 ≤6~8 URLs + 选择器下推）并发拉取 26 端点写入 `raw/{matchId}.json` ➔ 运行离线受测命令 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` ➔ 单场 `--match` 门禁（exit 0），零手写 Python 爬虫脚本！
+  搬运工严格遵照 [`match-scraper`](skills/match-scraper/SKILL.md) 隐身自愈标准执行，直接调用官方 Scrapling MCP `bulk_get`（分块军规 ≤6~8 URLs + 选择器下推）并发拉取 26 端点写入 `raw/{matchId}.json`。遇网络拦截严格依序触发 3 级脱困阶梯（`impersonate="chrome"` ➔ `session_make_request` ➔ `stealthy_fetch`）；落盘后运行受测命令 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` ➔ 单场 `--match` 门禁（exit 0）。如遇异常仅准调用 `cli.py --diagnose-gate` 诊断，全流程绝对零手写 Python 脚本！
   **验收门禁前置死锁（支持故障隔离与溯源防篡改）**：全员回传后，主会话在终端物理运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 执行终审安检（亚盘/大小球七家真实变盘流水 + 23家欧指初即盘 + 主客场/近6进失球数字 + SHA-256 防篡改核验 `TAMPERED_MARKDOWN_SEAL` + 原始报文溯源核验 `RAW_PROVENANCE_MISMATCH` + 物理修改时间戳新鲜度核验）。门禁严格锁定 `--max-age-minutes 30`，严禁随意调大参数！异常场次就地隔离至 `.quarantine`，合格集群放行！
   **官方合法未开盘与推演到底宪法（Anti-Drop Iron Rule）**：
   ① **体彩深盘不开单固**：当实力悬殊深盘中国体彩未开普通胜负平（HAD）时，欧指门禁自动放行 22 家，大模型必须推演体彩让球胜平负（HHAD），严禁以此为借口丢弃比赛；

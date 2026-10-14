@@ -647,12 +647,83 @@ def run_audit_integrity(target_path: str) -> int:
         return 0
     else:
         print(f"❌ 最终裁定: 发现数据失真或偏差 (FAIL)！极值丢失={total_extrema_lost}, 时序倒置={total_inversions}, 伪造插值={total_fabricated}", file=sys.stderr)
+def run_diagnose_gate(file_path: str) -> int:
+    """深度剖析单场文件的门禁健康状况，打印各做市商时序、封条状态与静默判定"""
+    p = Path(file_path)
+    if not p.exists():
+        print(f"❌ 文件不存在: {file_path}", file=sys.stderr)
         return 1
+
+    content = p.read_text(encoding="utf-8")
+    st = p.stat()
+    mtime_dt = datetime.fromtimestamp(st.st_mtime)
+    age_min = (datetime.now() - mtime_dt).total_seconds() / 60.0
+
+    print("=" * 60)
+    print(f" 🔍 足球系统门禁深度自诊断报告: {p.name}")
+    print("=" * 60)
+    print(f"📁 文件路径: {p.resolve()}")
+    print(f"🕒 物理修改时间: {mtime_dt.strftime('%Y-%m-%d %H:%M:%S')} (距今 {age_min:.1f} 分钟)")
+
+    # 提取各做市商时间戳
+    core_companies = {
+        "澳彩": ["澳彩", "澳"],
+        "Crown": ["皇冠", "Crown", "crown"],
+        "Bet365": ["Bet365", "bet365", "365"],
+        "易胜博": ["易胜博"],
+        "平博": ["平博", "Pinnacle", "pinnacle"],
+        "香港马会": ["香港马会", "马会", "HKJC"],
+        "188": ["188", "188bet", "金宝博"],
+    }
+    company_latest_dts = {}
+    year = mtime_dt.year
+    for cname, aliases in core_companies.items():
+        c_pat = rf"(?:###\s*(?:\d+[\.、\s]*)?(?:{'|'.join(aliases)})).*?(?=(?:\n###\s+[^\#]|\Z))"
+        m_block = re.search(c_pat, content, re.DOTALL | re.IGNORECASE)
+        if m_block:
+            c_ts = re.findall(r"\b(\d{2}-\d{2}\s+\d{2}:\d{2})\b", m_block.group(0))
+            if c_ts:
+                c_max_s = max(c_ts)
+                company_latest_dts[cname] = c_max_s
+
+    print("\n📊 核心机构最新时序水位:")
+    if company_latest_dts:
+        for cname, ts_str in company_latest_dts.items():
+            print(f"  - {cname:8s}: {ts_str}")
+        overall_max = max(company_latest_dts.values())
+        print(f"\n⚡ 全盘最新时序标记: {overall_max}")
+    else:
+        print("  ⚠️ 未提取到核心机构时间戳")
+
+    # 封条与原子存证状态
+    content_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
+    target_mid = p.stem
+    atomic_bundle_p = p.parent / "raw" / f"{target_mid}.json"
+    if not atomic_bundle_p.exists() and p.parent.name == ".quarantine":
+        atomic_bundle_p = p.parent.parent / "raw" / f"{target_mid}.json"
+
+    print(f"\n🔐 SHA-256 内容哈希: {content_hash}")
+    if atomic_bundle_p.exists():
+        try:
+            b_obj = json.loads(atomic_bundle_p.read_text(encoding="utf-8"))
+            exp_sha = b_obj.get("markdown_sha256")
+            print(f"📦 对应原子存证包: {atomic_bundle_p.name} (已封存)")
+            print(f"🛡️ 封条匹配核验: {'✅ 吻合 (PASS)' if exp_sha == content_hash else '❌ 篡改 (TAMPERED)'}")
+        except Exception as e:
+            print(f"⚠️ 读取原子存证异常: {e}")
+    else:
+        print("⚠️ 未发现对应的 raw/*.json 原子存证包")
+    print("=" * 60)
+    return 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="pansuan 校验守门人：单场【推演源数据】安检与全系统一致性巡检",
+    )
+    parser.add_argument(
+        "--diagnose-gate",
+        help="指定待诊断的【推演源数据】路径，深度自查各做市商时间戳、时序水位、封条匹配与静默状态",
     )
     parser.add_argument(
         "--audit-integrity",
@@ -767,6 +838,10 @@ def main() -> int:
         return run_plan_scrapling_chunks(args.plan_scrapling_chunks, as_json=args.json)
     if args.fetch_match:
         return run_fetch_match(args.fetch_match, target_date=args.date, output_md=args.output)
+
+    # 优先级 -1.5: 门禁自诊断深度排查
+    if args.diagnose_gate:
+        return run_diagnose_gate(args.diagnose_gate)
 
     # 优先级 -1: 数据纯净度五重轮番穿透质检
     if args.audit_integrity:

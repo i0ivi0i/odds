@@ -878,6 +878,53 @@ class TestSnapshotVerifier(unittest.TestCase):
         self.assertEqual(auth_res.status, CheckStatus.FAIL)
         self.assertIn("SUSPECTED_PATCH_CHEAT", auth_res.message)
 
+    def test_quiescent_bookmaker_with_valid_cryptographic_seal_passes(self):
+        """测试合理做市商盘口静默：当文件具备有效加密封条且原始存证一致时，不误杀报 SUSPECTED_PATCH_CHEAT"""
+        import hashlib
+        from datetime import datetime, timedelta
+        snap = dict(self.valid_snapshot)
+        now_dt = datetime.now()
+        snap["_file_mtime"] = now_dt.timestamp()
+        snap["_max_age_minutes"] = 30
+        home = snap.get("match", {}).get("homeTeam", "主队")
+        away = snap.get("match", {}).get("awayTeam", "客队")
+        recent_ts = now_dt.strftime("%m-%d %H:%M")
+        old_ts = (now_dt - timedelta(hours=3)).strftime("%m-%d %H:%M")
+
+        content = f"""# 【测试】{home} vs {away}
+- **比赛 ID**：2981506
+### 1. 澳彩
+| T4 | {old_ts} | 0.90 | 0.90 |
+### 2. Crown 皇冠
+| T4 | {old_ts} | 0.92 | 0.88 |
+### 3. Bet365
+| T4 | {old_ts} | 0.90 | 0.90 |
+### 4. 易胜博
+| T4 | {old_ts} | 0.91 | 0.89 |
+### 5. 平博
+| T4 | {recent_ts} | 0.93 | 0.87 |
+"""
+        snap["_raw_content"] = content
+        # 注入合法加密封条与原始报文存证
+        c_sha = hashlib.sha256(content.encode("utf-8")).hexdigest()
+        snap["_markdown_sha256"] = c_sha
+        snap["_raw_wire"] = {
+            "manifest": {
+                "markdown_sha256": c_sha,
+                "raw_files_sha256": {},
+            },
+            "receipt": {
+                "receivedAt": recent_ts,
+                "endpoints": [],
+            },
+            "files": {},
+        }
+        receipt = self.verifier.verify(snap)
+        auth_res = [r for r in receipt.results if r.dimension == DimensionType.AUTHENTICITY][0]
+        # 合理静默场景下，绝对严禁误判为 SUSPECTED_PATCH_CHEAT
+        self.assertNotIn("SUSPECTED_PATCH_CHEAT", auth_res.message)
+
+
     def test_genuine_multi_company_freshness_passes(self):
         """测试真实多机构活水同步：当 3 家以上核心机构均处于最新区间时必须 PASS"""
         from datetime import datetime, timedelta

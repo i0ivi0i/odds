@@ -1075,12 +1075,25 @@ class SnapshotVerifier:
                             if (overall_latest_dt - dt).total_seconds() / 60.0 > 90.0
                         )
                         if sync_count < 3 and lagging_count >= 2:
-                            return DimensionResult(
-                                dimension=DimensionType.AUTHENTICITY,
-                                status=CheckStatus.FAIL,
-                                message=f"SUSPECTED_PATCH_CHEAT: 疑似局部打补丁作弊！核心做市商时序严重不同步 (仅 {sync_count} 家机构更新至最新区间，而有 {lagging_count} 家机构严重滞后超 90 分钟)！重跑推演必须全量并发重抓所有核心机构！",
-                                detail={"match_id": match_id, "sync_count": sync_count, "lagging_count": lagging_count, "company_timestamps": {k: v.strftime('%m-%d %H:%M') for k, v in company_latest_dts.items()}},
-                            )
+                            # 5.2.1 鉴伪防护：检查是否为合法做市商盘口静默 (Market Quiescence)
+                            # 若文件具备有效加密封条与原始报文存证且未被手动篡改，则证明各机构时序与源站一致，属于晚盘合理静默期
+                            is_genuine_quiescence = False
+                            raw_wire_obj = snapshot.get("_raw_wire")
+                            if isinstance(raw_wire_obj, dict):
+                                manifest_obj = raw_wire_obj.get("manifest")
+                                if isinstance(manifest_obj, dict) and manifest_obj.get("markdown_sha256"):
+                                    import hashlib
+                                    act_sha = snapshot.get("_markdown_sha256") or hashlib.sha256(raw_content.encode("utf-8")).hexdigest()
+                                    if act_sha == manifest_obj.get("markdown_sha256"):
+                                        is_genuine_quiescence = True
+
+                            if not is_genuine_quiescence:
+                                return DimensionResult(
+                                    dimension=DimensionType.AUTHENTICITY,
+                                    status=CheckStatus.FAIL,
+                                    message=f"SUSPECTED_PATCH_CHEAT: 疑似局部打补丁作弊！核心做市商时序严重不同步 (仅 {sync_count} 家机构更新至最新区间，而有 {lagging_count} 家机构严重滞后超 90 分钟)！重跑推演必须全量并发重抓所有核心机构！",
+                                    detail={"match_id": match_id, "sync_count": sync_count, "lagging_count": lagging_count, "company_timestamps": {k: v.strftime('%m-%d %H:%M') for k, v in company_latest_dts.items()}},
+                                )
                     else:
                         latest_ts_str = max(ts_matches)
                         latest_ts_dt = datetime.strptime(f"{year}-{latest_ts_str}", "%Y-%m-%d %H:%M")

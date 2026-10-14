@@ -158,7 +158,11 @@ class VerifySnapshotUseCase:
         # U3: 优先检查单文件原子防伪存证包 raw/{matchId}.json，回退兼容旧目录 raw/{matchId}/
         target_mid = content_match_id or path.stem
         atomic_bundle_p = path.parent / "raw" / f"{target_mid}.json"
+        if not atomic_bundle_p.exists() and path.parent.name == ".quarantine":
+            atomic_bundle_p = path.parent.parent / "raw" / f"{target_mid}.json"
         raw_dir = path.parent / "raw" / target_mid
+        if not raw_dir.exists() and path.parent.name == ".quarantine":
+            raw_dir = path.parent.parent / "raw" / target_mid
         if atomic_bundle_p.exists() and atomic_bundle_p.is_file():
             try:
                 bundle_obj = json.loads(atomic_bundle_p.read_text(encoding="utf-8"))
