@@ -25,7 +25,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 - **批量赛事分批并发矩阵与进货门禁规约（First-Action Batch Matrix）**：
   - 赛程索引就绪后，由主人指令锁定推演范围（全部/早盘/晚盘/指定，严禁任何 AI 将分批大小当成推演总数！）；
   - 构造候选场次分批矩阵（严格按 4~6 场为一组 Batch、4~8 URLs 协议流并发 + 选择器下推），调用 `mcp__scrapling__bulk_get` 分批秒取数据；
-  - **法定装配落盘与物理清空重抓**：搬运工直接调用官方 Scrapling MCP `bulk_get`（分块军规 ≤6~8 URLs + 选择器下推）并发拉取 26 端点写入 `raw/{matchId}.json` ➔ 运行离线受测命令 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` ➔ 单场验过；**严禁大模型手动拼接 Markdown 避免封条失真！凡触发重新推演，第一动作绝对强制物理清空旧快照，严禁在旧文件上用 replace_file_content 局部打补丁改时间作弊伪造活水！**
+  - **法定装配落盘与物理清空重抓**：专职搬运工直接调用一体化机械臂 `python 校验/src/adapter/cli.py --ingest-match {matchId} --date {销售日}`（单命令自动安全分块抓取、Polymarket 解析、原子包落盘、Markdown 装配与单场门禁 exit 0），亦可分步运行 `cli.py --assemble-bundle` 与 `--match`；**严禁大模型手动拼接 Markdown 避免封条失真！凡触发重新推演，第一动作绝对强制物理清空旧快照，严禁在旧文件上用 replace_file_content 局部打补丁改时间作弊伪造活水！**
   - 严禁单场串行磨洋工，严禁单批超载倾倒，未见快照落盘并通过 `cli.py --batch ... --isolate-failed` 门禁（exit 0）前，绝对禁止开脑推演！
 - **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（1~2 秒全量并发直取）**：
   - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，通过 `mcp__scrapling__bulk_get` 一次性并发秒取单场全部 5 大数据源：

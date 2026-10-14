@@ -27,10 +27,10 @@
      **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**唯一法定证据必须且只能是：`data/{销售日}/{matchId}.md` 物理文件与门禁收据**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何 pytest、unittest、git diff 或 graph.json 检查，直接进入抓取进货，杜绝空转！
    - **【阶段 2：纯逻辑首席分析师（Phase 2 Deduction Brain）】**：
      只有且仅当批量门禁通过（exit 0）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 Graphify 三大战区与运行 OO-EPC 去水模型，开展 10 步深度推演与冻结认知契约卡！未见门禁 exit 0 放行，**绝对禁止调用 Graphify 三大战区、绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
-   - **三大战区标准化检索规范（仅在阶段二执行，必须基于 Skill `/graphify` 与官方核心 `https://github.com/Graphify-Labs/graphify`）**：
-     - **战区一（战前初诊 BFS 广搜）**：锚定博弈第一性原理与盘口不变量，调用 `mcp__graphify__query_graph(question="赔率分析推演十大公理 四大物理不变量 散户羊群心理", mode="bfs", depth=2)`；
-     - **战区二（物理基准 DFS 进球穿透）**：穿透真实攻防压制力（控球/射正/角球/进球时段）对泊松 $\lambda$ 的修正，调用 `mcp__graphify__query_graph(question="结合历史数据与庄家赔率预测足球比分 Egidi 攻防参数凸组合", mode="dfs", depth=2)`，剥离比分运气；
-     - **战区三（博弈时序多跳穿透）**：穿透中盘假摔震仓与半全场双盘背离，调用 `mcp__graphify__query_graph(question="Winkelmann 异常赔率波动 假摔震仓识别 双盘联动速查表", mode="bfs", depth=2)`，识别主力诱筹与防守底线。
+   - **Graphify 官方五大高阶增智规约（仅在阶段二执行，基于官方核心 `https://github.com/Graphify-Labs/graphify` 与 5.6MB 全量图谱）**：
+     - **① 推演前错题反思导览（Reflect & Learning Overlay）**：推演前执行 `python 校验/src/adapter/cli.py --graph-reflect`，秒级挂载 Learning Overlay 与 `LESSONS.md` 动态认知覆盖层，自愈认知偏差，激活全局 God Nodes 与 Wiki 词条；
+     - **② 推演中盘口疑难靶向穿透（Query with Budget & Wiki）**：分析师针对当场具体盘口特征（如“客让半一满水退盘”、“Winkelmann 假摔震仓”），调用 `python 校验/src/adapter/cli.py --graph-query "{具体盘口疑难}" --budget 1500`，靶向召回关联理论与历史战例（受控 budget 保护上下文，杜绝无脑静态长句重复查 30 次）；
+     - **③ 关键变量因果涟漪扩散（Affected Nodes Analysis）**：当关键球员临盘伤停或盘口剧烈洗盘时，调用 `python 校验/src/adapter/cli.py --graph-affected "{变量节点}" --depth 2`，穿透因果影响链路，识别主力诱筹与防守底线。
 9. **系统演化三阶总战略与 deep-analysis 封顶铁律（马斯克做减法 × 乔布斯极简原则 × 保魂去腐）**：
    - **演化三阶原则**：在以后本足球系统的优化微调中，严格遵循“① 主要优先做减法；② 其次要做微调；③ 最后在实在不得已的情况下才做加法”。想做加法必须先向主人请示报告。
    - **`skills/deep-analysis/SKILL.md` 刚性封顶纪律**：该技能行数严格控制在**不超过 1800 行**，避免无节制大幅膨胀或随意堆砌死板规则！未来方向优先精炼优化、做减法或调整结构排序。
@@ -54,6 +54,11 @@
    - **推演业务态（放行）**：当主人下达明确的推演指令（如“分析010”、“给推荐”、“全面推演”）且数据门禁合格时，自动化流水线自主运转，不问琐碎操作；
    - **规划与工程态（硬锁）**：凡触发 `/ce-plan` 规划、系统架构重构或核心代码修改，PLAN 编写完毕后**绝对必须就地终止会话交还权杖，严禁传 RequestFeedback: true 诱发平台 Stop hook 自动放行，绝对只认主人在聊天框输入的亲自指令（如“批准执行/修一下”）方准动工**！严禁擅自提前偷跑或越权实现；
    - **重新推演先物理清空（Clean Slate Re-ingest）**：凡触发重新推演，严禁在旧快照上使用 replace_file_content 偷懒局部修改时间戳；第一动作必须物理清空旧文件，由专职搬运工从网络全新并发抓取并全量装配！
+
+13. **代码与 CLI 专属于 Agent 机械臂宪法（Zero-Human-CLI 绝对铁律）**：
+   - **工具定位（Tooling for Agents Only）**：系统中所有的 `.py` 脚本（`cli.py`, `verifier.py`, `assembler.py`, `scrapling_ingest.py`, `polymarket_official_resolver.py` 等）是 100% 专属于 AI Agents 蜂群的武器库与机械臂，绝非给主人当手工操作员用的；
+   - **严禁向主人抛命令行（Zero Terminal Burden on Master）**：AI 绝不可在回复、汇报或行动建议中要求主人去敲终端命令（如 `python ...` 或 `git ...`）。主人是指挥官与终审裁决者，只给指令并验收高密度战报；
+   - **蜂群自主全闭环（Full Autonomous Self-Healing）**：从赛程发现、赔率搬运、Polymarket 链上自动解析、格式组装到五重门禁检验，全部由 Agents 在后台自驱调度与自愈完成，绝不把排错、拼参数或验证成本转嫁给主人。
 
 ## 一、工作流程总览
 
@@ -107,7 +112,7 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
   ③ 严禁 Worker 自行重写、修改或 patch 系统代码；
   ④ 严禁在推演/进货/排错全流程散装编写任何 `.py` 临时脚本，违规编写记录严格锁定为 0！
   **搬运工官方原生纯净进货管道（Minimal Ingestion Pipeline）**：
-  搬运工严格遵照 [`match-scraper`](skills/match-scraper/SKILL.md) 隐身自愈标准执行，直接调用官方 Scrapling MCP `bulk_get`（分块军规 ≤6~8 URLs + 选择器下推）并发拉取 26 端点写入 `raw/{matchId}.json`。遇网络拦截严格依序触发 3 级脱困阶梯（`impersonate="chrome"` ➔ `session_make_request` ➔ `stealthy_fetch`）；落盘后运行受测命令 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` ➔ 单场 `--match` 门禁（exit 0）。如遇异常仅准调用 `cli.py --diagnose-gate` 诊断，全流程绝对零手写 Python 脚本！
+  搬运工直接调用一体化机械臂 `python 校验/src/adapter/cli.py --ingest-match {matchId} --date {销售日}`，单命令自动完成：官方 Scrapling 安全分块（≤6~8 URLs + 0.3s~0.65s 拟人抖动）拉取 26 端点 ➔ 官方 Polymarket 自动解析 ➔ 原子包 `raw/{matchId}.json` 落盘 ➔ 黄金 Markdown 装配 ➔ 单场门禁检验（exit 0）！遇异常仅准调用 `cli.py --diagnose-gate` 诊断，全流程碎步调用次数从 5~7 次降为 1 次，绝对零手写 Python 脚本！
   **验收门禁前置死锁（支持故障隔离与溯源防篡改）**：全员回传后，主会话在终端物理运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 执行终审安检（亚盘/大小球七家真实变盘流水 + 23家欧指初即盘 + 主客场/近6进失球数字 + SHA-256 防篡改核验 `TAMPERED_MARKDOWN_SEAL` + 原始报文溯源核验 `RAW_PROVENANCE_MISMATCH` + 物理修改时间戳新鲜度核验）。门禁严格锁定 `--max-age-minutes 30`，严禁随意调大参数！异常场次就地隔离至 `.quarantine`，合格集群放行！
   **官方合法未开盘与推演到底宪法（Anti-Drop Iron Rule）**：
   ① **体彩深盘不开单固**：当实力悬殊深盘中国体彩未开普通胜负平（HAD）时，欧指门禁自动放行 22 家，大模型必须推演体彩让球胜平负（HHAD），严禁以此为借口丢弃比赛；
@@ -115,7 +120,7 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
   ③ **全量推演不漏一场**：严禁任何 AI 以机构未开盘为由擅自拒绝推演或从推演总表中删除比赛！只要是当日待分析场次，无论盘型多深、无论玩法多偏，必须 100% 穷尽推演到底！
   **铁律**：若无任何场次合格或批量门禁返回退出码 1：**必须立即彻底物理熔断中止，严禁分发 Worker、严禁输出任何推演结论与预测表格！绝对禁止在数据缺失或门禁未过时偷懒继续十步！**（无物理源数据不下锅；伤停格「暂无数据」只写未核实、贴原句、允许继续十步，禁止写成无伤停）。
   【阶段二：纯逻辑首席分析师（大模型深度推演）】
-  仅当批量门禁返回退出码 0 (PASS) 时，才准切换为分析师身份，对每场 spawn worker 深度分析（纯逻辑推理，纯只读加载当场物理【推演源数据】，此时方可检索 Graphify 三大战区与运行 OO-EPC，深度消化源数据并逐一引用真实盘口、水位、时序与技统数字证据，每场回传证据，主会话/编排验收后逐场推送）→
+  仅当批量门禁返回退出码 0 (PASS) 时，才准切换为分析师身份，对每场 spawn worker 深度分析（纯逻辑推理，纯只读加载当场物理【推演源数据】，严禁删改《skills/deep-analysis/SKILL.md》1680 行完整推演心法与时序示例；推演前执行 `cli.py --graph-reflect` 挂载动态学习覆盖层，推演中按当场盘口疑难靶向调用 `cli.py --graph-query "{盘口疑难}" --budget 1500` 或查阅 `graphify-out/wiki/` 词条，关键变量突变时调用 `cli.py --graph-affected`，深度消化源数据并逐一引用真实盘口、水位、时序与技统数字证据，每场回传证据，主会话/编排验收后逐场推送）→
   【阶段三：交付与前置封存硬门禁（含源数据交叉对账）】
   编排者将双层分级 7 列表格（`🌟 核心主推精选 2~3 场` + `⚠️ 次级观望/避险`）与全量场次【图谱认知基因】+【四维认知契约卡】写入 `memory/{销售日}.md` 的 `## 深度分析` ➔ 终端物理运行 `python 校验/src/adapter/cli.py --verify-memory memory/{销售日}.md --data-dir data/{销售日} --expected-matches {目标场次数}`（严查 7 列表与契约卡内部方向一致性 `MEMORY_INTERNAL_DIRECTION_CONFLICT` 及与源数据赔率真实性对账 `MEMORY_SOURCE_DRIFT`）拿到 exit 0 ➔ 方准向前台交付推荐与 announce 回主会话！未过门禁严禁对外发布！
 主会话：收到 announce → 推送「✅ 赛前分析完成」
@@ -443,7 +448,7 @@ MEMORY.md 维护规则：
       ① 设待分析总场数为 $N$，单批安全物理切片容量 $B=6$ 场，计算蜂群规模 $W = \lceil N/6 \rceil$；
       ② 主会话在单次任务分发中（反重力 `invoke_subagent` 数组、爱马仕并发 `delegate_task`）一次性填入全量 $W$ 个 Worker，一枪打出，严禁分多次循环串行串烧；
       ③ 给每个 Worker 的 Prompt 必须短小精炼（≤ 2KB），仅包含当前承包的 6 场比赛 ID 与极简两步指令：
-         - 调用 Scrapling MCP `bulk_get` 并发直取（分块军规 ≤6~8 URLs + 选择器下推）➔ 存入 `raw/{matchId}.json` ➔ 运行离线受测命令 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` ➔ 单场 `--match` 门禁；
+         - 依次运行一体化专职机械臂：`python 校验/src/adapter/cli.py --ingest-match {matchId} --date {销售日}`（单命令自动完成安全分块抓取、Polymarket 链上自动解析、原子存证包、黄金 Markdown 装配与单场门禁检验）；
          - 拿到 exit 0 后立即向主会话回传完成状态；
       ④ 【Worker 行为封印三禁】：严禁 Worker 在终端或主会话执行 `git log`、`git status` 等代码工程探测；严禁思考盘赔逻辑或定性胜负；严禁自行修改或 patch 系统代码！
     - **响应式汇聚与批量安检终审**：主会话派发完蜂群数组后立即停止调用工具，依赖 Reactive Wakeup 等待全员回传。随后在终端物理运行：`python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`。
@@ -452,7 +457,7 @@ MEMORY.md 维护规则：
     - 批量门禁 100% 确认通过后，编排者方可切换为分析师并对每场初筛通过的比赛分发 worker subagent（爱马仕 `delegate_task` / 反重力 `invoke_subagent`）。**Worker 职责为纯逻辑推演，直接只读加载已经门禁过验的 `data/{销售日}/{matchId}.md` 本场专属物理【推演源数据】，严禁 Worker 访问网络抓取或编写临时脚本**。**task 中必须写明**：「本批共 N 场（N = 本场初筛通过的总场次数），你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果」，避免多 worker 并发写同一文件导致只保留部分场次。示例：
    ```yaml
    task:
-      goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。读取 skills/deep-analysis/SKILL.md 与 TOOLS.md。本场专属物理【推演源数据】已在阶段一落盘至 data/{销售日}/{matchId}.md 并通过门禁。Worker 纯只读加载该源数据进行纯逻辑推演，严禁访问网络抓取或手搓临时脚本。回传必须绑定源数据 SHA256 指纹与报价截至时点。必须先走 Graphify 知识图谱三大战区（战前初诊BFS、物理基准DFS、时序假摔多跳）穿透系统关系；必须从源数据读取 tactics（真实压制力技统、进球时段、未来赛程）与 profiling（相同初盘画像、盘路走势、半场双盘），站在庄家第一性原理反向破译（严禁散户式盲从胜率，作为诱盘与资金敞口探测器），若静态摘要与晚盘时序流水反向冲突必须以真实流水为准并在契约卡中披露分歧；严格按照模板执行完整10步分析与学术文献四大主动质问纠偏（Levitt净赔付审计/Tversky小数定律审计/Gilovich热手偏见审计/Constantinou跨市场均衡审计），欧指去水点概率必须调用终端运行 python 算法/src/adapter/cli.py <初盘主赔> <初盘平赔> <初盘客赔> --json 获取真值，严禁心算。直接继承源数据已通过门禁验证的 Polymarket 真实链接（主流核心联赛必须为真实事件可点击链接形如 [{对阵}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})，严禁谎称未开盘或批量复制粘贴），小众联赛确实无标的方可标未开盘说明；若为开球前 30~45 分钟临盘复核，输入必须同时载入原认知契约卡反证条件与临盘新批次，驱动状态机输出【维持原判】/【微调修正】/【物理熔断】。先回传待验收结果与执行证据（输入和计算输出位置、时点、污染状态、Polymarket 真实链接及缺口），不得自行对外发布。由主会话/编排验收后逐场推送。返回结构化综合评估结果（含 memory 摘要、认知契约卡与 Polymarket 真实直达链接）。"
+       goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。读取 skills/deep-analysis/SKILL.md 与 TOOLS.md。本场专属物理【推演源数据】已在阶段一落盘至 data/{销售日}/{matchId}.md 并通过门禁。Worker 纯只读加载该源数据进行纯逻辑推演，严禁访问网络抓取或手搓临时脚本。回传必须绑定源数据 SHA256 指纹与报价截至时点。依据 Graphify 官方高阶增智规约：推演前由编排者统一挂载 Learning Overlay 错题反思；分析师针对当场具体盘口疑难（如“客让半一退盘满水”、“Winkelmann 假摔震仓”）调用 python 校验/src/adapter/cli.py --graph-query \"{盘口疑难}\" --budget 1500（或查阅 graphify-out/wiki/ 词条）靶向穿透关联理论与战例（严禁无脑重复查 30 次静态长句）；关键变量突变时调用 python 校验/src/adapter/cli.py --graph-affected \"{改变节点}\" --depth 2；从源数据读取 tactics（真实压制力技统、进球时段、未来赛程）与 profiling（相同初盘画像、盘路走势、半场双盘），站在庄家第一性原理反向破译（严禁散户式盲从胜率，作为诱盘与资金敞口探测器），若静态摘要与晚盘时序流水反向冲突必须以真实流水为准并在契约卡中披露分歧；严格按照模板执行完整10步分析与学术文献四大主动质问纠偏（Levitt净赔付审计/Tversky小数定律审计/Gilovich热手偏见审计/Constantinou跨市场均衡审计），欧指去水点概率必须调用终端运行 python 算法/src/adapter/cli.py <初盘主赔> <初盘平赔> <初盘客赔> --json 获取真值，严禁心算。直接继承源数据已通过门禁验证的 Polymarket 真实链接（主流核心联赛必须为真实事件可点击链接形如 [{对阵}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})，严禁谎称未开盘或批量复制粘贴），小众联赛确实无标的方可标未开盘说明；若为开球前 30~45 分钟临盘复核，输入必须同时载入原认知契约卡反证条件与临盘新批次，驱动状态机输出【维持原判】/【微调修正】/【物理熔断】。先回传待验收结果与执行证据（输入和计算输出位置、时点、污染状态、Polymarket 真实链接及缺口），不得自行对外发布。由主会话/编排验收后逐场推送。返回结构化综合评估结果（含 memory 摘要、认知契约卡与 Polymarket 真实直达链接）。"
    ```
 5. 等待所有 worker 的结果回传，收集分析结果（含各场 memory 摘要）。**若某场回传为「比赛已开始」等跳过状态**（无 memory 摘要），该场不计入分析结果，不写入 `## 深度分析`，汇总推荐时也不含该场；只合并含完整 memory 摘要的结果。
 6. 读取 `skills/recommendation/SKILL.md`，基于收集到的结果执行精选胜平负汇总（默认附带胜负平 2 串 1 优质组合，**初筛通过 0 场时**也执行 recommendation，输入 0 场，生成对应窗口 `## 推荐`「本窗口无候选场次」；失败空返回不得走此分支）

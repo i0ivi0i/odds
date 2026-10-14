@@ -512,7 +512,7 @@ read_file(path="MEMORY.md")
 
 在完成记忆入账后，自动调用官方自进化算子更新知识图谱工作记忆与置信度半衰期：
 1. **沉淀实战记忆**：对本批次各场赛果执行 `graphify save-result --memory-dir graphify-out/memory`，命中场次记 `--outcome useful`，失误场次记 `--outcome corrected --correction "{反思教训}"`，并挂载关联图谱核心节点；
-2. **聚合并反思自进化**：执行 `graphify reflect --memory-dir graphify-out/memory`，将所有命中的经验节点与失误节点自动提炼沉淀至 `graphify-out/reflections/LESSONS.md`，实现官方图谱自动化自愈与自进化闭环。
+2. **聚合并反思自进化**：终端运行 `python 校验/src/adapter/cli.py --graph-reflect`（或 `graphify reflect`），将所有命中的经验节点与失误节点自动提炼沉淀至 `LESSONS.md` 与 `.graphify_learning.json`，实现官方图谱自动化自愈与自进化闭环。
 
 ### 步骤 9：推送
 

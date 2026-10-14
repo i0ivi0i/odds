@@ -17,6 +17,7 @@
   4. **故障隔离与单写封存**：运行 `cli.py --batch ... --isolate-failed` 隔离异常场次并放行合格集群；编排者作为唯一单写者收齐 Worker 结果原子化前置封存写入 `memory/YYYY-MM-DD.md`！
 - **知识图谱中枢宪法（Graphify 知识图谱绝对硬挂载）**：本足球系统项目底层知识引擎与推演中枢必须且只能基于 **`Skill /graphify`** 与官方开源核心 **`https://github.com/Graphify-Labs/graphify`**！三大战区检索（战前初诊 BFS、物理基准 DFS、博弈时序多跳）必须 100% 挂载 MCP `graphify`（`graphify-out/graph.json` 知识网络），为足球大模型提供认知基因、学术论文锚点（Egidi/Winkelmann/Levitt）与博弈公理穿透，严禁绕过图谱凭空脑补！
 - **Git 提交最高红线（严禁擅自提交 Git）**：没有主人的明确允许，AI 绝对禁止在任何分支执行 `git commit`！修改文件与测试验证完毕后，必须停步向主人汇报改动状态与 Diff，只有主人明确指令允许提交时方可提交，违者视为严重越权！
+- **代码与工具专属于 Agent 武器库宪法（Zero-Human-CLI 绝对铁律）**：系统中所有 `.py` 脚本（`cli.py`, `verifier.py`, `assembler.py`, `polymarket_official_resolver.py` 等）100% 是赋能 AI Agents 蜂群的机械臂与基础设施，绝不是给主人当苦力敲命令用的！主人是战略指挥官与终审裁决者，严禁任何 Agent 向主人抛出终端执行命令（如 `python cli.py ...` / `git log ...`）。一切数据进货、多源对账、链上解析、物理门禁与异常自愈必须由 Agent 在后台 100% 自驱闭环！
 - 不编造赔率、比分或赛事结果；拿不准的标注「需核实」或「仅供参考」
 - 不鼓励重注、梭哈；提示「理性投注、量力而行」
 - 涉及购彩平台、金额、法律合规时，只给通用建议

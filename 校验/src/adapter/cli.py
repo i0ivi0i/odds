@@ -124,6 +124,21 @@ def run_match_verify(
     return 0 if receipt.is_valid else 1
 
 
+def run_match_verification(
+    match_path: str,
+    as_json: bool = False,
+    max_age_minutes: Optional[int] = None,
+    verify_network: bool = False,
+) -> int:
+    """单场门禁检验统一方法 (兼容单测与内部调用)"""
+    return run_match_verify(
+        match_path=match_path,
+        output_json=as_json,
+        max_age_minutes=max_age_minutes,
+        verify_network=verify_network,
+    )
+
+
 def run_system_check(root_dir: str, print_ok: bool) -> int:
     uc = CheckConsistencyUseCase()
     res = uc.execute(root_dir=root_dir)
@@ -500,6 +515,156 @@ def run_fetch_match(match_id: str, target_date: Optional[str] = None, output_md:
     return run_assemble_bundle(str(raw_json_path), output_md)
 
 
+def run_ingest_match(
+    match_id: str,
+    target_date: Optional[str] = None,
+    output_md: Optional[str] = None,
+    max_age_minutes: Optional[int] = 30,
+) -> int:
+    """专职搬运工一体化进货与门禁机械臂: 进货抓取 -> 原子装配 -> 门禁验证 (单命令闭环)"""
+    if not target_date:
+        target_date = datetime.now().strftime("%Y-%m-%d")
+    if not output_md:
+        output_md = str(Path("data") / target_date / f"{match_id}.md")
+
+    print(f"🚀 [INGEST_MATCH_START] 启动单场一体化进货: match_id={match_id}, date={target_date}")
+    fetch_ret = run_fetch_match(match_id, target_date=target_date, output_md=output_md)
+    if fetch_ret != 0:
+        print(f"🚫 [INGEST_MATCH_FAILED] 抓取装配失败 (exit {fetch_ret})，物理熔断禁止推演！", file=sys.stderr)
+        return fetch_ret
+
+    print(f"🔍 [INGEST_MATCH_VERIFY] 启动单场门禁安检: {output_md}")
+    verify_ret = run_match_verification(output_md, as_json=False, max_age_minutes=max_age_minutes)
+    if verify_ret == 0:
+        print(f"🎉 [INGEST_MATCH_SUCCESS] 比赛 {match_id} 进货与门禁检验双合格 (PASS)！")
+    else:
+        print(f"🚫 [INGEST_MATCH_REJECTED] 比赛 {match_id} 门禁检验未通过 (exit {verify_ret})！", file=sys.stderr)
+    return verify_ret
+
+
+def run_graph_affected(node_name: str, depth: int = 2) -> int:
+    """调用官方 graphify.affected 执行因果涟漪影响传播分析"""
+    graph_path = Path("graphify-out/graph.json")
+    if not graph_path.exists():
+        print(f"❌ 知识图谱文件不存在: {graph_path}", file=sys.stderr)
+        return 1
+
+    try:
+        import graphify.affected as aff
+        G = aff.load_graph(graph_path)
+        formatted = aff.format_affected(G, node_name, depth=depth)
+        print(f"🕸️ [GRAPHIFY_AFFECTED] 种子节点【{node_name}】因果涟漪影响分析 (深度={depth}):")
+        print(formatted)
+        return 0
+    except Exception as e:
+        print(f"❌ 因果涟漪影响分析异常: {e}", file=sys.stderr)
+        return 1
+
+
+def run_graph_reflect(if_stale: bool = True) -> int:
+    """调用官方 graphify.reflect 刷新 Learning Overlay 与 LESSONS.md 错题反思"""
+    mem_dir = Path("memory")
+    out_path = Path("LESSONS.md")
+    graph_path = Path("graphify-out/graph.json")
+    analysis_path = Path("graphify-out/.graphify_analysis.json")
+    labels_path = Path("graphify-out/.graphify_labels.json")
+
+    try:
+        import graphify.reflect as ref
+        if if_stale:
+            is_fresh = ref.lessons_fresh(
+                out_path=out_path,
+                memory_dir=mem_dir,
+                graph_path=graph_path if graph_path.exists() else None,
+                analysis_path=analysis_path if analysis_path.exists() else None,
+                labels_path=labels_path if labels_path.exists() else None,
+            )
+            if is_fresh and out_path.exists():
+                print(f"⚡ [GRAPHIFY_REFLECT] 反思导览仍然新鲜 (Fresh)，跳过重复计算")
+                return 0
+
+        res_path, summary = ref.reflect(
+            memory_dir=mem_dir,
+            out_path=out_path,
+            graph_path=graph_path if graph_path.exists() else None,
+            analysis_path=analysis_path if analysis_path.exists() else None,
+            labels_path=labels_path if labels_path.exists() else None,
+        )
+        print(f"💡 [GRAPHIFY_REFLECT] 错题反思与学习覆盖层刷新完成: {res_path} (提取了 {len(summary)} 条反思经验)")
+        return 0
+    except Exception as e:
+        print(f"❌ 错题反思刷新异常: {e}", file=sys.stderr)
+        return 1
+
+
+def run_graph_query(query: str, mode: str = "bfs", budget: int = 1000) -> int:
+    """针对当场盘口具体特征对 5.6MB 知识图谱进行靶向穿透检索 (基于 NetworkX)"""
+    graph_path = Path("graphify-out/graph.json")
+    if not graph_path.exists():
+        print(f"❌ 知识图谱文件不存在: {graph_path}", file=sys.stderr)
+        return 1
+
+    try:
+        from networkx.readwrite import json_graph
+        import networkx as nx
+        data = json.loads(graph_path.read_text(encoding="utf-8"))
+        G = json_graph.node_link_graph(data, edges="links")
+
+        terms = [t.lower() for t in re.split(r"[\s,;，；]+", query) if len(t) >= 2]
+        scored = []
+        for nid, ndata in G.nodes(data=True):
+            label = str(ndata.get("label", "")).lower()
+            desc = str(ndata.get("description", "")).lower()
+            score = sum(2 for t in terms if t in label) + sum(1 for t in terms if t in desc)
+            if score > 0:
+                scored.append((score, nid, ndata.get("label", nid), ndata.get("community", 0)))
+        scored.sort(reverse=True)
+
+        if not scored:
+            print(f"🔍 [GRAPHIFY_QUERY] 未在图谱中直接匹配到关键词: {query} (建议换词或查阅 graphify-out/wiki/)")
+            return 0
+
+        start_nodes = [nid for _, nid, _, _ in scored[:3]]
+        visited = set()
+        subgraph_nodes = []
+
+        for sn in start_nodes:
+            if sn in visited:
+                continue
+            if mode.lower() == "dfs":
+                path_nodes = list(nx.dfs_preorder_nodes(G, source=sn, depth_limit=2))
+            else:
+                path_nodes = list(nx.bfs_tree(G, source=sn, depth_limit=2).nodes())
+            for n in path_nodes:
+                if n not in visited:
+                    visited.add(n)
+                    subgraph_nodes.append(n)
+
+        print(f"🧠 [GRAPHIFY_QUERY] 盘口疑难靶向穿透检索: 【{query}】 (模式={mode.upper()}, 命中起点={len(start_nodes)}, 展开节点={len(subgraph_nodes)})")
+        total_tokens = 0
+        for nid in subgraph_nodes:
+            ndata = G.nodes[nid]
+            label = ndata.get("label", nid)
+            desc = ndata.get("description", "")
+            source_loc = ndata.get("source_location", "")
+            comm = ndata.get("community", "")
+            node_text = f"• [{comm}] {label}"
+            if source_loc:
+                node_text += f" ({source_loc})"
+            if desc:
+                node_text += f"\n  {desc[:120]}"
+            print(node_text)
+            total_tokens += len(node_text) // 2
+            if total_tokens >= budget:
+                print(f"  ... (达到 budget 预算上限 {budget} 字符，截断保护上下文)")
+                break
+
+        return 0
+    except Exception as e:
+        print(f"❌ 靶向图谱检索异常: {e}", file=sys.stderr)
+        return 1
+
+
 def run_assemble_raw_dir(raw_dir_path: str, output_md_path: Optional[str]) -> int:
     """从 raw/{matchId}/ 目录或单文件 raw/{matchId}.json 直接读取全量原始报文，直出 .md 与原子存证包"""
     from 校验.src.domain.raw_parser import Titan007RawParser
@@ -868,15 +1033,81 @@ def main() -> int:
         default=None,
         help="进货或核验的目标销售日 (如 2026-10-14，默认当天)",
     )
+    parser.add_argument(
+        "--ingest-match",
+        metavar="MATCH_ID",
+        help="专职搬运工一体化进货与门禁机械臂 (进货拉取 -> 原子组装 -> 门禁验证单命令闭环)",
+    )
+    parser.add_argument(
+        "--graph-affected",
+        metavar="NODE_NAME",
+        help="调用官方 graphify.affected 执行因果涟漪影响传播分析",
+    )
+    parser.add_argument(
+        "--graph-reflect",
+        action="store_true",
+        help="调用官方 graphify.reflect 刷新 Learning Overlay 与 LESSONS.md 错题反思",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="强制刷新反思覆盖层 (忽略新鲜度检查)",
+    )
+    parser.add_argument(
+        "--graph-query",
+        metavar="QUERY",
+        help="针对当场盘口具体特征对 5.6MB 知识图谱进行靶向穿透检索",
+    )
+    parser.add_argument(
+        "--mode",
+        default="bfs",
+        choices=["bfs", "dfs"],
+        help="知识图谱检索遍历模式 (默认 bfs, 可选 dfs)",
+    )
+    parser.add_argument(
+        "--dfs",
+        action="store_true",
+        help="知识图谱深度优先遍历模式 (等同于 --mode dfs)",
+    )
+    parser.add_argument(
+        "--depth",
+        type=int,
+        default=2,
+        help="因果涟漪影响传播分析遍历深度 (默认 2)",
+    )
+    parser.add_argument(
+        "--budget",
+        type=int,
+        default=1000,
+        help="知识图谱检索上下文保护预算字符数 (默认 1000)",
+    )
 
     args = parser.parse_args()
 
     # 门禁安全硬上限：严禁篡改 --max-age-minutes 传入超大数值逃避新鲜度熔断
     MAX_ALLOWABLE_FRESHNESS = 45
-    if (args.batch or args.match) and args.max_age_minutes is not None:
+    if (args.batch or args.match or args.ingest_match) and args.max_age_minutes is not None:
         if args.max_age_minutes > MAX_ALLOWABLE_FRESHNESS or args.max_age_minutes <= 0:
             print(f"❌ 门禁安全违规: --max-age-minutes ({args.max_age_minutes}) 超过系统法定允许最大值 ({MAX_ALLOWABLE_FRESHNESS} 分钟)！严禁篡改参数绕过新鲜度核验！", file=sys.stderr)
             return 1
+
+    # 优先级 -3: Graphify 官方高阶增智工具链
+    if args.graph_affected:
+        return run_graph_affected(args.graph_affected, depth=args.depth)
+    if args.graph_reflect:
+        return run_graph_reflect(if_stale=not args.force)
+    if args.graph_query:
+        query_mode = "dfs" if args.dfs else args.mode
+        return run_graph_query(args.graph_query, mode=query_mode, budget=args.budget)
+
+    # 优先级 -2.5: 一体化单场进货与门禁机械臂
+    if args.ingest_match:
+        return run_ingest_match(
+            args.ingest_match,
+            target_date=args.date,
+            output_md=args.output,
+            max_age_minutes=args.max_age_minutes if args.max_age_minutes is not None else 30,
+        )
 
     # 优先级 -2: Scrapling 分块规划与原生进货
     if args.plan_scrapling_chunks:
