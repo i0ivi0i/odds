@@ -341,6 +341,17 @@ def run_assemble_bundle(bundle_json_path: str, output_md_path: Optional[str]) ->
         raw_files = bundle_obj.get("payloads") or bundle_obj.get("rawFiles") or {}
         match_id_str = str(bundle_obj.get("matchId") or p.stem).strip()
 
+        # 官方 Discover Markets 探针: 若缺少或未解析出有效 polymarket.json，自动尝试官方双向检索发现
+        pm_content = str(raw_files.get("polymarket.json") or "").strip()
+        if not pm_content or len(pm_content) < 5 or '"slug"' not in pm_content:
+            from 校验.src.domain.polymarket_official_resolver import PolymarketOfficialResolver
+            pm_resolver = PolymarketOfficialResolver()
+            resolved, pm_info = pm_resolver.resolve_raw_bundle(bundle_obj)
+            if resolved:
+                print(f"🎯 [OFFICIAL_POLYMARKET] 官方 Discover Markets 自动命中链上标的: {pm_info}")
+                raw_files = bundle_obj.get("payloads") or bundle_obj.get("rawFiles") or {}
+                p.write_text(json.dumps(bundle_obj, ensure_ascii=False, indent=2), encoding="utf-8")
+
         meta_md_txt = ""
         meta_md_path = p.parent.parent / "meta.md"
         if meta_md_path.exists():
@@ -388,6 +399,35 @@ def run_assemble_bundle(bundle_json_path: str, output_md_path: Optional[str]) ->
     else:
         print(md_content)
     return 0
+
+
+def run_resolve_polymarket(path_or_id: str) -> int:
+    """按 Polymarket 官方 Discover Markets API 检索并补齐单文件原子存证包"""
+    p = Path(path_or_id)
+    if not p.exists() or not p.is_file():
+        # 尝试查找 data/*/{path_or_id}.json
+        matches = list(Path("data").glob(f"*/raw/{path_or_id}.json"))
+        if matches:
+            p = matches[0]
+        else:
+            print(f"❌ 找不到原子存证包文件: {path_or_id}", file=sys.stderr)
+            return 1
+
+    from 校验.src.domain.polymarket_official_resolver import PolymarketOfficialResolver
+    resolver = PolymarketOfficialResolver()
+    try:
+        bundle_obj = json.loads(p.read_text(encoding="utf-8"))
+        ok, msg = resolver.resolve_raw_bundle(bundle_obj)
+        if ok:
+            p.write_text(json.dumps(bundle_obj, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"✅ [OFFICIAL_POLYMARKET] 成功解析并回填 Polymarket 官方标的: {msg}")
+            return 0
+        else:
+            print(f"⚠️ [OFFICIAL_POLYMARKET] 检索结果: {msg}")
+            return 1
+    except Exception as e:
+        print(f"❌ 解析失败: {e}", file=sys.stderr)
+        return 1
 
 
 def run_plan_scrapling_chunks(match_id: str, chunk_size: int = 7, as_json: bool = False) -> int:
@@ -819,6 +859,11 @@ def main() -> int:
         help="通过 Scrapling 原生流水线执行单场进货与原子组装",
     )
     parser.add_argument(
+        "--resolve-polymarket",
+        metavar="PATH_OR_ID",
+        help="通过 Polymarket 官方 Discover Markets API 检索并自动补齐 raw/{matchId}.json 中的 polymarket.json 报文",
+    )
+    parser.add_argument(
         "--date",
         default=None,
         help="进货或核验的目标销售日 (如 2026-10-14，默认当天)",
@@ -838,6 +883,8 @@ def main() -> int:
         return run_plan_scrapling_chunks(args.plan_scrapling_chunks, as_json=args.json)
     if args.fetch_match:
         return run_fetch_match(args.fetch_match, target_date=args.date, output_md=args.output)
+    if args.resolve_polymarket:
+        return run_resolve_polymarket(args.resolve_polymarket)
 
     # 优先级 -1.5: 门禁自诊断深度排查
     if args.diagnose_gate:
