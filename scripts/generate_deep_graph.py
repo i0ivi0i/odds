@@ -182,36 +182,25 @@ def run_deep_graphify():
     add_inferred(hub_map['tools'], verify_cli_node, "documents_data_integrity_gatekeeper_cli", 0.95)
     add_inferred(hub_map['agents'], verify_cli_node, "mandates_worker_pre_flight_check", 0.98)
 
-    # 双轨敏捷数据采集层：Scrapling 极速通道 × BrowserOS neo 真实渲染
+    # 官方 Scrapling 原生数据采集层
     scrapling_node = "tool_scrapling_protocol_stream"
-    browseros_node = "tool_browseros_neo_dom_render"
     scrapling_skill_node = "skill_scrapling_official"
-    browseros_skill_node = "skill_browseros_neo"
     schema_hygiene_node = "concept_strict_schema_placement_hygiene"
 
     if not G.has_node(scrapling_node):
-        G.add_node(scrapling_node, label="Scrapling MCP (极速协议流/1x2d/时序流水)", file_type="tool", source_file=str(root / "TOOLS.md"))
-    if not G.has_node(browseros_node):
-        G.add_node(browseros_node, label="BrowserOS neo MCP (真实Chromium渲染/微观阵容)", file_type="tool", source_file=str(root / "TOOLS.md"))
+        G.add_node(scrapling_node, label="Scrapling MCP (官方原生极速流水线/1x2d/时序流水/伤停波胆)", file_type="tool", source_file=str(root / "TOOLS.md"))
     if not G.has_node(scrapling_skill_node):
-        G.add_node(scrapling_skill_node, label="scrapling-official (官方Skill)", file_type="skill", source_file=str(root / "TOOLS.md"))
-    if not G.has_node(browseros_skill_node):
-        G.add_node(browseros_skill_node, label="browseros-neo (爱马仕浏览器Skill)", file_type="skill", source_file=str(root / "TOOLS.md"))
+        G.add_node(scrapling_skill_node, label="scrapling-official (官方原生Skill)", file_type="skill", source_file=str(root / "TOOLS.md"))
     if not G.has_node(schema_hygiene_node):
         G.add_node(schema_hygiene_node, label="数据纯净与防错位红线 (Schema Hygiene)", file_type="concept", source_file=str(root / "TOOLS.md"))
 
     add_inferred(scrapling_skill_node, scrapling_node, "operates_via_mcp", 0.98)
-    add_inferred(browseros_skill_node, browseros_node, "operates_via_mcp", 0.98)
-    add_inferred(hub_map['tools'], scrapling_node, "defines_fast_lane_scraping_tool", 0.95)
-    add_inferred(hub_map['tools'], browseros_node, "defines_visual_dom_rendering_tool", 0.95)
+    add_inferred(hub_map['tools'], scrapling_node, "defines_native_scraping_pipeline", 0.98)
     add_inferred(hub_map['tools'], schema_hygiene_node, "mandates_strict_schema_placement", 0.98)
     add_inferred(schema_hygiene_node, verify_cli_node, "physically_enforced_by_verifier", 0.98)
-    add_inferred(hub_map['scraper'], scrapling_skill_node, "leverages_fast_lane_protocol_stream", 0.95)
-    add_inferred(hub_map['scraper'], browseros_skill_node, "leverages_real_dom_inspection", 0.95)
-    add_inferred(hub_map['analysis'], scrapling_skill_node, "sources_high_frequency_odds_history", 0.95)
-    add_inferred(hub_map['analysis'], browseros_skill_node, "sources_lineup_and_visual_dom", 0.95)
+    add_inferred(hub_map['scraper'], scrapling_skill_node, "leverages_official_native_pipeline", 0.98)
+    add_inferred(hub_map['analysis'], scrapling_skill_node, "sources_high_frequency_odds_history", 0.98)
     add_inferred(scrapling_node, verify_cli_node, "snapshot_must_pass_physical_gate", 0.98)
-    add_inferred(browseros_node, verify_cli_node, "snapshot_must_pass_physical_gate", 0.98)
 
     # 4a-2. 接入全局智能体技能 pansuan-workflow 与 odds-1x2-sniper
     pansuan_path = Path.home() / "AppData/Local/hermes/skills/pansuan-workflow/SKILL.md"

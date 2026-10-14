@@ -390,6 +390,74 @@ def run_assemble_bundle(bundle_json_path: str, output_md_path: Optional[str]) ->
     return 0
 
 
+def run_plan_scrapling_chunks(match_id: str, chunk_size: int = 7, as_json: bool = False) -> int:
+    """输出某场比赛 Scrapling 原生分块规划矩阵 (遵循官方 <= 6~8 URLs 军规与选择器下推)"""
+    from 校验.src.adapter.scrapling_ingest import ScraplingIngestPipeline
+    pipeline = ScraplingIngestPipeline(match_id=match_id)
+    chunks = pipeline.build_plan_chunks(chunk_size=chunk_size)
+    if as_json:
+        out = []
+        for c in chunks:
+            out.append({
+                "chunk_index": c.chunk_index,
+                "delay_seconds": c.delay_seconds,
+                "specs": [
+                    {
+                        "name": s.name,
+                        "url": s.url,
+                        "encoding": s.encoding,
+                        "css_selector": s.css_selector,
+                        "category": s.category,
+                    }
+                    for s in c.specs
+                ]
+            })
+        print(json.dumps(out, ensure_ascii=False, indent=2))
+    else:
+        print(f"📦 Scrapling 原生分块矩阵规划 (Match ID: {match_id}): 共 {len(chunks)} 批次")
+        for c in chunks:
+            print(f"  - 批次 {c.chunk_index}: {len(c.specs)} URLs (延时 {c.delay_seconds}s)")
+            for s in c.specs:
+                sel = f" [selector: {s.css_selector}]" if s.css_selector else ""
+                print(f"    * {s.name} ({s.encoding}){sel} -> {s.url}")
+    return 0
+
+
+def run_fetch_match(match_id: str, target_date: Optional[str] = None, output_md: Optional[str] = None) -> int:
+    """通过 Scrapling 原生流水线执行单场进货与原子组装"""
+    import time
+    from 校验.src.adapter.scrapling_ingest import ScraplingIngestPipeline
+    if not target_date:
+        target_date = datetime.now().strftime("%Y-%m-%d")
+
+    pipeline = ScraplingIngestPipeline(match_id=match_id)
+    specs = pipeline.get_all_endpoint_specs()
+    chunks = pipeline.build_plan_chunks()
+
+    print(f"⚡ [SCRAPLING_INGEST_START] 启动比赛 {match_id} 进货 (共 {len(specs)} 端点, {len(chunks)} 分块)")
+    payloads = {}
+    for chunk in chunks:
+        for spec in chunk.specs:
+            try:
+                content = pipeline.fetch_endpoint_with_escalation(spec)
+                payloads[spec.name] = content
+            except Exception as e:
+                print(f"⚠️ 端点抓取异常: {spec.name}: {e}", file=sys.stderr)
+                payloads[spec.name] = ""
+        time.sleep(chunk.delay_seconds)
+
+    bundle = pipeline.assemble_atomic_bundle(payloads)
+    raw_dir = Path("data") / target_date / "raw"
+    raw_json_path = raw_dir / f"{match_id}.json"
+    pipeline.save_bundle(bundle, raw_json_path)
+    print(f"✅ 原子存证包已生成: {raw_json_path.resolve()}")
+
+    if not output_md:
+        output_md = str(Path("data") / target_date / f"{match_id}.md")
+
+    return run_assemble_bundle(str(raw_json_path), output_md)
+
+
 def run_assemble_raw_dir(raw_dir_path: str, output_md_path: Optional[str]) -> int:
     """从 raw/{matchId}/ 目录或单文件 raw/{matchId}.json 直接读取全量原始报文，直出 .md 与原子存证包"""
     from 校验.src.domain.raw_parser import Titan007RawParser
@@ -667,6 +735,21 @@ def main() -> int:
         action="store_true",
         help="启用源站物理网络抽验 (子秒级探针核验 1x2d.js 源站存活与响应状态，杜绝离线伪造 raw.json)",
     )
+    parser.add_argument(
+        "--plan-scrapling-chunks",
+        metavar="MATCH_ID",
+        help="输出官方 Scrapling 分块规划矩阵 (用于并发搬运工分批抓取)",
+    )
+    parser.add_argument(
+        "--fetch-match",
+        metavar="MATCH_ID",
+        help="通过 Scrapling 原生流水线执行单场进货与原子组装",
+    )
+    parser.add_argument(
+        "--date",
+        default=None,
+        help="进货或核验的目标销售日 (如 2026-10-14，默认当天)",
+    )
 
     args = parser.parse_args()
 
@@ -676,6 +759,12 @@ def main() -> int:
         if args.max_age_minutes > MAX_ALLOWABLE_FRESHNESS or args.max_age_minutes <= 0:
             print(f"❌ 门禁安全违规: --max-age-minutes ({args.max_age_minutes}) 超过系统法定允许最大值 ({MAX_ALLOWABLE_FRESHNESS} 分钟)！严禁篡改参数绕过新鲜度核验！", file=sys.stderr)
             return 1
+
+    # 优先级 -2: Scrapling 分块规划与原生进货
+    if args.plan_scrapling_chunks:
+        return run_plan_scrapling_chunks(args.plan_scrapling_chunks, as_json=args.json)
+    if args.fetch_match:
+        return run_fetch_match(args.fetch_match, target_date=args.date, output_md=args.output)
 
     # 优先级 -1: 数据纯净度五重轮番穿透质检
     if args.audit_integrity:

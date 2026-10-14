@@ -4,15 +4,19 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 
 ---
 
-## 核心系统：双轨敏捷数据采集（Skill scrapling-official / browseros-neo 与对应 MCP）
+## 核心系统：官方 Scrapling 原生数据采集体系（Skill scrapling-official ↔ MCP scrapling）
 
-**绝对刚性红线**：**全流程严禁任何临时 `.py` 脚本、跑批脚本、数据清洗脚本、复盘对账脚本或 `python -c`！**
-严禁在根目录或任何位置自写散装爬虫、解析或对账脚本。数据采集必须严格使用且只能使用：
-1. **`BrowserOS neo`**（真实 Chromium 浏览器环境，MCP 工具）；
-2. **`Scrapling MCP`**（官方 MCP 极速协议通道）。
-违者视为严重工程违规与作弊。
+**绝对刚性红线（100% Scrapling 独家立宪与外部浏览器绝对红线）**：
+1. **进货通道 100% 独家**：系统数据采集进货 100% 独家归属 **`Skill /scrapling-official` ↔ `MCP scrapling`** 官方原生流水线！
+2. **严禁调用外部独立浏览器**：全流程绝对严禁在任何数据采集、赛程同步、变盘流水或页面抓取环节调用外部独立浏览器（如 `Skill /browseros-neo` ↔ `MCP browseros_neo`）！外部独立浏览器仅限主人亲自交互浏览，AI 在常规和异常业务流中绝对禁止擅自启动或降级调用！
+3. **全流程严禁任何临时 `.py` 脚本、跑批脚本、数据清洗脚本、复盘对账脚本或 `python -c`！** 违者视为严重工程违规与作弊。
 
-数据采集采用**大模型自主调度的双轨敏捷架构**：系统正式装载并明确绑定两大核心 Skill 与其对应 MCP 服务。AI 大模型根据目标页面特性与即时网络状况，拥有完全自主、聪明智慧的决断权，灵活调度两军协同。
+**Scrapling 官方内部四级闭环与分块并发军规**：
+当遭遇网络重置或源站 WAF 限制时，必须且只能在 Scrapling 框架内部自洽升阶：
+- **一级（极速协议并发）**：`mcp__scrapling__bulk_get` 并发直取（遵循官方分块军规：单批切片 $\le 6\sim 8$ URLs，每批之间加 0.3s `retry_delay`；前置下推选择器 `css_selector="#table_odds"`）；
+- **二级（单步精准协议流）**：`mcp__scrapling__fetch(network_idle=true)`；
+- **三级（指纹反爬绕过）**：`mcp__scrapling__stealthy_fetch`（模拟 TLS 指纹与规避 Cloudflare/WAF）；
+- **四级（内部 Chrome 驱动）**：Scrapling 内部 `--real-chrome` 无头渲染受控驱动。
 
 - **阶段 0：赛程索引确定性自检与 Scrapling 极速直落（Zero-State Hard Lock）**：
   - 凡触发赛前分析、赛程同步或手动推演，大模型唤醒后**第 0 秒第一工具动作**必须且只能先检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；
@@ -30,10 +34,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
     3. **体彩全玩法与半场指数**：`https://zq.titan007.com/default/getAnalyData?sid={id}&t=1`（含体彩 HAD/HHAD/TTG/CRS/HAFU 及半场欧亚大）；
     4. **百家欧指与分钟级流水**：`https://1x2d.titan007.com/{id}.js`（含 23 家法定机构初即盘、返还率、凯利指数及全部变盘历史）；
     5. **7 大做市商亚盘与大小球流水**：`https://vip.titan007.com/changeDetail/handicap.aspx` 与 `overunder.aspx`。
-  - **常规流程 100% 由 Scrapling 独立极速完成，严禁无故启动缓慢的浏览器渲染！**
-- **备用辅助兜底：Skill `/browseros-neo` ↔ MCP `browseros_neo`（仅限异常降级辅助）**：
-  - 由于浏览器渲染速度慢、资源消耗高，**仅作为辅助备用通道**；
-  - 仅当 Scrapling 遭遇极端反爬锁死、接口改版或必须执行前端点击交互时，才降级调用 BrowserOS neo 兜底。
+  - **常规与异常流程 100% 由 Scrapling 官方内部四级闭环极速完成，严禁启动外部独立浏览器！**
 - **赛后复盘赛果极速提取规约（赋能 skills/post-review 的 Scrapling 选择器下推通道）**：
   - 赛后复盘获取已完场比分时，作为 `skills/post-review` 的底层数据通道，调用 `mcp__scrapling__bulk_get` 批量并发抓取 `https://live.titan007.com/detail/{matchId}cn.htm`；
   - **强制配置选择器下推**：指定 `css_selector=".score, .analyhead, .team-name"` 仅提取比分与主客队名核心节点，彻底过滤百 KB 庞杂 HTML；
@@ -131,17 +132,17 @@ mcp__scrapling__bulk_get({
 
 ---
 
-### 3. BrowserOS neo 真实渲染使用指南
+### 3. Scrapling 原生微观伤停与波胆提取指南
 
-- 爱马仕专用浏览器内核，用于真实页面交互、全貌 DOM 抓取与微观阵容审阅。
+- 官方 Scrapling 协议流直取分析页与波胆页，无需渲染浏览器，毫秒级提取微观阵容与 Crown 盘面。
 - **微观伤停核验规范**：
-  - 访问分析页（`https://zq.titan007.com/analysis/{matchId}cn.htm`），定位「阵容情况」表格；
+  - Scrapling 并发拉取分析页（`https://zq.titan007.com/analysis/{matchId}cn.htm`），由装配器离线提取「阵容情况」表格；
   - 若页面明确印出缺阵名单，逐人记录姓名、位置与缺阵原因；
   - 若印出「暂无数据」，如实标注【暂无数据 / 伤停未核实】，保留页上原句，**允许继续十步但严禁脑补全主力或无人受伤**。
 - **Crown 皇冠波胆与半全场**：
-  - 从分析页 `#analy_sbAllOdds` 提取 0:0~4:4 比分波胆赔率矩阵及半全场赔率，作为泊松分布物理偏差对账的真实市场锚点。
-- **即时走势比较（获取数据环节最重的一步）**：
-  - 当降级使用 `/browseros-neo` 打开分析页且页面未显示「即时走势比较」表格（或仅有标题无数据）时，必须依次点击 **定制 → 勾选「指数比较」 → 确定**，等待表格渲染后再 snapshot 提取各公司欧指、亚盘、大小球的初盘与即时盘。
+  - 从波胆页（`https://zq.titan007.com/analysis/odds/{matchId}.htm`）提取 0:0~4:4 比分波胆赔率矩阵及半全场赔率，作为泊松分布物理偏差对账的真实市场锚点。
+- **即时走势与变盘流水**：
+  - 欧指、亚盘、大小球的即时变盘流水，统一通过 Scrapling 并发拉取法定 7 家机构的 `changeDetail/*.aspx` 接口（结合 `css_selector="#table_odds"` 选择器下推），由装配器自动结构化提取，严禁依赖任何浏览器前端手工交互！
 
 ---
 
@@ -213,13 +214,13 @@ mcp__scrapling__bulk_get({
 - 输出结构严格遵循 `agent.analysis` 契约规范。
 - **杜绝低级排版与骨架抓取错误（刚性规范）**：
   1. **结构化原生存储**：百家欧指必须通过 `1x2d.js` 解析后，结构化写入 `markets.europeCompanies` 数组（包含各公司初即盘、返还率与凯利独立对象），**严禁将百家数据挤入单行转义长文本**导致 JSON 仅有几十行假象！
-  2. **精准容器提取（严禁全页乱倒）**：BrowserOS neo 抓取阵容或赔率时，必须使用精准 CSS 选择器（如 `#analy_sbAllOdds`、阵容表格）或 `clean_dom_text` 过滤，**严禁将包含“首页/足球直播”的整页导航栏文本塞入【推演源数据】**。
-  3. **等待异步渲染**：对需浏览器渲染的 DOM 元素必须设置 `wait-selector` 等待数据真实装载，严禁保存未渲染的静态 HTML 空骨架（`<!DOCTYPE...`）。
+  2. **精准容器下推提取（严禁全页乱倒）**：Scrapling 提取数据时必须使用精准 CSS 选择器（如 `#table_odds`、阵容表格）过滤，**严禁将包含“首页/足球直播”的整页导航栏文本塞入【推演源数据】**。
+  3. **等待网络空闲与选择器下推**：动态页面抓取必须使用 `network_idle=true` 或指定 `css_selector`，确保真实数据完整装载，严禁保存未渲染的静态 HTML 空骨架（`<!DOCTYPE...`）。
   4. **法定 23 家白名单精准提纯（严禁算术平均陷阱）**：
      - **严禁算术平均**：系统严禁计算百家赔率的算术平均数！不同机构抽水率完全不同，直接平均违背概率公理且抹杀做市商意图。基准对账一律遵循「同公司三项去水（OO-EPC）后才聚合」；
      - **直接过滤落盘**：`1x2d.js` 流入后，直接按法定 23 家白名单（核心 14 家做市商 + 2 家终端 + 2 家老庄 + 5 家论文样本）筛选提纯写入 `markets.europeCompanies`；
      - **彻底抛弃垃圾小庄**：其余 140+ 家抄盘跟风小白标直接丢弃，不存明细，不折算伪平均，保持【推演源数据】纯净与高信噪比。
-- 无论通过 Scrapling 提取还是 BrowserOS neo 渲染，均必须包含：
+- Scrapling 原生流水线装配的【推演源数据】必须包含：
   1. `european1x2Text` 与 `markets.europeCompanies`：主流机构百家初即盘、返还率与凯利指数（法定 23 家提纯，严禁算术平均）；
   2. `markets.europeHistories`：包含核心做市商（澳彩、Crown、Bet365、易胜博等）完整的分钟级调赔时序（带时间戳、胜平负赔率、初/即状态），严禁仅有初即两点切片偷懒；
   3. `asianOddsText` / `overUnderOddsText`：7 大法定做市商（澳彩、Crown、Bet365、易胜博、平博、188、香港马会）分钟级变盘流水；
@@ -231,7 +232,7 @@ mcp__scrapling__bulk_get({
 
 ### 数据安全规则
 
-- **赔率必须实时抓取**：每次分析都用 `/scrapling-official`（或 `/browseros-neo` 备用辅助）实时拉取球探页最新数据，不复用 memory 中旧赔率。
+- **赔率必须实时抓取**：每次分析都用 `/scrapling-official` 极速原生流水线实时拉取球探页最新数据，不复用 memory 中旧赔率。
 - **只用赛前赔率**：过滤状态为“滚”的记录，并按开赛时间截断赛前变化历史。
 - **缺失不臆造**：如果某家公司或某类市场缺失，报告中必须标注数据缺口，并降低对应维度权重。
 - **平博用途**：平博可作为主流公司交叉验证参考，不单独用于决策依据。
@@ -309,11 +310,11 @@ Polymarket 链上智能合约、标的名称及底层 Gamma 数据库 **100% 为
 
 ## 数据源与主源失败处理
 
-盘口主源是球探网。资料齐不齐、对不对，不看网站姓什么（详见 ADR 0001）。**线上抓取采用 Scrapling 极速通道与 BrowserOS neo 协同双轨，严禁先跑旧版 npm 脚本。**
+盘口主源是球探网。资料齐不齐、对不对，不看网站姓什么（详见 ADR 0001）。**线上抓取 100% 独家采用 Scrapling 官方原生流水线，严禁先跑旧版 npm 脚本，严禁调用外部独立浏览器。**
 
 ### 1. 赔率与赛程
 - **主数据源（Primary）**：titan007 球探页。当场按赛事分组提取分析依据公司的可见流水与 Crown 已有项目。14 家名单是宽覆盖描述，不是每场每市场全覆盖保证。
-- **抓取通道**：Scrapling（主攻欧亚变盘流水与 1x2d 百家数据流） + BrowserOS neo（主攻单场分析页阵容与微观交互），大模型自主抉择调度。若出现网络波动或残页，大模型自主调用另一通道补齐；若仍缺，置顶如实提示并贴出原因。
+- **抓取通道**：100% 独家锁定 Scrapling 官方原生流水线（分析页、波胆页、竞彩玩法、1x2d 百家与欧亚变盘流水）。若遇网络波动，由专职搬运工在 Scrapling 框架内升阶重试；若仍缺，置顶如实提示并贴出原因。
 - **公司矩阵（按赛事分组，页面或接口编号分别核对，不猜编号）**：
   - 欧洲及其他赛事欧指：威廉、365、立博、伟德、平博。
   - 德国欧指：威廉、365、Interwetten。
@@ -332,15 +333,15 @@ Polymarket 链上智能合约、标的名称及底层 Gamma 数据库 **100% 为
 - **Football-Data.org**：免费提供欧洲主要联赛赛程、积分榜、H2H 交锋与阵容（凭证读取自 `~/.gemini/config/football_data_tokens.json`）。
 - **The Odds API (the-odds-api.com)**：免费 Starter 方案支持平博、365、威廉等做市商标准 1X2 与盘口查询（作为 Pinnacle / Betfair 尖锐欧指去水验真辅轨，详见 ADR 0012）。
 
-## 核心安全通道：双轨协同直取与【推演源数据】落盘规范
+## 核心安全通道：Scrapling 官方原生直取与【推演源数据】落盘规范
 
-调用 Scrapling 极速协议流与爱马仕 `/browseros-neo` 真实渲染，不是让主人自己开网页，也不是另写外置爬虫。
+专职搬运工调用 Scrapling 极速协议流并发直取，严禁调用外部独立浏览器（如 `browseros-neo`），不是让主人自己开网页，也不是另写外置爬虫。
 
-1. **协同采集全维度数据**：
+1. **官方原生采集全维度数据**：
    - **百家欧指 1X2 与流水**：通过 Scrapling 直取 `1x2d.titan007.com/{id}.js`（提纯法定 23 家机构）与 `OddsHistory.aspx`（澳彩等核心依据公司变盘流水）；
-   - **亚盘让球与大小球流水**：通过 Scrapling 直取 7 大法定做市商（澳彩 1、Crown 3、Bet365 8、易胜博 12、平博 47、188 42、香港马会 48）`changeDetail` 全量流水（GB18030解码）；
-   - **微观首发与伤停情况**：通过 BrowserOS neo 访问分析页抽取「阵容情况」与球员评分；
-   - **Crown 皇冠波胆全指数**：分析页 `#analy_sbAllOdds` 中 0:0～4:4 比分波胆赔率矩阵及半全场。
+   - **亚盘让球与大小球流水**：通过 Scrapling 直取 7 大法定做市商（澳彩 1、Crown 3、Bet365 8、易胜博 12、平博 47、188 42、香港马会 48）`changeDetail` 全量流水（GB18030 解码，选择器下推 `#table_odds`）；
+   - **微观首发与伤停情况**：通过 Scrapling 访问分析页（`analysis/{id}cn.htm`）提取「阵容情况」与球员评分；
+   - **Crown 皇冠波胆全指数**：通过 Scrapling 访问波胆页（`analysis/odds/{id}.htm`）提取 0:0～4:4 比分波胆赔率矩阵及半全场。
 2. **确定性【推演源数据】自动化装配管道 (SnapshotAssembler)**：
    - 严禁大模型在会话里手写文本或拼凑散装 Markdown！原始数据采集后，通过确定性装配管道直接转化为符合黄金契约的单文件 Markdown 【推演源数据】：
      ```bash
@@ -380,7 +381,7 @@ Polymarket 链上智能合约、标的名称及底层 Gamma 数据库 **100% 为
 ```
 # 赛程同步（单个 subagent）
 sessions_spawn:
-  task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，优先用 /scrapling-official（/browseros-neo 备用辅助）抓球探竞足页全量赛程，禁止先跑 npm run schedule。通过 messaging 推送赛程列表给主人，写入 memory/{今天日期}.md。"
+  task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，使用 /scrapling-official 抓球探竞足页全量赛程，禁止先跑 npm run schedule。通过 messaging 推送赛程列表给主人，写入 memory/{今天日期}.md。"
   label: "match-sync"
 
 # 深度分析（编排 subagent 内部 spawn worker）

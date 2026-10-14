@@ -123,7 +123,7 @@ read_file(path="memory/{复盘日期}.md")
 
 ### 步骤 2：获取比赛结果
 
-从推荐记录中取出每场比赛的比赛 ID，优先用 `/scrapling-official` 并发抓取（`/browseros-neo` 备用辅助）即时详情页获取完场赛果：
+从推荐记录中取出每场比赛的比赛 ID，使用 `/scrapling-official` 并发抓取即时详情页获取完场赛果：
 
 `https://live.titan007.com/detail/{matchId}cn.htm`
 
@@ -137,7 +137,7 @@ read_file(path="memory/{复盘日期}.md")
 
 批量并发获取，如遇偶发超时重试一次。
 
-若推荐记录中比赛 ID 丢失或需要查看整日开售赛果，用 `/scrapling-official` 或 `/browseros-neo` 打开球探竞足页切到昨日销售日，禁止先 `npm run schedule`。
+若推荐记录中比赛 ID 丢失或需要查看整日开售赛果，用 `/scrapling-official` 官方流水线打开球探竞足页切到昨日销售日，禁止先 `npm run schedule`。
 
 ### 步骤 3：逐场核对
 
