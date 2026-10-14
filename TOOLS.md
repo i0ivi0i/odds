@@ -85,8 +85,11 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 3. **抓取时流式内存截流 (In-Flight Hook，严禁 Raw JS 倾倒)**：
    - 请求 `1x2d.js` 时，数据流入内存第一时间使用法定 23 家 ID 集合直接筛选提纯；
    - 抛弃其余 140+ 家机构数据，向外交付仅包含法定 23 家初即盘的紧凑结构，单场数据严格压在 **5KB 以内**。
-4. **全真隐身与智能自愈标准（SSOT 统一溯源）**：
-   - 数据采集全流程的隐身反爬（Chrome TLS 指纹、Canvas 动态加噪、WebRTC 泄露封锁）与智能自愈（`adaptive=True`、`auto_save=True` 元素指纹重定位），**100% 依循 [`match-scraper`](skills/match-scraper/SKILL.md) 官方规约**执行；
+4. **全真隐身、协议锁与智能自愈标准（SSOT 统一溯源）**：
+   - **动态协议自协商**：首选 HTTP/2 极速流，遇到源站 Nginx HTTP/2 流中断缺陷时动态自愈降级至 HTTP/1.1（`CurlHttpVersion.V1_1` 与 `--disable-http2`），彻底规避 `PROTOCOL_ERROR`；
+   - **指纹库项目本地持久化**：配置 `selector_config={"adaptive": True, "storage_args": {"storage_file": "data/scrapling_storage.db"}}`，确保改版指纹落盘于项目目录，杜绝散落在环境包；
+   - **端点专属语义标识**：变盘流水端点统一绑定 `identifier`（`ah_{cid}_table`、`ou_{cid}_table`、`eu_{cid}_table`），开启 `auto_save=True` 与 `adaptive=True`，辅以 `get_all_text()` 穿透提取与 `relocate()` 兜底；
+   - **隐身规约统一溯源**：Chrome TLS 伪装、Canvas 加噪、WebRTC 封锁与自适应机制 **100% 依循 [`match-scraper`](skills/match-scraper/SKILL.md) 官方规约**执行；
    - 本宪法专注规范：法定 23 家白名单、7 家变盘时序、数据 Schema 与防错位断言，消除跨文件冗余复制与参数漂移。
 5. **精准语义防错位与防污染断言（最高铁律：绝不混淆、绝不认错）**：
    - **URL 显式语义绑定**：`urls` 列表必须按固定契约构建，返回结果按索引 `result[i]` 严格回填对应机构对应玩法：

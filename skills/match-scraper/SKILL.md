@@ -25,7 +25,8 @@ metadata: { "emoji": "📆" }
 
 为了确保系统永不被球探网风控与反爬 WAF 识别阻断，全流程进货必须严格贯彻官方原生隐身与自愈双核机制：
 
-1. **全真隐身装配与指纹混淆（Stealth Engine）**：
+1. **全真隐身装配与网络协议锁（Stealth Engine & Protocol Lock）**：
+   - **动态协议自协商（首选 H2 极速，异常动态退避 H1）**：首选 HTTP/2 极速多路复用流，享受最高并发性能；若遇源站 Nginx 抛出 HTTP/2 `PROTOCOL_ERROR` 或流重置，自适应引擎即刻无感自愈降级至 HTTP/1.1（`CurlHttpVersion.V1_1` 与 `--disable-http2`），兼顾现代极速与极端容灾；
    - **真实 TLS 指纹模拟**：优先调用 `StealthySession` 或 `impersonate="chrome"`（全真模拟最新 Chrome 协议特征与扩展套件，杜绝裸奔请求）；
    - **Canvas 动态加噪（`hide_canvas=True`）**：在渲染和图层计算中注入微扰随机噪声，从根源粉碎 WAF 针对 Canvas 画布指纹的聚类追踪；
    - **WebRTC 泄露封锁（`block_webrtc=True`）**：强制 WebRTC 遵循全局路由，绝对禁止本地局域网 IP 与真实出口 IP 被静默探测；
@@ -33,9 +34,11 @@ metadata: { "emoji": "📆" }
    - **拟真访问来源（上下文 Referer 拓扑映射）**：变盘流水端点绑定 `https://zq.titan007.com/analysis/odds/{mid}.htm`，百家欧指绑定 `https://titan007.com/`，内部子域禁用默认 `google_search` 覆盖，彻底消除外源异常流量特征。
 
 2. **官方智能自愈与元素改版自适应（Adaptive Scraping & Element Memory）**：
-   - **指纹记忆存储（`auto_save=True`）**：初次解析表格或赔率结构时，自动将目标元素的文本、DOM 路径与几何关系快照保存至本地指纹库；
-   - **改版自动重定位（`adaptive=True`）**：当球探网前端模板更新、Class 名混淆或表格结构微调导致原 CSS 选择器失效时，Scrapling 智能自愈引擎自动基于多维相似度比对，无感寻回正确数据节点，实现零维护自愈；
-   - **全域指纹共享（`adaptive_domain="titan007.com"`）**：将 `jc`、`zq`、`vip` 各子域名绑定至同一自愈域，避免跨子域指纹割裂。
+   - **专属记忆库重定向（Project SQLite Storage）**：配置 `selector_config={"adaptive": True, "storage_args": {"storage_file": "data/scrapling_storage.db"}}`，将元素结构指纹统一持久化落盘至项目专属库，杜绝散落在环境包目录；
+   - **语义唯一标识（Semantic Identifiers）**：为 7 大做市商时序端点绑定专属标识契约（亚盘 `ah_{cid}_table`、大小球 `ou_{cid}_table`、欧指 `eu_{cid}_table`），避免跨端点指纹覆盖；
+   - **指纹记忆自动存储（`auto_save=True`）**：初次解析变盘流水表格时，自动将目标表格的几何拓扑与 DOM 结构指纹存入本地 SQLite；
+   - **改版自动重定位（`adaptive=True`）**：当球探网前端改版、ID `#table_odds` 被删或 Class 名混淆时，Scrapling 依据 `identifier` 自动提取指纹并计算相似度，无感寻回正确表格节点；
+   - **多级提取与标签兜底**：使用 `get_all_text()` 穿透提取包含全部子行子列的完整纯净文本，并配置 `page.relocate({"tag": "table", "text": "盘口"}, percentage=30)` 作为最终兜底防线。
 
 3. **拟人化流量控制与会话保持（Autothrottle & Session Persistence）**：
    - **分块并发军规**：单批物理切片严格锁定 $\le 6\sim 8$ URLs；

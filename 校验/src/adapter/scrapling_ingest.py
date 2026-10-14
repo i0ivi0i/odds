@@ -44,6 +44,7 @@ class EndpointSpec:
     css_selector: Optional[str] = None
     extraction_type: str = "text"
     category: str = "core"  # core, ah, ou, eu
+    identifier: Optional[str] = None
 
 
 @dataclass
@@ -118,6 +119,7 @@ class ScraplingIngestPipeline:
                     css_selector="#table_odds",
                     extraction_type="text",
                     category="ah",
+                    identifier=f"ah_{cid}_table",
                 )
             )
         # 2. 大小球 (7家)
@@ -130,6 +132,7 @@ class ScraplingIngestPipeline:
                     css_selector="#table_odds",
                     extraction_type="text",
                     category="ou",
+                    identifier=f"ou_{cid}_table",
                 )
             )
         # 3. 欧指流水 (7家)
@@ -142,6 +145,7 @@ class ScraplingIngestPipeline:
                     css_selector="#table_odds",
                     extraction_type="text",
                     category="eu",
+                    identifier=f"eu_{cid}_table",
                 )
             )
         return specs
@@ -212,6 +216,10 @@ class ScraplingIngestPipeline:
         try:
             # 优先尝试导入官方 scrapling
             from scrapling import Fetcher, StealthyFetcher
+            try:
+                from scrapling.engines.static import CurlHttpVersion
+            except ImportError:
+                CurlHttpVersion = None
             # 动态计算真实浏览器访问轨迹 Referer (避免做市商子域直接来自 Google 暴露特征)
             referer = "https://zq.titan007.com/"
             if "changeDetail" in spec.url:
@@ -223,35 +231,116 @@ class ScraplingIngestPipeline:
 
             extra_headers = {"Referer": referer}
 
+            # 配置项目专属持久化存储库 (data/scrapling_storage.db)，开启自适应与元素记忆
+            db_dir = repo_root / "data"
+            db_dir.mkdir(parents=True, exist_ok=True)
+            db_file = str((db_dir / "scrapling_storage.db").resolve())
+            selector_config = {
+                "adaptive": True,
+                "storage_args": {"storage_file": db_file},
+            }
+
             if tier == FetchTier.BULK_PROTOCOL or tier == FetchTier.FETCH_PRECISE:
-                page = Fetcher.get(spec.url, impersonate="chrome", stealthy_headers=True, headers=extra_headers)
+                fetch_kwargs = {
+                    "impersonate": "chrome",
+                    "stealthy_headers": True,
+                    "headers": extra_headers,
+                    "timeout": 15,
+                    "selector_config": selector_config,
+                }
+                # 首选 HTTP/2 极速协议流，若源站报协议缺陷则动态自愈降级至 HTTP/1.1
+                try:
+                    page = Fetcher.get(spec.url, **fetch_kwargs)
+                except Exception as e:
+                    err_msg = str(e).lower()
+                    if CurlHttpVersion is not None and any(k in err_msg for k in ["http/2", "protocol_error", "(92)", "stream"]):
+                        retry_kwargs = dict(fetch_kwargs)
+                        retry_kwargs["http_version"] = CurlHttpVersion.V1_1
+                        page = Fetcher.get(spec.url, **retry_kwargs)
+                    else:
+                        raise
             elif tier == FetchTier.STEALTHY_FETCH:
-                page = StealthyFetcher.fetch(
-                    spec.url,
-                    headless=True,
-                    hide_canvas=True,
-                    block_webrtc=True,
-                    allow_webgl=True,
-                    google_search=False,
-                    extra_headers=extra_headers,
-                )
+                try:
+                    page = StealthyFetcher.fetch(
+                        spec.url,
+                        headless=True,
+                        hide_canvas=True,
+                        block_webrtc=True,
+                        allow_webgl=True,
+                        google_search=False,
+                        extra_headers=extra_headers,
+                        selector_config=selector_config,
+                    )
+                except Exception as e:
+                    err_msg = str(e).lower()
+                    if any(k in err_msg for k in ["http2", "protocol_error", "err_http2"]):
+                        page = StealthyFetcher.fetch(
+                            spec.url,
+                            headless=True,
+                            hide_canvas=True,
+                            block_webrtc=True,
+                            allow_webgl=True,
+                            google_search=False,
+                            extra_flags=["--disable-http2"],
+                            extra_headers=extra_headers,
+                            selector_config=selector_config,
+                        )
+                    else:
+                        raise
             else:  # INTERNAL_CHROME
-                page = StealthyFetcher.fetch(
-                    spec.url,
-                    headless=True,
-                    real_chrome=True,
-                    hide_canvas=True,
-                    block_webrtc=True,
-                    allow_webgl=True,
-                    google_search=False,
-                    extra_headers=extra_headers,
-                )
+                try:
+                    page = StealthyFetcher.fetch(
+                        spec.url,
+                        headless=True,
+                        real_chrome=True,
+                        hide_canvas=True,
+                        block_webrtc=True,
+                        allow_webgl=True,
+                        google_search=False,
+                        extra_headers=extra_headers,
+                        selector_config=selector_config,
+                    )
+                except Exception as e:
+                    err_msg = str(e).lower()
+                    if any(k in err_msg for k in ["http2", "protocol_error", "err_http2"]):
+                        page = StealthyFetcher.fetch(
+                            spec.url,
+                            headless=True,
+                            real_chrome=True,
+                            hide_canvas=True,
+                            block_webrtc=True,
+                            allow_webgl=True,
+                            google_search=False,
+                            extra_flags=["--disable-http2"],
+                            extra_headers=extra_headers,
+                            selector_config=selector_config,
+                        )
+                    else:
+                        raise
 
             if spec.css_selector:
-                matched = page.css(spec.css_selector, adaptive=True, auto_save=True)
+                css_kwargs = {
+                    "adaptive": True,
+                    "auto_save": True,
+                }
+                if spec.identifier:
+                    css_kwargs["identifier"] = spec.identifier
+                matched = page.css(spec.css_selector, **css_kwargs)
                 if matched:
-                    return matched[0].text
-            return page.text or ""
+                    target = matched[0]
+                    return target.get_all_text() if hasattr(target, "get_all_text") else target.text
+                # 官方自适应自愈：当原有 ID/class 改版失效时，自动在 DOM 树中基于标签与文本寻回
+                if hasattr(page, "relocate"):
+                    relocated = page.relocate({"tag": "table", "text": "盘口"}, percentage=30)
+                    if relocated:
+                        target = relocated[0]
+                        return target.get_all_text() if hasattr(target, "get_all_text") else target.text
+
+            if page.text:
+                return page.text
+            if hasattr(page, "body") and page.body:
+                return page.body.decode(spec.encoding, errors="replace")
+            return ""
         except ImportError:
             # 环境未安装 scrapling 库时，回退到标准受控 urllib（带 Chrome 136 UA）
             import urllib.request

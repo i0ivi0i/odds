@@ -55,14 +55,17 @@ class TestScraplingPipeline(unittest.TestCase):
         ah_spec = next(s for s in all_specs if s.name == "ah_1.html")
         self.assertEqual(ah_spec.encoding, "gb18030")
         self.assertEqual(ah_spec.css_selector, "#table_odds")
+        self.assertEqual(ah_spec.identifier, "ah_1_table")
 
         ou_spec = next(s for s in all_specs if s.name == "ou_3.html")
         self.assertEqual(ou_spec.encoding, "gb18030")
         self.assertEqual(ou_spec.css_selector, "#table_odds")
+        self.assertEqual(ou_spec.identifier, "ou_3_table")
 
         eu_spec = next(s for s in all_specs if s.name == "eu_8.html")
         self.assertEqual(eu_spec.encoding, "gb18030")
         self.assertEqual(eu_spec.css_selector, "#table_odds")
+        self.assertEqual(eu_spec.identifier, "eu_8_table")
 
     def test_four_tier_escalation_order_and_browser_isolation(self):
         """军规 3: 官方内部四级闭环升阶，绝对严禁调用任何外部独立浏览器"""
@@ -109,6 +112,35 @@ class TestScraplingPipeline(unittest.TestCase):
         self.assertEqual(len(bundle["receipt"]["endpoints"]), 25)
         self.assertTrue(bundle["receipt"]["all_success"])
 
+    def test_adaptive_element_memory_and_relocation(self):
+        """军规 5: 验证 Scrapling 官方自适应与元素记忆自愈能力"""
+        import tempfile
+        try:
+            from scrapling import Selector
+        except ImportError:
+            return  # 若未安装 scrapling 则安全跳过
+
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmpdir:
+            test_db = Path(tmpdir) / "test_memory.db"
+            storage_args = {"storage_file": str(test_db)}
+
+            # 初始结构: 包含标准 #table_odds
+            orig_html = "<html><body><div><table id='table_odds'><tr><td>初盘</td><td>半球</td><td>0.95</td></tr></table></div></body></html>"
+            page1 = Selector(orig_html, adaptive=True, storage_args=storage_args)
+            # 开启 auto_save=True 记录指纹
+            found1 = page1.css("#table_odds", identifier="ah_1_table", auto_save=True, adaptive=True)
+            self.assertEqual(len(found1), 1)
+            self.assertIn("半球", found1[0].get_all_text())
+
+            # 页面改版: table id 被删除，改为 section 嵌套全新类名
+            modified_html = "<html><body><section><table class='new_dynamic_odds'><tr><td>初盘</td><td>半球</td><td>0.95</td></tr></table></section></body></html>"
+            page2 = Selector(modified_html, adaptive=True, storage_args=storage_args)
+            # 旧选择器 #table_odds 在改版后不存在，但由 identifier + adaptive 自动从 SQLite 读取指纹自愈捞回
+            found2 = page2.css("#table_odds", identifier="ah_1_table", adaptive=True)
+            self.assertEqual(len(found2), 1)
+            self.assertIn("半球", found2[0].get_all_text())
+
 
 if __name__ == "__main__":
     unittest.main()
+
