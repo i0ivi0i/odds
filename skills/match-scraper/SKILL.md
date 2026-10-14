@@ -30,15 +30,17 @@ metadata: { "emoji": "📆" }
    - **Canvas 动态加噪（`hide_canvas=True`）**：在渲染和图层计算中注入微扰随机噪声，从根源粉碎 WAF 针对 Canvas 画布指纹的聚类追踪；
    - **WebRTC 泄露封锁（`block_webrtc=True`）**：强制 WebRTC 遵循全局路由，绝对禁止本地局域网 IP 与真实出口 IP 被静默探测；
    - **显卡特征自洽（`allow_webgl=True`）**：维持完整 WebGL 上下文，彻底消灭无头浏览器（Headless）特征漏洞；
-   - **拟真访问来源（`stealthy_headers=True`）**：自动补齐标准浏览器伪头部，并携带合法的上下文 Referer（如 `https://jc.titan007.com/`）。
+   - **拟真访问来源（上下文 Referer 拓扑映射）**：变盘流水端点绑定 `https://zq.titan007.com/analysis/odds/{mid}.htm`，百家欧指绑定 `https://titan007.com/`，内部子域禁用默认 `google_search` 覆盖，彻底消除外源异常流量特征。
 
 2. **官方智能自愈与元素改版自适应（Adaptive Scraping & Element Memory）**：
    - **指纹记忆存储（`auto_save=True`）**：初次解析表格或赔率结构时，自动将目标元素的文本、DOM 路径与几何关系快照保存至本地指纹库；
    - **改版自动重定位（`adaptive=True`）**：当球探网前端模板更新、Class 名混淆或表格结构微调导致原 CSS 选择器失效时，Scrapling 智能自愈引擎自动基于多维相似度比对，无感寻回正确数据节点，实现零维护自愈；
    - **全域指纹共享（`adaptive_domain="titan007.com"`）**：将 `jc`、`zq`、`vip` 各子域名绑定至同一自愈域，避免跨子域指纹割裂。
 
-3. **拟人化流量控制与遇阻退避（Autothrottle & Flow Control）**：
-   - **分块并发军规**：单批物理切片严格锁定 $\le 6\sim 8$ URLs，批次间隔加入 $\ge 0.3s$ 控频延时；
+3. **拟人化流量控制与会话保持（Autothrottle & Session Persistence）**：
+   - **分块并发军规**：单批物理切片严格锁定 $\le 6\sim 8$ URLs；
+   - **拟人随机抖动（Jitter）**：批次间隔执行 `0.3s ~ 0.65s` 动态随机抖动，彻底粉碎等间隔机械节拍特征；
+   - **会话 Cookie 继承（Session Reuse）**：优先使用 `FetcherSession` / `StealthySession` 维持全局连接，继承主站鉴权 Cookie，杜绝离散探测嫌疑；
    - **智能指数退避**：遭遇网络抖动或偶发 HTTP 429 频控时，自动启动退避重试（退避间隔 1s、2s、4s），严禁高频硬冲引发 WAF 阻断。
 
 ---

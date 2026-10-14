@@ -444,7 +444,9 @@ def run_fetch_match(match_id: str, target_date: Optional[str] = None, output_md:
             except Exception as e:
                 print(f"⚠️ 端点抓取异常: {spec.name}: {e}", file=sys.stderr)
                 payloads[spec.name] = ""
-        time.sleep(chunk.delay_seconds)
+        import random
+        # 拟人随机抖动 (Jitter: 0.3s ~ 0.65s)，粉碎等间隔机械节拍特征
+        time.sleep(chunk.delay_seconds + random.uniform(0.1, 0.35))
 
     bundle = pipeline.assemble_atomic_bundle(payloads)
     raw_dir = Path("data") / target_date / "raw"
