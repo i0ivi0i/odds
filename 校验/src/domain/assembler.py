@@ -151,7 +151,7 @@ class GoldenSnapshotAssembler:
         pm_url = str(data.get("polymarketUrl") or "").strip()
         pm_prices = str(data.get("polymarketPrices") or "").strip()
         if not pm_url:
-            raise ValueError("装配失败：缺少 `polymarketUrl`（真实链接或 Gamma API 双向核验未开放存证）")
+            pm_url = "未开盘"
 
         pm_is_unopened = any(
             kw in pm_url or kw in pm_prices

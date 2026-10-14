@@ -715,8 +715,9 @@ class Titan007RawParser:
         text = str(raw_json_text or "").strip()
         if not text:
             return {
-                "polymarketUrl": "官方未开盘（经Gamma双向核验均无对应链上预测标的）",
-                "polymarketPrices": "官方未开盘",
+                "polymarketUrl": "",
+                "polymarketPrices": "",
+                "status": "missing",
                 "europe1x2_entry": None,
                 "polymarket_rows": [],
             }
@@ -724,15 +725,22 @@ class Titan007RawParser:
             data = json.loads(text)
         except Exception:
             return {
-                "polymarketUrl": "官方未开盘（经Gamma双向核验均无对应链上预测标的）",
-                "polymarketPrices": "官方未开盘",
+                "polymarketUrl": "",
+                "polymarketPrices": "",
+                "status": "missing",
                 "europe1x2_entry": None,
                 "polymarket_rows": [],
             }
         if isinstance(data, list) and data:
             data = data[0]
         if not isinstance(data, dict):
-            raise ValueError("polymarket.json 格式非法")
+            return {
+                "polymarketUrl": "",
+                "polymarketPrices": "",
+                "status": "missing",
+                "europe1x2_entry": None,
+                "polymarket_rows": [],
+            }
 
         url = str(data.get("url") or data.get("polymarketUrl") or "").strip()
         if not url and data.get("slug"):
@@ -1110,7 +1118,18 @@ class Titan007RawParser:
                 cid = fname.split("_")[1].split(".")[0]
                 url = f"https://vip.titan007.com/changeDetail/1x2.aspx?id={match_id}&companyID={cid}&l=0"
             elif fname == "polymarket.json":
-                url = f"https://gamma-api.polymarket.com/events?id={match_id}"
+                pm_url = ""
+                try:
+                    pm_data = json.loads(content)
+                    if isinstance(pm_data, list) and pm_data:
+                        pm_data = pm_data[0]
+                    if isinstance(pm_data, dict):
+                        pm_url = str(pm_data.get("url") or pm_data.get("polymarketUrl") or "")
+                        if not pm_url and pm_data.get("slug"):
+                            pm_url = f"https://polymarket.com/event/{pm_data['slug']}"
+                except Exception:
+                    pass
+                url = pm_url or "https://gamma-api.polymarket.com/events"
             else:
                 url = f"https://zq.titan007.com/data/{fname}?id={match_id}"
 

@@ -21,7 +21,7 @@ metadata: { "emoji": "🎯" }
    - 衍生全系标的：通过 `gameId` 调用 `GET https://gamma-api.polymarket.com/events/keyset?game_id={gameId}` 展开 Exact Score（波胆比分）与 Halftime（半场盘）；
 3. **交付标准与门禁**：
    - 7 列表最后一格格式严格锁定为：`[{主队 vs 客队}](https://polymarket.com/event/{slug})` 或带报价版 `[{主队 vs 客队}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})`；
-   - 仅当主客双向英文检索确无任何活跃标的时，方可实事求是打标『官方未开盘（经Gamma双向核验）』；严禁捏造带汉字、占位符或假代码的 404 链接。详见 `docs/Polymarket链接查找教程.md`。
+   - 核心主流联赛（英冠、欧冠、五大联赛等）Polymarket 必定开盘，必须通过主客英文名及别名深度检索定位真实标的，严禁使用任何借口打标未开盘；若偶遇极冷门边缘次级赛事且官方经 Gamma/CLOB 确未收录，方可如实标注『官方未开盘』并保留空链接，绝不允许编造任何免责套话或格式假声明。详见 `docs/Polymarket链接查找教程.md`。
 
 来自 deep-analysis 的每场比赛综合评估结果。**执行 recommendation 时**，以收齐的 announce 所包含的**综合评估与 memory 摘要**为输入，**无需**再从 memory 读取 `## 深度分析`。
 

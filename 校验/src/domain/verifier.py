@@ -804,7 +804,8 @@ class SnapshotVerifier:
 
         # 核心主流活跃联赛白名单 (预测市场常态化开设标的，严禁任何形式的未开盘声明)
         core_leagues = {
-            "英超", "意甲", "西甲", "德甲", "法甲", "法乙",
+            "英超", "英冠", "英格兰冠军联赛", "EFL", "ELC", "CHAMPIONSHIP",
+            "意甲", "西甲", "德甲", "法甲", "法乙",
             "德乙", "意乙", "西乙",
             "欧冠", "欧洲冠军联赛", "欧联杯", "欧联", "欧协联",
             "葡超", "巴西甲", "巴甲", "亚冠", "亚冠精英",
@@ -843,19 +844,21 @@ class SnapshotVerifier:
                     detail={"url": url, "league": league},
                 )
 
-            # 2. 真实双向检索与未开盘存证核验（实事求是：无论核心或非核心联赛，只要具备真实 Gamma 双向核验凭据且均无活跃标的，一律实事求是放行）
+            # 主流核心联赛常态化开盘撮合，绝对严禁标记未开盘逃避过验
+            if is_core_league:
+                return DimensionResult(
+                    dimension=DimensionType.POLYMARKET_LIQUIDITY,
+                    status=CheckStatus.FAIL,
+                    message=f"Polymarket 门禁拦截：当前赛事联赛为【{league}】，属于主流核心联赛，预测市场常态化开盘撮合，严禁偷懒标记未开盘逃避过验！必须提供真实链上事件链接 (当前为: {url or '未开盘'})",
+                    detail={"league": league, "url": url},
+                )
+
+            # 2. 真实双向检索与未开盘存证核验（仅对非核心主流次级联赛放行真实双向检索存证）
             has_dual_proof = bool(
                 re.search(r"(?:双向|双向核验|双向检索|q_home.*q_away|q=.*(?:与|and|及).*q=|经Gamma.*(?:双向)?核验)", url, re.I)
                 and (len(url) >= 15 or "核验" in url)
             )
             if not has_dual_proof:
-                if is_core_league:
-                    return DimensionResult(
-                        dimension=DimensionType.POLYMARKET_LIQUIDITY,
-                        status=CheckStatus.FAIL,
-                        message=f"Polymarket 门禁拦截：当前赛事联赛为【{league}】，属于主流核心联赛，预测市场常态化开盘撮合，严禁偷懒标记未开盘逃避过验！必须提供真实链上事件链接或详尽核验证据",
-                        detail={"league": league, "url": url},
-                    )
                 return DimensionResult(
                     dimension=DimensionType.POLYMARKET_LIQUIDITY,
                     status=CheckStatus.FAIL,
@@ -1441,18 +1444,26 @@ def verify_memory_cognitive_cards(
     # 提取 7 列推荐汇总表中的场次首选方向映射 (按场次编号或对阵名索引)
     table_directions_by_code: Dict[str, str] = {}
     table_directions_by_teams: Dict[str, str] = {}
+    table_pm_by_code: Dict[str, str] = {}
+    table_pm_by_teams: Dict[str, str] = {}
     for line in content.splitlines():
         sline = line.strip()
         if not sline.startswith("|") or "---" in sline or "场次/时间" in sline or "对阵双方" in sline:
             continue
         cells = [c.strip() for c in sline.split("|")[1:-1]]
         if len(cells) >= 7 and "vs" in cells[1].lower():
+            code_m = re.search(r"(周[一二三四五六日]\d{3})", cells[0])
+            code_str = code_m.group(1) if code_m else ""
+            teams_key = re.sub(r"\s+", "", cells[1])
+            pm_cell = cells[6]
+            if code_str:
+                table_pm_by_code[code_str] = pm_cell
+            table_pm_by_teams[teams_key] = pm_cell
+
             p_dir = _normalize_primary_direction(cells[2])
             if p_dir:
-                code_m = re.search(r"(周[一二三四五六日]\d{3})", cells[0])
-                if code_m:
-                    table_directions_by_code[code_m.group(1)] = p_dir
-                teams_key = re.sub(r"\s+", "", cells[1])
+                if code_str:
+                    table_directions_by_code[code_str] = p_dir
                 table_directions_by_teams[teams_key] = p_dir
 
             # 严格核验第7列 Polymarket 真实性与防伪 (杜绝虚构链接流向交付)
@@ -1540,6 +1551,31 @@ def verify_memory_cognitive_cards(
                     f"MEMORY_INTERNAL_DIRECTION_CONFLICT: 【{match_id_str}】7列推荐汇总表首选方向 ({table_primary}) "
                     f"与深度分析卡片首选方向 ({card_primary}) 前后矛盾！"
                 )
+
+        # U4.1b: 严格核验主流核心联赛在第 7 列表格中必须具备真实链接，严禁标记未开盘逃避过验
+        if table_pm_by_code or table_pm_by_teams:
+            core_leagues = {
+                "英超", "英冠", "英格兰冠军联赛", "EFL", "ELC", "CHAMPIONSHIP",
+                "意甲", "西甲", "德甲", "法甲", "法乙",
+                "德乙", "意乙", "西乙",
+                "欧冠", "欧洲冠军联赛", "欧联杯", "欧联", "欧协联",
+                "葡超", "巴西甲", "巴甲", "亚冠", "亚冠精英",
+                "瑞典超", "挪超", "荷甲", "美职联", "MLS",
+                "EPL", "SERIE A", "LA LIGA", "BUNDESLIGA", "LIGUE 1"
+            }
+            if any(c.lower() in header_line.lower() for c in core_leagues):
+                code_m = re.search(r"(周[一二三四五六日]\d{3})", header_line)
+                code_key = code_m.group(1) if code_m else ""
+                matched_pm = table_pm_by_code.get(code_key, "")
+                if not matched_pm:
+                    for tkey, pval in table_pm_by_teams.items():
+                        if tkey in header_line.replace(" ", ""):
+                            matched_pm = pval
+                            break
+                if matched_pm and any(kw in matched_pm for kw in ("未开盘", "未开放", "暂无")):
+                    block_errors.append(
+                        f"【{match_id_str} {code_key}】属于主流核心联赛，Polymarket 预测市场常态化开设标的，推荐总表第 7 列必须具备真实链上事件链接，严禁标注未开盘逃避过验！(当前为: {matched_pm})"
+                    )
 
         # U4.2: 若提供了 data_dir，交叉核验 memory 卡片与源数据 data/{销售日}/{matchId}.md
         if data_dir and id_match:
