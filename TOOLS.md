@@ -85,9 +85,9 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 3. **抓取时流式内存截流 (In-Flight Hook，严禁 Raw JS 倾倒)**：
    - 请求 `1x2d.js` 时，数据流入内存第一时间使用法定 23 家 ID 集合直接筛选提纯；
    - 抛弃其余 140+ 家机构数据，向外交付仅包含法定 23 家初即盘的紧凑结构，单场数据严格压在 **5KB 以内**。
-4. **防封与防火墙穿透 (TLS Fingerprint)**：
-   - 必须标配 `impersonate="chrome"` + `stealthy_headers=True`；
-   - 自动克隆真实 Chrome 136+ 协议特征，绕过 Cloudflare 与 OpenResty 握手拦截。
+4. **全真隐身与智能自愈标准（SSOT 统一溯源）**：
+   - 数据采集全流程的隐身反爬（Chrome TLS 指纹、Canvas 动态加噪、WebRTC 泄露封锁）与智能自愈（`adaptive=True`、`auto_save=True` 元素指纹重定位），**100% 依循 [`match-scraper`](file:///d:/100-工作/200-交易/倍率分析推演/skills/match-scraper/SKILL.md) 官方规约**执行；
+   - 本宪法专注规范：法定 23 家白名单、7 家变盘时序、数据 Schema 与防错位断言，消除跨文件冗余复制与参数漂移。
 5. **精准语义防错位与防污染断言（最高铁律：绝不混淆、绝不认错）**：
    - **URL 显式语义绑定**：`urls` 列表必须按固定契约构建，返回结果按索引 `result[i]` 严格回填对应机构对应玩法：
      - `handicap.aspx?companyID={cid}` 必须且只能解析为 `asianOddsText`（亚洲让球盘）；
@@ -98,8 +98,6 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
      - 大小球必须校验包含“大球/小球”字样；
      - 欧指必须校验包含“主胜/平局/客胜”三项浮点数；
      - 一旦关键字不匹配，立即报错阻断，**严禁跨玩法交叉污染，严禁把不对的数据填进不该在的位置**！
-4. **自适应元素记忆 (Adaptive Relocation)**：
-   - 在解析微观首发或动态表格时，启用 `auto_save=True` 记忆元素指纹，改版时启用 `adaptive=True` 自动寻回。
 
 #### Scrapling MCP 官方原生工具调用范式（严禁自写散装 Python 脚本）
 ```json

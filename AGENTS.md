@@ -104,7 +104,7 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
   ② 严禁 Worker 思考盘赔逻辑、构思分析思路或下达胜负预测；
   ③ 严禁 Worker 自行重写、修改或 patch 系统代码。
   **搬运工官方原生纯净进货管道（Minimal Ingestion Pipeline）**：
-  搬运工直接调用官方 Scrapling MCP `bulk_get`（分块军规 ≤6~8 URLs + 选择器下推）并发拉取 26 端点写入 `raw/{matchId}.json` ➔ 运行离线受测命令 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` ➔ 单场 `--match` 门禁（exit 0），零手写 Python 爬虫脚本！
+  搬运工严格遵照 [`match-scraper`](file:///d:/100-工作/200-交易/倍率分析推演/skills/match-scraper/SKILL.md) 隐身自愈标准执行，直接调用官方 Scrapling MCP `bulk_get`（分块军规 ≤6~8 URLs + 选择器下推）并发拉取 26 端点写入 `raw/{matchId}.json` ➔ 运行离线受测命令 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` ➔ 单场 `--match` 门禁（exit 0），零手写 Python 爬虫脚本！
   **验收门禁前置死锁（支持故障隔离与溯源防篡改）**：全员回传后，主会话在终端物理运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 执行终审安检（亚盘/大小球七家真实变盘流水 + 23家欧指初即盘 + 主客场/近6进失球数字 + SHA-256 防篡改核验 `TAMPERED_MARKDOWN_SEAL` + 原始报文溯源核验 `RAW_PROVENANCE_MISMATCH` + 物理修改时间戳新鲜度核验）。门禁严格锁定 `--max-age-minutes 30`，严禁随意调大参数！异常场次就地隔离至 `.quarantine`，合格集群放行！
   **官方合法未开盘与推演到底宪法（Anti-Drop Iron Rule）**：
   ① **体彩深盘不开单固**：当实力悬殊深盘中国体彩未开普通胜负平（HAD）时，欧指门禁自动放行 22 家，大模型必须推演体彩让球胜平负（HHAD），严禁以此为借口丢弃比赛；
