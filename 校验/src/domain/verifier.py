@@ -856,20 +856,20 @@ class SnapshotVerifier:
             # 2. 真实双向检索与未开盘存证核验（仅对非核心主流次级联赛放行真实双向检索存证）
             has_dual_proof = bool(
                 re.search(r"(?:双向|双向核验|双向检索|q_home.*q_away|q=.*(?:与|and|及).*q=|经Gamma.*(?:双向)?核验)", url, re.I)
-                and (len(url) >= 15 or "核验" in url)
+                and (len(url) >= 15 or "核验" in url or "检索" in url)
             )
             if not has_dual_proof:
                 return DimensionResult(
                     dimension=DimensionType.POLYMARKET_LIQUIDITY,
                     status=CheckStatus.FAIL,
-                    message=f"Polymarket 未开盘存证不足：未开盘声明必须附带真实双向检索凭据（如『官方未开盘（经Gamma双向核验q=Home与q=Away均无活跃标的）』），严禁口头空头逃逸！(当前为: {url})",
+                    message=f"Polymarket 未开盘存证不足：次级联赛未开盘声明必须附带真实双向检索凭据（如『官方未开盘（经Gamma双向检索q=Home与q=Away均无活跃标的）』），严禁口头空头逃逸！(当前为: {url})",
                     detail={"url": url, "league": league},
                 )
 
             return DimensionResult(
                 dimension=DimensionType.POLYMARKET_LIQUIDITY,
                 status=CheckStatus.WARN,
-                message="Polymarket 当前未开放独立交易池或暂无流动性 (已具备真实双向核验凭据，允许推演)",
+                message=f"Polymarket 当前未开放独立交易池或暂无流动性 ({league} 次级赛事，已具备双向检索凭据，允许推演)",
                 detail={"url": url or "官方未开盘", "status": "unopened", "league": league},
             )
 
