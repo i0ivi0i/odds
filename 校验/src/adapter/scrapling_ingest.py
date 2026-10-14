@@ -213,17 +213,29 @@ class ScraplingIngestPipeline:
             # 优先尝试导入官方 scrapling
             from scrapling import Fetcher, StealthyFetcher
             if tier == FetchTier.BULK_PROTOCOL or tier == FetchTier.FETCH_PRECISE:
-                fetcher = Fetcher()
-                page = fetcher.get(spec.url)
+                page = Fetcher.get(spec.url, impersonate="chrome", stealthy_headers=True)
             elif tier == FetchTier.STEALTHY_FETCH:
-                fetcher = StealthyFetcher()
-                page = fetcher.fetch(spec.url)
+                page = StealthyFetcher.fetch(
+                    spec.url,
+                    headless=True,
+                    hide_canvas=True,
+                    block_webrtc=True,
+                    allow_webgl=True,
+                    google_search=True,
+                )
             else:  # INTERNAL_CHROME
-                fetcher = StealthyFetcher()
-                page = fetcher.fetch(spec.url, real_chrome=True)
+                page = StealthyFetcher.fetch(
+                    spec.url,
+                    headless=True,
+                    real_chrome=True,
+                    hide_canvas=True,
+                    block_webrtc=True,
+                    allow_webgl=True,
+                    google_search=True,
+                )
 
             if spec.css_selector:
-                matched = page.css(spec.css_selector)
+                matched = page.css(spec.css_selector, adaptive=True, auto_save=True)
                 if matched:
                     return matched[0].text
             return page.text or ""

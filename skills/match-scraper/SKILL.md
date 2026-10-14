@@ -21,6 +21,26 @@ metadata: { "emoji": "📆" }
 - 抓不到或场次不全：置顶报告，结束流程，不写残缺记录进 memory。
 - **每次必须实时重新抓取**，不得复用之前抓取的旧数据。
 
+## Scrapling 官方防反爬隐身与智能自愈规约（Stealth & Adaptive Self-Healing）
+
+为了确保系统永不被球探网风控与反爬 WAF 识别阻断，全流程进货必须严格贯彻官方原生隐身与自愈双核机制：
+
+1. **全真隐身装配与指纹混淆（Stealth Engine）**：
+   - **真实 TLS 指纹模拟**：优先调用 `StealthySession` 或 `impersonate="chrome"`（全真模拟最新 Chrome 协议特征与扩展套件，杜绝裸奔请求）；
+   - **Canvas 动态加噪（`hide_canvas=True`）**：在渲染和图层计算中注入微扰随机噪声，从根源粉碎 WAF 针对 Canvas 画布指纹的聚类追踪；
+   - **WebRTC 泄露封锁（`block_webrtc=True`）**：强制 WebRTC 遵循全局路由，绝对禁止本地局域网 IP 与真实出口 IP 被静默探测；
+   - **显卡特征自洽（`allow_webgl=True`）**：维持完整 WebGL 上下文，彻底消灭无头浏览器（Headless）特征漏洞；
+   - **拟真访问来源（`stealthy_headers=True`）**：自动补齐标准浏览器伪头部，并携带合法的上下文 Referer（如 `https://jc.titan007.com/`）。
+
+2. **官方智能自愈与元素改版自适应（Adaptive Scraping & Element Memory）**：
+   - **指纹记忆存储（`auto_save=True`）**：初次解析表格或赔率结构时，自动将目标元素的文本、DOM 路径与几何关系快照保存至本地指纹库；
+   - **改版自动重定位（`adaptive=True`）**：当球探网前端模板更新、Class 名混淆或表格结构微调导致原 CSS 选择器失效时，Scrapling 智能自愈引擎自动基于多维相似度比对，无感寻回正确数据节点，实现零维护自愈；
+   - **全域指纹共享（`adaptive_domain="titan007.com"`）**：将 `jc`、`zq`、`vip` 各子域名绑定至同一自愈域，避免跨子域指纹割裂。
+
+3. **拟人化流量控制与遇阻退避（Autothrottle & Flow Control）**：
+   - **分块并发军规**：单批物理切片严格锁定 $\le 6\sim 8$ URLs，批次间隔加入 $\ge 0.3s$ 控频延时；
+   - **智能指数退避**：遭遇网络抖动或偶发 HTTP 429 频控时，自动启动退避重试（退避间隔 1s、2s、4s），严禁高频硬冲引发 WAF 阻断。
+
 ---
 
 # 第一部分：模式一·赛程抓取与索引初始化（第 0 步极速原子落盘）
