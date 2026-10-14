@@ -18,7 +18,7 @@
      - **推演态契约专注原则**：
        ① **序贯衔接与必读心法**：阶段 0 专注于极速落盘 `meta.md`；《skills/deep-analysis/SKILL.md》是全系统核心推演大脑，在阶段 2（源数据门禁 PASS 后）**绝对强制调用 `view_file` 深度全精读并执行**，阶段 0～1 仅是不提前空转偷跑，绝非不读；
        ② **业务态与工程态分工**：推演态专注于业务流本身，数据规范以 `TOOLS.md` 为准，Python 脚本通过 CLI 命令行高效运行。推演过程中无需分心研读内部代码实现；当任务是代码重构与维护时，再自然进入工程态。
-   - **【阶段 1：纯物理分批进货与故障隔离门禁（Phase 1 Ingest Gate）】**：
+   - **【阶段 1：Agents 蜂群纯物理进货与故障隔离门禁（Phase 1 Ingest Gate）】**：
      主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper` 模式二（Scrapling MCP `bulk_get` 并发直取 5 大接口）组装落盘至 `data/{销售日}/{matchId}.md` ➔ 运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed` 拿到 `exit 0`！严禁搬运工思考盘赔逻辑或定性胜负！
      **重新推演物理清空与严禁局部打补丁（Clean-Slate Anti-Patch Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧快照文件】，全量调用 Scrapling MCP 并发抓取 5 大接口从零装配全新落盘！**绝对严禁直接拿磁盘已有旧文件跑门禁跳过抓取，更绝对严禁在旧快照上使用 replace_file_content 仅修改 T4 时间戳或少数赔率做局部伪装（作弊打补丁）！**门禁参数严格锁定 `--max-age-minutes 30`，严禁擅自调大逃避过期！
      **门禁排错专注心智**：当 `cli.py --match` 或 `cli.py --batch` 门禁返回退出码 1 时，错误原因已在终端以清晰中文明确打印，格式标准已在 `TOOLS.md` 第四节详尽列出。排错依据终端提示与 `TOOLS.md` 黄金契约直接修正 Markdown 数据文件即可，保持推演流畅节奏，无需走神研读底层代码。
