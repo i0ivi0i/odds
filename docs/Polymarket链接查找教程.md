@@ -1,6 +1,11 @@
 # Polymarket 链接查找教程
 
-赛前 7 列表最后一格必须是**可点击**的下单链接。读盘用图上数字；找链接是第二步，**不准拿网上赔率改图上的数**。对不上就写「无链接」，禁止瞎编地址。
+> 📌 **官方权威文档总索引（Documentation Index）**：
+> - **全局 LLM 发现索引**：`https://docs.polymarket.com/llms.txt`（AI 交互首选地图）
+> - **全量中文 API 索引（220页）**：`https://docs.polymarket.com/_llms/cn.txt` 及 `_llms/cn/api.txt`
+> - **三大核心接口**：Gamma API（市场发现）+ CLOB API（买卖挂单深度）+ Data API v2（历史统计）
+
+赛前 7 列表最后一格必须是**可点击**的真实下单链接。读盘用图上数字；找链接是第二步，**不准拿网上赔率改图上的数**。对不上就写「无链接」，禁止瞎编地址。
 
 主人买的是预测市场里的胜/平/负（尤其是平），**不推国内让球对冲**。
 
@@ -51,20 +56,32 @@ site:polymarket.com/event "West Ham" "Queens Park Rangers"
 ```
 或由 `BrowserOS neo` 访问 `https://polymarket.com/sports` 在页面顶端搜索框输入英文队名查找。
 
-### 第二步：拿到页面 slug 后，核查流动性与全系市场（波胆/半场）
-拿到检索出的 slug 后，调用官方接口校验实盘交易池及衍生波胆市场：
-```bash
-# 1. 胜平负主盘报价
-curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/events/slug/完整slug"
-
-# 2. 衍生全系市场（波胆 Exact Score、半场 Halftime、总进球）
-curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/events/keyset?game_id=第一步获取的gameId"
-```
+### 第二步：拿到事件后，核查主客队序与衍生全系市场（波胆/半场/总进球）
+拿到检索出的 `slug` 与 `event` 后，调用官方 Discover 接口校验：
+1. **主客队权威仲裁（Identify Home and Away Teams）**：
+   调用 `https://gamma-api.polymarket.com/events/slug/{slug}`，读取顶层 `teams` 数组：
+   ```json
+   "teams": [
+     { "name": "Paris Saint-Germain FC", "ordering": "home" },
+     { "name": "Stade Rennais FC", "ordering": "away" }
+   ]
+   ```
+   严格核对 `ordering: "home"` 与 `ordering: "away"`，彻底杜绝主客对调错误。
+2. **衍生全系市场裂变（List Events for a Game via `gameId`）**：
+   读取事件中的 `gameId`（如 90104306），调用：
+   ```bash
+   curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/events/keyset?game_id={gameId}&limit=20"
+   ```
+   一键拉取全套伴生事件：
+   - 胜负平独赢盘：`{slug}`（对应市场类型 `moneyline`）
+   - 波胆比分：`{slug}-exact-score`
+   - 半场盘：`{slug}-halftime-result`
+   - 衍生大盘：`{slug}-more-markets`（对应 `totals`、`spreads`）
 
 ### 第三步：门禁判定标准
-- 只有在：① `public-search?q={英文名}` 查无记录；② `web_search (site:polymarket.com/event)` 查无此赛；③ BrowserOS neo 确认无池。
-- **三者全部落空时**，才准许打标【Polymarket 未开放独立交易池】！
-- 凡未经第一步实网检索与官方 API 检索就敢写“未开放”的，一律按作弊与虚假汇报严肃处理！
+- 只有在：① `public-search?q={主队英文}` 与 `public-search?q={客队英文}` 均查无有效事件；② 遍历返回列表无匹配 active 标的。
+- **两者均落空时**，才准许打标【官方未开盘（经Gamma双向核验均无对应链上预测标的）】！
+- 凡未经官方 `public-search` 双向核验就草率判定未开盘的，门禁一律物理熔断！
 
 ### 3）读价钱
 
@@ -78,28 +95,29 @@ curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/events/keyset?gam
 
 格式：
 
-`https://polymarket.com/zh/sports/联赛缩写/完整slug`
+`https://polymarket.com/event/完整slug`
 
 例子：
 
-- 欧国联：[https://polymarket.com/zh/sports/unl/unl-lux-isl-2026-09-29](https://polymarket.com/zh/sports/unl/unl-lux-isl-2026-09-29)
-- 友谊赛可能是 `fifa-friendly` 或 `fif`，以标签为准，例如美国 vs 智利：`fif-usa-chl-2026-09-29`
+- 亚冠精英：[https://polymarket.com/event/acle-vik-jeo-2026-10-14](https://polymarket.com/event/acle-vik-jeo-2026-10-14)
+- 欧冠联赛：[https://polymarket.com/event/ucl-paris-saint-germain-vs-manchester-city](https://polymarket.com/event/ucl-paris-saint-germain-vs-manchester-city)
+- 英冠联赛：[https://polymarket.com/event/elc-nor-sot-2026-10-14](https://polymarket.com/event/elc-nor-sot-2026-10-14)
 
 正文必须写成可点击的一行，不要只塞进代码块：
 
-`[【周二012】卢森堡 vs 冰岛（平局 29.5¢ / 约 3.4 倍）](https://polymarket.com/zh/sports/unl/unl-lux-isl-2026-09-29)`
+`[【周三002】神户胜利 vs 全北现代](https://polymarket.com/event/acle-vik-jeo-2026-10-14)`
 
 规矩：
 
 - 一场一个链接。
+- 格式统一为 `https://polymarket.com/event/{slug}`。
 - 先写体彩代号；对不上就写【体彩未开售/无场次代号】。
-- 推平：链到该场页面，并写明平局现价。
-- 推比分：告诉主人点队名下的 **Exact Score（准确比分）**，不要假装页面一打开就是波胆。
-- 接口未找到实体写「未找到市场」，访问失败写「核验失败」；只有核实实体及开放状态后才写「未开盘」。**禁止拼一个 200 也打不开的地址**。
+- 严禁客户端拼接猜测 Slug！必须通过 `public-search?q={英文名}` 拿到官方 API 真实返回的 `slug`。
+- 接口双向检索未找到实体写「官方未开盘（经Gamma双向核验）」；访问失败写「核验失败」。**禁止拼一个 200 也打不开的虚构地址**。
 
 ## 五、换 AI 时最少要做的
 
 1. 读本文件。  
 2. 有图无队名 → 对体彩现价 → 再查接口。  
-3. 先 `events?slug=`，空了再 `public-search`。  
-4. 7 列表最后一格放可点击链接或诚实写无。  
+3. 动态发现优先：`GET /public-search?q={TeamNameEn}`，核验对阵另一方并获取真实 `event.slug`。  
+4. 7 列表最后一格放可点击有效链接（`https://polymarket.com/event/{slug}`）或诚实写官方未开盘。  

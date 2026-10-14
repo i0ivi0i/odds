@@ -12,7 +12,16 @@ metadata: { "emoji": "🎯" }
 
 ## 输入
 
-**交易交付核验（强制实网 Google 搜索 + Gamma API/BrowserOS neo 双重核验）**：生成表格前**必须先执行实网全网搜索**（`web_search(query='site:polymarket.com/event "主队英文" "客队英文"')` 或由 `BrowserOS neo` 直接在 `https://polymarket.com/sports` 搜索框检索）！利用搜索引擎自动完成中英文别名穿透与真实 URL/slug 定位；拿到 slug 后再调用 Gamma API 或 BrowserOS neo 核验最新实盘买卖价格（¢）与流动性。**主流核心联赛（英超、意甲、西甲、德甲、法甲、葡超、巴甲等）常态化活跃交易，严禁谎称“未开放独立交易池”或批量复制“官方未开盘”！** 最后一列格式严格锁定为：`[{主队 vs 客队}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})`。仅当非核心小众联赛（如瑞典超）经多方检索确实查无标的时，方可标注未开盘（且必须附带 Gamma API 检索说明凭据）。按 `docs/Polymarket链接查找教程.md` 严格执行标准三步走。Gamma 展示价不当买入价；CLOB 按 `outcomes` 对应的 Yes 合约核最佳卖价、该价数量、买卖差与报价时点。无卖单写当前无可买报价；访问失败、未找到与确认未开盘分开。倍数只是未扣费用的条件总回收倍数，不保证成交。
+**交易交付核验（权威对齐官方 Polymarket `https://docs.polymarket.com/llms.txt` 规范）**：
+1. **官方标准发现流（Discover Markets via API，严禁客户端拼词猜 Slug）**：
+   - 调用 Gamma API 搜索主队英文名：`GET https://gamma-api.polymarket.com/public-search?q={HomeTeamEn}`；若未命中则回退检索客队 `AwayTeamEn`；
+   - 在返回事件中比对对阵双方与开球日期，核验活性（`active: true` 且 `closed: false`）及 `teams[].ordering` 主客顺序，提取官方原生 `event.slug` 与 `gameId`；
+2. **可执行流动性与挂单核验（CLOB API & Derivates）**：
+   - 真实买卖报价：调用 CLOB API `GET https://clob.polymarket.com/book?token_id={tokenId}` 核验 Yes 合约买卖深度与实际成交价；Gamma 展示价仅作参考，不当买入保证；
+   - 衍生全系标的：通过 `gameId` 调用 `GET https://gamma-api.polymarket.com/events/keyset?game_id={gameId}` 展开 Exact Score（波胆比分）与 Halftime（半场盘）；
+3. **交付标准与门禁**：
+   - 7 列表最后一格格式严格锁定为：`[{主队 vs 客队}](https://polymarket.com/event/{slug})` 或带报价版 `[{主队 vs 客队}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})`；
+   - 仅当主客双向英文检索确无任何活跃标的时，方可实事求是打标『官方未开盘（经Gamma双向核验）』；严禁捏造带汉字、占位符或假代码的 404 链接。详见 `docs/Polymarket链接查找教程.md`。
 
 来自 deep-analysis 的每场比赛综合评估结果。**执行 recommendation 时**，以收齐的 announce 所包含的**综合评估与 memory 摘要**为输入，**无需**再从 memory 读取 `## 深度分析`。
 

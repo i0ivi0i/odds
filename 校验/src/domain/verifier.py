@@ -843,25 +843,23 @@ class SnapshotVerifier:
                     detail={"url": url, "league": league},
                 )
 
-            # 2. 主流核心活跃联赛严禁随意标记未开盘
-            if is_core_league:
-                return DimensionResult(
-                    dimension=DimensionType.POLYMARKET_LIQUIDITY,
-                    status=CheckStatus.FAIL,
-                    message=f"Polymarket 门禁拦截：当前赛事联赛为【{league}】，属于主流核心联赛，预测市场常态化开盘撮合，严禁偷懒标记未开盘逃避过验！必须提供真实链上事件链接或详尽核验证据",
-                    detail={"league": league, "url": url},
-                )
-
-            # 3. 非核心冷门联赛：必须出具双向检索或确定性探测存证，严禁口头空头逃逸
+            # 2. 真实双向检索与未开盘存证核验（实事求是：无论核心或非核心联赛，只要具备真实 Gamma 双向核验凭据且均无活跃标的，一律实事求是放行）
             has_dual_proof = bool(
-                re.search(r"(?:双向|双向核验|双向检索|q_home.*q_away|q=.*(?:与|and|及).*q=)", url, re.I)
-                or (re.search(r"经Gamma.*核验", url) and len(url) >= 15)
+                re.search(r"(?:双向|双向核验|双向检索|q_home.*q_away|q=.*(?:与|and|及).*q=|经Gamma.*(?:双向)?核验)", url, re.I)
+                and (len(url) >= 15 or "核验" in url)
             )
             if not has_dual_proof:
+                if is_core_league:
+                    return DimensionResult(
+                        dimension=DimensionType.POLYMARKET_LIQUIDITY,
+                        status=CheckStatus.FAIL,
+                        message=f"Polymarket 门禁拦截：当前赛事联赛为【{league}】，属于主流核心联赛，预测市场常态化开盘撮合，严禁偷懒标记未开盘逃避过验！必须提供真实链上事件链接或详尽核验证据",
+                        detail={"league": league, "url": url},
+                    )
                 return DimensionResult(
                     dimension=DimensionType.POLYMARKET_LIQUIDITY,
                     status=CheckStatus.FAIL,
-                    message=f"Polymarket 未开盘存证不足：非核心联赛未开盘声明必须附带真实双向检索凭据（如『经Gamma双向核验q=Home与q=Away均无活跃标的』），严禁口头逃逸！(当前为: {url})",
+                    message=f"Polymarket 未开盘存证不足：未开盘声明必须附带真实双向检索凭据（如『官方未开盘（经Gamma双向核验q=Home与q=Away均无活跃标的）』），严禁口头空头逃逸！(当前为: {url})",
                     detail={"url": url, "league": league},
                 )
 
@@ -869,24 +867,24 @@ class SnapshotVerifier:
                 dimension=DimensionType.POLYMARKET_LIQUIDITY,
                 status=CheckStatus.WARN,
                 message="Polymarket 当前未开放独立交易池或暂无流动性 (已具备真实双向核验凭据，允许推演)",
-                detail={"url": url or "未开放", "status": "unopened", "league": league},
+                detail={"url": url or "官方未开盘", "status": "unopened", "league": league},
             )
 
-        # 检查是否包含虚构的模板占位符 (例如 {league}, {slug}, fake 等)
-        if "{" in url or "}" in url or "fake" in url.lower():
+        # 检查是否包含虚构的模板占位符或假规则 (例如 {league}, {slug}, fake, match-, 包含中文字符等)
+        if "{" in url or "}" in url or "fake" in url.lower() or "match-" in url.lower() or any("\u4e00" <= c <= "\u9fff" for c in url):
             return DimensionResult(
                 dimension=DimensionType.POLYMARKET_LIQUIDITY,
                 status=CheckStatus.FAIL,
-                message=f"Polymarket 检测到包含模板占位符的伪造链接 ({url})，严禁编造链接！未开盘必须实事求是标注",
+                message=f"Polymarket 检测到包含模板占位符、伪造前缀或汉字的虚构链接 ({url})，严禁编造假链接！未开盘必须实事求是标注",
                 detail={"url": url},
             )
 
-        # 检查 URL 域名与格式规范
-        if not re.search(r"https?://(?:www\.)?polymarket\.com/(?:event|zh/sports|sports)/[a-zA-Z0-9_\-]+", url):
+        # 检查 URL 域名与格式规范 (必须只包含合法英文字符与数字，严禁夹带汉字或非标准字符)
+        if not re.search(r"^https?://(?:www\.)?polymarket\.com/(?:event|zh/sports|sports)/[a-zA-Z0-9_\-/]+$", url.strip()):
             return DimensionResult(
                 dimension=DimensionType.POLYMARKET_LIQUIDITY,
                 status=CheckStatus.FAIL,
-                message=f"Polymarket 链接格式不合规 ({url})，必须为形如 https://polymarket.com/event/{{slug}} 的有效事件链接！",
+                message=f"Polymarket 链接格式不合规 ({url})，必须为形如 https://polymarket.com/event/{{slug}} 的纯英文字符有效事件链接！",
                 detail={"url": url},
             )
 
@@ -1443,6 +1441,20 @@ def verify_memory_cognitive_cards(
                     table_directions_by_code[code_m.group(1)] = p_dir
                 teams_key = re.sub(r"\s+", "", cells[1])
                 table_directions_by_teams[teams_key] = p_dir
+
+            # 严格核验第7列 Polymarket 真实性与防伪 (杜绝虚构链接流向交付)
+            pm_cell = cells[6]
+            if "{" in pm_cell or "}" in pm_cell or "fake" in pm_cell.lower() or "match-" in pm_cell.lower():
+                errors.append(f"7列推荐汇总表第7列包含模板占位符或伪造链接 ({cells[0]} {pm_cell})！未开盘必须标明『官方未开盘（经Gamma双向核验）』")
+            elif "http" in pm_cell:
+                url_m = re.search(r"\((https?://[^\)]+)\)", pm_cell)
+                url_to_check = url_m.group(1) if url_m else pm_cell
+                if any("\u4e00" <= c <= "\u9fff" for c in url_to_check):
+                    errors.append(f"7列推荐汇总表第7列 Polymarket 链接夹带汉字 ({cells[0]} {url_to_check})，严禁编造假链接！未开盘必须实事求是标注")
+                elif not re.search(r"^https?://(?:www\.)?polymarket\.com/(?:event|zh/sports|sports)/[a-zA-Z0-9_\-/]+$", url_to_check.strip()):
+                    errors.append(f"7列推荐汇总表第7列 Polymarket 链接格式不合规 ({cells[0]} {url_to_check})，必须为纯英文事件有效链接！")
+            elif not any(kw in pm_cell for kw in ("未开盘", "未开放", "暂无")):
+                errors.append(f"7列推荐汇总表第7列缺少有效 Polymarket 真实链接或未开盘声明 ({cells[0]} {pm_cell})！")
 
     # 1. 检查是否存在 ## 深度分析 (或带有时间的 ## 深度分析)
     section_pattern = r"(?m)^##\s+深度分析.*$"

@@ -272,46 +272,40 @@ python 校验/src/adapter/cli.py --match data/2026-10-07/2981506.md --json
 python 校验/src/adapter/cli.py --system
 ```
 
-## Polymarket 下单链接与法定第 6 接口（三阶确定性探测标准）
+## Polymarket 下单链接与法定第 6 接口（官方 Discover Markets API 检索标准）
+
+> 📌 **官方权威文档索引（Documentation Index）**：`https://docs.polymarket.com/llms.txt`（AI 交互首选地图，全量中文详见 `_llms/cn.txt`）。
 
 7 列表最后一格必须物理调用 Gamma API 真实核查（严禁脑补与跳过）：
 
-### 1. 三阶确定性检索与探测规约（官方 Discover-Markets 规范）
-1. **阶梯一（官方 Slug 直探，首选）**：调用官方精准端点 `https://gamma-api.polymarket.com/events/slug/{league}-{home3}-{away3}-{YYYY-MM-DD}`。O(1) 瞬时直达，零排序干扰；
-2. **阶梯二（Game ID 衍生盘全景裂变）**：直探成功后提取主事件 `gameId`（如 5107619），调用 `https://gamma-api.polymarket.com/events/keyset?game_id={gameId}`，一键解锁该场伴生衍生盘口：
-   - 胜负平：`{slug}`
-   - 半场盘：`{slug}-halftime-result`
-   - 波胆比分：`{slug}-exact-score`（对齐 Crown 全指数波胆）
-   - 大小球进球数：`{slug}-more-markets`（对齐 7 大做市商 OU）
-3. **阶梯三（双向搜索回退）**：若 Slug 直探未中，先搜主队 `public-search?q={HomeTeamEn}`；若被高流动性杯赛挤占，立即回退搜客队 `public-search?q={AwayTeamEn}`；
-4. **主客队权威仲裁**：读取事件顶层 `teams` 数组中的 `ordering` 字段（`"home"` 与 `"away"`），100% 消除主客对调风险。
+### 1. 官方市场发现标准规约（Discover Markets via API - 严禁客户端拼接猜测 Slug）
+Polymarket 官方架构明确立宪：**Slugs 不保证任何固定命名规律（如曼城vs巴黎为全名、林茨为 lin2、南安普敦为 sot），严禁客户端程序化拼接猜测 Slug！**
+客户端猜测 Slug 是导致「404 坏链」与「误判未开盘」的唯一根因。必须严格依照官方标准流动态发现：
+1. **第一步（免费文本动态搜索，首选）**：调用官方搜索接口获取候选事件列表：
+   `GET https://gamma-api.polymarket.com/public-search?q={HomeTeamEn}`
+   若主队英文词未命中或属杯赛，回退使用客队英文词：
+   `GET https://gamma-api.polymarket.com/public-search?q={AwayTeamEn}`
+2. **第二步（事件匹配与活性校验）**：
+   - 在返回的 `events` 列表中，核验对阵另一方英文名称（`title` 或 `slug` 包含另一方）；
+   - 核验事件状态：必须为当前活跃盘口（`active: true` 且 `closed: false`）；
+   - 提取官方原生事件标识 `event.slug`（绝不自行拼凑）。
+3. **第三步（标准前端下单链接）**：
+   - 必须且只能输出官方标准链接格式：`https://polymarket.com/event/{event.slug}`
+   - 示例：`https://polymarket.com/event/acle-vik-jeo-2026-10-14`、`https://polymarket.com/event/ucl-paris-saint-germain-vs-manchester-city`
+4. **第四步（衍生盘全景裂变）**：
+   - 通过主事件的 `gameId`（如 5107619），调用 `https://gamma-api.polymarket.com/events/keyset?game_id={gameId}`，一键解锁波胆比分（Exact Score）、半场盘（Halftime）与大小球。
 
-### 2. Polymarket 足球联赛 3 字标准代码字典
-| 联赛全称 | 标准代码 | 示例 Slug |
-| :--- | :--- | :--- |
-| 英超 | `epl` | `epl-cov-new-2026-10-12` |
-| 西甲 | `lal` | `lal-lev-sev-2026-10-12` |
-| 意甲 | `sea` | `sea-ata-ven-2026-10-12` |
-| 德甲 | `bun` | `bun-bay-dor-2026-10-12` |
-| 法甲 | `fl1` / `lig` | `fl1-psg-mar-2026-10-12` |
-| 法乙 | `fr2` | `fr2-dij-met-2026-10-12` |
-| 瑞典超 | `swe` | `swe-mal-kal-2026-10-12` |
-| 挪超 | `nor` | `nor-kfu-vif-2026-10-12` |
-| 葡超 | `por` | `por-fam-alv-2026-10-12` |
-| 巴西甲 | `bra` | `bra-cor-bot-2026-10-12` |
-| 亚冠精英 | `acle` | `acle-alw-aas-2026-10-12` |
-| 美职联 | `mls` | `mls-mia-orl-2026-10-12` |
+### 2. 门禁硬红线与防伪存证（实事求是，去伪存真）
+1. **实事求是原则（严禁为了逃避门禁而伪造 Slug）**：严禁凭空捏造带汉字、占位符或假缩写的虚构链接（如 `match-{id}`、`acle-神户胜-...` 等）！
+2. **查无标的必须如实存证**：只有当主客双方英文关键词经 `public-search` 双向检索均未返回任何匹配 active 事件时，才允许实事求是标注『官方未开盘（经Gamma双向核验均无对应链上预测标的）』；
+3. **门禁双向核验放行**：具备真实 Gamma 双向核验凭据且正文未编造挂单赔率时，门禁以 `WARN` 放行推演；欧洲指数法定要求自动对齐为 22 家传统机构，全量推演到底；
+4. **虚构链接零容忍硬熔断**：凡检测到链接包含模板占位符、伪造前缀（如 `match-`）或中文字符，门禁直接触发 `FAIL` 物理熔断！
 
-### 3. 门禁硬红线与防逃逸存证
-1. **主流核心联赛一律严禁声明未开盘**：英超、意甲、西甲、德甲、法甲、法乙、英冠、德乙、意乙、西乙、欧冠、欧联、欧协联、葡超、巴西甲、瑞典超、挪超、荷甲、美职联、亚冠精英等核心联赛预测市场常态化开盘，**门禁绝对禁止标为“未开盘”，违者直接触发 FAIL 物理熔断**；
-2. **小众次级联赛必须出具双向核验证据**：仅当冷门次级联赛（如芬超、罗甲等）经真实三阶检索确实查无标的时，方准在源数据标注未开盘凭据（例如：`未开放（经Gamma双向核验q_home与q_away均无活跃标的）`）；门禁严格校验双向检索存证格式，缺凭据直接 FAIL；
-3. **合规未开盘下的欧指对齐**：合规出具双向核验证据的未开盘小众赛事，欧指门禁法定要求自动对齐为 22 家传统机构，严禁编造虚假 Polymarket 赔率凑数！详细步骤见 `docs/Polymarket链接查找教程.md`。
-
-### 4. 纯英文环境铁律（English-Only Wire Protocol）
+### 3. 纯英文环境铁律（English-Only Wire Protocol）
 Polymarket 链上智能合约、标的名称及底层 Gamma 数据库 **100% 为纯英文环境**：
-- **严禁用中文发请求**：严禁将任何中文队名或中文联赛用于 `q=` 搜索（如 `q=马尔默` 必返回空导致误判未开盘）；
-- **英文队名精准提取**：必须从球探分析页顶部 `#headTeam` 容器或队徽英文属性提取官方英文名（`HomeTeamEn` / `AwayTeamEn`）；
-- **Slug 纯英文小写**：所有 Slug 命名（如 `swe-mal-kal-2026-10-12`）一律为纯英文小写与连字符，严禁包含任何非 ASCII 字符。
+- **严禁用中文发请求**：严禁将任何中文队名或中文联赛用于 `q=` 搜索（如 `q=神户` 必返回空导致误判未开盘）；
+- **英文队名精准提取**：必须从球探分析页顶部 `#headTeam` 容器或队徽英文属性提取官方英文名（`HomeTeamEn` / `AwayTeamEn`，如 `Vissel Kobe`、`Southampton`、`Feyenoord`）；
+- **Slug 纯英文小写**：所有 Slug 命名一律为纯英文小写、数字与连字符，严禁包含任何非 ASCII 字符。
 
 ## 数据源与主源失败处理
 

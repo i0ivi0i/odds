@@ -158,7 +158,7 @@ class GoldenSnapshotAssembler:
             for kw in ("未开盘", "未开放", "暂无", "unopened")
         )
         if pm_is_unopened:
-            pm_line = pm_url if not pm_prices else f"{pm_url} ({pm_prices})"
+            pm_line = pm_url if not pm_prices or pm_prices in pm_url or pm_prices == "官方未开盘" else f"{pm_url} ({pm_prices})"
         elif pm_url.startswith("http"):
             pm_line = f"[{pm_url}]({pm_url})" + (f" ({pm_prices})" if pm_prices else "")
         else:

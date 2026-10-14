@@ -186,6 +186,7 @@ metadata: { "emoji": "📆" }
 3. **体彩官方玩法与代号**：`https://zq.titan007.com/default/getAnalyData?sid={matchId}&t=1`（仅提取 HAD/HHAD 赔率与让球数）
 4. **百家欧指与时序**：`https://1x2d.titan007.com/{matchId}.js`（仅提取法定 23 家初即盘与真实返还率/凯利，严禁默认 `90.0` 或 `[0.94, 0.88, 0.84]`）
 5. **7 大做市商亚盘与大小球流水**：`https://vip.titan007.com/changeDetail/handicap.aspx` 与 `overunder.aspx`（7家核心流水，GB18030 解码，剔除滚球，5列纯净表格：`时间戳 | 机构 | 主水/大球 | 盘口 | 客水/小球`）
+6. **Polymarket 链上预测市场**：严格遵循官方 Discover Markets API 规约（严禁客户端拼凑/猜测 Slug！）。使用主队或客队官方英文名动态检索 Gamma API（`https://gamma-api.polymarket.com/public-search?q={HomeTeamEn}`），从返回 events 中核验对阵另一方与日期获取真实 `event.slug`、核验 `teams[].ordering` 主客顺序，并通过 `events/keyset?game_id={gameId}` 关联波胆/半场全系标的，生成标准下单链接 `https://polymarket.com/event/{slug}`。若已开盘提取挂单写入 `polymarket.json`；若经主客双向检索确无活跃标的，如实落盘双向核验凭据（`{"url": "官方未开盘（经Gamma双向核验均无对应链上预测标的）", "polymarketUrl": "官方未开盘（经Gamma双向核验均无对应链上预测标的）", "polymarketPrices": "官方未开盘"}`），严禁编造汉字或模板假 Slug！
 
 ### 4. 组装落盘与物理门禁核验（进货合格线）
 - 通过 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` 组装落盘并生成 `raw/{matchId}.json` 加密封印（全天赛程总览汇总于 `data/{销售日}/meta.md`）；

@@ -715,7 +715,7 @@ class Titan007RawParser:
         text = str(raw_json_text or "").strip()
         if not text:
             return {
-                "polymarketUrl": "官方未开盘（暂无链上对应预测标的）",
+                "polymarketUrl": "官方未开盘（经Gamma双向核验均无对应链上预测标的）",
                 "polymarketPrices": "官方未开盘",
                 "europe1x2_entry": None,
                 "polymarket_rows": [],
@@ -724,7 +724,7 @@ class Titan007RawParser:
             data = json.loads(text)
         except Exception:
             return {
-                "polymarketUrl": "官方未开盘（暂无链上对应预测标的）",
+                "polymarketUrl": "官方未开盘（经Gamma双向核验均无对应链上预测标的）",
                 "polymarketPrices": "官方未开盘",
                 "europe1x2_entry": None,
                 "polymarket_rows": [],
