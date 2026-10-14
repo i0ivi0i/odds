@@ -86,7 +86,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
    - 请求 `1x2d.js` 时，数据流入内存第一时间使用法定 23 家 ID 集合直接筛选提纯；
    - 抛弃其余 140+ 家机构数据，向外交付仅包含法定 23 家初即盘的紧凑结构，单场数据严格压在 **5KB 以内**。
 4. **全真隐身与智能自愈标准（SSOT 统一溯源）**：
-   - 数据采集全流程的隐身反爬（Chrome TLS 指纹、Canvas 动态加噪、WebRTC 泄露封锁）与智能自愈（`adaptive=True`、`auto_save=True` 元素指纹重定位），**100% 依循 [`match-scraper`](file:///d:/100-工作/200-交易/倍率分析推演/skills/match-scraper/SKILL.md) 官方规约**执行；
+   - 数据采集全流程的隐身反爬（Chrome TLS 指纹、Canvas 动态加噪、WebRTC 泄露封锁）与智能自愈（`adaptive=True`、`auto_save=True` 元素指纹重定位），**100% 依循 [`match-scraper`](skills/match-scraper/SKILL.md) 官方规约**执行；
    - 本宪法专注规范：法定 23 家白名单、7 家变盘时序、数据 Schema 与防错位断言，消除跨文件冗余复制与参数漂移。
 5. **精准语义防错位与防污染断言（最高铁律：绝不混淆、绝不认错）**：
    - **URL 显式语义绑定**：`urls` 列表必须按固定契约构建，返回结果按索引 `result[i]` 严格回填对应机构对应玩法：
