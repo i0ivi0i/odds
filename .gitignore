@@ -53,6 +53,7 @@ config/credentials.json
 __pycache__/
 
 # data/已解除屏蔽，纳入 Git 版本管理
+**/.quarantine/
 analysis/
 report/
 

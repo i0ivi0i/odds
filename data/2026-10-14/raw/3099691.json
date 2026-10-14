@@ -1,6 +1,6 @@
 {
   "matchId": "3099691",
-  "sealedAt": "2026-10-14 14:00:39",
+  "sealedAt": "2026-10-14 17:25:04",
   "markdown_sha256": "cde241caa622929c50e3aff8d0a1fe2fc39d523808ba4a72e879ed3f07fa25c6",
   "raw_files_sha256": {
     "1x2d.js": "f88d4cbe7feb0da24e94c65792dde6e0aa056b1b01484928f5a636dac6930f2d",
@@ -33,7 +33,7 @@
   "receipt": {
     "fetcher": "scrapling-mcp",
     "matchId": "3099691",
-    "fetchedAt": "2026-10-14T14:00:39.511376+08:00",
+    "fetchedAt": "2026-10-14T17:25:04.629201+08:00",
     "endpointCount": 26,
     "endpoints": [
       {
@@ -45,7 +45,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "application/javascript",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -57,7 +57,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -69,7 +69,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -81,7 +81,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -93,7 +93,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -105,7 +105,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -117,7 +117,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -129,7 +129,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -141,7 +141,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "application/json",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -153,7 +153,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -165,7 +165,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -177,7 +177,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -189,7 +189,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -201,7 +201,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -213,7 +213,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -225,7 +225,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -237,7 +237,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -249,7 +249,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -261,7 +261,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -273,7 +273,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -285,7 +285,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -297,7 +297,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -309,7 +309,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -321,7 +321,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -333,7 +333,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "text/html; charset=gb18030",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       },
       {
@@ -345,7 +345,7 @@
         "server_headers": {
           "server": "titan-nginx",
           "content-type": "application/json",
-          "date": "2026-10-14 14:00:39"
+          "date": "2026-10-14 17:25:04"
         }
       }
     ],
