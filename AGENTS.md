@@ -28,7 +28,7 @@
    - **【阶段 2：纯逻辑首席分析师（Phase 2 Deduction Brain）】**：
      只有且仅当批量门禁通过（exit 0）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 Graphify 三大战区与运行 OO-EPC 去水模型，开展 10 步深度推演与冻结认知契约卡！未见门禁 exit 0 放行，**绝对禁止调用 Graphify 三大战区、绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
    - **Graphify 官方五大高阶增智规约（仅在阶段二执行，基于官方核心 `https://github.com/Graphify-Labs/graphify` 与 5.6MB 全量图谱）**：
-     - **① 推演前错题反思导览（Reflect & Learning Overlay）**：推演前执行 `python 校验/src/adapter/cli.py --graph-reflect`，秒级挂载 Learning Overlay 与 `LESSONS.md` 动态认知覆盖层，自愈认知偏差，激活全局 God Nodes 与 Wiki 词条；
+     - **① 推演前错题反思导览（Reflect & Learning Overlay）**：推演前执行 `python 校验/src/adapter/cli.py --graph-reflect`，秒级挂载 Learning Overlay 与 `graphify-out/reflections/LESSONS.md` 动态认知覆盖层，自愈认知偏差，激活全局 God Nodes 与 Wiki 词条；
      - **② 推演中盘口疑难靶向穿透（Query with Budget & Wiki）**：分析师针对当场具体盘口特征（如“客让半一满水退盘”、“Winkelmann 假摔震仓”），调用 `python 校验/src/adapter/cli.py --graph-query "{具体盘口疑难}" --budget 1500`，靶向召回关联理论与历史战例（受控 budget 保护上下文，杜绝无脑静态长句重复查 30 次）；
      - **③ 关键变量因果涟漪扩散（Affected Nodes Analysis）**：当关键球员临盘伤停或盘口剧烈洗盘时，调用 `python 校验/src/adapter/cli.py --graph-affected "{变量节点}" --depth 2`，穿透因果影响链路，识别主力诱筹与防守底线。
 9. **系统演化三阶总战略与 deep-analysis 封顶铁律（马斯克做减法 × 乔布斯极简原则 × 保魂去腐）**：

@@ -566,7 +566,7 @@ def run_graph_reflect(if_stale: bool = True) -> int:
     mem_dir = Path("graphify-out/memory")
     if not mem_dir.exists() or not list(mem_dir.glob("*.md")):
         mem_dir = Path("memory")
-    out_path = Path("LESSONS.md")
+    out_path = Path("graphify-out/reflections/LESSONS.md")
     graph_path = Path("graphify-out/graph.json")
     analysis_path = Path("graphify-out/.graphify_analysis.json")
     labels_path = Path("graphify-out/.graphify_labels.json")
