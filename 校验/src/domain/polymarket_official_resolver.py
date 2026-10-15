@@ -79,6 +79,8 @@ ALIAS_MAP = {
     "braga": "scb",
 }
 
+import unicodedata
+
 def _clean_str(s: str) -> str:
     """去除西欧语言变音符（如 ç -> c, ø -> o, é -> e）并转小写"""
     nkfd_form = unicodedata.normalize('NFKD', str(s or ""))

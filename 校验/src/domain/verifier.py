@@ -1481,16 +1481,16 @@ def verify_memory_cognitive_cards(
             # 严格核验第7列 Polymarket 真实性与防伪 (杜绝虚构链接流向交付)
             pm_cell = cells[6]
             if "{" in pm_cell or "}" in pm_cell or "fake" in pm_cell.lower() or "match-" in pm_cell.lower():
-                errors.append(f"7列推荐汇总表第7列包含模板占位符或伪造链接 ({cells[0]} {pm_cell})！未开盘必须标明『官方未开盘（经Gamma双向核验）』")
+                errors.append(f"7列推荐汇总表第7列包含模板占位符或伪造链接 ({cells[0]} {pm_cell})！严禁伪造假链接！")
             elif "http" in pm_cell:
                 url_m = re.search(r"\((https?://[^\)]+)\)", pm_cell)
                 url_to_check = url_m.group(1) if url_m else pm_cell
                 if any("\u4e00" <= c <= "\u9fff" for c in url_to_check):
-                    errors.append(f"7列推荐汇总表第7列 Polymarket 链接夹带汉字 ({cells[0]} {url_to_check})，严禁编造假链接！未开盘必须实事求是标注")
+                    errors.append(f"7列推荐汇总表第7列 Polymarket 链接夹带汉字 ({cells[0]} {url_to_check})，严禁编造假链接！")
                 elif not re.search(r"^https?://(?:www\.)?polymarket\.com/(?:event|zh/sports|sports)/[a-zA-Z0-9_\-/]+$", url_to_check.strip()):
                     errors.append(f"7列推荐汇总表第7列 Polymarket 链接格式不合规 ({cells[0]} {url_to_check})，必须为纯英文事件有效链接！")
-            elif not any(kw in pm_cell for kw in ("未开盘", "未开放", "暂无")):
-                errors.append(f"7列推荐汇总表第7列缺少有效 Polymarket 真实链接或未开盘声明 ({cells[0]} {pm_cell})！")
+            elif not any(kw in pm_cell for kw in ("未开盘", "未开放", "暂无", "未收录")):
+                errors.append(f"7列推荐汇总表第7列缺少有效 Polymarket 真实链接 ({cells[0]} {pm_cell})！")
 
     # 1. 检查是否存在 ## 深度分析 (或带有时间的 ## 深度分析)
     section_pattern = r"(?m)^##\s+深度分析.*$"

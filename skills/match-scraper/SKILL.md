@@ -214,7 +214,12 @@ metadata: { "emoji": "📆" }
 3. **体彩官方玩法与代号**：`https://zq.titan007.com/default/getAnalyData?sid={matchId}&t=1`（仅提取 HAD/HHAD 赔率与让球数）
 4. **百家欧指与时序**：`https://1x2d.titan007.com/{matchId}.js`（仅提取法定 23 家初即盘与真实返还率/凯利，严禁默认 `90.0` 或 `[0.94, 0.88, 0.84]`）
 5. **7 大做市商亚盘与大小球流水**：`https://vip.titan007.com/changeDetail/handicap.aspx` 与 `overunder.aspx`（7家核心流水，GB18030 解码，剔除滚球，5列纯净表格：`时间戳 | 机构 | 主水/大球 | 盘口 | 客水/小球`）
-6. **Polymarket 链上预测市场**：严格遵循官方 Discover Markets API 规约（严禁客户端拼凑/猜测 Slug！）。使用主队或客队官方英文名通过 Scrapling MCP `make_request(impersonate="chrome")` 动态检索 Gamma API（`https://gamma-api.polymarket.com/public-search?q={HomeTeamEn}`），在返回 events 中严格过滤 `active: true` 且 `closed: false`，核验对阵双方与开球日期获取真实 `event.slug`、读取 `teams[].ordering` 仲裁主客顺序，并通过 `events/keyset?game_id={gameId}` 关联波胆/半场全系标的，生成标准下单链接 `https://polymarket.com/event/{slug}`。将真实返回的事件对象写入 `data/{销售日}/raw/{matchId}.json` 中的 `payloads['polymarket.json']`；对于英超、英冠、欧冠等核心主流联赛，严禁以未开盘为由跳过真实抓取；若非核心次级联赛经双向检索确无活跃标的，必须如实保存 HTTP 200 返回空数组的真实网络存证，严禁编造口头免责声明或假 Slug！
+6. **Polymarket 链上预测市场**：严格遵循官方 Discover Markets API 规约（严禁客户端盲目拼凑或猜测 Slug！严禁使用 `public-search` 进行队名模糊盲搜以防天气市场冲刷与历史完场老赛事占位！）。
+   - **官方标准发现步骤**：
+     ① 查官方权威联赛字典：`https://gamma-api.polymarket.com/sports` 获取该联赛对应 `series_id` 或 `primaryTag`（如 UEL 欧联杯 10209、COL 欧协联 10437、LIB 解放者杯 10289、EPL 英超 10188、UCL 欧冠 10204 等）；
+     ② 分类批量直取活跃事件：调用 `https://gamma-api.polymarket.com/events?series_id={id}&closed=false&limit=100`（Windows 环境带 `--ssl-no-revoke --http1.1` 防止长 JSON 管道截断），按对阵与比赛日期精准锁定目标；
+     ③ 读取 `teams[].ordering` 仲裁主客顺序，并通过 `events/keyset?game_id={gameId}` 关联波胆/半场全系标的，生成标准下单链接 `https://polymarket.com/event/{slug}`；
+   - **门禁硬红线**：五大联赛、欧联、欧协联、解放者杯等核心主流赛事在 Polymarket 官方 100% 常态化开盘，必须提供真实纯英文事件可点击链接；严禁以未开盘为由跳过真实抓取，严禁编造任何类似『官方未开盘（经Gamma双向核验）』等免责套话！将真实返回的事件对象写入 `data/{销售日}/raw/{matchId}.json` 中的 `payloads['polymarket.json']`；若极小众次级联赛经双向检索确无活跃标的，必须如实保存 HTTP 200 返回空数组的真实网络存证！
 
 ### 4. 组装落盘与物理门禁核验（进货合格线）
 - 通过 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` 组装落盘并生成 `raw/{matchId}.json` 加密封印（全天赛程总览汇总于 `data/{销售日}/meta.md`）；

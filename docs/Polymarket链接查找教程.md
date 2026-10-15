@@ -42,19 +42,32 @@ curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" -H "Referer: https://www.lottery.g
 2. **标签碎片化**：Polymarket 联赛标签极细（如英冠是 `efl-championship`，英超是 `premier-league`），只查 `soccer` 会漏掉大量次级与杯赛市场！
 3. **严禁只调 API 碰壁即放弃**：严禁仅凭 API 返回 `[]` 就草率判定“未开盘”！
 
-### 第一步（绝对强制首选）：实网精准检索与官方 API 秒级定位
-双轨并行，优先调用 Polymarket 官方免密发现 API：
-1. **官方秒级发现 API（最快最准）**：将球探分析页获取的球队英文名（如 Coventry, Newcastle, Atalanta 等）直接送入搜索接口：
-```bash
-curl.exe -sS --ssl-no-revoke "https://gamma-api.polymarket.com/public-search?q=英文队名"
-```
-直接返回对应比赛事件、`slug`（如 `epl-cov-new-2026-10-12`）与 `gameId`。
-2. **全网搜索引擎兜底检索**：若 API 缩写不明确，使用 `web_search` 由搜索引擎自动完成中英文映射与最新 slug 定位：
-```bash
-# 语法：site:polymarket.com/event "主队英文名/别名" "客队英文名/别名"
-site:polymarket.com/event "West Ham" "Queens Park Rangers"
-```
-或由 `BrowserOS neo` 访问 `https://polymarket.com/sports` 在页面顶端搜索框输入英文队名查找。
+### 第一步（绝对强制官方标准）：通过 `/sports` 字典与杯赛分类精准秒级定位
+
+**为什么之前用 `public-search` 频繁翻车？血泪教训**：
+1. **非体育市场严重冲刷（天气气温霸屏）**：例如查询米兰（Milan），`public-search` 前 5 条全部被米兰气温天气预测市场占满配额；
+2. **历史完场老赛事占坑**：例如查询萨尔茨堡（Salzburg）或皇家社会（Sociedad），返回的全部是 2024/2025 历史欧冠；
+3. **队名缩写与多语差异**：哥本哈根在 Polymarket Slug 缩写为丹麦语 `kob`，格拉茨风暴缩写为 `stu1`，圣吉联合缩写为 `usg`，全局文本模糊搜索无法匹配。
+
+**官方标准发现流程（基于 https://docs.polymarket.com/market-data/discover-markets.md）**：
+1. **查官方联赛分类字典**：
+   调用 `https://gamma-api.polymarket.com/sports` 获取 484 个赛事的权威元数据映射：
+   - 欧联杯 (UEL): `sport="uel"`, `series="10209"`, `primaryTag=101787`
+   - 欧协联 (COL): `sport="col"`, `series="10437"`, `primaryTag=102763`
+   - 解放者杯 (LIB): `sport="lib"`, `series="10289"`, `primaryTag=102562`
+   - 英超 (EPL): `sport="epl"`, `series="10188"`, `primaryTag=306`
+   - 欧冠 (UCL): `sport="ucl"`, `series="10204"`, `primaryTag=1234`
+2. **按联赛 Series 或 Tag 批量拉取活跃事件（零污染、100% 命中）**：
+   ```bash
+   # Windows 下必须带 --ssl-no-revoke --http1.1 防止长 JSON 管道截断
+   curl.exe -s --ssl-no-revoke --http1.1 -A "Mozilla/5.0" "https://gamma-api.polymarket.com/events?series_id=10209&closed=false&limit=100"
+   ```
+   一次请求即可拿到该联赛当前全部活跃比赛事件与真实 `slug`，直接按开球日期（如 2026-10-15）与对阵缩写秒级锁定目标。
+3. **兜底检索（仅作为冷门小众联赛备用）**：
+   若该赛事不在主流 `/sports` 列表中，才调用：
+   ```bash
+   curl.exe -s --ssl-no-revoke --http1.1 -A "Mozilla/5.0" "https://gamma-api.polymarket.com/public-search?q=英文队名"
+   ```
 
 ### 第二步：拿到事件后，核查主客队序与衍生全系市场（波胆/半场/总进球）
 拿到检索出的 `slug` 与 `event` 后，调用官方 Discover 接口校验：
@@ -113,7 +126,7 @@ site:polymarket.com/event "West Ham" "Queens Park Rangers"
 - 格式统一为 `https://polymarket.com/event/{slug}`。
 - 先写体彩代号；对不上就写【体彩未开售/无场次代号】。
 - 严禁客户端拼接猜测 Slug！必须通过 `public-search?q={英文名}` 拿到官方 API 真实返回的 `slug`。
-- 接口双向检索未找到实体写「官方未开盘（经Gamma双向核验）」；访问失败写「核验失败」。**禁止拼一个 200 也打不开的虚构地址**。
+- 接口双向检索未找到实体写「官方未收录」；访问失败写「核验失败」。**禁止拼一个 200 也打不开的虚构地址**。
 
 ## 五、换 AI 时最少要做的
 

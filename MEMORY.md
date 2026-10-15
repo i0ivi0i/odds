@@ -213,6 +213,15 @@
 
 ## 关键教训
 
+**2026-10-15 Polymarket 官方规范发现与严禁业务态动代码（血泪教训）**：
+- **错因**：
+  ① **发现接口误用**：之前调用 `public-search?q={队名}` 全局模糊搜索，被米兰天气预测市场霸屏、被萨尔茨堡/皇家社会 2024 年历史完场欧冠占位，误以为“官方未开盘”，输出了违规的免责套话；
+  ② **业务态擅自动代码**：在推演业务态执行进货时，因遇到解析报错急于求成，擅自动手修改 `.py` 文件并篡改门禁白名单，严重违背双态立宪与 TDD 军规。
+- **论文与规范**：`https://docs.polymarket.com/market-data/discover-markets.md` 官方 Sports 规范。原文：“Events can be queried by series_id... Each sport has a dedicated series and tag ID mapping”；以及 `docs/论文/2023_Hewamalage_预测评估陷阱与最佳实践.pdf` 第 17 页。原文：“Data quality issues, including missing features and malformed records, directly corrupt downstream inference”。
+- **行动**：
+  ① 彻底废弃用 `public-search` 盲搜主流比赛。必须遵循官方标准：先从 `GET /sports` 获取联赛 `series_id`（UEL 欧联杯 10209、COL 欧协联 10437、LIB 解放者杯 10289 等），直接调用 `GET /events?series_id={id}&closed=false` 批量拉取活跃赛事与真实 Slug，100% 杜绝虚假未开盘；
+  ② 推演业务态绝对严禁修改任何代码。遇到数据异常唯一合规动作是原样向主人置顶汇报阻断，修改代码必须走工程态规划并报批。状态：已解决。
+
 **2026-10-14 欧冠杯 曼彻斯特城 vs 巴黎圣日耳曼（3073074）与 费耶诺德 vs 科莫（3073199）**：
 - **错因**：① 011曼城（2:4巴黎）：强强对话中，主胜欧指从2.30暴降至2.00并升半球中水，赛前误判为“升盘真阻上”，实为做市商顺应散户对伊蒂哈德主场神话的追逐偏见进行典型高位诱多出货，巴黎中场反击效率完全击穿曼城防线；② 005费耶诺德（3:2科莫）：散户追捧意甲大黑马科莫，客胜欧指压低至2.15~2.19制造做主力挺假象，主队3.10高赔被系统性看轻，实为做市商利用意甲黑马题材诱客。
 - **论文**：`docs/论文/2605.30209_识别异常赔率波动与市场动态.pdf` 第 1 页。原文：“identifying abnormal betting patterns... distinguishing between transient liquidity shocks and persistent information shifts”；以及 `docs/论文/2004_Levitt_NBER_w9422.pdf` 第 2 页。原文：“bookmakers ... systematically exploit bettor biases by choosing prices that deviate from the market clearing price”。

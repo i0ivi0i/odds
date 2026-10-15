@@ -30,7 +30,7 @@ class TestPolymarketOfficialDiscovery(unittest.TestCase):
             "awayTeam": "南安普敦",
             "polymarket": {
                 "status": "unopened",
-                "url": "官方未开盘（经Gamma双向核验）"
+                "url": "官方未开盘"
             }
         }
         res = self.verifier._check_polymarket(snapshot)
