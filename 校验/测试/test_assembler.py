@@ -356,6 +356,23 @@ class TestSnapshotAssembler(unittest.TestCase):
         receipt = self.use_case.verifier.verify(snap)
         self.assertFalse(receipt.is_valid)
         self.assertTrue(any("开球时间" in r.message for r in receipt.results if r.status.value == "FAIL"))
+    def test_assembler_outputs_plain_language_ai_agent_directive_header(self):
+        """测试 assemble 生成的 Markdown 必须包含置顶的大白话 AI Agent 契约提示块且不影响各字段解析"""
+        data = self._build_valid_verbatim_data()
+        md_text = self.assembler.assemble(data)
+        self.assertIn("> [!IMPORTANT]", md_text)
+        self.assertIn("给看这份数据的 AI 分析师：读盘前请务必牢记以下三句话！", md_text)
+        self.assertIn("整篇都要看，千万别偷懒只看几行", md_text)
+        self.assertIn("表格是倒着排的，最底下一行才是最早的初盘", md_text)
+        self.assertIn("先算初终差值，再看中间有没有故意拉高又暴跌", md_text)
+
+        # 验证该提示块不影响 use_case 的 _parse_markdown_snapshot 解析
+        snap = self.use_case._parse_markdown_snapshot(md_text, "2989999")
+        self.assertEqual(snap["matchId"], "2989999")
+        self.assertEqual(snap["sportteryCode"], "周六020")
+        self.assertEqual(snap["match"]["homeTeam"], "曼城")
+        self.assertEqual(snap["match"]["awayTeam"], "切尔西")
+        self.assertEqual(snap["match"]["league"], "英超")
 
 
 if __name__ == "__main__":

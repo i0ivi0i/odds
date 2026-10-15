@@ -136,6 +136,15 @@ def _normalize_eu_row(r: Union[Dict[str, Any], List[Any], Tuple[Any, ...]], cnam
     return t_val, h_val, d_val, a_val, ret_val, kelly_val, st_val
 
 
+AI_AGENT_METADATA_DIRECTIVE: str = (
+    "> [!IMPORTANT]\n"
+    "> **🤖 给看这份数据的 AI 分析师：读盘前请务必牢记以下三句话！**\n"
+    "> 1. **整篇都要看，千万别偷懒只看几行**：这份数据从上到下包含了伤停名单、攻防底牌、23家欧指初即盘、7家公司变盘流水和比分矩阵。必须宏观完整地通读全篇，综合所有信息再分析，严禁只挑两三行赔率就匆忙下结论！\n"
+    "> 2. **表格是倒着排的，最底下一行才是最早的初盘**：流水表格最上面那行是比赛快开始时的【最新即时盘】，最下面那行才是最早开出的【历史初盘起点】。看时间先后只认第 1 列的【变盘时间】（哪行日期时间早，哪行就是先发生的，哪怕最后一行写着“即”也是最早的初盘），千万别把时间顺序给看反了！\n"
+    "> 3. **先算初终差值，再看中间有没有故意拉高又暴跌**：动笔第一步先手算清楚变化幅度（即时盘 - 初盘）。不仅要看头尾，更要看中间过程——特别是庄家在中间故意拉高水位诱人上当、临开赛前又突然狂砸暴跌（倒 V 型洗盘）的陷阱！"
+)
+
+
 class GoldenSnapshotAssembler:
     """将真实解析结构化数据一对一原样序列化为黄金【推演源数据】规范 Markdown（零默认值伪造）"""
 
@@ -171,6 +180,10 @@ class GoldenSnapshotAssembler:
         lines.append(f"- **开球时间**：{kickoff}")
         lines.append(f"- **场地与天气**：{venue_weather}")
         lines.append(f"- **Polymarket 预测市场**：{pm_line}")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+        lines.append(AI_AGENT_METADATA_DIRECTIVE)
         lines.append("")
         lines.append("---")
         lines.append("")

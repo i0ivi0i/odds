@@ -198,6 +198,7 @@ metadata: { "emoji": "🎯" }
 > | 场次/时间 | 对阵双方 | <span style="white-space:nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;胜负平&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> | <span style="white-space:nowrap">&nbsp;&nbsp;&nbsp;&nbsp;让球&nbsp;&nbsp;&nbsp;&nbsp;</span> | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接 |
 > |---|---|---|---|---|---|---|
 > | {编号/时间} | {主队 vs 客队} | <span style="white-space:nowrap">首选：**{胜/平/负}**&nbsp;｜&nbsp;次选：**{胜/平/负}**</span> | <span style="white-space:nowrap">**[{letBall}] {让胜/让平/让负}**</span> | 胜 {XX.X%}<br>平 {XX.X%}<br>负 {XX.X%} | {庄家引流与对冲底牌破译} | {可点击 URL，查找见 docs/Polymarket链接查找教程.md} |
+> ⚠️ **第 6 列【庄家诱盘破译】全时序规范**：严禁只写初即两端死板套话（如“初X退即Y”），强制必须体现时序动态全貌：初盘形态 ➔ 中盘假摔/拉高/试探动作 ➔ 临盘真实出清意图（若全程平稳则注明「全程无异动初盘已定价」）。
 
 ### {编号} {联赛} {主队} vs {客队}
 **比赛 ID**: {matchId} | **开球**: {YYYY-MM-DD HH:MM}
