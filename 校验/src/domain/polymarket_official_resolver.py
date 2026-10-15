@@ -28,7 +28,56 @@ def extract_team_keywords(name: str) -> List[str]:
     return words if words else [name.strip()]
 
 
-import unicodedata
+import subprocess
+
+def _curl_get_json(url: str, timeout: int = 15) -> Optional[Any]:
+    """使用 Windows 原生 curl.exe 获取 JSON 数据，带 --ssl-no-revoke 与 --http1.1 防止截断"""
+    try:
+        cmd = [
+            "curl.exe", "-s", "--ssl-no-revoke", "--http1.1",
+            "--max-time", str(timeout),
+            "-A", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+            url
+        ]
+        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if res.returncode == 0 and res.stdout:
+            raw_text = res.stdout.decode("utf-8", errors="replace")
+            return json.loads(raw_text)
+    except Exception:
+        pass
+    return None
+
+COMMON_SOCCER_SERIES = [
+    "uel-2025",
+    "europa-conference-league",
+    "lib-2025",
+    "epl-2025",
+    "uefa-champions-league",
+    "champions-league-2024-25",
+]
+
+ALIAS_MAP = {
+    "copenhagen": "kob",
+    "kobenhavn": "kob",
+    "saint gilloise": "usg",
+    "salzburg": "rbs",
+    "sturm graz": "stu",
+    "torreense": "ut",
+    "lech poznan": "lep",
+    "universitatea craiova": "ucr",
+    "celta vigo": "cel1",
+    "estudiantes": "est",
+    "flamengo": "fla",
+    "sociedad": "rso",
+    "milan": "mil1",
+    "juventus": "juv",
+    "besiktas": "bes",
+    "olympiakos": "oly",
+    "olympiacos": "oly",
+    "bournemouth": "bou",
+    "celtic": "cel",
+    "braga": "scb",
+}
 
 def _clean_str(s: str) -> str:
     """去除西欧语言变音符（如 ç -> c, ø -> o, é -> e）并转小写"""
@@ -226,4 +275,14 @@ class PolymarketOfficialResolver:
             slug = event.get("slug", "")
             return True, f"https://polymarket.com/event/{slug}"
 
-        return False, f"官方未检索到活跃标的 (Home: {home_en}, Away: {away_en}, Date: {match_date})"
+        proof_note = f"官方未开盘（经Gamma双向检索q={home_en}与q={away_en}均无活跃标的）"
+        unopened_event = {
+            "url": proof_note,
+            "status": "unopened",
+            "proof": proof_note,
+            "home": home_en,
+            "away": away_en,
+            "matchDate": match_date,
+        }
+        payloads["polymarket.json"] = json.dumps([unopened_event], ensure_ascii=False, indent=2)
+        return False, proof_note

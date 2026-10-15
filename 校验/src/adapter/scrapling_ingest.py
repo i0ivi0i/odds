@@ -106,7 +106,7 @@ class ScraplingIngestPipeline:
         ]
 
     def get_timeseries_specs(self) -> List[EndpointSpec]:
-        """7 大做市商变盘流水端点 (GB18030 编码，下推 #table_odds)"""
+        """7 大做市商变盘流水端点 (GB18030 编码，下推 table 选择器)"""
         mid = self.match_id
         specs: List[EndpointSpec] = []
         # 1. 亚盘让球 (7家)
@@ -116,7 +116,7 @@ class ScraplingIngestPipeline:
                     name=f"ah_{cid}.html",
                     url=f"https://vip.titan007.com/changeDetail/handicap.aspx?id={mid}&companyID={cid}&l=0",
                     encoding="gb18030",
-                    css_selector="#table_odds",
+                    css_selector="table",
                     extraction_type="text",
                     category="ah",
                     identifier=f"ah_{cid}_table",
@@ -129,7 +129,7 @@ class ScraplingIngestPipeline:
                     name=f"ou_{cid}.html",
                     url=f"https://vip.titan007.com/changeDetail/overunder.aspx?id={mid}&companyID={cid}&l=0",
                     encoding="gb18030",
-                    css_selector="#table_odds",
+                    css_selector="table",
                     extraction_type="text",
                     category="ou",
                     identifier=f"ou_{cid}_table",
@@ -142,7 +142,7 @@ class ScraplingIngestPipeline:
                     name=f"eu_{cid}.html",
                     url=f"https://vip.titan007.com/changeDetail/1x2.aspx?id={mid}&companyID={cid}&l=0",
                     encoding="gb18030",
-                    css_selector="#table_odds",
+                    css_selector="table",
                     extraction_type="text",
                     category="eu",
                     identifier=f"eu_{cid}_table",
@@ -328,18 +328,22 @@ class ScraplingIngestPipeline:
                 matched = page.css(spec.css_selector, **css_kwargs)
                 if matched:
                     target = matched[0]
+                    if hasattr(target, "html_content") and target.html_content:
+                        return str(target.html_content)
                     return target.get_all_text() if hasattr(target, "get_all_text") else target.text
                 # 官方自适应自愈：当原有 ID/class 改版失效时，自动在 DOM 树中基于标签与文本寻回
                 if hasattr(page, "relocate"):
                     relocated = page.relocate({"tag": "table", "text": "盘口"}, percentage=30)
                     if relocated:
                         target = relocated[0]
+                        if hasattr(target, "html_content") and target.html_content:
+                            return str(target.html_content)
                         return target.get_all_text() if hasattr(target, "get_all_text") else target.text
 
-            if page.text:
-                return page.text
             if hasattr(page, "body") and page.body:
                 return page.body.decode(spec.encoding, errors="replace")
+            if page.text:
+                return page.text
             return ""
         except ImportError:
             # 环境未安装 scrapling 库时，回退到标准受控 urllib（带 Chrome 136 UA）

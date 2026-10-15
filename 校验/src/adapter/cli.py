@@ -364,8 +364,10 @@ def run_assemble_bundle(bundle_json_path: str, output_md_path: Optional[str]) ->
             resolved, pm_info = pm_resolver.resolve_raw_bundle(bundle_obj)
             if resolved:
                 print(f"🎯 [OFFICIAL_POLYMARKET] 官方 Discover Markets 自动命中链上标的: {pm_info}")
-                raw_files = bundle_obj.get("payloads") or bundle_obj.get("rawFiles") or {}
-                p.write_text(json.dumps(bundle_obj, ensure_ascii=False, indent=2), encoding="utf-8")
+            else:
+                print(f"ℹ️ [OFFICIAL_POLYMARKET] 官方双向核验未开盘存证: {pm_info}")
+            raw_files = bundle_obj.get("payloads") or bundle_obj.get("rawFiles") or {}
+            p.write_text(json.dumps(bundle_obj, ensure_ascii=False, indent=2), encoding="utf-8")
 
         meta_md_txt = ""
         meta_md_path = p.parent.parent / "meta.md"
