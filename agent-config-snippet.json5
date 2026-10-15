@@ -36,9 +36,9 @@ cronjobs:
     defaults: {
       subagents: {
         maxSpawnDepth: 2,       // 编排器模式：主 → 编排 subagent → 分析 worker
-        maxChildrenPerAgent: 3, // 最多 3 个 worker 并行（大模型 API 并发限制）
-        maxConcurrent: 3,       // 全局并发上限
-        runTimeoutSeconds: 3600,// 1 小时超时
+        maxChildrenPerAgent: 5, // 最多 5 个 worker 并行（大模型 API 并发限制）
+        maxConcurrent: 5,       // 全局并发上限
+        runTimeoutSeconds: 7200,// 2 小时超时
         archiveAfterMinutes: 30,// 完成 30 分钟后归档
       },
     },
