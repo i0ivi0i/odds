@@ -47,14 +47,14 @@ Shin（1993）期刊原文需订阅，未放入。隔壁 `足球预测/温故而
 | Aiyer，p2 | “the judge processes only the information available to the decision-maker at the time of a decision.” | 推荐保存赛前发布版；复盘先核当时可知依据，过程与结果分开，已知答案如实标注 | 医疗决定研究迁移的是评价方法，不是足球准确率证据 |
 | Wheatcroft，p2 | “A score is proper if, in expectation, it favours a forecast that consists of the distribution from which the outcome is drawn” | 保存三个赛前点概率；复盘三项布莱尔平方和及可选对数损失，市场／独立泊松／综合判断分源比较 | 本文偏好ignorance，非证明布莱尔最好；无点概率不得用区间中点补造 |
 | Hewamalage，p17 | “Data leakage refers to the inadvertent use of data from the test set” | 分析时点、消息时点、推荐版本留存；逐场取开球前最终有效版，不偷看、事后选规则 | 通用时间序列方法，赛后核事实不等于偷看；识别新假设的旧案例不作为验证样本 |
-| Dimitriadis，p1 | “the predicted probabilities are matched by ex post observed frequencies” | 复盘按胜／平／客分别检查累计概率与实际频率，报告样本与不确定性；不凭单败否定30%预测 | 不能用少量样本宣称已校准；分项校准后还要验证概率合计1，校准与评价窗口分开 |
-| Giacomini，p2 | “what data to use for estimation.” | 待验证保存整套旧／新方法、数据、版本和失败条件，同场后续配对比较；锚定前后并列 | 正式条件检验需实际满足条件；启用组／未启用组差异不是因果效果，8场不是统计证实 |
+| Dimitriadis，p1 | “the predicted probabilities are matched by ex post observed frequencies” | 复盘按胜／平／客分别检查累计概率与实际频率，执行 CORP 三项正交分解（Brier = MCB − DSC + UNC）诊断校准度与区分度；杜绝刻舟求剑，不凭单败否定30%预测 | 不能用少量样本宣称已校准；分项校准后还要验证概率合计1，校准与评价窗口分开 |
+| Giacomini，p2 | “what data to use for estimation.” | 待验证保存整套旧／新方法、数据、版本和失败条件，同场后续配对比较；锚定前后并列；建立 8 场滚动样本外前瞻检验机制 | 正式条件检验需实际满足条件；启用组／未启用组差异不是因果效果，8场不是统计证实 |
 | Choe，p1 | “valid at arbitrary data-dependent stopping times” | 复盘连续记录同场预测损失差，按事先窗口评价，不因某天领先换规则 | 本文实例棒球／天气；没实际构造置信序列不称任意时点显著，对数损失不能直接套有界定理 |
 | Macri，p1 | “allows rapid adjustments when teams experience substantial changes” | 深度第3步稳定时借用历史，核实换帅、转会、伤停变化才调整并留时点；复盘检查长期λ残差 | 足球动态模型不是固定慢衰减；不复制未核公式，不因单场Top6不中就重设模型 |
-| Wilkens，p7 | “all results and reliability plots are strictly out-of-sample with respect to their calibration window” | 推荐优先胜平负证据；复盘用旧窗拟合后窗评价，新增复杂条款须有后续配对改善 | 德甲模型／模拟研究不能外推实盘收益；两季、裁剪区间等是研究设定，不作本项目门禁 |
-| Levitt，p2 | “choosing prices that deviate from the market clearing price.” | 深度第7/8步保留主动定价与偏见解释，同时核对竞争解释；复盘不从赛果倒证账本 | NFL不是足球，原研究有价格与注额。本项目没有真实注额／已接受赔率／对冲，净赔付只能声明假设，不能识别唯一赛果 |
+| Wilkens，p7 | “all results and reliability plots are strictly out-of-sample with respect to their calibration window” | 推荐优先胜平负证据；复盘执行严格样本外滚动检验，满 8 场反对数≥支持数坚决淘汰除名，杜绝堆积死板例外条款 | 德甲模型／模拟研究不能外推实盘收益；两季、裁剪区间等是研究设定，不作本项目门禁 |
+| Levitt，p2 | “choosing prices that deviate from the market clearing price.” | 深度第7/8步与复盘第4b步核心穿透：反推庄家如何顺水推舟利用散户大众偏见（豪门/热手/低赔）收割做市利润，反思自己是否误入散户从众陷阱 | NFL不是足球，原研究有价格与注额。本项目没有真实注额／已接受赔率／对冲，净赔付只能声明假设，不能识别唯一赛果 |
 | Goto (2026)，p1、3 | “we propose an odds-only model based on equal profit for confidence (OO-EPC)... achieving state-of-the-art predictive performance” | 深度第4步在有可核实实现时计算 OO-EPC 市场估计；无实现则标未执行，可另列比例法。模型估计不是已知真实发生率。首选由第9步三端裁决产生，模型最高项只作对照 | 纯赔率模型依赖做市商定价有效性；不保证单场必中，9万场实证胜在长期校准与Log-Loss最优 |
-| Winkelmann (2026)，p1、12 | “identifying abnormal betting patterns... distinguishing between transient liquidity shocks and persistent information shifts” | 深度第4/8步识别微观做市假摔 (Head-Fake)，区分中途瞬态跳水与临盘持久性大资金位移；强制执行五阶段全周期时序分析（T0初盘→T1早盘→T2中盘拉扯→T3临盘洗盘→T4终局出清），严禁只看初终两端 | 状态空间模型侧重盘口异动识别，不能证明当场踢出特定比分；需与三盘几何交叉验证 |
+| Winkelmann (2026)，p1、12 | “identifying abnormal betting patterns... distinguishing between transient liquidity shocks and persistent information shifts” | 深度第4/8步与复盘第4b步微观诊断：识别做市商瞬态脉冲假摔（Head-Fake）震仓洗盘 vs 临盘持久大资金位移；复盘反思是否误将假摔当弃守 | 状态空间模型侧重盘口异动识别，不能证明当场踢出特定比分；需与三盘几何交叉验证 |
 | Egidi (2018)，p1、7 | “the scoring rates of the teams are convex combinations of parameters estimated from historical data and the additional source of the betting odds.” | 深度第3步泊松进球期望建模，将历史攻防均值与盘口隐含期望做凸组合融合 (Convex Combination) | 凸组合权重取决于赛事样本与盘口成熟度；杯赛或阵容巨变时需提高即时盘口权重 |
 | Mandadapu (2024)，p1、6 | “A Machine Learning Approach to Match Outcome Forecasting and Bookmaker Odds Estimation... investigating the significance of various features” | 深度第7/8步结合多维动态特征检验庄家开盘合理性，破译做市商风险对冲与引流杠杆 | 机器学习特征工程不能替代当场临盘资金博弈；模型特征需赛前冻结 |
 
