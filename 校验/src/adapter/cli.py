@@ -563,7 +563,9 @@ def run_graph_affected(node_name: str, depth: int = 2) -> int:
 
 def run_graph_reflect(if_stale: bool = True) -> int:
     """调用官方 graphify.reflect 刷新 Learning Overlay 与 LESSONS.md 错题反思"""
-    mem_dir = Path("memory")
+    mem_dir = Path("graphify-out/memory")
+    if not mem_dir.exists() or not list(mem_dir.glob("*.md")):
+        mem_dir = Path("memory")
     out_path = Path("LESSONS.md")
     graph_path = Path("graphify-out/graph.json")
     analysis_path = Path("graphify-out/.graphify_analysis.json")

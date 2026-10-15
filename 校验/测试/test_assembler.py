@@ -332,6 +332,31 @@ class TestSnapshotAssembler(unittest.TestCase):
             # 检查旧的乱糟糟 28 个碎文件目录已被干净清理删除
             self.assertFalse(loose_dir.exists(), "旧的 loose raw/{matchId}/ 碎文件目录必须被自动清理删除！")
 
+    def test_parse_raw_payloads_meta_kickoff_column_offset(self):
+        from 校验.src.domain.raw_parser import Titan007RawParser
+        parser = Titan007RawParser()
+        raw_files = {
+            "1x2d.js": 'hometeam_cn="费耶诺德";guestteam_cn="科莫";matchname_cn="欧冠杯";MatchTime="2026,10,15,00,45";var game=Array();',
+        }
+        meta_md_text = (
+            "| 场次编号 | 比赛 ID | 联赛 | 主队 | 客队 | 开球时间 | 状态 | 数据状态 |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+            "| 周三005 | 3073199 | 欧冠杯 | 费耶诺德 | 科莫 | 2026-10-15 00:45 | 未开赛 | [3073199.md](3073199.md) |\n"
+        )
+        assembled, _ = parser.parse_raw_payloads("3073199", raw_files, meta_md_text)
+        self.assertEqual(assembled["kickoffTime"], "2026-10-15 00:45")
+        self.assertNotEqual(assembled["kickoffTime"], "科莫")
+
+    def test_verifier_rejects_kickoff_with_team_name(self):
+        data = self._build_valid_verbatim_data()
+        data["kickoffTime"] = "科莫"
+        md_text = self.assembler.assemble(data)
+        snap = self.use_case._parse_markdown_snapshot(md_text, "2989999")
+        snap["_raw_content"] = md_text
+        receipt = self.use_case.verifier.verify(snap)
+        self.assertFalse(receipt.is_valid)
+        self.assertTrue(any("开球时间" in r.message for r in receipt.results if r.status.value == "FAIL"))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -967,6 +967,18 @@ class SnapshotVerifier:
                 detail={"match_id": match_id, "body_id": body_id_match.group(1)},
             )
 
+        # 正文声明的开球时间必须为有效时间格式，严禁出现队名冒充或格式错位
+        body_ko_match = re.search(r"-\s*\*\*开球时间\*\*[：:]\s*([^\n\r]+)", full_text)
+        if body_ko_match:
+            ko_val = body_ko_match.group(1).strip()
+            if not re.search(r"\d{1,2}:\d{2}", ko_val):
+                return DimensionResult(
+                    dimension=DimensionType.AUTHENTICITY,
+                    status=CheckStatus.FAIL,
+                    message=f"真实性核验失败：正文声明的开球时间 '{ko_val}' 非合法时间格式，判定为字段错位或元数据解析损坏！",
+                    detail={"match_id": match_id, "invalid_kickoff": ko_val},
+                )
+
         # 2. 检查跨场次对阵泄漏 (通用检测正文中是否包含了与本场完全无关的第三方比赛对阵)
         generic_terms = {"主队", "客队", "全场", "半场", "独赢", "让球", "走水", "平手", "胜平负"}
         vs_matches = re.findall(

@@ -886,12 +886,14 @@ class Titan007RawParser:
         if not assembled.get("sportteryCode") and meta_md_text:
             try:
                 m_code = re.search(
-                    rf"\|\s*(周[一二三四五六日]\d{{3}}|[A-Za-z0-9\u4e00-\u9fa5]+)\s*\|\s*{re.escape(match_id_str)}\s*\|[^\|]*\|[^\|]*\|\s*([^\|]+?)\s*\|",
+                    rf"\|\s*(周[一二三四五六日]\d{{3}}|[A-Za-z0-9\u4e00-\u9fa5]+)\s*\|\s*{re.escape(match_id_str)}\s*\|[^\|]*\|[^\|]*\|[^\|]*\|\s*([^\|]+?)\s*\|",
                     meta_md_text,
                 )
                 if m_code:
                     assembled["sportteryCode"] = m_code.group(1).strip()
-                    meta_kickoff = m_code.group(2).strip()
+                    cand_ko = m_code.group(2).strip()
+                    if re.search(r"\d{1,2}:\d{2}", cand_ko):
+                        meta_kickoff = cand_ko
             except Exception:
                 pass
 
