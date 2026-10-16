@@ -562,6 +562,37 @@ class TestTimeseriesDenoiser(unittest.TestCase):
         has_max_water = any(r[2] == "0.99" for r in res)
         self.assertTrue(has_max_water)
 
+    def test_bet365_real_sample_preserves_six_rows_and_critical_shifts(self):
+        """
+        验证 Bet365 真实 9 行样本：
+        初盘受让一球 -> 早盘初探一球/球半 -> 回踩一球 -> 上午持平 -> 下午正式升盘一球/球半 -> 终盘
+        降噪后必须保全 6 行黄金骨架，绝不能误杀 13:04 升盘点与 08:55 回踩点！
+        """
+        rows = [
+            ("10-16 14:30", "受让一球/球半", "0.83", "0.98", "即"),
+            ("10-16 14:00", "受让一球/球半", "0.85", "0.95", "即"),
+            ("10-16 13:35", "受让一球/球半", "0.83", "0.98", "即"),
+            ("10-16 13:04", "受让一球/球半", "0.80", "1.00", "即"),
+            ("10-16 12:09", "受让一球", "1.03", "0.78", "即"),
+            ("10-16 11:16", "受让一球", "1.00", "0.80", "即"),
+            ("10-16 08:55", "受让一球", "1.03", "0.78", "即"),
+            ("10-16 08:53", "受让一球/球半", "0.78", "1.03", "即"),
+            ("10-12 21:13", "受让一球", "1.03", "0.78", "即"),
+        ]
+        res = denoise_timeline_rows(rows)
+        # 目标：输出 6 行黄金骨架
+        self.assertEqual(len(res), 6)
+        # 1. 首行最新 14:30 必保
+        self.assertEqual(res[0][0], "10-16 14:30")
+        # 2. 末行初盘 10-12 21:13 必保
+        self.assertEqual(res[-1][0], "10-12 21:13")
+        # 3. 08:53 初探一球/球半 必保
+        self.assertTrue(any(r[0] == "10-16 08:53" and "一球/球半" in r[1] for r in res))
+        # 4. 08:55 回踩一球 必保
+        self.assertTrue(any(r[0] == "10-16 08:55" and "受让一球" == r[1] for r in res))
+        # 5. 13:04 正式升盘一球/球半 必保
+        self.assertTrue(any(r[0] == "10-16 13:04" and "一球/球半" in r[1] for r in res))
+
 
 if __name__ == "__main__":
     unittest.main()

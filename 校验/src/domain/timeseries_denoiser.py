@@ -87,6 +87,13 @@ def _fold_handicap_tag_oscillations(rows: List[Sequence[Any]], min_run: int = 4)
         if run_len >= min_run and len(t_pair) == 2:
             waters = [_extract_tag_and_floats(rows[k])[1] for k in range(i, j)]
             must_keep = {i, i + 1, j - 2, j - 1}
+            # 绝对保全稳定盘口档位跃迁 (Regime Shifts: 稳定持盘 >= 3 点或从短暂探路回踩稳定档位)
+            for k in range(i + 1, j):
+                if tags[k] != tags[k - 1]:
+                    if (k + 2 < j and tags[k] == tags[k + 1] == tags[k + 2]) or (
+                        k >= 2 and tags[k] == tags[k - 2] and k + 1 < j and tags[k] == tags[k + 1]
+                    ):
+                        must_keep.add(k)
             if waters and waters[0]:
                 for d in range(len(waters[0])):
                     min_k = i + min(range(run_len), key=lambda x: waters[x][d])
@@ -229,6 +236,13 @@ def denoise_timeline_rows(
             marked_indices.add(ti + 1)
             marked_indices.add(tj - 2)
             marked_indices.add(tj - 1)
+            # 绝对保全稳定盘口档位跃迁 (Regime Shifts)
+            for k in range(ti + 1, tj):
+                if tags[k] != tags[k - 1]:
+                    if (k + 2 < tj and tags[k] == tags[k + 1] == tags[k + 2]) or (
+                        k >= 2 and tags[k] == tags[k - 2] and k + 1 < tj and tags[k] == tags[k + 1]
+                    ):
+                        marked_indices.add(k)
             ti = tj - 1
         else:
             if ti > 0 and tags[ti] != tags[ti - 1]:
