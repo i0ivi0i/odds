@@ -145,6 +145,33 @@ AI_AGENT_METADATA_DIRECTIVE: str = (
 )
 
 
+class SummaryTableAssembler:
+    """
+    负责将 Worker 结构化推演结果（单场 JSON 交付小卡片）机械单射组装为标准 7 列表格，
+    绝对不经过大模型二次转述，从物理机制上消灭张冠李戴、方向覆盖与字序错乱。
+    """
+
+    @staticmethod
+    def assemble_row(card: Dict[str, Any]) -> str:
+        code_time = f"{card.get('matchCode', '')} {card.get('kickoffTime', '')}".strip()
+        teams = card.get('teams', '').strip()
+        primary_dir = card.get('primaryDirection', '').strip()
+        handicap_dir = card.get('handicapDirection', '').strip()
+        prob = card.get('ooEpcProbabilities', '').strip()
+        trap = card.get('bookmakerTrapDeduction', '').strip()
+        pm_link = card.get('polymarketLink', '').strip()
+        return f"| {code_time} | {teams} | {primary_dir} | {handicap_dir} | {prob} | {trap} | {pm_link} |"
+
+    @classmethod
+    def assemble_table(cls, cards: List[Dict[str, Any]]) -> str:
+        header = (
+            "| 场次/时间 | 对阵双方 | 胜负平 | 让球 | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接 |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |"
+        )
+        rows = [cls.assemble_row(c) for c in cards]
+        return "\n".join([header] + rows)
+
+
 class GoldenSnapshotAssembler:
     """将真实解析结构化数据一对一原样序列化为黄金【推演源数据】规范 Markdown（零默认值伪造）"""
 

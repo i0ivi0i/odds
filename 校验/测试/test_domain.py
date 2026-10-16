@@ -1136,6 +1136,88 @@ class TestMemoryCognitiveCardsVerifier(unittest.TestCase):
             self.assertFalse(ok)
             self.assertTrue(any("MEMORY_SOURCE_DRIFT" in e for e in errors), f"Actual errors: {errors}")
 
+    def test_verify_memory_detects_bold_shengfuping_direction_conflict(self):
+        """红灯测试: 当卡片中写成加粗 **胜负平**: 平局 (次选客胜) 而表格首选写 主胜 时，必须精准拦截方向冲突，绝不被字序或加粗绕过"""
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+        card_with_bold = self.valid_card.replace(
+            "- 胜平负：首选 主胜｜次选 平局",
+            "- **胜负平**: 平局 (次选客胜)"
+        )
+        table_with_home_win = (
+            "## 推荐汇总\n\n"
+            "| 场次/时间 | 对阵双方 | 胜负平 | 让球 | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接 |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+            "| 周一002 00:30 | 亚特兰大 vs 威尼斯 | 主胜 | -1 让胜 | 77.57% / 14.16% / 8.27% | 诱主 | https://polymarket.com/event/sea-ata-ven-2026-10-12 |\n\n"
+            + card_with_bold
+        )
+        ok, errors, _ = verify_memory_cognitive_cards(table_with_home_win, expected_matches=1)
+        self.assertFalse(ok)
+        self.assertTrue(any("MEMORY_INTERNAL_DIRECTION_CONFLICT" in e for e in errors), f"Actual errors: {errors}")
+
+    def test_verify_memory_detects_probability_drift(self):
+        """红灯测试: 当 7 列表格点概率 (44.73% / ...) 与卡片点概率 (77.57% / ...) 偏差 > 0.5% 时，报 MEMORY_INTERNAL_PROBABILITY_DRIFT"""
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+        table_with_wrong_prob = (
+            "## 推荐汇总\n\n"
+            "| 场次/时间 | 对阵双方 | 胜负平 | 让球 | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接 |\n"
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+            "| 周一002 00:30 | 亚特兰大 vs 威尼斯 | 主胜 | -1 让胜 | 44.73% / 22.87% / 32.40% | 诱主 | https://polymarket.com/event/sea-ata-ven-2026-10-12 |\n\n"
+            + self.valid_card
+        )
+        ok, errors, _ = verify_memory_cognitive_cards(table_with_wrong_prob, expected_matches=1)
+        self.assertFalse(ok)
+        self.assertTrue(any("MEMORY_INTERNAL_PROBABILITY_DRIFT" in e for e in errors), f"Actual errors: {errors}")
+
+    def test_verify_memory_detects_handicap_hallucination_against_source(self):
+        """红灯测试: 当 7 列表格第 6 列诱盘破译脑补了源数据中从未开出的盘口 (如源数据只有半球盘，却脑补升盘半一) 时，报 MEMORY_TABLE_TIMELINE_HALLUCINATION"""
+        import tempfile
+        from pathlib import Path
+        from 校验.src.domain.verifier import verify_memory_cognitive_cards
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            data_dir = Path(tmpdir)
+            (data_dir / "2993805.md").write_text(
+                "# 【周一002】意甲 亚特兰大 vs 威尼斯\n"
+                "- **比赛 ID**：2993805\n"
+                "## 四、核心做市商与终端标的真实变盘时序流水\n"
+                "#### 亚盘真实变盘流水\n"
+                "| 变盘时间 | 盘口 | 主水 | 客水 | 状态 |\n"
+                "| 10-12 21:00 | 半球 | 0.85 | 1.05 | 即 |\n"
+                "| 10-10 18:00 | 半球 | 0.90 | 1.00 | 初盘 |\n",
+                encoding="utf-8",
+            )
+            table_with_hallucinated_handicap = (
+                "## 推荐汇总\n\n"
+                "| 场次/时间 | 对阵双方 | 胜负平 | 让球 | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接 |\n"
+                "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
+                "| 周一002 00:30 | 亚特兰大 vs 威尼斯 | 主胜 | -1 让胜 | 77.57% / 14.16% / 8.27% | 【初盘形态】半球 ➔【中盘演进】升盘半一0.98高阻 ➔【终盘真实意图】设防 | https://polymarket.com/event/sea-ata-ven-2026-10-12 |\n\n"
+                + self.valid_card
+            )
+            ok, errors, _ = verify_memory_cognitive_cards(table_with_hallucinated_handicap, expected_matches=1, data_dir=str(data_dir))
+            self.assertFalse(ok)
+            self.assertTrue(any("MEMORY_TABLE_TIMELINE_HALLUCINATION" in e for e in errors), f"Actual errors: {errors}")
+
+
+    def test_summary_table_assembler_deterministic_projection(self):
+        """测试 SummaryTableAssembler 机械单射组装 7 列表格，杜绝任何人工转述篡改"""
+        from 校验.src.domain.assembler import SummaryTableAssembler
+        cards = [
+            {
+                "matchCode": "周四010",
+                "kickoffTime": "03:00",
+                "teams": "马赛 vs 奥林匹亚科斯",
+                "primaryDirection": "平局 (次选客胜)",
+                "handicapDirection": "[-1] 让负",
+                "ooEpcProbabilities": "44.73% / 22.87% / 32.40%",
+                "bookmakerTrapDeduction": "【初盘形态】平半高水 ➔【中盘演进】主水顶死在1.00满水 ➔【终盘真实意图】设防客队受让",
+                "polymarketLink": "https://polymarket.com/event/uel-olm-oly-2026-10-15",
+            }
+        ]
+        table_md = SummaryTableAssembler.assemble_table(cards)
+        self.assertIn("| 周四010 03:00 | 马赛 vs 奥林匹亚科斯 | 平局 (次选客胜) | [-1] 让负 |", table_md)
+        self.assertIn("44.73% / 22.87% / 32.40%", table_md)
+        self.assertIn("https://polymarket.com/event/uel-olm-oly-2026-10-15", table_md)
+
 
 class TestRawWireAntiFabrication(unittest.TestCase):
     """U3红灯测试: 原始报文哈希封条 (TAMPERED_MARKDOWN_SEAL) 与原文子串交叉校验 (RAW_PROVENANCE_MISMATCH)"""

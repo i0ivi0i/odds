@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 import json
 import re
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from 校验.src.domain.model import (
     CheckStatus,
@@ -1458,6 +1458,10 @@ def verify_memory_cognitive_cards(
     table_directions_by_teams: Dict[str, str] = {}
     table_pm_by_code: Dict[str, str] = {}
     table_pm_by_teams: Dict[str, str] = {}
+    table_probabilities_by_code: Dict[str, Tuple[float, float, float]] = {}
+    table_probabilities_by_teams: Dict[str, Tuple[float, float, float]] = {}
+    table_trap_deductions_by_code: Dict[str, str] = {}
+    table_trap_deductions_by_teams: Dict[str, str] = {}
     for line in content.splitlines():
         sline = line.strip()
         if not sline.startswith("|") or "---" in sline or "场次/时间" in sline or "对阵双方" in sline:
@@ -1477,6 +1481,20 @@ def verify_memory_cognitive_cards(
                 if code_str:
                     table_directions_by_code[code_str] = p_dir
                 table_directions_by_teams[teams_key] = p_dir
+
+            # 提取表格第 5 列点概率 (胜/平/负点概率（OO-EPC去水）)
+            prob_nums = [float(x) for x in re.findall(r"(\d+(?:\.\d+)?)\s*%", cells[4])]
+            if len(prob_nums) >= 3:
+                prob_tuple = (prob_nums[0], prob_nums[1], prob_nums[2])
+                if code_str:
+                    table_probabilities_by_code[code_str] = prob_tuple
+                table_probabilities_by_teams[teams_key] = prob_tuple
+
+            # 提取表格第 6 列庄家诱盘破译
+            trap_text = cells[5]
+            if code_str:
+                table_trap_deductions_by_code[code_str] = trap_text
+            table_trap_deductions_by_teams[teams_key] = trap_text
 
             # 严格核验第7列 Polymarket 真实性与防伪 (杜绝虚构链接流向交付)
             pm_cell = cells[6]
@@ -1547,7 +1565,7 @@ def verify_memory_cognitive_cards(
             block_errors.append(f"【{match_id_str}】缺少去水点概率数值（必须保留 OO-EPC 去水概率，Wheatcroft 2019 铁律）")
 
         # U4.1: 检查 7 列汇总表与卡片内部首选方向是否矛盾 (MEMORY_INTERNAL_DIRECTION_CONFLICT)
-        card_dir_m = re.search(r"胜平负\s*[:：]\s*([^\n\r]+)", block)
+        card_dir_m = re.search(r"(?:胜平负|胜负平)[*\s]*[:：]\s*([^\r\n]+)", block)
         if card_dir_m:
             card_primary = _normalize_primary_direction(card_dir_m.group(1))
             code_m = re.search(r"(周[一二三四五六日]\d{3})", header_line)
@@ -1563,6 +1581,28 @@ def verify_memory_cognitive_cards(
                     f"MEMORY_INTERNAL_DIRECTION_CONFLICT: 【{match_id_str}】7列推荐汇总表首选方向 ({table_primary}) "
                     f"与深度分析卡片首选方向 ({card_primary}) 前后矛盾！"
                 )
+
+        # U4.1c: 检查 7 列汇总表点概率与卡片去水点概率公差是否在 0.5% 以内 (MEMORY_INTERNAL_PROBABILITY_DRIFT)
+        card_prob_m = re.search(r"(?:点概率|OO-EPC|胜/平/负|概率)[^\r\n]*", block)
+        if card_prob_m:
+            c_probs = [float(x) for x in re.findall(r"(\d+(?:\.\d+)?)\s*%", card_prob_m.group(0))]
+            if len(c_probs) >= 3:
+                code_m = re.search(r"(周[一二三四五六日]\d{3})", header_line)
+                teams_m = re.search(r"([^\s（(]+)\s*vs\s*([^\s（(]+)", header_line, re.I)
+                t_prob: Optional[Tuple[float, float, float]] = None
+                if code_m and code_m.group(1) in table_probabilities_by_code:
+                    t_prob = table_probabilities_by_code[code_m.group(1)]
+                elif teams_m:
+                    tkey = f"{teams_m.group(1)}vs{teams_m.group(2)}"
+                    t_prob = table_probabilities_by_teams.get(tkey)
+                if t_prob:
+                    diffs = [abs(c - t) for c, t in zip(c_probs[:3], t_prob)]
+                    if any(d > 0.5 for d in diffs):
+                        block_errors.append(
+                            f"MEMORY_INTERNAL_PROBABILITY_DRIFT: 【{match_id_str}】7列汇总表点概率 "
+                            f"({t_prob[0]:.2f}%/{t_prob[1]:.2f}%/{t_prob[2]:.2f}%) 与卡片去水点概率 "
+                            f"({c_probs[0]:.2f}%/{c_probs[1]:.2f}%/{c_probs[2]:.2f}%) 偏差 > 0.5% (最大偏差: {max(diffs):.2f}%)！"
+                        )
 
         # U4.1b: 严格核验主流核心联赛在第 7 列表格中必须具备真实链接，严禁标记未开盘逃避过验
         if table_pm_by_code or table_pm_by_teams:
@@ -1619,6 +1659,41 @@ def verify_memory_cognitive_cards(
                                 f"MEMORY_SOURCE_DRIFT: 【{match_id_str}】记忆卡片引用的主胜赔率 ({cited_h}) "
                                 f"与源数据 {match_id_str}.md 真实赔率区间 ({min(src_home_odds):.2f}~{max(src_home_odds):.2f}) 偏差 > 0.05 (实为 {min_diff:.2f})！"
                             )
+
+                    # U4.3: 检查 7 列表格第 6 列诱盘破译引用的盘口名称是否在源数据变盘流水中真实存在 (MEMORY_TABLE_TIMELINE_HALLUCINATION)
+                    code_m = re.search(r"(周[一二三四五六日]\d{3})", header_line)
+                    teams_m = re.search(r"([^\s（(]+)\s*vs\s*([^\s（(]+)", header_line, re.I)
+                    table_trap = ""
+                    if code_m and code_m.group(1) in table_trap_deductions_by_code:
+                        table_trap = table_trap_deductions_by_code[code_m.group(1)]
+                    elif teams_m:
+                        tkey = f"{teams_m.group(1)}vs{teams_m.group(2)}"
+                        table_trap = table_trap_deductions_by_teams.get(tkey, "")
+
+                    if table_trap:
+                        # 识别诱盘破译中提及的典型亚盘盘口词汇及其等价同义词（如 平半 <=> 平手/半球）
+                        handicap_synonyms_map = {
+                            "平手": ["平手", "0"],
+                            "平半": ["平半", "平手/半球", "平手/半", "受让平半", "受平半"],
+                            "半球": ["半球", "0.5"],
+                            "半一": ["半一", "半球/一球", "受让半一", "受半一"],
+                            "一球": ["一球", "1"],
+                            "一球球半": ["一球球半", "一球/球半"],
+                            "球半": ["球半", "1.5"],
+                            "球半两球": ["球半两球", "球半/两球"],
+                            "两球": ["两球", "2"],
+                            "两球两球半": ["两球两球半", "两球/两球半"],
+                            "两球半": ["两球半", "2.5"],
+                        }
+                        for term, syns in handicap_synonyms_map.items():
+                            if any(s in table_trap for s in syns):
+                                # 检查源数据变盘流水中是否出现过该盘口形态（包含标准全称与斜杠全称）
+                                if not any(s in src_text for s in syns):
+                                    block_errors.append(
+                                        f"MEMORY_TABLE_TIMELINE_HALLUCINATION: 【{match_id_str}】7列表格诱盘破译脑补了源数据不存在的盘口 '{term}'！"
+                                        f"源数据变盘流水中从未出现过该盘口形态！"
+                                    )
+                                    break
                 except Exception as e:
                     block_errors.append(f"MEMORY_SOURCE_DRIFT: 【{match_id_str}】读取源数据快照核对失败: {e}")
 
