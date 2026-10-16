@@ -6,6 +6,7 @@
 3. 逐行原样序列化球探网真实报文数据，缺核心字段直接抛出 ValueError 物理阻断。
 """
 
+import json
 from typing import Any, Dict, List, Tuple, Union
 from 校验.src.domain.timeseries_denoiser import denoise_timeline_rows
 
@@ -174,6 +175,117 @@ class SummaryTableAssembler:
 
 class GoldenSnapshotAssembler:
     """将真实解析结构化数据一对一原样序列化为黄金【推演源数据】规范 Markdown（零默认值伪造）"""
+
+    SPORTTERY_SCORE_MAP = {
+        "score10": "1:0", "score20": "2:0", "score21": "2:1", "score30": "3:0", "score31": "3:1", "score32": "3:2",
+        "score40": "4:0", "score41": "4:1", "score42": "4:2", "score50": "5:0", "score51": "5:1", "score52": "5:2",
+        "scoreWin": "胜其他",
+        "score00": "0:0", "score11": "1:1", "score22": "2:2", "score33": "3:3", "scoreDraw": "平其他",
+        "score01": "0:1", "score02": "0:2", "score12": "1:2", "score03": "0:3", "score13": "1:3", "score23": "2:3",
+        "score04": "0:4", "score14": "1:4", "score24": "2:4", "score05": "0:5", "score15": "1:5", "score25": "2:5",
+        "scoreLose": "负其他",
+    }
+    SPORTTERY_GOAL_MAP = {
+        "g0": "0球", "g1": "1球", "g2": "2球", "g3": "3球", "g4": "4球", "g5": "5球", "g6": "6球", "g7": "7+球",
+    }
+
+    def _extract_sporttery_scores(self, data: Dict[str, Any]) -> Tuple[Dict[str, str], Dict[str, str]]:
+        """从 data 中安全提取体彩官方 31 项比分与 8 档总进球赔率字典"""
+        scores: Dict[str, str] = {}
+        goals: Dict[str, str] = {}
+
+        # 1. 检查 sporttery_scores / sporttery_goals (可能为 raw keys 如 score10 或已转换的 1:0)
+        raw_sc = data.get("sporttery_scores")
+        if isinstance(raw_sc, dict) and raw_sc:
+            for k, v in raw_sc.items():
+                if v is not None and str(v).strip() not in ("", "--", "None"):
+                    try:
+                        fval = float(v)
+                        if fval > 0:
+                            friendly_k = self.SPORTTERY_SCORE_MAP.get(str(k).strip(), str(k).strip())
+                            scores[friendly_k] = f"{fval:.2f}"
+                    except (ValueError, TypeError):
+                        pass
+
+        raw_gl = data.get("sporttery_goals")
+        if isinstance(raw_gl, dict) and raw_gl:
+            for k, v in raw_gl.items():
+                k_str = str(k).strip()
+                if k_str in self.SPORTTERY_GOAL_MAP:
+                    try:
+                        fval = float(v)
+                        if fval > 0:
+                            goals[self.SPORTTERY_GOAL_MAP[k_str]] = f"{fval:.2f}"
+                    except (ValueError, TypeError):
+                        pass
+                elif k_str in self.SPORTTERY_GOAL_MAP.values():
+                    try:
+                        fval = float(v)
+                        if fval > 0:
+                            goals[k_str] = f"{fval:.2f}"
+                    except (ValueError, TypeError):
+                        pass
+
+        # 2. 若未提取到，解析 analy_data / jcOdds
+        if not scores or not goals:
+            analy = data.get("analy_data") or data.get("analy_json") or data.get("jcOdds") or {}
+            if isinstance(analy, str):
+                try:
+                    analy = json.loads(analy)
+                except Exception:
+                    analy = {}
+            jc_odds = analy.get("jcOdds") if isinstance(analy, dict) and "jcOdds" in analy else analy
+            if isinstance(jc_odds, dict):
+                if not scores:
+                    sc_live = (jc_odds.get("scoreOdds") or {}).get("live") or {}
+                    if isinstance(sc_live, dict):
+                        for raw_k, friendly_k in self.SPORTTERY_SCORE_MAP.items():
+                            val = sc_live.get(raw_k)
+                            if val is not None and str(val).strip() not in ("", "0", "0.0", "None"):
+                                try:
+                                    fval = float(val)
+                                    if fval > 0:
+                                        scores[friendly_k] = f"{fval:.2f}"
+                                except (ValueError, TypeError):
+                                    pass
+                if not goals:
+                    gl_live = (jc_odds.get("goalOdds") or {}).get("live") or {}
+                    if isinstance(gl_live, dict):
+                        for raw_k, friendly_k in self.SPORTTERY_GOAL_MAP.items():
+                            val = gl_live.get(raw_k)
+                            if val is not None and str(val).strip() not in ("", "0", "0.0", "None"):
+                                try:
+                                    fval = float(val)
+                                    if fval > 0:
+                                        goals[friendly_k] = f"{fval:.2f}"
+                                except (ValueError, TypeError):
+                                    pass
+
+        return scores, goals
+
+    def _extract_crown_scores(self, data: Dict[str, Any]) -> Tuple[Dict[str, str], int]:
+        """提取 Crown 皇冠波胆字典及有效项数"""
+        crown_scores: Dict[str, str] = {}
+        cs_raw = data.get("correctScores") or []
+        for item in cs_raw:
+            if isinstance(item, dict) and "score" in item and "odds" in item:
+                sc = str(item["score"]).strip()
+                od = str(item["odds"]).strip()
+                if sc and od and sc != "-" and od != "-":
+                    try:
+                        crown_scores[sc] = f"{float(od):.2f}"
+                    except ValueError:
+                        crown_scores[sc] = od
+            elif isinstance(item, (list, tuple)):
+                for idx in range(0, len(item) - 1, 2):
+                    sc = str(item[idx]).strip()
+                    od = str(item[idx + 1]).strip()
+                    if sc and od and sc != "-" and od != "-":
+                        try:
+                            crown_scores[sc] = f"{float(od):.2f}"
+                        except ValueError:
+                            crown_scores[sc] = od
+        return crown_scores, len(crown_scores)
 
     def assemble(self, data: Dict[str, Any]) -> str:
         match_id = _require_any_non_empty_str(data, ("matchId",), "比赛 ID")
@@ -447,29 +559,71 @@ class GoldenSnapshotAssembler:
 
         lines.append("---")
         lines.append("")
-        lines.append("## 五、Crown 皇冠全指数波胆与比分矩阵")
+        lines.append("## 五、Crown 皇冠全指数波胆与权威做市矩阵（皇冠 × 体彩 × 必发）")
         lines.append("")
-        cs_raw = data.get("correctScores") or []
-        cs_items: List[str] = []
-        for item in cs_raw:
-            if isinstance(item, dict) and "score" in item and "odds" in item:
-                cs_items.append(f"{item['score']} ({item['odds']})")
-            elif isinstance(item, (list, tuple)):
-                for idx in range(0, len(item) - 1, 2):
-                    sc = str(item[idx]).strip()
-                    od = str(item[idx + 1]).strip()
-                    if sc and od and sc != "-" and od != "-":
-                        cs_items.append(f"{sc} ({od})")
-        if len(cs_items) < 8:
+
+        crown_scores, crown_count = self._extract_crown_scores(data)
+        sporttery_scores, sporttery_goals = self._extract_sporttery_scores(data)
+
+        if crown_count < 8 and len(sporttery_scores) < 8:
             raise ValueError("装配失败：`correctScores` 波胆比分少于 8 项，严禁回退假波胆赔率")
-        lines.append(f"- **波胆比分赔率**：{' ｜ '.join(cs_items)}")
+
+        # 9 列大白话对照表 (主胜 / 平局 / 客胜 并联)
+        lines.append("| 主胜比分 | 体彩 | 皇冠 | 平局比分 | 体彩 | 皇冠 | 客胜比分 | 体彩 | 皇冠 |")
+        lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
+
+        HOME_WIN_SCORES = ["1:0", "2:0", "2:1", "3:0", "3:1", "3:2", "4:0", "4:1", "4:2", "4:3", "5:0", "5:1", "5:2", "胜其他"]
+        DRAW_SCORES = ["0:0", "1:1", "2:2", "3:3", "4:4", "平其他", "--", "--", "--", "--", "--", "--", "--", "--"]
+        AWAY_WIN_SCORES = ["0:1", "0:2", "1:2", "0:3", "1:3", "2:3", "0:4", "1:4", "2:4", "3:4", "0:5", "1:5", "2:5", "负其他"]
+
+        for i in range(14):
+            hs = HOME_WIN_SCORES[i]
+            sp_h = sporttery_scores.get(hs, "--")
+            cr_h = crown_scores.get(hs, "--")
+
+            ds = DRAW_SCORES[i]
+            if ds != "--":
+                sp_d = sporttery_scores.get(ds, "--")
+                cr_d = crown_scores.get(ds, "--")
+            else:
+                sp_d = "--"
+                cr_d = "--"
+
+            as_s = AWAY_WIN_SCORES[i]
+            sp_a = sporttery_scores.get(as_s, "--")
+            cr_a = crown_scores.get(as_s, "--")
+
+            lines.append(f"| {hs} | {sp_h} | {cr_h} | {ds} | {sp_d} | {cr_d} | {as_s} | {sp_a} | {cr_a} |")
+
+        lines.append("")
+
+        # 总进球与半全场
+        if sporttery_goals:
+            lines.append(f"- **体彩总进球**：{' ｜ '.join(f'{k}({v})' for k, v in sporttery_goals.items())}")
         tg_text = data.get("totalGoalsOdds") or data.get("totalGoalsText")
         if tg_text:
-            lines.append(f"- **总进球赔率**：{str(tg_text).strip()}")
+            lines.append(f"- **Crown区间入球**：{str(tg_text).strip()}")
         hf_text = data.get("halfFullOdds") or data.get("halfFullTimeText")
         if hf_text:
-            lines.append(f"- **半全场赔率**：{str(hf_text).strip()}")
+            lines.append(f"- **Crown半全场**：{str(hf_text).strip()}")
         lines.append("")
+
+        # 必发交易所表格
+        bf_table = data.get("betfairTable")
+        if bf_table and isinstance(bf_table, list) and len(bf_table) >= 3:
+            lines.append("### 必发交易所（Betfair）标盘资金与冷热指数")
+            lines.append("| 选项 | 必发价位 | 胜平负概率 | 成交比例 | 庄家盈亏 | 冷热指数 | 盈亏指数 |")
+            lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
+            for r in bf_table[:3]:
+                opt = r.get("option", "--")
+                bf_o = r.get("bf_odds", "--")
+                avg_p = r.get("avg_prob", "--")
+                ratio = r.get("ratio", "--")
+                pnl = r.get("dealer_pnl", "--")
+                hot = r.get("hot_idx", "--")
+                pnl_i = r.get("pnl_idx", "--")
+                lines.append(f"| {opt} | {bf_o} | {avg_p} | {ratio} | {pnl} | {hot} | {pnl_i} |")
+            lines.append("")
 
         return "\n".join(lines)
 

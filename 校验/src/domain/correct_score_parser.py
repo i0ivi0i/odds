@@ -101,6 +101,62 @@ class CorrectScoreParser:
                     i += 2
                     continue
 
+            # 5. 匹配 9 列大白话 Markdown 表格 (| 主胜比分 | 体彩 | 皇冠 | 平局比分 | 体彩 | 皇冠 | 客胜比分 | 体彩 | 皇冠 |)
+            elif line.startswith("|") and ("主胜比分" not in line and ":---" not in line):
+                parts = [p.strip() for p in line.split("|")]
+                # 过滤前后由于管道符产生的空元素
+                if parts and parts[0] == "":
+                    parts = parts[1:]
+                if parts and parts[-1] == "":
+                    parts = parts[:-1]
+                if len(parts) >= 9:
+                    hs, s_h, c_h = parts[0], parts[1], parts[2]
+                    ds, s_d, c_d = parts[3], parts[4], parts[5]
+                    as_s, s_a, c_a = parts[6], parts[7], parts[8]
+
+                    # 提取皇冠做市波胆
+                    for sc, od, cat_dict in ((hs, c_h, home_win), (ds, c_d, draw), (as_s, c_a, away_win)):
+                        if sc and sc != "--" and od and od not in ("--", "-", ""):
+                            try:
+                                fval = float(od)
+                                cat_dict[sc] = fval
+                                flat[sc] = fval
+                            except ValueError:
+                                pass
+
+            # 6. 匹配 行内波胆比分赔率 (- **波胆比分赔率**：1:0 (20.00) ｜ 0:0 (19.00) ...)
+            elif "波胆比分赔率" in line:
+                for m in re.finditer(r"([0-9]+:[0-9]+|胜其[他它]|平其[他它]|负其[他它])\s*[\(（]([0-9\.]+)[\)）]", line):
+                    sc, od_str = m.group(1), m.group(2)
+                    try:
+                        fval = float(od_str)
+                        flat[sc] = fval
+                        if ":" in sc:
+                            h_part, a_part = sc.split(":")
+                            if int(h_part) > int(a_part):
+                                home_win[sc] = fval
+                            elif int(h_part) == int(a_part):
+                                draw[sc] = fval
+                            else:
+                                away_win[sc] = fval
+                        elif "胜" in sc:
+                            home_win[sc] = fval
+                        elif "平" in sc:
+                            draw[sc] = fval
+                        elif "负" in sc:
+                            away_win[sc] = fval
+                    except ValueError:
+                        pass
+
+            # 7. 匹配 行内半全场赔率 (- **Crown半全场**：主/主(9.5) ｜ ...)
+            elif "半全场" in line and "(" in line:
+                for m in re.finditer(r"([主客和胜平负]/[主客和胜平负])\s*[\(（]([0-9\.]+)[\)）]", line):
+                    cb, od_str = m.group(1), m.group(2)
+                    try:
+                        half_full_time[cb] = float(od_str)
+                    except ValueError:
+                        pass
+
             i += 1
 
         return {

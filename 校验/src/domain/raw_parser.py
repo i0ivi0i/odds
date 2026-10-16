@@ -483,12 +483,58 @@ class Titan007RawParser:
                             except ValueError:
                                 pass
 
+        # 3. 提取 必发标盘数据对比 (Table id="analy_BetfaStandard")
+        betfair_table: List[Dict[str, str]] = []
+        if "analy_BetfaStandard" in text:
+            try:
+                m_bf = re.search(r'<table[^>]*id=["\']analy_BetfaStandard["\'][^>]*>(.*?)</table>', text, re.DOTALL | re.I)
+                if m_bf:
+                    rows = re.findall(r'<tr[^>]*>(.*?)</tr>', m_bf.group(1), re.DOTALL | re.I)
+                    for r in rows:
+                        tds = [re.sub(r'<[^>]+>', '', c).strip() for c in re.findall(r'<td[^>]*>(.*?)</td>', r, re.DOTALL | re.I)]
+                        if not tds or tds[0] not in ("主队", "平局", "客队"):
+                            continue
+                        opt = tds[0]
+                        if opt == "主队":
+                            avg_odds = tds[1] if len(tds) > 1 else "--"
+                            avg_prob = tds[2] if len(tds) > 2 else "--"
+                            bf_odds = tds[4] if len(tds) > 4 else "--"
+                            vol = tds[7] if len(tds) > 7 else "--"
+                            ratio = tds[8] if len(tds) > 8 else "--"
+                            dealer_pnl = tds[10] if len(tds) > 10 else "--"
+                            pnl_idx = tds[11] if len(tds) > 11 else "--"
+                            hot_idx = tds[12] if len(tds) > 12 else "--"
+                        else:
+                            avg_odds = tds[1] if len(tds) > 1 else "--"
+                            avg_prob = tds[2] if len(tds) > 2 else "--"
+                            bf_odds = tds[3] if len(tds) > 3 else "--"
+                            vol = tds[5] if len(tds) > 5 else "--"
+                            ratio = tds[6] if len(tds) > 6 else "--"
+                            dealer_pnl = tds[8] if len(tds) > 8 else "--"
+                            pnl_idx = tds[9] if len(tds) > 9 else "--"
+                            hot_idx = tds[10] if len(tds) > 10 else "--"
+
+                        betfair_table.append({
+                            "option": opt,
+                            "avg_odds": avg_odds if avg_odds and avg_odds != "0.00" else "--",
+                            "avg_prob": avg_prob if avg_prob and avg_prob != "0.00" else "--",
+                            "bf_odds": bf_odds if bf_odds and bf_odds != "0.00" else "--",
+                            "vol": vol if vol and vol != "0" else "--",
+                            "ratio": ratio if ratio and ratio != "0.00%" else "--",
+                            "dealer_pnl": dealer_pnl if dealer_pnl else "--",
+                            "pnl_idx": pnl_idx if pnl_idx else "--",
+                            "hot_idx": hot_idx if hot_idx else "--",
+                        })
+            except Exception:
+                pass
+
         return {
             "correctScores": score_rows,
             "flatScores": flat_scores,
             "totalGoalsText": total_goals_text,
             "halfFullTimeText": half_full_text,
             "cornerText": corner_text,
+            "betfairTable": betfair_table,
         }
 
     def parse_analysis_html(
@@ -931,6 +977,8 @@ class Titan007RawParser:
                 assembled["totalGoalsText"] = cs_parsed["totalGoalsText"]
             if cs_parsed.get("halfFullTimeText") and not assembled.get("halfFullTimeText"):
                 assembled["halfFullTimeText"] = cs_parsed["halfFullTimeText"]
+            if cs_parsed.get("betfairTable") and not assembled.get("betfairTable"):
+                assembled["betfairTable"] = cs_parsed["betfairTable"]
             corner_text_from_odds = str(cs_parsed.get("cornerText") or "")
 
         # 解析 analysis.html 原生提取第 1 节与第 2 节全量基本面/伤停/技统数据 (彻底消灭手写 meta.json)
@@ -1035,6 +1083,16 @@ class Titan007RawParser:
                             )
                         if hhad_rows:
                             assembled["sporttery_hhad"] = hhad_rows
+
+                    # 提取体彩官方比分与进球数
+                    if not assembled.get("sporttery_scores"):
+                        sc_live = (jc_odds.get("scoreOdds") or {}).get("live") or {}
+                        if sc_live:
+                            assembled["sporttery_scores"] = sc_live
+                    if not assembled.get("sporttery_goals"):
+                        gl_live = (jc_odds.get("goalOdds") or {}).get("live") or {}
+                        if gl_live:
+                            assembled["sporttery_goals"] = gl_live
                 except Exception:
                     pass
 

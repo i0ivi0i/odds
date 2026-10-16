@@ -374,6 +374,85 @@ class TestSnapshotAssembler(unittest.TestCase):
         self.assertEqual(snap["match"]["awayTeam"], "切尔西")
         self.assertEqual(snap["match"]["league"], "英超")
 
+    def test_extract_sporttery_scores_and_goals(self):
+        """U1测试: SnapshotAssembler._extract_sporttery_scores 安全解析体彩31种比分与8档进球数"""
+        sample_analy = {
+            "jcOdds": {
+                "scoreOdds": {
+                    "live": {
+                        "score10": 19, "score20": 36, "score21": 15.5, "score30": 90, "score31": 55, "score32": 38,
+                        "score40": 300, "score41": 150, "score42": 150, "score50": 600, "score51": 400, "score52": 400,
+                        "scoreWin": 100, "score00": 21, "score11": 9.5, "score22": 13, "score33": 50, "scoreDraw": 250,
+                        "score01": 9, "score02": 8, "score12": 6.75, "score03": 10.5, "score13": 9.25, "score23": 16,
+                        "score04": 18, "score14": 16, "score24": 30, "score05": 40, "score15": 35, "score25": 75,
+                        "scoreLose": 19
+                    }
+                },
+                "goalOdds": {
+                    "live": {
+                        "g0": 21, "g1": 7.25, "g2": 4.4, "g3": 3.35, "g4": 4.25, "g5": 7, "g6": 11, "g7": 13.5
+                    }
+                }
+            }
+        }
+        data = {"analy_data": sample_analy}
+        scores, goals = self.assembler._extract_sporttery_scores(data)
+        self.assertEqual(len(scores), 31)
+        self.assertEqual(scores["1:0"], "19.00")
+        self.assertEqual(scores["胜其他"], "100.00")
+        self.assertEqual(scores["0:0"], "21.00")
+        self.assertEqual(scores["平其他"], "250.00")
+        self.assertEqual(scores["0:1"], "9.00")
+        self.assertEqual(scores["负其他"], "19.00")
+        self.assertEqual(len(goals), 8)
+        self.assertEqual(goals["0球"], "21.00")
+        self.assertEqual(goals["3球"], "3.35")
+        self.assertEqual(goals["7+球"], "13.50")
+
+        # 边界情况：无体彩比分数据时优雅返回空字典
+        empty_scores, empty_goals = self.assembler._extract_sporttery_scores({})
+        self.assertEqual(empty_scores, {})
+        self.assertEqual(empty_goals, {})
+
+    def test_assemble_section5_correct_score_plain_language_9_column_matrix(self):
+        """U2测试: 组装器输出通俗大白话的 9 列比分对照矩阵 (主胜/平局/客胜三列并联)"""
+        data = self._build_valid_verbatim_data()
+        data["sporttery_scores"] = {
+            "1:0": "19.00", "2:0": "36.00", "2:1": "15.50", "3:0": "90.00", "3:1": "55.00", "3:2": "38.00",
+            "4:0": "300.00", "4:1": "150.00", "4:2": "150.00", "5:0": "600.00", "5:1": "400.00", "5:2": "400.00",
+            "胜其他": "100.00", "0:0": "21.00", "1:1": "9.50", "2:2": "13.00", "3:3": "50.00", "平其他": "250.00",
+            "0:1": "9.00", "0:2": "8.00", "1:2": "6.75", "0:3": "10.50", "1:3": "9.25", "2:3": "16.00",
+            "0:4": "18.00", "1:4": "16.00", "2:4": "30.00", "0:5": "40.00", "1:5": "35.00", "2:5": "75.00",
+            "负其他": "19.00"
+        }
+        data["sporttery_goals"] = {
+            "0球": "21.00", "1球": "7.25", "2球": "4.40", "3球": "3.35",
+            "4球": "4.25", "5球": "7.00", "6球": "11.00", "7+球": "13.50"
+        }
+        md_text = self.assembler.assemble(data)
+        self.assertIn("## 五、Crown 皇冠全指数波胆与权威做市矩阵（皇冠 × 体彩 × 必发）", md_text)
+        self.assertIn("| 主胜比分 | 体彩 | 皇冠 | 平局比分 | 体彩 | 皇冠 | 客胜比分 | 体彩 | 皇冠 |", md_text)
+        self.assertIn("| 1:0 | 19.00 | 7.50 | 0:0 | 21.00 | 9.00 | 0:1 | 9.00 | 8.50 |", md_text)
+        self.assertIn("胜其他", md_text)
+        self.assertIn("平其他", md_text)
+        self.assertIn("负其他", md_text)
+        self.assertIn("体彩总进球", md_text)
+
+    def test_assemble_section5_betfair_exchange_table(self):
+        """U3测试: 提取并渲染必发交易所（Betfair）标盘资金冷热与庄家盈亏表格"""
+        data = self._build_valid_verbatim_data()
+        data["betfairTable"] = [
+            {"option": "主队", "avg_odds": "2.81", "avg_prob": "33.00%", "bf_odds": "2.85", "vol": "150000", "ratio": "45.2%", "dealer_pnl": "-12000", "pnl_idx": "82", "hot_idx": "15"},
+            {"option": "平局", "avg_odds": "2.91", "avg_prob": "31.83%", "bf_odds": "2.95", "vol": "80000", "ratio": "25.1%", "dealer_pnl": "5000", "pnl_idx": "55", "hot_idx": "-5"},
+            {"option": "客队", "avg_odds": "2.63", "avg_prob": "35.17%", "bf_odds": "2.65", "vol": "95000", "ratio": "29.7%", "dealer_pnl": "7000", "pnl_idx": "60", "hot_idx": "-10"},
+        ]
+        md_text = self.assembler.assemble(data)
+        self.assertIn("### 必发交易所（Betfair）标盘资金与冷热指数", md_text)
+        self.assertIn("| 选项 | 必发价位 | 胜平负概率 | 成交比例 | 庄家盈亏 | 冷热指数 | 盈亏指数 |", md_text)
+        self.assertIn("| 主队 | 2.85 | 33.00% | 45.2% | -12000 | 15 | 82 |", md_text)
+        self.assertIn("| 平局 | 2.95 | 31.83% | 25.1% | 5000 | -5 | 55 |", md_text)
+        self.assertIn("| 客队 | 2.65 | 35.17% | 29.7% | 7000 | -10 | 60 |", md_text)
+
 
 if __name__ == "__main__":
     unittest.main()
