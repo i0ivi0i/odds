@@ -786,6 +786,54 @@ def run_verify_memory(
         return 1
 
 
+def run_verify_review(
+    memory_path: str,
+    memory_md_path: Optional[str] = None,
+) -> int:
+    path = Path(memory_path)
+    if not path.exists():
+        print(f"❌ 门禁拦截: 复盘记忆文件不存在: {memory_path}", file=sys.stderr)
+        return 1
+
+    try:
+        content = path.read_text(encoding="utf-8")
+    except Exception as e:
+        print(f"❌ 门禁拦截: 复盘记忆文件读取失败: {e}", file=sys.stderr)
+        return 1
+
+    memory_md_content = None
+    md_target = Path(memory_md_path) if memory_md_path else Path("MEMORY.md")
+    if md_target.exists():
+        try:
+            memory_md_content = md_target.read_text(encoding="utf-8")
+        except Exception:
+            pass
+
+    from 校验.src.domain.verifier import verify_review_report
+
+    ok, errors, count = verify_review_report(
+        content,
+        memory_md_content=memory_md_content,
+    )
+
+    print("============================================================")
+    print(f" 🛡️ 足球系统赛后复盘标准 7 列表格与闭环质检收据 ({path.name})")
+    print("============================================================")
+    if ok:
+        print(f"🎉 状态: 验收全部通过 (PASS) - 赛后复盘质检通过 (PASS)，共成功核验 {count} 场完场对账！")
+        print("💡 结论: 赛后复盘符合极简单表交付规范，比分真实，MEMORY.md 联动已核验！")
+        print("============================================================")
+        return 0
+    else:
+        print(f"❌ 状态: 验收拦截失败 (FAIL) - 发现 {len(errors)} 项复盘违规：", file=sys.stderr)
+        for err in errors:
+            print(f"  - 🚫 {err}", file=sys.stderr)
+        print("============================================================", file=sys.stderr)
+        print("🛑 熔断警告: 复盘未真实对账或未同步更新长期记忆前，严禁对外交付！", file=sys.stderr)
+        return 1
+
+
+
 def run_audit_integrity(target_path: str) -> int:
     """执行五重轮番数据纯净度、极值数学零丢失与单调子序列穿透质检"""
     from 校验.src.domain.integrity_auditor import IntegrityAuditor, AuditStatus
@@ -971,6 +1019,15 @@ def main() -> int:
         help="指定待核验的每日记忆文件路径 (如 memory/2026-10-12.md)，对【认知契约卡】与【图谱认知基因】执行硬门禁核验",
     )
     parser.add_argument(
+        "--verify-review",
+        help="指定待核验的每日复盘文件路径 (如 memory/2026-10-16.md)，对复盘标准 7 列表格及 MEMORY.md 联动执行硬门禁核验",
+    )
+    parser.add_argument(
+        "--memory-root",
+        default=None,
+        help="核验复盘时指定的长期记忆文件路径 (默认 MEMORY.md)",
+    )
+    parser.add_argument(
         "--expected-matches",
         type=int,
         default=None,
@@ -1132,6 +1189,9 @@ def main() -> int:
     # 优先级 0: 每日记忆认知契约卡门禁
     if args.verify_memory:
         return run_verify_memory(args.verify_memory, expected_matches=args.expected_matches, data_dir=args.data_dir)
+    if args.verify_review:
+        return run_verify_review(args.verify_review, memory_md_path=args.memory_root)
+
 
     # 优先级 1: 【推演源数据】装配
     if args.assemble_bundle:

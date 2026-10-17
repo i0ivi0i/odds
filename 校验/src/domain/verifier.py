@@ -1712,3 +1712,86 @@ def verify_memory_cognitive_cards(
     return is_ok, errors, valid_matches_count
 
 
+def verify_review_report(
+    content: str,
+    memory_md_content: Optional[str] = None,
+) -> tuple[bool, list[str], int]:
+    """
+    纯领域检验函数：验证每日记忆中的【赛后复盘】报告（memory/YYYY-MM-DD.md）。
+    1. 检验是否存在 ## 赛后复盘 章节；
+    2. 检验是否存在工整标准 7 列表格，提取场次并核对比分与胜负平/让球双打标（✅/❌/走水）；
+    3. 严禁增设任何形式的表二等冗余表格（极简立宪原则）；
+    4. 若提供了 memory_md_content，检验 MEMORY.md 是否完成对应日期的战绩入账与待验证表流转。
+    """
+    errors: list[str] = []
+    if not content or not content.strip():
+        return False, ["每日记忆文本为空，无法核验复盘报告"], 0
+
+    if "## 赛后复盘" not in content:
+        return False, ["MISSING_REVIEW_SECTION: 每日记忆中未找到 ## 赛后复盘 章节！"], 0
+
+    review_section = content.split("## 赛后复盘", 1)[1]
+
+    # 1. 极简交付立宪检查：严禁出现表二等刻舟求剑的冗余加戏
+    if re.search(r"###\s*表二|###\s*第二张表|待验证打卡表", review_section):
+        errors.append("FORBIDDEN_SECOND_TABLE: 赛后复盘违反极简立宪原则，严禁增设表二等冗余表格！")
+
+    # 2. 提取标准 7 列表格
+    table_lines: list[str] = []
+    in_7col_table = False
+    for line in review_section.splitlines():
+        sline = line.strip()
+        if "场次/时间" in sline and "对阵双方" in sline and "胜负平" in sline and "让球" in sline:
+            in_7col_table = True
+            continue
+        if in_7col_table:
+            if not sline.startswith("|"):
+                break
+            if "---" in sline:
+                continue
+            table_lines.append(sline)
+
+    if not table_lines:
+        errors.append("MISSING_7COL_REVIEW_TABLE: 赛后复盘未找到标准 7 列对账总表！")
+        return False, errors, 0
+
+    verified_matches_count = 0
+    for idx, tline in enumerate(table_lines):
+        cells = [c.strip() for c in tline.split("|")[1:-1]]
+        if len(cells) < 7:
+            errors.append(f"ROW_CELL_COUNT_ERROR: 7列表格第 {idx+1} 行列数不足7列 (当前{len(cells)}列)")
+            continue
+
+        teams_cell = cells[1]
+        shengfuping_cell = cells[2]
+        handicap_cell = cells[3]
+
+        # 检查比分：比分必须为 \d+[:\-]\d+ 或 腰斩
+        score_m = re.search(r"(\d+[:\-]\d+|腰斩)", teams_cell)
+        if not score_m:
+            errors.append(f"MISSING_SCORE: 第 {idx+1} 行对阵双方列未识别出有效完场比分: '{teams_cell}'")
+
+        # 检查胜负平对账：必须带 ✅ 或 ❌ 或 走水
+        if not re.search(r"[✅❌]|走水", shengfuping_cell):
+            errors.append(f"MISSING_SHENGFUPING_RESULT: 第 {idx+1} 行胜负平列缺失 ✅/❌/走水 对账标记: '{shengfuping_cell}'")
+
+        # 检查让球对账：必须带 ✅ 或 ❌ 或 走水
+        if not re.search(r"[✅❌]|走水", handicap_cell):
+            errors.append(f"MISSING_HANDICAP_RESULT: 第 {idx+1} 行让球列缺失 ✅/❌/走水 对账标记: '{handicap_cell}'")
+
+        verified_matches_count += 1
+
+    # 3. 检查 MEMORY.md 联动状态 (若提供)
+    if memory_md_content:
+        # 提取复盘日期 (从标题如 # 2026-10-16 提取)
+        date_m = re.search(r"#\s*(\d{4}-\d{2}-\d{2})", content)
+        if date_m:
+            rev_date = date_m.group(1)
+            if rev_date not in memory_md_content:
+                errors.append(f"MEMORY_MD_NOT_UPDATED: MEMORY.md 中未找到日期 {rev_date} 的复盘入账更新！")
+
+    is_ok = len(errors) == 0 and verified_matches_count > 0
+    return is_ok, errors, verified_matches_count
+
+
+
