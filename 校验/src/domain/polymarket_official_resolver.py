@@ -243,8 +243,12 @@ class PolymarketOfficialResolver:
         h_words = extract_team_keywords(home_en)
         a_words = extract_team_keywords(away_en)
 
-        # 依次以主队、客队关键词检索官方接口
-        candidate_queries = [h_words[0], a_words[0]]
+        # 依次以主客完整英文名、各关键词检索官方接口（去重且保序）
+        candidate_queries: List[str] = []
+        for q_cand in [home_en, away_en] + h_words + a_words:
+            if q_cand and q_cand not in candidate_queries:
+                candidate_queries.append(q_cand)
+
         for q in candidate_queries:
             events = self.query_public_search(q)
             for ev in events:
