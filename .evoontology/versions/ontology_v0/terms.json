@@ -1,0 +1,42 @@
+[
+  {
+    "id": "term_pinnacle_anchor",
+    "name": "Pinnacle_Anchor",
+    "type": "metric",
+    "definition": "平博作为全球唯一大资金真金白银做市标杆。其赔率反映庄家真实风控底线与客观物理期望，而非散户情绪引流工具。",
+    "scope": "global",
+    "aliases": ["平博", "平博标杆", "做市锚点", "测谎仪", "pinnacle"],
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "term_headfake_surge",
+    "name": "HeadFake_Surge",
+    "type": "dimension",
+    "definition": "亚盘中盘脉冲冲高挂超满水（≥1.04）诱多震仓，并在临盘2小时内仓皇退盘的虚假做阻形态。本质是做市商心虚放弃设防的假摔动作。",
+    "scope": "global",
+    "aliases": ["假摔", "假摔震仓", "冲高退盘", "假突破", "headfake"],
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "term_draw_vacuum",
+    "name": "Draw_Vacuum",
+    "type": "dimension",
+    "definition": "平局赔率被全网机构极端顶高至 4.00+，大众因恐高心理彻底放弃平局投注，导致平局筹码陷入极端真空状态。做市商通杀净赔付最小的伏击区。",
+    "scope": "global",
+    "aliases": ["高平", "高平真空", "筹码真空", "大热通杀", "draw_vacuum"],
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "term_poisson_floor",
+    "name": "Poisson_Floor",
+    "type": "metric",
+    "definition": "基于历史攻防进失球泊松分布计算得出的纯物理数学概率底牌，用于检验赔率定价是否存在极端扭曲，防止大模型主观剔除高概率平局比分。",
+    "scope": "global",
+    "aliases": ["泊松", "泊松底牌", "物理期望", "独立比分基准", "poisson"],
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  }
+]

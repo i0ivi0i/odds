@@ -1,0 +1,50 @@
+[
+  {
+    "id": "constraint_pinnacle_stability",
+    "target": "term_pinnacle_anchor",
+    "constraint_type": "anomaly_check",
+    "trigger_keywords": ["平博", "pinnacle", "降赔", "商业庄", "纹丝不动"],
+    "severity": "block",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【标杆定海神针警报】商业庄与体彩单边剧烈降赔（>=0.15），但风控标杆平博变动绝对值<=0.03（几乎纹丝不动）。此为典型商业庄顺应散户偏见出货引流形态，强制禁止将商业庄降赔直接等同于机构防守，大模型必须在认知契约卡中显式对质平博未动原因！",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_headfake_rebound",
+    "target": "term_headfake_surge",
+    "constraint_type": "pattern_check",
+    "trigger_keywords": ["假摔", "退盘", "满水", "冲高", "headfake"],
+    "severity": "block",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【亚盘脉冲假摔警报】中盘亚盘曾出现主动升盘并挂超满水（>=1.04）诱多，但在终盘2小时仓皇退回初盘门槛。此为机构心虚放弃设防的假摔现行，强制禁止将初即终盘同一浅盘误判为全程平稳设防！",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_draw_extreme_high",
+    "target": "term_draw_vacuum",
+    "constraint_type": "risk_warning",
+    "trigger_keywords": ["平赔", "高平", "4.00", "筹码真空", "通杀"],
+    "severity": "warn",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【高平筹码真空警报】全网百家欧指平局赔率极端顶高至 4.00+。散户大众产生极度恐高心理，平局投注陷入筹码真空。做市商面临的大众净赔付为零甚至通杀，大模型绝对严禁因平赔过高主观一票否决平局！",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_poisson_retention",
+    "target": "term_poisson_floor",
+    "constraint_type": "retention_check",
+    "trigger_keywords": ["泊松", "poisson", "平局比分", "1:1", "底牌保护"],
+    "severity": "block",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【泊松数学底牌保护警报】由微观攻防得失球计算出的独立泊松比分前 2 位中包含平局（如 1:1），且与第一顺位概率差 <= 1.0%。大模型在推荐比分中严禁主观扼杀该平局比分！",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  }
+]

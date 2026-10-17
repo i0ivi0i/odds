@@ -1,0 +1,10 @@
+[
+  {
+    "id": "evidence_match_3019156",
+    "source": "data/2026-10-16/3019156.md",
+    "query": "match_3019156_nuremberg",
+    "result": "科特布斯1:1纽伦堡：体彩降至1.57平博1.93不动，亚盘升半一挂满水临场退半球，平赔4.10+，泊松1:1第二位",
+    "validation_method": "historical_match_audit",
+    "timestamp": "2026-10-17T13:40:00Z"
+  }
+]

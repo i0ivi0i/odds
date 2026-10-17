@@ -1,0 +1,5 @@
+{
+  "mode": "rolling_trajectory",
+  "data_source": "data",
+  "description": "Football match odds deduction perception layer (eyes & camera) workspace."
+}

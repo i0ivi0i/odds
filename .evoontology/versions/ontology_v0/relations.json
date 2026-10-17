@@ -1,0 +1,22 @@
+[
+  {
+    "id": "rel_benchmark_vs_retail",
+    "source": "term_pinnacle_anchor",
+    "relation_type": "acts_as_truth_verifier_for",
+    "target": "term_headfake_surge",
+    "connection_condition": "pinnacle_flat_and_retail_dropped",
+    "description": "平博真金白银做市标杆用于验证商业庄脉冲冲高退盘动作是否为假摔",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "rel_vacuum_vs_poisson",
+    "source": "term_draw_vacuum",
+    "relation_type": "bounded_by_physical_floor",
+    "target": "term_poisson_floor",
+    "connection_condition": "high_draw_odds_with_poisson_draw",
+    "description": "高平真空诱空表象受泊松物理进球底牌约束，防止过度恐高杀平",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
+  }
+]

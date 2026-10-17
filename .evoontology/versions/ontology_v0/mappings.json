@@ -1,0 +1,58 @@
+[
+  {
+    "id": "mapping_pinnacle_odds",
+    "term_id": "term_pinnacle_anchor",
+    "database_source": "data_markdown",
+    "table": "第三区_法定23家百家欧指初即对比",
+    "column": "平博_即时客胜",
+    "semantic_filter": "",
+    "aggregation_semantics": "latest_value",
+    "grain": "match",
+    "validation": "delta_check",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_handicap_timeline",
+    "term_id": "term_headfake_surge",
+    "database_source": "data_markdown",
+    "table": "第四区_7家法定机构变盘时序流水",
+    "column": "盘口_水位_时序",
+    "semantic_filter": "",
+    "aggregation_semantics": "peak_and_latest",
+    "grain": "match",
+    "validation": "surge_and_retreat",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_draw_odds",
+    "term_id": "term_draw_vacuum",
+    "database_source": "data_markdown",
+    "table": "第三区_法定23家百家欧指初即对比",
+    "column": "即时平局",
+    "semantic_filter": "",
+    "aggregation_semantics": "average_and_max",
+    "grain": "match",
+    "validation": "range_check",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_poisson_scores",
+    "term_id": "term_poisson_floor",
+    "database_source": "data_markdown",
+    "table": "第二区_历史交锋与近期战绩",
+    "column": "独立泊松分布_Top6",
+    "semantic_filter": "",
+    "aggregation_semantics": "top_scores",
+    "grain": "match",
+    "validation": "draw_score_check",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  }
+]
