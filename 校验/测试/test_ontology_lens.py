@@ -25,16 +25,46 @@ class TestOntologyLens(unittest.TestCase):
             self.assertTrue(os.path.exists(fpath), f"缺少本体核心文件: {fname}")
 
     def test_core_constraints_definitions(self):
-        """测试 4 大核心关注探针（平博基准、亚盘假摔、高平真空、泊松底牌）正确注册"""
+        """测试 8 大核心做市机位探针正确注册"""
         constraints_path = os.path.join(self.v0_dir, "constraints.json")
         with open(constraints_path, "r", encoding="utf-8") as f:
             constraints_data = json.load(f)
 
         constraint_ids = [c["id"] for c in constraints_data]
+        self.assertEqual(len(constraint_ids), 8, f"探针总数应为 8 个，当前为: {len(constraint_ids)}")
         self.assertIn("constraint_pinnacle_stability", constraint_ids, "缺少平博定海神针探针")
         self.assertIn("constraint_headfake_rebound", constraint_ids, "缺少亚盘脉冲假摔探针")
         self.assertIn("constraint_draw_extreme_high", constraint_ids, "缺少高平筹码真空探针")
         self.assertIn("constraint_poisson_retention", constraint_ids, "缺少泊松底牌保护探针")
+        self.assertIn("constraint_crossmarket_misalignment", constraint_ids, "缺少跨市场脱节背离探针")
+        self.assertIn("constraint_favorite_melt_risk", constraint_ids, "缺少豪门低赔穿仓探针")
+        self.assertIn("constraint_score_snapping_defense", constraint_ids, "缺少波胆矩阵卡口探针")
+        self.assertIn("constraint_sporttery_squeeze", constraint_ids, "缺少体彩逼平风控探针")
+
+    def test_all_terms_bound_to_graphify_papers(self):
+        """测试 8 个核心 Term 均显式绑定 Graphify 顶刊论文溯源标识"""
+        terms_path = os.path.join(self.v0_dir, "terms.json")
+        with open(terms_path, "r", encoding="utf-8") as f:
+            terms_data = json.load(f)
+
+        self.assertEqual(len(terms_data), 8, f"术语总数应为 8 个，当前为: {len(terms_data)}")
+        for t in terms_data:
+            self.assertIn("graphify_ref", t, f"术语 {t.get('name')} 缺少 graphify_ref 字段")
+            self.assertTrue(t["graphify_ref"].startswith("graphify://"), f"术语 {t.get('name')} 的 graphify_ref 非法: {t['graphify_ref']}")
+
+    def test_cli_ontology_scan_execution(self):
+        """测试 CLI --ontology-scan 机械臂对实际快照文件的只读扫描功能"""
+        import subprocess
+        sample_match = "data/2026-10-16/3019156.md"
+        if not os.path.exists(sample_match):
+            self.skipTest(f"缺少实测快照文件: {sample_match}")
+
+        cmd = ["py", "-3.13", "校验/src/adapter/cli.py", "--ontology-scan", sample_match]
+        res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(res.returncode, 0, f"--ontology-scan 执行失败: {res.stderr}")
+        self.assertIn("ONTOLOGY_SCAN", res.stdout)
+        self.assertIn("Pinnacle_Anchor", res.stdout)
+        self.assertIn("GRAPHIFY_RECOMMENDATION", res.stdout)
 
     def test_strict_non_deduction_boundary(self):
         """最高立宪测试：扫描本体层所有 JSON，确保绝无胜负预测、让球输赢判定或赔率死尺子逻辑"""

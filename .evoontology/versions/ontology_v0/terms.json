@@ -3,40 +3,88 @@
     "id": "term_pinnacle_anchor",
     "name": "Pinnacle_Anchor",
     "type": "metric",
-    "definition": "平博作为全球唯一大资金真金白银做市标杆。其赔率反映庄家真实风控底线与客观物理期望，而非散户情绪引流工具。",
+    "definition": "[Graphify 溯源: graphify://paper/Constantinou_2022_Sharp_Benchmark] 平博作为全球唯一大资金真金白银做市标杆。其赔率反映庄家真实风控底线与客观物理期望，而非散户情绪引流工具。",
     "scope": "global",
     "aliases": ["平博", "平博标杆", "做市锚点", "测谎仪", "pinnacle"],
     "evidence_refs": ["evidence_match_3019156"],
-    "lifecycle_state": "active"
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Constantinou_2022_Sharp_Benchmark"
   },
   {
     "id": "term_headfake_surge",
     "name": "HeadFake_Surge",
     "type": "dimension",
-    "definition": "亚盘中盘脉冲冲高挂超满水（≥1.04）诱多震仓，并在临盘2小时内仓皇退盘的虚假做阻形态。本质是做市商心虚放弃设防的假摔动作。",
+    "definition": "[Graphify 溯源: graphify://paper/Winkelmann_2026_Transient_Pulse] 亚盘中盘脉冲冲高挂超满水（≥1.04）诱多震仓，并在临盘2小时内仓皇退盘的虚假做阻形态。本质是做市商心虚放弃设防的假摔动作。",
     "scope": "global",
     "aliases": ["假摔", "假摔震仓", "冲高退盘", "假突破", "headfake"],
-    "evidence_refs": ["evidence_match_3019156"],
-    "lifecycle_state": "active"
+    "evidence_refs": ["evidence_match_3019156", "evidence_case_santos_flamengo"],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Winkelmann_2026_Transient_Pulse"
   },
   {
     "id": "term_draw_vacuum",
     "name": "Draw_Vacuum",
     "type": "dimension",
-    "definition": "平局赔率被全网机构极端顶高至 4.00+，大众因恐高心理彻底放弃平局投注，导致平局筹码陷入极端真空状态。做市商通杀净赔付最小的伏击区。",
+    "definition": "[Graphify 溯源: graphify://paper/Levitt_2004_Minimax_Loss] 平局赔率被全网机构极端顶高至 4.00+，大众因恐高心理彻底放弃平局投注，导致平局筹码陷入极端真空状态。做市商通杀净赔付最小的伏击区。",
     "scope": "global",
     "aliases": ["高平", "高平真空", "筹码真空", "大热通杀", "draw_vacuum"],
     "evidence_refs": ["evidence_match_3019156"],
-    "lifecycle_state": "active"
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Levitt_2004_Minimax_Loss"
   },
   {
     "id": "term_poisson_floor",
     "name": "Poisson_Floor",
     "type": "metric",
-    "definition": "基于历史攻防进失球泊松分布计算得出的纯物理数学概率底牌，用于检验赔率定价是否存在极端扭曲，防止大模型主观剔除高概率平局比分。",
+    "definition": "[Graphify 溯源: graphify://paper/Dixon_Coles_1997_Poisson_Correlation] 基于历史攻防进失球泊松分布计算得出的纯物理数学概率底牌，用于检验赔率定价是否存在极端扭曲，防止大模型主观剔除高概率平局比分。",
     "scope": "global",
     "aliases": ["泊松", "泊松底牌", "物理期望", "独立比分基准", "poisson"],
     "evidence_refs": ["evidence_match_3019156"],
-    "lifecycle_state": "active"
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Dixon_Coles_1997_Poisson_Correlation"
+  },
+  {
+    "id": "term_constantinou_crossmarket",
+    "name": "Constantinou_CrossMarket",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://paper/Constantinou_2022_CrossMarket_Efficiency] 欧指胜平负折合盘口与亚洲让球盘实际盘口出现门槛严重脱节（例如欧指折合让半球低水，亚盘实际却平半高水或半一超高水）。做市商利用跨市场认知差进行非对称诱买出货。",
+    "scope": "global",
+    "aliases": ["欧亚背离", "跨市场脱节", "折合盘差异", "constantinou", "crossmarket"],
+    "evidence_refs": ["evidence_case_santos_flamengo"],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Constantinou_2022_CrossMarket_Efficiency"
+  },
+  {
+    "id": "term_levitt_favorite_melt",
+    "name": "Levitt_Favorite_Melt",
+    "type": "metric",
+    "definition": "[Graphify 溯源: graphify://paper/Levitt_2004_Favorite_Longshot_Bias] 表面 1.20~1.35 豪门低赔在散户盲目信仰下扎堆超过 85%~90% 筹码，做市商净赔付被单边严重击穿。做市商面临穿仓风险，往往通过深盘高水或拒阻手法诱多通杀（大热必死）。",
+    "scope": "global",
+    "aliases": ["豪门", "豪门穿仓", "大热必死", "极低赔诱多", "净赔付击穿", "favorite_melt"],
+    "evidence_refs": ["evidence_case_dortmund_bologna"],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Levitt_2004_Favorite_Longshot_Bias"
+  },
+  {
+    "id": "term_egidi_score_snapping",
+    "name": "Egidi_Score_Snapping",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://paper/Egidi_2022_Bivariate_Poisson_Scores] 皇冠波胆矩阵中特定低比分（如 1:0、1:1、0:1）赔率异常压低设防，而胜平负或让球盘却给出虚高赔率造势。波胆矩阵真实反映做市商净胜球与比分结算底牌。",
+    "scope": "global",
+    "aliases": ["波胆", "波胆卡口", "皇冠波胆偏态", "比分压低设防", "波胆与欧赔背离", "score_snapping"],
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Egidi_2022_Bivariate_Poisson_Scores"
+  },
+  {
+    "id": "term_sporttery_had_squeeze",
+    "name": "Sporttery_HAD_Squeeze",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://case/Sporttery_HAD_Disabled_Squeeze] 中国体彩官方针对悬殊比赛关闭基础胜平负玩法（had=None），仅开放让球胜平负（HHAD）。这是顶级内幕风控信号，做市商往往通过深盘逼平让球方，实现让平/让负双通杀。",
+    "scope": "global",
+    "aliases": ["单固", "单固逼平", "体彩关HAD", "仅开让球", "单固风控", "had_squeeze"],
+    "evidence_refs": ["evidence_case_dortmund_bologna"],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://case/Sporttery_HAD_Disabled_Squeeze"
   }
 ]

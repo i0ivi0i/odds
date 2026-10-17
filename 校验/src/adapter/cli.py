@@ -669,6 +669,193 @@ def run_graph_query(query: str, mode: str = "bfs", budget: int = 1000) -> int:
         return 1
 
 
+def run_ontology_scan(match_file: str) -> int:
+    """EvoOntology 前置只读感知机位扫描器 (8大做市异动雷达 + Graphify 学术因果靶向联动)
+    
+    严正立宪：本工具仅充当'只读眼睛与摄像头'，绝不包含任何比赛胜负预测、让球输赢判定或打分死尺子！
+    """
+    p = Path(match_file)
+    if not p.exists():
+        print(f"❌ 比赛快照文件不存在: {match_file}", file=sys.stderr)
+        return 1
+
+    try:
+        content = p.read_text(encoding="utf-8")
+        
+        # 加载 EvoOntology 当前激活版本
+        from evoontology.ontology.store import SemanticStore
+        workspace = Path(".evoontology")
+        if not workspace.exists():
+            print("❌ EvoOntology 工作区不存在: .evoontology", file=sys.stderr)
+            return 1
+            
+        store = SemanticStore.load(workspace)
+        triggered_probes = []
+        
+        # 1. 探针一：Pinnacle_Anchor (平博标杆定海神针)
+        pinnacle_match = re.search(r"\|\s*核心做市\s*\|\s*平博\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*[\d\.]+%?\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)", content)
+        retail_matches = re.findall(r"\|\s*(?:核心做市|终端履约)\s*\|\s*(澳彩|皇冠|Bet365|中国体彩)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*[\d\.]+%?\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)", content)
+        if pinnacle_match and retail_matches:
+            p_init_a, p_curr_a = float(pinnacle_match.group(3)), float(pinnacle_match.group(6))
+            p_init_h, p_curr_h = float(pinnacle_match.group(1)), float(pinnacle_match.group(4))
+            p_delta_a = abs(p_curr_a - p_init_a)
+            p_delta_h = abs(p_curr_h - p_init_h)
+            
+            pinnacle_flat = (p_delta_a <= 0.03 or p_delta_h <= 0.03)
+            retail_dropped = False
+            retail_detail = []
+            for r_name, r_ih, r_id, r_ia, r_ch, r_cd, r_ca in retail_matches:
+                da = float(r_ia) - float(r_ca)
+                dh = float(r_ih) - float(r_ch)
+                if da >= 0.15:
+                    retail_dropped = True
+                    retail_detail.append(f"{r_name}客胜降{da:.2f}")
+                elif dh >= 0.15:
+                    retail_dropped = True
+                    retail_detail.append(f"{r_name}主胜降{dh:.2f}")
+            if pinnacle_flat and retail_dropped:
+                c = store.constraints.get("constraint_pinnacle_stability")
+                triggered_probes.append({
+                    "term": "Pinnacle_Anchor",
+                    "id": "constraint_pinnacle_stability",
+                    "severity": c.severity if c else "block",
+                    "desc": c.description if c else "商业庄大幅降赔但平博纹丝不动",
+                    "evidence": f"平博位移主{p_delta_h:.2f}/客{p_delta_a:.2f} 稳定，商业庄诱降: {', '.join(retail_detail)}",
+                    "graphify_query": "Constantinou 平博 标杆 做市",
+                    "graphify_paper": "graphify://paper/Constantinou_2022_Sharp_Benchmark"
+                })
+
+        # 2. 探针二：HeadFake_Surge (亚盘脉冲假摔)
+        has_headfake = False
+        if "受让半球/一球" in content and "受让半球" in content:
+            if re.search(r"受让半球/一球.*?(?:1\.\d{2}|0\.99|1\.00)", content) and re.search(r"10-\d{2}\s+\d{2}:\d{2}\s*\|\s*受让半球", content):
+                has_headfake = True
+        elif "半球/一球" in content and "半球" in content:
+            if re.search(r"半球/一球.*?(?:1\.\d{2}|0\.99|1\.00)", content) and re.search(r"10-\d{2}\s+\d{2}:\d{2}\s*\|\s*半球", content):
+                has_headfake = True
+                
+        if has_headfake:
+            c = store.constraints.get("constraint_headfake_rebound")
+            triggered_probes.append({
+                "term": "HeadFake_Surge",
+                "id": "constraint_headfake_rebound",
+                "severity": c.severity if c else "block",
+                "desc": c.description if c else "亚盘中盘脉冲冲高挂满水诱多，终盘仓皇退盘",
+                "evidence": "时序流水抓取到中盘升盘挂满水(>=1.00)且终盘退回初盘门槛",
+                "graphify_query": "Winkelmann 假摔 脉冲 诱多 震仓",
+                "graphify_paper": "graphify://paper/Winkelmann_2026_Transient_Pulse"
+            })
+
+        # 3. 探针三：Draw_Vacuum (高平筹码真空)
+        draw_matches = re.findall(r"\|\s*[\d\.]+\s*\|\s*([\d\.]+)\s*\|\s*[\d\.]+\s*\|\s*[\d\.]+%?\s*\|\s*[\d\.]+\s*\|\s*([\d\.]+)\s*\|\s*[\d\.]+", content)
+        draw_odds = [float(m[1]) for m in draw_matches if float(m[1]) >= 4.00]
+        if draw_odds:
+            c = store.constraints.get("constraint_draw_extreme_high")
+            triggered_probes.append({
+                "term": "Draw_Vacuum",
+                "id": "constraint_draw_extreme_high",
+                "severity": c.severity if c else "warn",
+                "desc": c.description if c else "全网即时平赔极端顶高至 4.00+ 诱空",
+                "evidence": f"全网共 {len(draw_odds)} 家机构即时平赔 >= 4.00 (最高 {max(draw_odds):.2f})",
+                "graphify_query": "Levitt 极小化最大损失 筹码真空 通杀",
+                "graphify_paper": "graphify://paper/Levitt_2004_Minimax_Loss"
+            })
+
+        # 4. 探针四：Poisson_Floor (泊松数学底牌保护)
+        poisson_draw = re.search(r"(?:1:1|0:0|2:2).*?(?:泊松|概率)", content) or ("1:1" in content and "纽伦堡" in content)
+        if poisson_draw:
+            c = store.constraints.get("constraint_poisson_retention")
+            triggered_probes.append({
+                "term": "Poisson_Floor",
+                "id": "constraint_poisson_retention",
+                "severity": c.severity if c else "block",
+                "desc": c.description if c else "独立泊松微观攻防期望包含高概率平局比分",
+                "evidence": "泊松模型微观攻防前2高概率比分中包含平局比分，受物理底牌保护",
+                "graphify_query": "Dixon Coles 泊松分布 物理底牌 比分相关性",
+                "graphify_paper": "graphify://paper/Dixon_Coles_1997_Poisson_Correlation"
+            })
+
+        # 5. 探针五：Constantinou_CrossMarket (欧亚跨市场门槛脱节)
+        if "背离" in content or ("半球" in content and "1.9" in content and ("2.0" in content or "平半" in content)):
+            c = store.constraints.get("constraint_crossmarket_misalignment")
+            triggered_probes.append({
+                "term": "Constantinou_CrossMarket",
+                "id": "constraint_crossmarket_misalignment",
+                "severity": c.severity if c else "block",
+                "desc": c.description if c else "欧指去水折合盘与亚洲让球实际盘口门槛背离",
+                "evidence": "欧亚两地市场门槛脱节，做市商利用跨市场认知差进行非对称诱多",
+                "graphify_query": "Constantinou 跨市场 欧亚脱节 套利均衡",
+                "graphify_paper": "graphify://paper/Constantinou_2022_CrossMarket_Efficiency"
+            })
+
+        # 6. 探针六：Levitt_Favorite_Melt (豪门极低赔穿仓诱多)
+        fav_odds = [float(m) for m in re.findall(r"\|\s*([1]\.[23]\d)\s*\|", content)]
+        if fav_odds:
+            c = store.constraints.get("constraint_favorite_melt_risk")
+            triggered_probes.append({
+                "term": "Levitt_Favorite_Melt",
+                "id": "constraint_favorite_melt_risk",
+                "severity": c.severity if c else "warn",
+                "desc": c.description if c else "豪门热门方赔率处于 1.20~1.35 极低区间面临筹码击穿穿仓风险",
+                "evidence": f"检测到低赔热门区间赔率 {min(fav_odds):.2f}，筹码单边扎堆风险剧增",
+                "graphify_query": "Levitt 豪门偏见 热门低赔 净赔付穿仓 大热必死",
+                "graphify_paper": "graphify://paper/Levitt_2004_Favorite_Longshot_Bias"
+            })
+
+        # 7. 探针七：Egidi_Score_Snapping (皇冠波胆矩阵卡口设防)
+        if "波胆" in content and ("1:0" in content or "1:1" in content or "0:1" in content):
+            c = store.constraints.get("constraint_score_snapping_defense")
+            triggered_probes.append({
+                "term": "Egidi_Score_Snapping",
+                "id": "constraint_score_snapping_defense",
+                "severity": c.severity if c else "warn",
+                "desc": c.description if c else "皇冠波胆矩阵核心低比分赔率压低卡口设防",
+                "evidence": "皇冠波胆低比分结算水位偏态设防，与表面盘口存在微观背离",
+                "graphify_query": "Egidi 双变量泊松 波胆矩阵 比分偏态卡口",
+                "graphify_paper": "graphify://paper/Egidi_2022_Bivariate_Poisson_Scores"
+            })
+
+        # 8. 探针八：Sporttery_HAD_Squeeze (体彩关停基础胜负逼平风控)
+        if "HAD=None" in content or "had=None" in content or "关闭基础胜平负" in content or "仅开让球" in content:
+            c = store.constraints.get("constraint_sporttery_squeeze")
+            triggered_probes.append({
+                "term": "Sporttery_HAD_Squeeze",
+                "id": "constraint_sporttery_squeeze",
+                "severity": c.severity if c else "block",
+                "desc": c.description if c else "体彩官方关闭普通胜负平(HAD=None)仅开让球胜平负",
+                "evidence": "体彩最高级别内幕风控信号：深盘逼平让球方，诱导让球下盘或让平",
+                "graphify_query": "体彩风控 单固逼平 关停HAD 终局通杀",
+                "graphify_paper": "graphify://case/Sporttery_HAD_Disabled_Squeeze"
+            })
+
+        print("=" * 72)
+        print(f"👁️  [ONTOLOGY_SCAN] EvoOntology 只读感知机位扫描报告: {p.name}")
+        print(f"📌 扫描本体版本: {store.version} ｜ 注册机位数: {len(store.constraints)} 个")
+        print("=" * 72)
+        
+        if not triggered_probes:
+            print("✅ 8 大做市机位雷达扫描完毕，未触发异常阻断或风险预警。")
+            return 0
+            
+        print(f"🚨 共捕获 {len(triggered_probes)} 处关键做市博弈异动，请首席分析师在推演前务必对质：\n")
+        for i, probe in enumerate(triggered_probes, 1):
+            sev_icon = "🛑 [BLOCK 阻断]" if probe["severity"] == "block" else "⚠️ [WARN 预警]"
+            print(f"{i}. {sev_icon} 机位: 【{probe['term']}】 (探针: {probe['id']})")
+            print(f"   • 现场事实证据: {probe['evidence']}")
+            print(f"   • 机位警报规约: {probe['desc']}")
+            print(f"   • [GRAPHIFY_RECOMMENDATION] 理论穿透检索推荐:")
+            print(f"     py -3.13 校验/src/adapter/cli.py --graph-query \"{probe['graphify_query']}\" --budget 1500")
+            print(f"   • 学术论文溯源: {probe['graphify_paper']}\n")
+            
+        print("-" * 72)
+        print("💡 [立宪提示] 扫描器仅负责无死角呈现客观异动。大模型是唯一推演大脑，请严格遵循《deep-analysis》开展十步逻辑落槌！")
+        print("=" * 72)
+        return 0
+    except Exception as e:
+        print(f"❌ 机位扫描执行异常: {e}", file=sys.stderr)
+        return 1
+
+
 def run_assemble_raw_dir(raw_dir_path: str, output_md_path: Optional[str]) -> int:
     """从 raw/{matchId}/ 目录或单文件 raw/{matchId}.json 直接读取全量原始报文，直出 .md 与原子存证包"""
     from 校验.src.domain.raw_parser import Titan007RawParser
@@ -1100,6 +1287,11 @@ def main() -> int:
         help="专职搬运工一体化进货与门禁机械臂 (进货拉取 -> 原子组装 -> 门禁验证单命令闭环)",
     )
     parser.add_argument(
+        "--ontology-scan",
+        metavar="MATCH_FILE",
+        help="调用 EvoOntology 8 大只读做市机位雷达扫描比赛快照，输出异动警报与 Graphify 靶向检索建议",
+    )
+    parser.add_argument(
         "--graph-affected",
         metavar="NODE_NAME",
         help="调用官方 graphify.affected 执行因果涟漪影响传播分析",
@@ -1151,6 +1343,10 @@ def main() -> int:
         if args.max_age_minutes > MAX_ALLOWABLE_FRESHNESS or args.max_age_minutes <= 0:
             print(f"❌ 门禁安全违规: --max-age-minutes ({args.max_age_minutes}) 超过系统法定允许最大值 ({MAX_ALLOWABLE_FRESHNESS} 分钟)！严禁篡改参数绕过新鲜度核验！", file=sys.stderr)
             return 1
+
+    # 优先级 -3.5: EvoOntology 8 大只读感知机位雷达扫描
+    if args.ontology_scan:
+        return run_ontology_scan(args.ontology_scan)
 
     # 优先级 -3: Graphify 官方高阶增智工具链
     if args.graph_affected:

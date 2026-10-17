@@ -18,5 +18,35 @@
     "description": "高平真空诱空表象受泊松物理进球底牌约束，防止过度恐高杀平",
     "evidence_refs": ["evidence_match_3019156"],
     "lifecycle_state": "active"
+  },
+  {
+    "id": "rel_crossmarket_vs_pinnacle",
+    "source": "term_constantinou_crossmarket",
+    "relation_type": "arbitraged_by",
+    "target": "term_pinnacle_anchor",
+    "connection_condition": "crossmarket_gap_exceeds_threshold",
+    "description": "欧亚跨市场门槛脱节时以平博真实去水欧亚折合为基准识别虚开出货",
+    "evidence_refs": ["evidence_case_santos_flamengo"],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "rel_favorite_vs_squeeze",
+    "source": "term_levitt_favorite_melt",
+    "relation_type": "triggers_risk_hedging",
+    "target": "term_sporttery_had_squeeze",
+    "connection_condition": "favorite_melt_with_had_disabled",
+    "description": "豪门低赔极度扎堆时体彩常关闭基础HAD转为逼平风控，实现筹码穿仓风险对冲",
+    "evidence_refs": ["evidence_case_dortmund_bologna"],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "rel_score_vs_poisson",
+    "source": "term_egidi_score_snapping",
+    "relation_type": "cross_verifies",
+    "target": "term_poisson_floor",
+    "connection_condition": "crown_score_odds_match_poisson_top2",
+    "description": "皇冠波胆卡口设防低比分与独立泊松Top2高概率比分互相印证做市底牌",
+    "evidence_refs": ["evidence_match_3019156"],
+    "lifecycle_state": "active"
   }
 ]
