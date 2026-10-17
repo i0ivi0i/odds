@@ -703,9 +703,21 @@ class Titan007RawParser:
 
             def _extract_team_injuries(sub_txt: str) -> List[str]:
                 items_found: List[str] = []
+                clean_sub = re.sub(r"<!--[\s\S]*?-->", "", sub_txt)
+                # 1. 尝试提取 HTML 表格行
+                for m_tr in re.finditer(r"<tr[^>]*>\s*<td[^>]*>(.*?)</td>\s*<td[^>]*>(.*?)</td>\s*</tr>", clean_sub, re.DOTALL | re.I):
+                    c1 = re.sub(r"<[^>]+>", "", m_tr.group(1)).replace("&nbsp;", " ").strip()
+                    c2 = re.sub(r"<[^>]+>", "", m_tr.group(2)).replace("&nbsp;", " ").strip()
+                    if any(w in c1 or w in c2 for w in ["球员", "缺阵原因", "暂无数据", "首发", "后备", "上一场"]):
+                        continue
+                    if c1 and c2:
+                        items_found.append(f"{c1} [{c2}]")
+                if items_found:
+                    return items_found
+                # 2. 尝试提取 Markdown 格式
                 for m_inj in re.finditer(r"\|\s*(\d+\s*\([^\)]+\)\s*[^\|\n]+?)\s*\|\s*([^\|\n]+?)\s*\|", sub_txt):
                     p_str, r_str = m_inj.group(1).strip(), m_inj.group(2).strip()
-                    if "球员" in p_str or "缺阵原因" in r_str or "---" in p_str:
+                    if "球员" in p_str or "缺阵原因" in r_str or "---" in p_str or "暂无数据" in p_str:
                         continue
                     items_found.append(f"{p_str} [{r_str}]")
                 return items_found
@@ -722,7 +734,7 @@ class Titan007RawParser:
             h_rating_note, a_rating_note = "", ""
             if rating_body:
                 m_r10 = re.search(
-                    r"主队近10场平均评分[：:]\s*([^\n\|]+?)\s*客队近10场平均评分[：:]\s*([^\n\|]+)",
+                    r"主队近10场平均评分[：:]\s*([^\\n\|]+?)\s*客队近10场平均评分[：:]\s*([^\\n\|]+)",
                     rating_body,
                 )
                 if m_r10:
@@ -733,8 +745,8 @@ class Titan007RawParser:
                     if a_r_vals:
                         a_rating_note = f"（上场首发均分 {a_r_vals[0]}，近{len(a_r_vals)}场均分序列: {'/'.join(a_r_vals[:5])}）"
 
-            h_inj_txt = ("缺阵：" + "、".join(h_list) if h_list else "伤停名单暂无记录") + h_rating_note
-            a_inj_txt = ("缺阵：" + "、".join(a_list) if a_list else "伤停名单暂无记录") + a_rating_note
+            h_inj_txt = ("缺阵：" + "、".join(h_list) if h_list else "暂无数据（源页面未披露缺阵名单）") + h_rating_note
+            a_inj_txt = ("缺阵：" + "、".join(a_list) if a_list else "暂无数据（源页面未披露缺阵名单）") + a_rating_note
             result["injuries"] = {"home": h_inj_txt, "away": a_inj_txt}
 
         # 7. 本赛季数据统计比较 + Crown角球指数 (technicalStats)
