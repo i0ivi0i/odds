@@ -1,0 +1,34 @@
+[
+  {
+    "id": "evidence_match_3019156",
+    "source": "data/2026-10-16/3019156.md",
+    "query": "match_3019156_nuremberg",
+    "result": "科特布斯1:1纽伦堡：体彩降至1.57平博1.93不动，亚盘升半一挂满水临场退半球，平赔4.10+，泊松1:1第二位",
+    "validation_method": "historical_match_audit",
+    "timestamp": "2026-10-17T13:40:00Z"
+  },
+  {
+    "id": "evidence_case_santos_flamengo",
+    "source": "MEMORY.md",
+    "query": "crossmarket_santos_flamengo",
+    "result": "桑托斯vs弗拉门戈：欧指折合半球低水，亚盘实际平半高水，跨市场脱节出货，最终下盘打出",
+    "validation_method": "literature_and_case_audit",
+    "timestamp": "2026-10-17T16:00:00Z"
+  },
+  {
+    "id": "evidence_case_dortmund_bologna",
+    "source": "MEMORY.md",
+    "query": "favorite_melt_dortmund_bologna",
+    "result": "多特蒙德vs博洛尼亚：多特主胜1.28大热穿仓，体彩关停HAD仅开让球，做市商逼平让平/让负双通杀",
+    "validation_method": "literature_and_case_audit",
+    "timestamp": "2026-10-17T16:00:00Z"
+  },
+  {
+    "id": "evidence_match_3013728_osasuna",
+    "source": "data/2026-10-18/.quarantine/3013728.md",
+    "query": "match_3013728_osasuna",
+    "result": "奥萨苏纳2:0桑坦德竞技：体彩初1.92降至1.79，马会1.82低水，平半0.70水拒赔，皇冠半一退半球诱平，最终主队2-0正路完胜",
+    "validation_method": "post_review_audit",
+    "timestamp": "2026-10-18T22:00:00Z"
+  }
+]

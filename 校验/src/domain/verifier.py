@@ -1633,6 +1633,10 @@ def verify_memory_cognitive_cards(
         if data_dir and id_match:
             src_md_path = Path(data_dir) / f"{match_id_str}.md"
             if not src_md_path.exists():
+                quarantine_path = Path(data_dir) / ".quarantine" / f"{match_id_str}.md"
+                if quarantine_path.exists():
+                    src_md_path = quarantine_path
+            if not src_md_path.exists():
                 block_errors.append(
                     f"MEMORY_SOURCE_DRIFT: 【{match_id_str}】在源数据目录 {data_dir} 中不存在对应的 {match_id_str}.md 物理文件！"
                 )
@@ -1700,6 +1704,19 @@ def verify_memory_cognitive_cards(
                     probes = detect_ontology_probes(src_text)
                     block_probes = [p for p in probes if p.get("severity") == "block"]
 
+                    # 双向机位冲抵检测 (Cross-Probe Arbitration: Constantinou 2022 / Levitt 2004)
+                    has_sentinel = any(bp.get("term") == "Sentinel_Defense" for bp in block_probes)
+                    has_distortion = any(
+                        bp.get("term") in ("HeadFake_Surge", "Constantinou_CrossMarket", "Pinnacle_Anchor")
+                        for bp in block_probes
+                    )
+                    sentinel_defense_adopted = False
+                    if has_sentinel and has_distortion:
+                        mentions_sentinel = any(w in block for w in ["哨兵", "体彩", "马会"])
+                        mentions_defense = any(w in block for w in ["防守", "设防", "底线", "底牌"])
+                        if mentions_sentinel and mentions_defense:
+                            sentinel_defense_adopted = True
+
                     for bp in block_probes:
                         pid = bp.get("id", "")
                         pterm = bp.get("term", "")
@@ -1713,6 +1730,10 @@ def verify_memory_cognitive_cards(
                             )
 
                         # 2. 语义互斥防篡改审计 (违禁词检测)
+                        # 当发生双向机位冲抵且契约卡采纳哨兵真防守时，外盘异动探针的设防类违禁词被合法冲抵豁免
+                        if sentinel_defense_adopted and pterm in ("HeadFake_Surge", "Constantinou_CrossMarket", "Pinnacle_Anchor"):
+                            continue
+
                         conflicts = bp.get("forbidden_conflicts", [])
                         for kw in conflicts:
                             if kw in block:

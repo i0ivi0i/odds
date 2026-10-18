@@ -55,8 +55,8 @@ OFFICIAL_SOCCER_LEAGUES: Dict[str, Tuple[str, int]] = {
     "la liga": ("lal", 780),
     "英超": ("epl", 306),
     "premier league": ("epl", 306),
-    "意甲": ("sea", 100618),
-    "serie a": ("sea", 100618),
+    "意甲": ("sea", 101962),
+    "serie a": ("sea", 101962),
     "德甲": ("bun", 1494),
     "bundesliga": ("bun", 1494),
     "法甲": ("fl1", 102070),
@@ -372,21 +372,31 @@ class PolymarketOfficialResolver:
                 sport_code, tag_id = tag_info
                 # 1a. 从 GET /teams?league={sport} 提取官方主客缩写直拼标准 Slug
                 league_teams = self.fetch_league_teams(sport_code)
-                h_abbr, a_abbr = None, None
+                h_abbrs: List[str] = []
+                a_abbrs: List[str] = []
                 for t in league_teams:
                     t_name = _clean_str(t.get("name") or "")
                     t_alias = _clean_str(t.get("alias") or "")
                     t_abbr = _clean_str(t.get("abbreviation") or "")
                     if any(w.lower() in t_name or w.lower() in t_alias or w.lower() == t_abbr for w in h_words):
-                        h_abbr = t_abbr
+                        # 精确匹配排前
+                        if _clean_str(home_en) == t_name or _clean_str(home_en) == t_alias:
+                            h_abbrs.insert(0, t_abbr)
+                        elif t_abbr not in h_abbrs:
+                            h_abbrs.append(t_abbr)
                     if any(w.lower() in t_name or w.lower() in t_alias or w.lower() == t_abbr for w in a_words):
-                        a_abbr = t_abbr
+                        if _clean_str(away_en) == t_name or _clean_str(away_en) == t_alias:
+                            a_abbrs.insert(0, t_abbr)
+                        elif t_abbr not in a_abbrs:
+                            a_abbrs.append(t_abbr)
                 
-                if h_abbr and a_abbr and match_date:
-                    official_slug = f"{sport_code}-{h_abbr}-{a_abbr}-{match_date}"
-                    ev = self.fetch_event_by_slug(official_slug)
-                    if ev and match_event_for_teams(ev, h_words, a_words, match_date):
-                        return ev
+                if h_abbrs and a_abbrs and match_date:
+                    for h_cur in h_abbrs:
+                        for a_cur in a_abbrs:
+                            official_slug = f"{sport_code}-{h_cur}-{a_cur}-{match_date}"
+                            ev = self.fetch_event_by_slug(official_slug)
+                            if ev and match_event_for_teams(ev, h_words, a_words, match_date):
+                                return ev
 
                 # 1b. 若官方缩写未命中，通过 tag_id 获取该联赛全部活跃事件
                 tag_events = self.fetch_events_by_tag_id(tag_id)

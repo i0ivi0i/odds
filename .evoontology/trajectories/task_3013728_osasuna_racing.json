@@ -1,0 +1,50 @@
+{
+  "task_id": "task_20261018_3013728",
+  "match_id": "3013728",
+  "fixture": "奥萨苏纳 vs 桑坦德竞技",
+  "league": "西乙",
+  "kickoff_time": "2026-10-18 20:00",
+  "input_snapshot": "data/2026-10-18/.quarantine/3013728.md",
+  "triggered_constraints": [
+    {
+      "id": "constraint_sentinel_defense",
+      "term": "Sentinel_Defense",
+      "severity": "block",
+      "evidence": "检测到本土哨兵机构单边强力设防: 中国体彩主胜单边大幅降水设防 (降0.13：1.92 -> 1.79)"
+    },
+    {
+      "id": "constraint_crossmarket_misalignment",
+      "term": "Constantinou_CrossMarket",
+      "severity": "block",
+      "evidence": "欧亚两地市场门槛脱节，做市商利用跨市场认知差进行非对称诱多"
+    },
+    {
+      "id": "constraint_score_snapping_defense",
+      "term": "Egidi_Score_Snapping",
+      "severity": "warn",
+      "evidence": "皇冠波胆低比分结算水位偏态设防（2:0 12.00 设防）"
+    }
+  ],
+  "agent_prediction": {
+    "had": "平局 (次选客胜)",
+    "hhad": "[-1] 让负",
+    "hypothesis": "将皇冠微调升赔误判为弃守，因缺少本土哨兵真防守机位导致无视体彩1.79与马会1.82低水拒赔，强博平局"
+  },
+  "actual_outcome": {
+    "score": "2-0",
+    "had": "主胜",
+    "hhad": "让胜"
+  },
+  "failure_diagnosis": {
+    "causal_chain": "体彩主胜1.92断崖降至1.79，马会1.82低水拒赔，本土哨兵真实真金白银防守主胜；大模型因EvoOntology探针盲区缺少本土哨兵真防守探针，且受旧假摔正则误报与单向互斥门禁限制，误将外盘正常微调定性为主队不胜，强行博平被主队2-0正路击穿",
+    "attribution_dimension": "Ontology Blindspot & Rigid Gate Interlock",
+    "root_cause": "1. 探针库结构性盲区（全为外盘负向阻断，无本土哨兵真防守探针）；2. 假摔判定未基于单机构时序轨迹状态机；3. 门禁单向封锁反向设防词汇导致大模型无法进行双向冲抵立论"
+  },
+  "remedy": {
+    "added_sentinel_defense_probe": true,
+    "refactored_headfake_state_machine": true,
+    "cross_probe_arbitration_interlock": true,
+    "ontology_version": "ontology_v1",
+    "gate_status": "interlocked_with_arbitration"
+  }
+}

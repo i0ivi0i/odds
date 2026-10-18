@@ -7,6 +7,98 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 
+HANDICAP_RANKS = {
+    "受让三球": -12,
+    "受让两球半/三球": -11,
+    "受让两球半": -10,
+    "受让两球/两球半": -9,
+    "受让两球": -8,
+    "受让球半/两球": -7,
+    "受让球半": -6,
+    "受让一球/球半": -5,
+    "受让一球": -4,
+    "受让半球/一球": -3,
+    "受让半/一": -3,
+    "受让半球": -2,
+    "受让平手/半球": -1,
+    "受让平/半": -1,
+    "平手": 0,
+    "平手/半球": 1,
+    "平/半": 1,
+    "半球": 2,
+    "半球/一球": 3,
+    "半/一": 3,
+    "一球": 4,
+    "一球/球半": 5,
+    "球半": 6,
+    "球半/两球": 7,
+    "两球": 8,
+    "两球/两球半": 9,
+    "两球半": 10,
+    "两球半/三球": 11,
+    "三球": 12,
+}
+
+
+def _parse_ah_rows(text: str) -> List[Dict[str, Any]]:
+    rows = []
+    for line in text.split("\n"):
+        line = line.strip()
+        if not line.startswith("|") or "变盘时间" in line or "---" in line:
+            continue
+        parts = [p.strip() for p in line.split("|")[1:-1]]
+        if len(parts) >= 4:
+            time_str = parts[0]
+            handicap = parts[1]
+            if handicap not in HANDICAP_RANKS:
+                continue
+            try:
+                home_water = float(parts[2])
+                away_water = float(parts[3])
+            except ValueError:
+                continue
+            status = parts[4] if len(parts) >= 5 else ""
+            rows.append({
+                "time": time_str,
+                "handicap": handicap,
+                "home_water": home_water,
+                "away_water": away_water,
+                "status": status,
+            })
+    return rows
+
+
+def _parse_asian_handicap_tables(content: str) -> List[Dict[str, Any]]:
+    """解析各家机构亚盘时序流水表格"""
+    tables = []
+    bookmaker_blocks = re.split(r"(###\s*\d+\.\s*[^\n\r]+)", content)
+    if len(bookmaker_blocks) > 1:
+        for i in range(1, len(bookmaker_blocks), 2):
+            b_header = bookmaker_blocks[i]
+            b_body = bookmaker_blocks[i + 1] if i + 1 < len(bookmaker_blocks) else ""
+            b_name_match = re.search(r"###\s*\d+\.\s*([^\s(]+)", b_header)
+            b_name = b_name_match.group(1) if b_name_match else "未知"
+            ah_match = re.search(
+                r"####\s*亚盘真实变盘流水([\s\S]*?)(?:####|###|##|$)",
+                b_body,
+            )
+            if ah_match:
+                rows = _parse_ah_rows(ah_match.group(1))
+                if rows:
+                    tables.append({"name": b_name, "rows": rows})
+    else:
+        # 兼容精简单表 mock
+        ah_match = re.search(
+            r"(?:####\s*亚盘真实变盘流水|变盘时间\s*\|\s*盘口)([\s\S]*?)(?:####|###|##|$)",
+            content,
+        )
+        if ah_match:
+            rows = _parse_ah_rows(ah_match.group(0))
+            if rows:
+                tables.append({"name": "综合", "rows": rows})
+    return tables
+
+
 def detect_ontology_probes(content: str) -> List[Dict[str, Any]]:
     """检测源数据快照中的做市异动探针"""
     triggered_probes: List[Dict[str, Any]] = []
@@ -53,16 +145,63 @@ def detect_ontology_probes(content: str) -> List[Dict[str, Any]]:
 
     # 2. 探针二：HeadFake_Surge (亚盘脉冲假摔) - severity: block
     has_headfake = False
-    if "受让半球/一球" in content and "受让半球" in content:
-        if re.search(r"受让半球/一球.*?(?:1\.\d{2}|0\.99|1\.00)", content) and re.search(
-            r"10-\d{2}\s+\d{2}:\d{2}\s*\|\s*受让半球", content
-        ):
-            has_headfake = True
-    elif "半球/一球" in content and "半球" in content:
-        if re.search(r"半球/一球.*?(?:1\.\d{2}|0\.99|1\.00)", content) and re.search(
-            r"10-\d{2}\s+\d{2}:\d{2}\s*\|\s*半球", content
-        ):
-            has_headfake = True
+    headfake_evidence = ""
+    ah_tables = _parse_asian_handicap_tables(content)
+
+    # 检查主流做市商是否发生折返假摔
+    for table_info in ah_tables:
+        rows = table_info["rows"]
+        if len(rows) < 2:
+            continue
+        chrono_rows = list(reversed(rows))
+        ranks = [HANDICAP_RANKS.get(r["handicap"]) for r in chrono_rows]
+        valid_ranks: List[int] = [r for r in ranks if r is not None]
+        if len(valid_ranks) != len(ranks) or len(valid_ranks) < 2:
+            continue
+
+        p_init: int = valid_ranks[0]
+        p_term: int = valid_ranks[-1]
+
+        # Case 1: 标准 3 行及以上折返轨迹 (P0 -> P_surge [water >= 1.00] -> P_term <= P0)
+        if len(chrono_rows) >= 3:
+            for k in range(1, len(chrono_rows) - 1):
+                p_k: int = valid_ranks[k]
+                row_k = chrono_rows[k]
+                if p_init > 0 and p_k > p_init and row_k["home_water"] >= 1.00 and p_term <= p_init:
+                    has_headfake = True
+                    headfake_evidence = (
+                        f"{table_info['name']}时序流水抓取到升盘挂满水"
+                        f"({row_k['handicap']} 主水{row_k['home_water']:.2f})且终盘退回初盘门槛({chrono_rows[-1]['handicap']})"
+                    )
+                    break
+                elif p_init < 0 and p_k < p_init and row_k["away_water"] >= 1.00 and p_term >= p_init:
+                    has_headfake = True
+                    headfake_evidence = (
+                        f"{table_info['name']}时序流水抓取到升深挂满水"
+                        f"({row_k['handicap']} 客水{row_k['away_water']:.2f})且终盘退回初盘门槛({chrono_rows[-1]['handicap']})"
+                    )
+                    break
+                elif p_init == 0 and abs(p_k) > 0 and (row_k["home_water"] >= 1.00 or row_k["away_water"] >= 1.00) and p_term == 0:
+                    has_headfake = True
+                    headfake_evidence = (
+                        f"{table_info['name']}平手盘中盘冲高挂满水"
+                        f"({row_k['handicap']})且终盘退回平手门槛"
+                    )
+                    break
+        elif len(chrono_rows) == 2:
+            # Case 2: 兼容 2 行精简测试 mock (如早期开深盘挂超满水 >= 1.04 临盘退盘)
+            r_early, r_late = chrono_rows[0], chrono_rows[1]
+            p_early: int = valid_ranks[0]
+            p_late: int = valid_ranks[1]
+            if p_early < 0 and p_late > p_early and r_early["away_water"] >= 1.04:
+                has_headfake = True
+                headfake_evidence = f"受让盘口由深盘挂超满水({r_early['handicap']} {r_early['away_water']:.2f})退回浅盘({r_late['handicap']})"
+            elif p_early > 0 and p_late < p_early and r_early["home_water"] >= 1.04:
+                has_headfake = True
+                headfake_evidence = f"主让盘口由深盘挂超满水({r_early['handicap']} {r_early['home_water']:.2f})退回浅盘({r_late['handicap']})"
+
+        if has_headfake:
+            break
 
     if has_headfake:
         triggered_probes.append({
@@ -70,11 +209,76 @@ def detect_ontology_probes(content: str) -> List[Dict[str, Any]]:
             "id": "constraint_headfake_rebound",
             "severity": "block",
             "desc": "【亚盘脉冲假摔警报】中盘亚盘曾出现主动升盘并挂超满水（>=1.04）诱多，但在终盘2小时仓皇退回初盘门槛。此为机构心虚放弃设防的假摔现行，强制禁止将初即终盘同一浅盘误判为全程平稳设防！",
-            "evidence": "时序流水抓取到中盘升盘挂满水(>=1.00)且终盘退回初盘门槛",
+            "evidence": headfake_evidence or "时序流水抓取到中盘升盘挂满水(>=1.00)且终盘退回初盘门槛",
             "graphify_query": "Winkelmann 假摔 脉冲 诱多 震仓",
             "graphify_paper": "graphify://paper/Winkelmann_2026_Transient_Pulse",
             "forbidden_conflicts": ["深盘共振", "平稳设防", "全程设防", "稳定设防", "正路无忧"],
             "aliases": ["headfake_surge", "constraint_headfake_rebound", "假摔", "脉冲假摔", "退盘诱客", "退盘出货"],
+        })
+
+    # 3. 探针三：Sentinel_Defense (本土哨兵真防守机位：中国体彩与香港马会) - severity: block
+    sentinel_evidences = []
+    # 1) 中国体彩 (HAD)
+    sporttery_match = re.search(
+        r"\|\s*终端履约\s*\|\s*(?:中国体彩|竞彩官方)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*[\d\.]+%?\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)",
+        content,
+    )
+    if sporttery_match:
+        s_init_h, s_curr_h = float(sporttery_match.group(1)), float(sporttery_match.group(4))
+        s_init_a, s_curr_a = float(sporttery_match.group(3)), float(sporttery_match.group(6))
+        dh = round(s_init_h - s_curr_h, 4)
+        da = round(s_init_a - s_curr_a, 4)
+        if dh >= 0.10:
+            sentinel_evidences.append(f"中国体彩主胜单边大幅降水设防 (降{dh:.2f}：{s_init_h:.2f} -> {s_curr_h:.2f})")
+        elif da >= 0.10:
+            sentinel_evidences.append(f"中国体彩客胜单边大幅降水设防 (降{da:.2f}：{s_init_a:.2f} -> {s_curr_a:.2f})")
+
+    # 2) 香港马会 (HKJC)
+    hkjc_match = re.search(
+        r"\|\s*核心做市\s*\|\s*香港马会\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*[\d\.]+%?\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)\s*\|\s*([\d\.]+)",
+        content,
+    )
+    if hkjc_match:
+        h_init_h, h_curr_h = float(hkjc_match.group(1)), float(hkjc_match.group(4))
+        h_init_a, h_curr_a = float(hkjc_match.group(3)), float(hkjc_match.group(6))
+        dh_hk = round(h_init_h - h_curr_h, 4)
+        da_hk = round(h_init_a - h_curr_a, 4)
+
+        hk_low_water = False
+        hk_water_detail = ""
+        for table_info in ah_tables:
+            if "香港马会" in table_info["name"]:
+                hk_rows = table_info["rows"]
+                if hk_rows:
+                    latest_row = hk_rows[0]
+                    if latest_row["home_water"] <= 0.75:
+                        hk_low_water = True
+                        hk_water_detail = f"亚盘{latest_row['handicap']}主水{latest_row['home_water']:.2f}超低水拒赔"
+                    elif latest_row["away_water"] <= 0.75:
+                        hk_low_water = True
+                        hk_water_detail = f"亚盘{latest_row['handicap']}客水{latest_row['away_water']:.2f}超低水拒赔"
+                break
+
+        if dh_hk >= 0.08 and hk_low_water:
+            sentinel_evidences.append(f"香港马会主胜降{dh_hk:.2f} ({h_init_h:.2f} -> {h_curr_h:.2f}) 且{hk_water_detail}")
+        elif da_hk >= 0.08 and hk_low_water:
+            sentinel_evidences.append(f"香港马会客胜降{da_hk:.2f} ({h_init_a:.2f} -> {h_curr_a:.2f}) 且{hk_water_detail}")
+        elif dh_hk >= 0.10:
+            sentinel_evidences.append(f"香港马会主胜单边大幅降水设防 (降{dh_hk:.2f}：{h_init_h:.2f} -> {h_curr_h:.2f})")
+        elif da_hk >= 0.10:
+            sentinel_evidences.append(f"香港马会客胜单边大幅降水设防 (降{da_hk:.2f}：{h_init_a:.2f} -> {h_curr_a:.2f})")
+
+    if sentinel_evidences:
+        triggered_probes.append({
+            "term": "Sentinel_Defense",
+            "id": "constraint_sentinel_defense",
+            "severity": "block",
+            "desc": "【本土哨兵真防守警报 (Constantinou 2022 / Levitt 2004)】中国体彩或香港马会等本土特许机构出现单边大幅降赔（>=0.10）或超低水（<=0.75）拒收对向盘口。本土官方机构受高抽水与封闭客群约束，其单边大幅降水反映真金白银的真实风控防守底线，强制禁止无视本土哨兵设防而主观博冷！",
+            "evidence": f"检测到本土哨兵机构单边强力设防: {', '.join(sentinel_evidences)}",
+            "graphify_query": "Constantinou 哨兵 体彩 马会 本土风控 防守底牌",
+            "graphify_paper": "graphify://paper/Constantinou_2022_Sentinel_Defense",
+            "forbidden_conflicts": ["体彩虚假设防", "马会无视防守", "哨兵诱多", "无脑做冷"],
+            "aliases": ["sentinel_defense", "constraint_sentinel_defense", "本土哨兵", "体彩防守", "马会防守", "哨兵设防", "体彩设防", "哨兵防守"],
         })
 
     # 3. 探针三：Draw_Vacuum (高平筹码真空) - severity: warn

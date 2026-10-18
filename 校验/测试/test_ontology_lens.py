@@ -15,7 +15,7 @@ class TestOntologyLens(unittest.TestCase):
         with open(active_json_path, "r", encoding="utf-8") as f:
             active_data = json.load(f)
         self.assertIn("active_version", active_data)
-        self.assertEqual(active_data["active_version"], "ontology_v0")
+        self.assertIn(active_data["active_version"], ["ontology_v0", "ontology_v1"])
 
     def test_core_ontology_assets_exist(self):
         """测试 ontology_v0 5 大核心定义文件存在"""
@@ -86,7 +86,7 @@ class TestOntologyLens(unittest.TestCase):
             self.skipTest("未安装 evoontology 包，跳过原生 runtime 测试")
 
         layer = SemanticLayer.load(self.workspace_dir)
-        self.assertEqual(layer.version, "ontology_v0")
+        self.assertIn(layer.version, ["ontology_v0", "ontology_v1"])
         
         # 测试 browse_semantics 检索平博
         browse_res = layer.execute("browse_semantics", {"query": "平博"})

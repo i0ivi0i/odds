@@ -1,0 +1,146 @@
+[
+  {
+    "id": "mapping_pinnacle_odds",
+    "term_id": "term_pinnacle_anchor",
+    "database_source": "data_markdown",
+    "table": "第三区_法定23家百家欧指初即对比",
+    "column": "平博_即时客胜",
+    "semantic_filter": "",
+    "aggregation_semantics": "latest_value",
+    "grain": "match",
+    "validation": "delta_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_handicap_timeline",
+    "term_id": "term_headfake_surge",
+    "database_source": "data_markdown",
+    "table": "第四区_7家法定机构变盘时序流水",
+    "column": "盘口_水位_时序",
+    "semantic_filter": "",
+    "aggregation_semantics": "peak_and_latest",
+    "grain": "match",
+    "validation": "surge_and_retreat",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_draw_odds",
+    "term_id": "term_draw_vacuum",
+    "database_source": "data_markdown",
+    "table": "第三区_法定23家百家欧指初即对比",
+    "column": "即时平局",
+    "semantic_filter": "",
+    "aggregation_semantics": "average_and_max",
+    "grain": "match",
+    "validation": "range_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_poisson_scores",
+    "term_id": "term_poisson_floor",
+    "database_source": "data_markdown",
+    "table": "第二区_历史交锋与近期战绩",
+    "column": "独立泊松分布_Top6",
+    "semantic_filter": "",
+    "aggregation_semantics": "top_scores",
+    "grain": "match",
+    "validation": "draw_score_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_crossmarket_odds",
+    "term_id": "term_constantinou_crossmarket",
+    "database_source": "data_markdown",
+    "table": "第三区_法定23家百家欧指初即对比",
+    "column": "欧亚折合盘口背离",
+    "semantic_filter": "",
+    "aggregation_semantics": "crossmarket_delta",
+    "grain": "match",
+    "validation": "handicap_alignment_check",
+    "evidence_refs": [
+      "evidence_case_santos_flamengo"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_favorite_odds",
+    "term_id": "term_levitt_favorite_melt",
+    "database_source": "data_markdown",
+    "table": "第三区_法定23家百家欧指初即对比",
+    "column": "低赔热门赔率_1.20_1.35",
+    "semantic_filter": "",
+    "aggregation_semantics": "min_odds_and_volume",
+    "grain": "match",
+    "validation": "favorite_overheat_check",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_score_matrix",
+    "term_id": "term_egidi_score_snapping",
+    "database_source": "data_markdown",
+    "table": "第二区_皇冠全指数波胆矩阵",
+    "column": "低比分赔率_1:0_1:1_0:1",
+    "semantic_filter": "",
+    "aggregation_semantics": "min_score_odds",
+    "grain": "match",
+    "validation": "score_matrix_skew_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_had_status",
+    "term_id": "term_sporttery_had_squeeze",
+    "database_source": "data_markdown",
+    "table": "第一区_体彩网关开售状态",
+    "column": "HAD普通胜负平开售状态",
+    "semantic_filter": "",
+    "aggregation_semantics": "exact_status",
+    "grain": "match",
+    "validation": "null_check",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_sentinel_odds",
+    "term_id": "term_sentinel_defense",
+    "database_source": "data_markdown",
+    "table": "第三区_法定23家百家欧指初即对比",
+    "column": "体彩_马会_即时主客胜降幅与亚盘水位",
+    "semantic_filter": "",
+    "aggregation_semantics": "delta_and_low_water",
+    "grain": "match",
+    "validation": "sentinel_drop_check",
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  }
+]
