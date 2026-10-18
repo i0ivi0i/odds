@@ -1542,7 +1542,7 @@ def verify_memory_cognitive_cards(
         header_line = block.splitlines()[0] if block.splitlines() else f"第 {idx} 场"
 
         # 提取 matchId
-        id_match = re.search(r"(?:比赛ID|matchId)\s*[:：]\s*(\d+)", block, re.IGNORECASE)
+        id_match = re.search(r"(?:比赛ID|matchId)[*\s]*[:：]\s*(\d+)", block, re.IGNORECASE)
         match_id_str = id_match.group(1) if id_match else f"未知ID({header_line})"
 
         block_errors = []
@@ -1694,6 +1694,40 @@ def verify_memory_cognitive_cards(
                                         f"源数据变盘流水中从未出现过该盘口形态！"
                                     )
                                     break
+
+                    # U4.4: EvoOntology 做市阻断探针硬核验与语义防篡改审计
+                    from 校验.src.domain.ontology_probes import detect_ontology_probes
+                    probes = detect_ontology_probes(src_text)
+                    block_probes = [p for p in probes if p.get("severity") == "block"]
+
+                    for bp in block_probes:
+                        pid = bp.get("id", "")
+                        pterm = bp.get("term", "")
+                        aliases = bp.get("aliases", [pid.lower(), pterm.lower()])
+                        mentions_probe = any(alias.lower() in block.lower() for alias in aliases)
+
+                        if not mentions_probe:
+                            block_errors.append(
+                                f"MEMORY_CONSTRAINT_BLOCK_UNRESOLVED: 【{match_id_str}】源数据触发最高级做市阻断探针 🛑 [{pterm}] ({pid})，"
+                                f"但认知契约卡未对质该探针（未提及探针ID/名称或未阐明博弈破译真相）！"
+                            )
+
+                        # 2. 语义互斥防篡改审计 (违禁词检测)
+                        conflicts = bp.get("forbidden_conflicts", [])
+                        for kw in conflicts:
+                            if kw in block:
+                                block_errors.append(
+                                    f"MEMORY_CONSTRAINT_SEMANTIC_CONFLICT: 【{match_id_str}】触发做市阻断 🛑 [{pterm}] ({pid})，"
+                                    f"但认知契约卡中包含违禁反向背书词汇 '{kw}'（涉嫌指鹿为马，颠倒做市真实意图）！"
+                                )
+
+                    # 3. 严禁在触发阻断时虚假声称"未触发做市阻断探针"
+                    if block_probes:
+                        if re.search(r"【机位阻断对质】[^\n]*未触发", block):
+                            block_errors.append(
+                                f"MEMORY_CONSTRAINT_SEMANTIC_CONFLICT: 【{match_id_str}】源数据触发最高级做市阻断，"
+                                f"但认知契约卡却谎称'未触发做市阻断探针'！"
+                            )
                 except Exception as e:
                     block_errors.append(f"MEMORY_SOURCE_DRIFT: 【{match_id_str}】读取源数据快照核对失败: {e}")
 

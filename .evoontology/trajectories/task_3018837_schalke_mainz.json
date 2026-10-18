@@ -1,0 +1,42 @@
+{
+  "task_id": "task_20261017_3018837",
+  "match_id": "3018837",
+  "fixture": "沙尔克04 vs 美因茨",
+  "league": "德甲",
+  "kickoff_time": "2026-10-17 21:30",
+  "input_snapshot": "data/2026-10-17/3018837.md",
+  "triggered_constraints": [
+    {
+      "id": "constraint_crossmarket_misalignment",
+      "term": "Constantinou_CrossMarket",
+      "severity": "block",
+      "evidence": "欧亚两地市场门槛脱节，做市商利用跨市场认知差进行非对称诱多"
+    },
+    {
+      "id": "constraint_score_snapping_defense",
+      "term": "Egidi_Score_Snapping",
+      "severity": "warn",
+      "evidence": "皇冠波胆低比分结算水位偏态设防（0:1 8.10 / 1:1 5.80）"
+    }
+  ],
+  "agent_prediction": {
+    "had": "平局 (次选主胜)",
+    "hhad": "[+1] 让胜",
+    "hypothesis": "误将沙尔克04受让平半0.81超低水当做防守底牌，臆测客水1.08为弃守"
+  },
+  "actual_outcome": {
+    "score": "0-1",
+    "had": "客胜",
+    "hhad": "让平"
+  },
+  "failure_diagnosis": {
+    "causal_chain": "做市商客让平半给主队0.81超低水制造安全垫诱下盘，客水顶高阻筹；模型落入诱多陷阱并无视体彩客胜2.05降2.00真实风控及0:1超低波胆(8.10)",
+    "attribution_dimension": "Agent Attention & Schema Gate",
+    "root_cause": "推演端注意力衰减，门禁未强制对质阻断探针"
+  },
+  "remedy": {
+    "enforced_block_rebuttal": true,
+    "semantic_conflict_check": true,
+    "gate_status": "interlocked"
+  }
+}
