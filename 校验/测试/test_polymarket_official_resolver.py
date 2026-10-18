@@ -58,6 +58,34 @@ var guestteam="Fenerbahce";
         self.assertEqual(g, "Fenerbahce")
         self.assertEqual(d, "2026-10-14")
 
+    def test_parse_match_info_from_1x2d(self):
+        """测试从 1x2d.js 提取主客队、日期与联赛信息"""
+        from 校验.src.domain.polymarket_official_resolver import parse_match_info_from_1x2d
+        sample_js = '''
+var matchname="Veikkausliiga";
+var matchname_cn="芬超冠";
+var MatchTime="2026,10-1,18,20,00,00";
+var ScheduleID=3085218;
+var hometeam="KuPS";
+var guestteam="VPS";
+'''
+        h, g, d, l_cn, l_en = parse_match_info_from_1x2d(sample_js)
+        self.assertEqual(h, "KuPS")
+        self.assertEqual(g, "VPS")
+        self.assertEqual(d, "2026-10-18")
+        self.assertEqual(l_cn, "芬超冠")
+        self.assertEqual(l_en, "Veikkausliiga")
+
+    def test_official_soccer_leagues_coverage(self):
+        """测试官方 /sports 联赛库覆盖芬超、瑞典超、挪超等主流赛事"""
+        from 校验.src.domain.polymarket_official_resolver import OFFICIAL_SOCCER_LEAGUES
+        self.assertIn("芬超", OFFICIAL_SOCCER_LEAGUES)
+        self.assertEqual(OFFICIAL_SOCCER_LEAGUES["芬超"][0], "fin1")
+        self.assertEqual(OFFICIAL_SOCCER_LEAGUES["芬超"][1], 105243)
+        self.assertIn("西甲", OFFICIAL_SOCCER_LEAGUES)
+        self.assertIn("瑞典超", OFFICIAL_SOCCER_LEAGUES)
+        self.assertIn("挪超", OFFICIAL_SOCCER_LEAGUES)
+
     def test_resolve_raw_bundle_missing_js_fails(self):
         """测试当缺少 1x2d.js 时返回明确失败信息"""
         resolver = PolymarketOfficialResolver()
