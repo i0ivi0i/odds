@@ -12,16 +12,15 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 3. **全流程严禁任何临时 `.py` 脚本、跑批脚本、数据清洗脚本、复盘对账脚本或 `python -c`！** 违者视为严重工程违规与作弊。
 4. **【平台工具 `execute_code` 绝对硬锁禁令】**：全流程绝对严禁调用平台工具 `execute_code` 执行任何 Python 脚本代码！严禁借 `execute_code` 编写爬虫抓取逻辑、数据清洗或对账代码！数据获取必须且只能直接调用官方 MCP 工具（`mcp__scrapling__*`），推演查看必须且只能直接调用官方 MCP 工具（`mcp__evoontology__*`）。违反者视为严重违规越权！
 
-**Scrapling 官方内部四级闭环与分块并发军规**：
-当遭遇网络重置或源站 WAF 限制时，必须且只能在 Scrapling 框架内部自洽升阶：
-- **一级（极速协议并发）**：`mcp__scrapling__bulk_get` 并发直取（遵循官方分块军规：单批切片 $\le 6\sim 8$ URLs，每批之间加 0.3s `retry_delay`；前置下推选择器 `css_selector="#table_odds"`）；
-- **二级（单步精准协议流）**：`mcp__scrapling__fetch(network_idle=true)`；
-- **三级（指纹反爬绕过）**：`mcp__scrapling__stealthy_fetch`（模拟 TLS 指纹与规避 Cloudflare/WAF）；
-- **四级（内部 Chrome 驱动）**：Scrapling 内部 `--real-chrome` 无头渲染受控驱动。
+**Scrapling 官方两级分层进货架构与会话闭环军规（D4Vinci/Scrapling Native Specs）**：
+依循官方原生分层理念，球探网纯静态服务端渲染接口与动态反爬接口严格分流：
+- **Level 1（纯 HTTP 协议流，首选必选）**：毫秒级响应，零无头浏览器启动损耗。所有球探网静态数据（赛程列表 `index.aspx`、百家欧指 `1x2d.js`、变盘流水 `handicap.aspx`、微观阵容 `analysis/{id}cn.htm`）默认 100% 优先采用 `mcp__scrapling__bulk_get` 或 `session_make_request`，开启 `impersonate="chrome"` 与 `stealthy_headers=true`（单批切片 $\le 6\sim 8$ URLs，前置下推选择器 `css_selector="#table_odds"`）；
+- **Level 2（Playwright 无头浏览器，升阶容灾）**：仅在 Level 1 返回 HTTP 403/503 或源站下发 Cloudflare Turnstile 等动态人机挑战盾时，在 Scrapling 内部升阶至 `mcp__scrapling__stealthy_fetch`。静态数据严禁无故直接调用 Level 2 浏览器！
+- **官方会话生命周期闭环（强制）**：长连接进货调用 `open_request_session` 创建会话 ➔ `session_make_request` 并发拉取 ➔ 文件确认落盘后**强制调用 `close_session(session_id=...)` 显式销毁连接句柄**，杜绝后台空闲资源泄漏！
 
 - **阶段 0：赛程索引确定性自检与 Scrapling 极速直落（Zero-State Hard Lock）**：
   - 凡触发赛前分析、赛程同步或手动推演，大模型唤醒后**第 0 秒第一工具动作**必须且只能先检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；
-  - 若缺失或超期，调用 `mcp__scrapling__fetch(url="https://jc.titan007.com/index.aspx", extraction_type="markdown", network_idle=true)` 秒级提取全天场次 ➔ 原子落盘 `data/{销售日}/meta.md` 与追加 `memory/{销售日}.md`（全程 < 2 秒）；
+  - 若缺失或超期，首选调用 Level 1 协议流 `mcp__scrapling__bulk_get(urls=["https://jc.titan007.com/index.aspx"], extraction_type="markdown", impersonate="chrome", stealthy_headers=true)`（遇 403 升阶至 `fetch`）秒级提取全天场次 ➔ 原子落盘 `data/{销售日}/meta.md` 与追加 `memory/{销售日}.md`（全程 < 2 秒）；
   - **严禁漫游翻书铁律**：在 `data/{销售日}/meta.md` 确立前，绝对禁止阅读 `skills/deep-analysis` 技能、绝对禁止查看任何 Python 源码、绝对禁止思考盘赔逻辑！
 - **批量赛事分批并发矩阵与进货门禁规约（First-Action Batch Matrix）**：
   - 赛程索引就绪后，由主人指令锁定推演范围（全部/早盘/晚盘/指定，严禁任何 AI 将分批大小当成推演总数！）；
@@ -87,11 +86,11 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 3. **抓取时流式内存截流 (In-Flight Hook，严禁 Raw JS 倾倒)**：
    - 请求 `1x2d.js` 时，数据流入内存第一时间使用法定 23 家 ID 集合直接筛选提纯；
    - 抛弃其余 140+ 家机构数据，向外交付仅包含法定 23 家初即盘的紧凑结构，单场数据严格压在 **5KB 以内**。
-4. **全真隐身、协议锁与智能自愈标准（SSOT 统一溯源）**：
-   - **动态协议自协商**：首选 HTTP/2 极速流，遇到源站 Nginx HTTP/2 流中断缺陷时动态自愈降级至 HTTP/1.1（`CurlHttpVersion.V1_1` 与 `--disable-http2`），彻底规避 `PROTOCOL_ERROR`；
-   - **指纹库项目本地持久化**：配置 `selector_config={"adaptive": True, "storage_args": {"storage_file": "data/scrapling_storage.db"}}`，确保改版指纹落盘于项目目录，杜绝散落在环境包；
-   - **端点专属语义标识**：变盘流水端点统一绑定 `identifier`（`ah_{cid}_table`、`ou_{cid}_table`、`eu_{cid}_table`），开启 `auto_save=True` 与 `adaptive=True`，辅以 `get_all_text()` 穿透提取与 `relocate()` 兜底；
-   - **隐身规约统一溯源**：Chrome TLS 伪装、Canvas 加噪、WebRTC 封锁与自适应机制 **100% 依循 [`match-scraper`](skills/match-scraper/SKILL.md) 官方规约**执行；
+4. **官方原生隐身、指纹模拟与会话复用标准（SSOT 统一溯源）**：
+   - **Chrome 协议指纹模拟**：全流程统一调用 `impersonate="chrome"` 与 `stealthy_headers=true`，完全模拟真实 Chrome TLS/JA3 与请求头拓扑，规避 WAF 识别；
+   - **选择器底层下推**：抓取 HTML 必须传递 `css_selector`，内存就地过滤 DOM，正文纯净提取 `main_content_only=true`；
+   - **官方请求会话复用**：单场多端点请求推荐调用 `mcp__scrapling__open_request_session` 创建长连接，配合 `session_make_request` 复用底层连接，杜绝频繁离散握手；
+   - **隐身规约统一溯源**：Chrome TLS 伪装、请求头注入与分组并发机制 **100% 依循 [`match-scraper`](skills/match-scraper/SKILL.md) 官方规约**执行；
    - 本宪法专注规范：法定 23 家白名单、7 家变盘时序、数据 Schema 与防错位断言，消除跨文件冗余复制与参数漂移。
 5. **精准语义防错位与防污染断言（最高铁律：绝不混淆、绝不认错）**：
    - **URL 显式语义绑定**：`urls` 列表必须按固定契约构建，返回结果按索引 `result[i]` 严格回填对应机构对应玩法：
@@ -104,25 +103,46 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
      - 欧指必须校验包含“主胜/平局/客胜”三项浮点数；
      - 一旦关键字不匹配，立即报错阻断，**严禁跨玩法交叉污染，严禁把不对的数据填进不该在的位置**！
 
-#### Scrapling MCP 官方原生工具调用范式（严禁自写散装 Python 脚本）
+#### Scrapling MCP 官方原生会话与反爬隐身调用范式（Session Lifecycle Standard）
 ```json
-// 1. 抓取百家欧指数据流（从 1x2d.js 提纯法定 23 家机构初即盘与时序，毫秒级直取）
-mcp__scrapling__make_request({
-  "url": "https://1x2d.titan007.com/3000474.js",
+// 1. 开辟全真 Chrome 长连接会话（复用 TLS/JA3 指纹与 TCP 连接池）
+mcp__scrapling__open_request_session({
   "impersonate": "chrome",
-  "main_content_only": false
+  "stealthy_headers": true,
+  "timeout": 30
+})
+// 返回 session_id (如 "req_sess_3000474")
+
+// 2. 复用会话拉取百家欧指（带上下文 Referer，内存提纯法定 23 家）
+mcp__scrapling__session_make_request({
+  "session_id": "req_sess_3000474",
+  "url": "https://1x2d.titan007.com/3000474.js",
+  "headers": {
+    "Referer": "https://titan007.com/"
+  }
 })
 
-// 2. 7 大法定做市商亚盘/大小球变盘流水（bulk_get 并发矩阵秒取，绝不循环单拉）
-mcp__scrapling__bulk_get({
-  "urls": [
-    "https://vip.titan007.com/changeDetail/handicap.aspx?id=3000474&companyID=1&l=0",
-    "https://vip.titan007.com/changeDetail/overunder.aspx?id=3000474&companyID=1&l=0",
-    "https://vip.titan007.com/changeDetail/handicap.aspx?id=3000474&companyID=3&l=0",
-    "https://vip.titan007.com/changeDetail/overunder.aspx?id=3000474&companyID=3&l=0"
-  ],
-  "impersonate": "chrome",
-  "main_content_only": false
+// 3. 复用会话并发拉取 7 家法定亚盘/大小球变盘流水（选择器下推，GB18030 解码）
+mcp__scrapling__session_make_request({
+  "session_id": "req_sess_3000474",
+  "url": "https://vip.titan007.com/changeDetail/handicap.aspx?id=3000474&companyID=1&l=0",
+  "css_selector": "#table_odds",
+  "headers": {
+    "Referer": "https://vip.titan007.com/"
+  }
+})
+
+// 4. 采集完成必须强制显式关闭会话，释放句柄
+mcp__scrapling__close_session({
+  "session_id": "req_sess_3000474"
+})
+
+// 5. 遭遇 403 / 503 或 Cloudflare 挑战盾时，自动升阶至隐身无头浏览器（Level 2）
+mcp__scrapling__stealthy_fetch({
+  "url": "https://zq.titan007.com/analysis/3000474cn.htm",
+  "solve_cloudflare": true,
+  "css_selector": "#team_lineup",
+  "network_idle": true
 })
 ```
 

@@ -1,5 +1,18 @@
 {
+  "version": 1,
+  "schema_version": 1,
   "mode": "rolling_trajectory",
   "data_source": "data",
-  "description": "Football match odds deduction perception layer (eyes & camera) workspace."
+  "workload_source": "match_odds_deduction",
+  "description": "Football match odds deduction perception layer (eyes & camera) workspace.",
+  "evaluation": {
+    "type": "llm_judge",
+    "validation_reserve_ratio": 0.3,
+    "zero_regression_required": true
+  },
+  "boundary": {
+    "strategy": "rolling_trajectory",
+    "min_new_trajectories": 30,
+    "min_days": 7
+  }
 }

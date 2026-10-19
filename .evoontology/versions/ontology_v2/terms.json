@@ -175,5 +175,387 @@
     ],
     "lifecycle_state": "active",
     "graphify_ref": "graphify://paper/Constantinou_2022_Sentinel_Defense"
+  },
+  {
+    "id": "term_macau_slot",
+    "name": "Macau_Slot",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/Macau_Sentinel] 澳门彩票作为亚洲自营做市标兵，以低抽水、自营风险防守为特征，其盘口与水位变动直接反映亚洲主力大资金真实风险敞口。",
+    "scope": "global",
+    "aliases": [
+      "澳彩",
+      "澳门",
+      "Macau",
+      "澳盘",
+      "澳彩哨兵"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/Macau_Sentinel"
+  },
+  {
+    "id": "term_crown_matrix",
+    "name": "Crown_Matrix",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/Crown_Commercial] 皇冠作为亚洲最大商业零售流动性聚集地，资金容量巨大，其盘口变动既服务于大众注额平衡，也常在中盘用于诱空震仓与跨盘出货。",
+    "scope": "global",
+    "aliases": [
+      "皇冠",
+      "Crown",
+      "皇冠商业盘",
+      "冠1"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/Crown_Commercial"
+  },
+  {
+    "id": "term_bet365_retail",
+    "name": "Bet365_Retail",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/Bet365_Retail] Bet365 作为全球最大零售商业庄，其赔率对大众筹码偏好极其敏感，是散户跟风热度与机构诱筹镜像的最佳参照。",
+    "scope": "global",
+    "aliases": [
+      "Bet365",
+      "365",
+      "365bet",
+      "日博",
+      "绿色商业庄"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/Bet365_Retail"
+  },
+  {
+    "id": "term_easybet",
+    "name": "Easybet_Asia",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/Easybet_Asia] 易胜博作为亚洲老牌主流做市商，开盘时间早、变盘频次稳健，常用于亚盘与欧指初盘骨架的基准校准。",
+    "scope": "global",
+    "aliases": [
+      "易胜博",
+      "Easybet",
+      "易胜"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/Easybet_Asia"
+  },
+  {
+    "id": "term_188bet",
+    "name": "188Bet_Asia",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/188Bet_Asia] 188Bet 作为亚洲大资金出货与对冲核心平台之一，高返还率、深盘水位调整极为果断，是主力筹码流向的重要晴雨表。",
+    "scope": "global",
+    "aliases": [
+      "188Bet",
+      "188",
+      "188bet",
+      "金宝博"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/188Bet_Asia"
+  },
+  {
+    "id": "term_hkjc_sentinel",
+    "name": "HKJC_Sentinel",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/HKJC_Sentinel] 香港马会作为亚洲特许专营哨兵，返还率相对固定，无外来洗码扰动，其欧亚单边降赔或低水设防代表极强真实风控防守底线。",
+    "scope": "global",
+    "aliases": [
+      "香港马会",
+      "马会",
+      "HKJC"
+    ],
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/HKJC_Sentinel"
+  },
+  {
+    "id": "term_william_hill",
+    "name": "William_Hill",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/William_Hill_Classic] 威廉希尔作为英伦古典做市三巨头之首，欧陆母盘基准定价标杆。其平赔体系对全欧洲做市商具有锚定效应，初盘稳定性极高。",
+    "scope": "global",
+    "aliases": [
+      "威廉希尔",
+      "威廉",
+      "William Hill",
+      "WH"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/William_Hill_Classic"
+  },
+  {
+    "id": "term_ladbrokes",
+    "name": "Ladbrokes_Classic",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/Ladbrokes_Classic] 立博作为英伦百年老庄，防守敏感度极高，善于通过微调次级项赔率引导注额分布，常与威廉希尔形成英伦双雄互检态势。",
+    "scope": "global",
+    "aliases": [
+      "立博",
+      "Ladbrokes",
+      "立博防守"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/Ladbrokes_Classic"
+  },
+  {
+    "id": "term_betvictor",
+    "name": "BetVictor_Classic",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/BetVictor_Classic] 伟德作为英伦古典自营博彩代表，开盘风格硬朗、敢于自营对冲风险，其欧指初盘与变盘常显露庄家独立判断。",
+    "scope": "global",
+    "aliases": [
+      "伟德",
+      "BetVictor",
+      "Victor",
+      "韦德"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/BetVictor_Classic"
+  },
+  {
+    "id": "term_interwetten",
+    "name": "Interwetten_Continental",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/Interwetten_Continental] Interwetten 作为德系/奥地利特许保守机构，抽水较高，但对冷门（平局/客胜）设防嗅觉极度灵敏，其低赔压制常是真实冷门哨兵。",
+    "scope": "global",
+    "aliases": [
+      "Interwetten",
+      "因特",
+      "因特沃腾"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/Interwetten_Continental"
+  },
+  {
+    "id": "term_bwin",
+    "name": "Bwin_Continental",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/Bwin_Continental] Bwin 作为欧陆主流商业零售庄家，赞助广泛、散户客群极广，其赔率调整多倾向迎合与收割大众热点。",
+    "scope": "global",
+    "aliases": [
+      "Bwin",
+      "必赢"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/Bwin_Continental"
+  },
+  {
+    "id": "term_snai",
+    "name": "SNAI_Italian",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/SNAI_Italian] SNAI 作为意大利特许本土垄断机构，在意大利本土联赛及欧洲主流赛事中拥有顶级内幕风控网络，其特异性变盘具有极高防守权重。",
+    "scope": "global",
+    "aliases": [
+      "SNAI",
+      "斯奈"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/SNAI_Italian"
+  },
+  {
+    "id": "term_betfair_exchange",
+    "name": "Betfair_Exchange",
+    "type": "metric",
+    "definition": "[Graphify 溯源: graphify://bookmaker/Betfair_Exchange] 必发作为全球最大撮合交易平台，其挂单量、成交比例与盈亏指数直接呈现真实资金的大单流向与沉淀仓位，用于识别虚假诱盘。",
+    "scope": "global",
+    "aliases": [
+      "必发",
+      "Betfair",
+      "必发指数",
+      "必发交易所"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/Betfair_Exchange"
+  },
+  {
+    "id": "term_sbo_sbobet",
+    "name": "SBO_Asia",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/SBO_Asia] SBO（利记）作为东南亚老牌大资金自营盘口，大额注额承载力强，其亚盘走势是亚洲大资金博弈的核心落点之一。",
+    "scope": "global",
+    "aliases": [
+      "SBO",
+      "利记",
+      "SBOBET"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/SBO_Asia"
+  },
+  {
+    "id": "term_ibc_shaba",
+    "name": "IBC_Shaba",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/IBC_Shaba] 沙巴作为亚洲传统大型信用盘与流动性母池，水位变化连贯平滑，用于检验大盘资金承接力。",
+    "scope": "global",
+    "aliases": [
+      "沙巴",
+      "IBC",
+      "Maxbet",
+      "沙巴体育"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/IBC_Shaba"
+  },
+  {
+    "id": "term_marathon_bet",
+    "name": "Marathon_Consensus",
+    "type": "metric",
+    "definition": "[Graphify 溯源: graphify://paper/Consensus_Sample_Marathon] Marathon 作为学术文献重点研究的超高返还率（98%+）做市商，其定价极致逼近无偏概率，是欧指去水与离群检测的关键样本。",
+    "scope": "global",
+    "aliases": [
+      "Marathon",
+      "马拉松",
+      "Marathonbet"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Consensus_Sample_Marathon"
+  },
+  {
+    "id": "term_betway",
+    "name": "Betway_Consensus",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://paper/Consensus_Sample_Betway] Betway 作为欧洲主流商业做市商与学术文献共识样本，表现稳健均衡，用于构建跨机构共识基准。",
+    "scope": "global",
+    "aliases": [
+      "Betway",
+      "必威"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Consensus_Sample_Betway"
+  },
+  {
+    "id": "term_unibet",
+    "name": "Unibet_Consensus",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://paper/Consensus_Sample_Unibet] Unibet 作为北欧主流特许庄家，客群成熟，学术文献中常用于北欧与西欧跨市场效率实证检验。",
+    "scope": "global",
+    "aliases": [
+      "Unibet",
+      "优胜客"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Consensus_Sample_Unibet"
+  },
+  {
+    "id": "term_paddypower",
+    "name": "PaddyPower_Consensus",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://paper/Consensus_Sample_PaddyPower] Paddy Power 风格激进，常利用营销话题与倾斜赔率进行非对称诱多，是学术研究中大众情绪收割的典型案例。",
+    "scope": "global",
+    "aliases": [
+      "Paddy Power",
+      "帕迪鲍尔",
+      "帕迪",
+      "PaddyPower"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Consensus_Sample_PaddyPower"
+  },
+  {
+    "id": "term_10bet",
+    "name": "TenBet_Consensus",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://paper/Consensus_Sample_10Bet] 10Bet 长期为欧洲二三线赛事提供深度盘口，作为文献共识池的补充做市样本。",
+    "scope": "global",
+    "aliases": [
+      "10Bet",
+      "十博"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/Consensus_Sample_10Bet"
+  },
+  {
+    "id": "term_sporttery_terminal",
+    "name": "Sporttery_Terminal",
+    "type": "metric",
+    "definition": "[Graphify 溯源: graphify://terminal/Sporttery_China] 中国体育彩票官方竞彩终端，胜负平（HAD）与让球胜平负（HHAD）对账结算底牌，其单固开停与赔率压制是国内法定博弈焦点。",
+    "scope": "global",
+    "aliases": [
+      "中国体彩",
+      "体彩",
+      "竞彩",
+      "Sporttery"
+    ],
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://terminal/Sporttery_China"
+  },
+  {
+    "id": "term_polymarket_terminal",
+    "name": "Polymarket_Terminal",
+    "type": "metric",
+    "definition": "[Graphify 溯源: graphify://terminal/Polymarket_Web3] Polymarket 链上真实点对点撮合交易平台，提供纯去中心化无抽水冷平（8~12x）与胜平负订单簿流动性，用于实战对冲与真实概率校准。",
+    "scope": "global",
+    "aliases": [
+      "Polymarket",
+      "预测市场",
+      "冷平对冲",
+      "链上市场"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://terminal/Polymarket_Web3"
   }
 ]

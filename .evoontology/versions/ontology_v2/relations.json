@@ -2,7 +2,7 @@
   {
     "id": "rel_benchmark_vs_retail",
     "source": "term_pinnacle_anchor",
-    "relation_type": "acts_as_truth_verifier_for",
+    "relation_type": "association",
     "target": "term_headfake_surge",
     "connection_condition": "pinnacle_flat_and_retail_dropped",
     "description": "平博真金白银做市标杆用于验证商业庄脉冲冲高退盘动作是否为假摔",
@@ -14,7 +14,7 @@
   {
     "id": "rel_vacuum_vs_poisson",
     "source": "term_draw_vacuum",
-    "relation_type": "bounded_by_physical_floor",
+    "relation_type": "association",
     "target": "term_poisson_floor",
     "connection_condition": "high_draw_odds_with_poisson_draw",
     "description": "高平真空诱空表象受泊松物理进球底牌约束，防止过度恐高杀平",
@@ -26,7 +26,7 @@
   {
     "id": "rel_crossmarket_vs_pinnacle",
     "source": "term_constantinou_crossmarket",
-    "relation_type": "arbitraged_by",
+    "relation_type": "association",
     "target": "term_pinnacle_anchor",
     "connection_condition": "crossmarket_gap_exceeds_threshold",
     "description": "欧亚跨市场门槛脱节时以平博真实去水欧亚折合为基准识别虚开出货",
@@ -38,7 +38,7 @@
   {
     "id": "rel_favorite_vs_squeeze",
     "source": "term_levitt_favorite_melt",
-    "relation_type": "triggers_risk_hedging",
+    "relation_type": "association",
     "target": "term_sporttery_had_squeeze",
     "connection_condition": "favorite_melt_with_had_disabled",
     "description": "豪门低赔极度扎堆时体彩常关闭基础HAD转为逼平风控，实现筹码穿仓风险对冲",
@@ -50,7 +50,7 @@
   {
     "id": "rel_score_vs_poisson",
     "source": "term_egidi_score_snapping",
-    "relation_type": "cross_verifies",
+    "relation_type": "association",
     "target": "term_poisson_floor",
     "connection_condition": "crown_score_odds_match_poisson_top2",
     "description": "皇冠波胆倍率与独立泊松高概率比分进行市场赔率辅助对照",
@@ -62,12 +62,48 @@
   {
     "id": "rel_sentinel_vs_headfake",
     "source": "term_sentinel_defense",
-    "relation_type": "arbitrates_and_rebuts",
+    "relation_type": "association",
     "target": "term_headfake_surge",
     "connection_condition": "sentinel_drops_while_commercial_retreats",
     "description": "当本土哨兵单边真防守与商业外盘假摔退盘并存时，做市商存在市场分层，契约卡必须进行双向冲抵对质",
     "evidence_refs": [
       "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "rel_british_vs_pinnacle",
+    "source": "term_william_hill",
+    "relation_type": "association",
+    "target": "term_pinnacle_anchor",
+    "connection_condition": "william_hill_draw_anchor_vs_pinnacle_sharp",
+    "description": "威廉希尔英伦母盘初盘平赔与平博聪明钱初终走势相互测谎，界定欧陆基准底线",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "rel_retail_vs_sentinel",
+    "source": "term_bet365_retail",
+    "relation_type": "association",
+    "target": "term_sentinel_defense",
+    "connection_condition": "retail_chases_favorite_while_sentinel_holds",
+    "description": "Bet365商业庄顺应散户从众狂热降赔时，以本土哨兵真实防守水位进行对质",
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "rel_exchange_vs_vacuum",
+    "source": "term_betfair_exchange",
+    "relation_type": "derivation",
+    "target": "term_draw_vacuum",
+    "connection_condition": "betfair_matched_volume_confirms_draw_vacuum",
+    "description": "必发交易所真实成交量确认平局是否陷入真实筹码真空或暗中吸筹",
+    "evidence_refs": [
+      "evidence_match_3019156"
     ],
     "lifecycle_state": "active"
   }

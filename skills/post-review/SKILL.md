@@ -132,9 +132,10 @@ read_file(path="memory/{复盘日期}.md")
 赛果与比分采集 100% 独家归属 **`Skill /scrapling-official` ↔ `MCP scrapling`** 官方原生流水线！
 **绝对严禁调用任何外部独立浏览器（如 `Skill /browseros-neo` ↔ `MCP browseros_neo`）！** 违规调用外部浏览器抓取比分视为严重违纪与输入污染行为！
 
-从推荐记录中取出每场比赛的比赛 ID，使用官方 Scrapling MCP（`bulk_get` 或 `fetch`）并发抓取即时详情页获取完场赛果：
-
-`https://live.titan007.com/detail/{matchId}cn.htm`
+从推荐记录中取出每场比赛的比赛 ID，优先通过官方 Scrapling MCP 长连接会话并发抓取即时详情页获取完场赛果：
+1. 开启全真会话：`mcp__scrapling__open_request_session(impersonate="chrome", stealthy_headers=true)`；
+2. 会话并发拉取：`mcp__scrapling__session_make_request(session_id=..., url="https://live.titan007.com/detail/{matchId}cn.htm", css_selector=".score, .analyhead, .team-name")`；
+3. 抓取完毕后显式释放连接：`mcp__scrapling__close_session(session_id=...)`。
 
 **禁止先跑 `npm run review`。**
 
@@ -304,8 +305,8 @@ read_file(path="memory/{复盘日期}.md")
 - 是信息不足还是判断逻辑有误？
 - 是否有赛前未预见的因素（红牌、伤退、天气等）？
 - 泊松 λ 值是偏高还是偏低？偏了多少？
-- **EvoOntology 机位盲区归因与自进化打补丁（消除盲区回环，严拒噪音污染）**：
-  未中首选场次，必须强制反思感知层（眼睛与摄像头）：“本场是否存在视线盲区？是否漏看了 8 大做市机位（平博标杆、假摔退盘、高平真空、泊松底牌、欧亚脱节、豪门穿仓、波胆只读参考、体彩逼平）？若发现全新结构性做市操盘套路，必须在 Graphify 19 篇顶刊论文中寻找学术因果理论支撑与实体节点溯源”。
+- **EvoOntology 机位盲区归因与自进化打补丁（调取 Trajectory 证据链机器对账，严拒噪音污染）**：
+  未中首选场次，调取赛前 `.evoontology/trajectories/` 封存的微观任务轨迹，与真实赛果进行机器对质并反思感知层（眼睛与摄像头）：“本场是否存在视线盲区？是否漏看了法定 23 家做市全景机位（英伦母盘威廉/立博/伟德、德系意系Interwetten/Bwin/SNAI、对冲做市必发、亚洲老庄SBO/沙巴或学术论文共识样本）？若发现全新结构性做市操盘套路，必须在 Graphify 19 篇顶刊论文中寻找学术因果理论支撑与实体节点溯源”。
   【防噪音进化立宪（只纳规律、严拒噪音）】：主人最高准则——“喜欢进化，只要进化就是好事，但是绝对不能把噪音也进化进去”。严禁将赛中偶发事件（如红牌罚下、意外折射、单次失误、孤立异常数字）误当作操盘规律；提出的 Candidate 探针必须具备普遍的做市博弈因果逻辑，且必须在近 3~5 天历史快照池上通过严格回测对质（确保无负面回归与误报警）；只有真正具备做市共性的结构性规律才准晋升发布为新版 `ontology_vN`，宁缺毋滥，彻底杜绝噪音污染！复盘报告第一视觉且唯一保持工整标准 7 列表格，自进化记录在分析正文中以高密度自然段落呈现，严禁增设表二等冗余表格！
 
 - **4d. 《庄家操盘战法库》提炼与入库（每次复盘必做）**
@@ -614,6 +615,31 @@ read_file(path="MEMORY.md")
 - 正常计算当日统计
 - 累计统计 = 当日统计
 - 跳过策略复盘（数据不足）
+
+## 官方 EvoOntology 活体自进化闭环与防噪音立宪
+
+复盘不是记流水账，而是驱动知识图谱与语义本体自愈自进化的源头活水。必须严格遵循 `ruc-datalab/EvoOntology` 官方四步闭环与防刻舟求剑纪律：
+
+### 1. 滚动轨迹登记（Trajectory Registration）
+每场复盘审计完毕后，必须调用 EvoOntology 官方 MCP 工具确认本场轨迹源：
+```json
+// 调用 mcp__evo-semantic__confirm_trajectory_sources
+{
+  "sources": ["memory/{销售日}.md", "data/{销售日}/{matchId}.md"],
+  "workspace": ".evoontology"
+}
+```
+
+### 2. 进化门禁唤醒检测（Evolution Due Check）
+复盘流程末尾必须调用 `mcp__evo-semantic__evolution_status(workspace=".evoontology")`：
+- 若返回 `evolution_due: false`：在复盘报告末尾记录当前累积进度（例如：`新轨迹: 7/30 场，未达进化门禁`）；
+- 若返回 `evolution_due: true`：立即在战报中置顶提示主人「🧬 **EvoOntology 累积已达进化门禁（新轨迹≥30场或周期≥7天），建议开启自进化复盘轮次！**」。
+
+### 3. 防刻舟求剑与防死尺子四大禁令（Anti-Noise & Anti-Dead-Ruler Iron Laws）
+1. **因果机制优先，严禁硬编码孤立数值**：提炼的 Candidate 必须具备跨联赛、跨机构的做市博弈因果机制（如平博低水测谎、马会哨兵防守、中盘假摔震仓），**绝对禁止将 $2.10 \to 4.00$ 或单一场次的孤立数字硬编码为死尺子！**
+2. **偶发不可抗力严禁入本体**：凡因红牌罚下、意外乌龙折射、单方罢赛等突发偶发因素导致的赛果偏差，一律归为不可抗力随机方差，**绝对禁止将此类个案作为规则演化进入本体！**
+3. **独立双盲验证池隔离（Validation Reserve）**：所有提出的 Candidate 补丁，必须在独立的 Validation Reserve（30% 保留池）上与 Parent 进行双盲对照测试，严禁拿训练集本身自圆其说；
+4. **零负面回归合并门禁（Zero Regression Gate）**：Candidate 在独立验证集上必须同时满足：① 综合博弈识别准确率提升；② **历史已通过的合格战例负面回归率严格为 0%（决不能治好一个新病打翻三个旧病）**！不达标者强制判定为 Reject，宁缺毋滥，保持本体 100% 纯净度！
 
 ## 输出
 

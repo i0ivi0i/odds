@@ -142,5 +142,357 @@
     ],
     "lifecycle_state": "active",
     "confidence_level": "high"
+  },
+  {
+    "id": "mapping_macau_odds",
+    "term_id": "term_macau_slot",
+    "database_source": "raw_json",
+    "table": "companyDetails",
+    "column": "澳彩_ah / 澳彩_ou / 澳彩_eu",
+    "semantic_filter": "macau_asian_handicap_and_odds",
+    "aggregation_semantics": "initial_vs_latest_line",
+    "grain": "match",
+    "validation": "line_movement_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_crown_matrix_odds",
+    "term_id": "term_crown_matrix",
+    "database_source": "raw_json",
+    "table": "companyDetails",
+    "column": "皇冠_ah / 皇冠_ou / 皇冠_eu",
+    "semantic_filter": "crown_commercial_liquidity_flow",
+    "aggregation_semantics": "line_and_water_fluctuation",
+    "grain": "match",
+    "validation": "retail_balance_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_bet365_retail_odds",
+    "term_id": "term_bet365_retail",
+    "database_source": "raw_json",
+    "table": "companyDetails",
+    "column": "Bet365_ah / Bet365_ou / Bet365_eu",
+    "semantic_filter": "bet365_retail_crowd_bias",
+    "aggregation_semantics": "crowd_momentum_tracking",
+    "grain": "match",
+    "validation": "crowd_tilt_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_easybet_odds",
+    "term_id": "term_easybet",
+    "database_source": "raw_json",
+    "table": "companyDetails",
+    "column": "易胜博_ah / 易胜博_ou / 易胜博_eu",
+    "semantic_filter": "easybet_baseline_calibration",
+    "aggregation_semantics": "stable_opening_line",
+    "grain": "match",
+    "validation": "opening_spread_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_188bet_odds",
+    "term_id": "term_188bet",
+    "database_source": "raw_json",
+    "table": "companyDetails",
+    "column": "188Bet_ah / 188Bet_ou / 188Bet_eu",
+    "semantic_filter": "188bet_high_roller_hedging",
+    "aggregation_semantics": "sharp_water_movement",
+    "grain": "match",
+    "validation": "hedging_flow_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_hkjc_sentinel_odds",
+    "term_id": "term_hkjc_sentinel",
+    "database_source": "raw_json",
+    "table": "companyDetails",
+    "column": "香港马会_ah / 香港马会_eu",
+    "semantic_filter": "hkjc_exclusive_risk_limit",
+    "aggregation_semantics": "drop_and_low_water",
+    "grain": "match",
+    "validation": "closed_market_audit",
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_william_hill_odds",
+    "term_id": "term_william_hill",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "威廉希尔",
+    "semantic_filter": "william_hill_euro_benchmark",
+    "aggregation_semantics": "anchor_draw_stability",
+    "grain": "match",
+    "validation": "euro_mother_board_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_ladbrokes_odds",
+    "term_id": "term_ladbrokes",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "立博",
+    "semantic_filter": "ladbrokes_defensive_spread",
+    "aggregation_semantics": "underdog_defense_delta",
+    "grain": "match",
+    "validation": "british_spread_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_betvictor_odds",
+    "term_id": "term_betvictor",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "伟德",
+    "semantic_filter": "betvictor_independent_pricing",
+    "aggregation_semantics": "bookmaker_opinion_delta",
+    "grain": "match",
+    "validation": "independent_risk_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_interwetten_odds",
+    "term_id": "term_interwetten",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "Interwetten",
+    "semantic_filter": "interwetten_conservative_filter",
+    "aggregation_semantics": "conservative_draw_away_defense",
+    "grain": "match",
+    "validation": "continental_upset_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_bwin_odds",
+    "term_id": "term_bwin",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "Bwin",
+    "semantic_filter": "bwin_retail_sentiment",
+    "aggregation_semantics": "mass_market_bias",
+    "grain": "match",
+    "validation": "retail_sentiment_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_snai_odds",
+    "term_id": "term_snai",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "SNAI",
+    "semantic_filter": "snai_italian_insider_defense",
+    "aggregation_semantics": "exclusive_monopoly_delta",
+    "grain": "match",
+    "validation": "domestic_monopoly_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_betfair_exchange_odds",
+    "term_id": "term_betfair_exchange",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "必发",
+    "semantic_filter": "betfair_peer_to_peer_volume",
+    "aggregation_semantics": "matched_volume_and_index",
+    "grain": "match",
+    "validation": "exchange_clearing_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_sbo_odds",
+    "term_id": "term_sbo_sbobet",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "SBO",
+    "semantic_filter": "sbo_asian_proprietary_flow",
+    "aggregation_semantics": "deep_liquidity_delta",
+    "grain": "match",
+    "validation": "high_volume_asian_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_ibc_shaba_odds",
+    "term_id": "term_ibc_shaba",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "沙巴",
+    "semantic_filter": "ibc_credit_pool_liquidity",
+    "aggregation_semantics": "continuous_water_stream",
+    "grain": "match",
+    "validation": "credit_pool_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_marathon_odds",
+    "term_id": "term_marathon_bet",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "Marathon",
+    "semantic_filter": "marathon_unbiased_payout",
+    "aggregation_semantics": "low_margin_fair_odds",
+    "grain": "match",
+    "validation": "paper_unbiased_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_betway_odds",
+    "term_id": "term_betway",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "Betway",
+    "semantic_filter": "betway_academic_consensus",
+    "aggregation_semantics": "standard_commercial_consensus",
+    "grain": "match",
+    "validation": "consensus_pool_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_unibet_odds",
+    "term_id": "term_unibet",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "Unibet",
+    "semantic_filter": "unibet_nordic_sample",
+    "aggregation_semantics": "regional_market_efficiency",
+    "grain": "match",
+    "validation": "nordic_efficiency_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_paddypower_odds",
+    "term_id": "term_paddypower",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "Paddy Power",
+    "semantic_filter": "paddypower_asymmetric_bias",
+    "aggregation_semantics": "aggressive_retail_tilt",
+    "grain": "match",
+    "validation": "sentiment_harvest_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_10bet_odds",
+    "term_id": "term_10bet",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "10Bet",
+    "semantic_filter": "10bet_tier2_consensus",
+    "aggregation_semantics": "secondary_market_depth",
+    "grain": "match",
+    "validation": "tier2_market_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_sporttery_terminal_odds",
+    "term_id": "term_sporttery_terminal",
+    "database_source": "raw_json",
+    "table": "getAnalyData",
+    "column": "had / hhad",
+    "semantic_filter": "sporttery_terminal_settlement",
+    "aggregation_semantics": "had_hhad_final_payout",
+    "grain": "match",
+    "validation": "official_lottery_settlement_audit",
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_polymarket_terminal_odds",
+    "term_id": "term_polymarket_terminal",
+    "database_source": "raw_json",
+    "table": "payloads",
+    "column": "polymarket.json",
+    "semantic_filter": "polymarket_clob_orderbook",
+    "aggregation_semantics": "on_chain_implied_probability",
+    "grain": "match",
+    "validation": "web3_prediction_hedging_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
   }
 ]

@@ -22,30 +22,29 @@ metadata: { "emoji": "📆" }
 - 抓不到或场次不全：置顶报告，结束流程，不写残缺记录进 memory。
 - **每次必须实时重新抓取**，不得复用之前抓取的旧数据。
 
-## Scrapling 官方防反爬隐身与智能自愈规约（Stealth & Adaptive Self-Healing）
+## Scrapling 官方防反爬隐身、分层架构与原生协议规约（Official Stealth & Tiered Architecture）
 
-为了确保系统永不被球探网风控与反爬 WAF 识别阻断，全流程进货必须严格贯彻官方原生隐身与自愈双核机制：
+为了确保系统永不被球探网风控与反爬 WAF 识别阻断，全流程进货必须严格依循 D4Vinci/Scrapling 官方两级分层架构与 MCP 原生参数契约：
 
-1. **全真隐身装配与网络协议锁（Stealth Engine & Protocol Lock）**：
-   - **动态协议自协商（首选 H2 极速，异常动态退避 H1）**：首选 HTTP/2 极速多路复用流，享受最高并发性能；若遇源站 Nginx 抛出 HTTP/2 `PROTOCOL_ERROR` 或流重置，自适应引擎即刻无感自愈降级至 HTTP/1.1（`CurlHttpVersion.V1_1` 与 `--disable-http2`），兼顾现代极速与极端容灾；
-   - **真实 TLS 指纹模拟**：优先调用 `StealthySession` 或 `impersonate="chrome"`（全真模拟最新 Chrome 协议特征与扩展套件，杜绝裸奔请求）；
-   - **Canvas 动态加噪（`hide_canvas=True`）**：在渲染和图层计算中注入微扰随机噪声，从根源粉碎 WAF 针对 Canvas 画布指纹的聚类追踪；
-   - **WebRTC 泄露封锁（`block_webrtc=True`）**：强制 WebRTC 遵循全局路由，绝对禁止本地局域网 IP 与真实出口 IP 被静默探测；
-   - **显卡特征自洽（`allow_webgl=True`）**：维持完整 WebGL 上下文，彻底消灭无头浏览器（Headless）特征漏洞；
-   - **拟真访问来源（上下文 Referer 拓扑映射）**：变盘流水端点绑定 `https://zq.titan007.com/analysis/odds/{mid}.htm`，百家欧指绑定 `https://titan007.com/`，内部子域禁用默认 `google_search` 覆盖，彻底消除外源异常流量特征。
+1. **官方两级分层进货架构（Tiered Ingestion Architecture）**：
+   - **Level 1（纯 HTTP 协议流，首选必选）**：基于 `curl_cffi`，毫秒级响应，零无头浏览器启动开销。所有球探网静态服务端渲染端点（赛程页 `index.aspx`、百家欧指 `1x2d.js`、变盘流水 `handicap.aspx`、微观阵容 `analysis/{id}cn.htm`）默认 100% 优先采用 `mcp__scrapling__bulk_get` 或 `session_make_request`。
+   - **Level 2（Playwright 无头浏览器，升阶容灾）**：仅在 Level 1 返回 HTTP 403/503、频繁超时，或源站下发 Cloudflare Turnstile 等动态人机挑战盾时，在 Scrapling 内部升阶至 `mcp__scrapling__stealthy_fetch`。静态数据严禁无故直接调用 Level 2 浏览器！
 
-2. **官方智能自愈与元素改版自适应（Adaptive Scraping & Element Memory）**：
-   - **专属记忆库重定向（Project SQLite Storage）**：配置 `selector_config={"adaptive": True, "storage_args": {"storage_file": "data/scrapling_storage.db"}}`，将元素结构指纹统一持久化落盘至项目专属库，杜绝散落在环境包目录；
-   - **语义唯一标识（Semantic Identifiers）**：为 7 大做市商时序端点绑定专属标识契约（亚盘 `ah_{cid}_table`、大小球 `ou_{cid}_table`、欧指 `eu_{cid}_table`），避免跨端点指纹覆盖；
-   - **指纹记忆自动存储（`auto_save=True`）**：初次解析变盘流水表格时，自动将目标表格的几何拓扑与 DOM 结构指纹存入本地 SQLite；
-   - **改版自动重定位（`adaptive=True`）**：当球探网前端改版、ID `#table_odds` 被删或 Class 名混淆时，Scrapling 依据 `identifier` 自动提取指纹并计算相似度，无感寻回正确表格节点；
-   - **多级提取与标签兜底**：使用 `get_all_text()` 穿透提取包含全部子行子列的完整纯净文本，并配置 `page.relocate({"tag": "table", "text": "盘口"}, percentage=30)` 作为最终兜底防线。
+2. **官方全真协议模拟与指纹装配（MCP Native Impersonation & Stealth）**：
+   - **真实 Chrome TLS 与 HTTP/2 指纹**：调用必带 `impersonate="chrome"`（Scrapling 官方默认模拟最新 Chrome 协议与 TLS/JA3 指纹特征，杜绝裸奔请求与 WAF 拦截）；
+   - **拟真浏览器标头（`stealthy_headers=true`）**：自动注入与真实 Chrome 完全一致的完整请求标头簇（含 Client Hints、Sec-Fetch-* 与安全 Referer），消除自动化请求特征；
+   - **精准上下文 Referer 拓扑**：变盘流水端点绑定 `https://vip.titan007.com/`，百家欧指绑定 `https://titan007.com/`，消除外源异常流量特征。
 
-3. **拟人化流量控制与会话保持（Autothrottle & Session Persistence）**：
-   - **分块并发军规**：单批物理切片严格锁定 $\le 6\sim 8$ URLs；
-   - **拟人随机抖动（Jitter）**：批次间隔执行 `0.3s ~ 0.65s` 动态随机抖动，彻底粉碎等间隔机械节拍特征；
-   - **会话 Cookie 继承（Session Reuse）**：优先使用 `FetcherSession` / `StealthySession` 维持全局连接，继承主站鉴权 Cookie，杜绝离散探测嫌疑；
-   - **智能指数退避**：遭遇网络抖动或偶发 HTTP 429 频控时，自动启动退避重试（退避间隔 1s、2s、4s），严禁高频硬冲引发 WAF 阻断。
+3. **官方选择器下推与内容过滤（Cython Selector Pushdown & Extraction）**：
+   - **选择器底层下推（`css_selector`）**：抓取 HTML 分析页（如阵容、战绩）时，显式传递 `css_selector`（如 `css_selector="#team_lineup"` 或 `css_selector="#analy_sbAllOdds, #odds"`），由底层 C/Cython 引擎在内存中就地剔除 90% 以上无关 DOM 节点，杜绝 Token 膨胀与解析超时；
+   - **正文纯净提取（`main_content_only=true`）**：仅提取 `<body>` 内真实业务数据，自动丢弃页面首尾外围噪音；
+   - **格式选择契约（`extraction_type`）**：结构化页面提取选择 `"markdown"`，静态 JS 大包（如 `1x2d.js`）或纯文本提取选择 `"text"`。
+
+4. **官方连接会话生命周期三部曲（Session Lifecycle: Open -> Batch -> Close）**：
+   - **步骤一·创建长连接会话**：在拉取单场多端点或批次比赛时，优先调用 `mcp__scrapling__open_request_session(impersonate="chrome", stealthy_headers=true)` 获取 `session_id`；
+   - **步骤二·复用连接并发请求**：通过 `mcp__scrapling__session_make_request` 复用底层 TCP/TLS 连接与浏览器指纹，避免高频离散握手触发源站频控；批量抓取单批物理切片严格锁定 $\le 4\sim 8$ URLs；
+   - **步骤三·显式关闭释放资源（强制）**：进货完成且文件确认落盘后，**必须强制调用 `mcp__scrapling__close_session(session_id=session_id)` 显式释放连接句柄与内存**，杜绝后台空闲孤儿会话与内存泄露；
+   - **指数退避重试（Exponential Backoff）**：遭遇网络抖动或偶发 HTTP 429 频控时自动退避重试（配置 `retries: 3`, `retry_delay: 1`），严禁高频硬冲引发 WAF 阻断。
 
 ---
 
@@ -66,16 +65,18 @@ metadata: { "emoji": "📆" }
 
 ## 极速单动执行规约（Scrapling MCP 官方极速通道）
 
-### 步骤 1：协议流直取球探竞足页
-调用 MCP `scrapling` 工具：
+### 步骤 1：协议流直取球探竞足页（Level 1 纯 HTTP 极速通道）
+首选调用 MCP `scrapling` 的 `bulk_get` 或 `make_request`（纯 HTTP 协议流，零浏览器开销）：
 ```json
 {
-  "url": "https://jc.titan007.com/index.aspx",
+  "urls": ["https://jc.titan007.com/index.aspx"],
   "extraction_type": "markdown",
-  "network_idle": true
+  "impersonate": "chrome",
+  "stealthy_headers": true
 }
 ```
-**若打不开，必须立即向主人置顶发出严重警报提示「🚨 球探赛程页无法打开，数据通道受阻！」**，同时记录工具错误、失败状态与恢复待办。严禁静默或掩盖。
+*注：若遭遇 403 或反爬盾，允许在 Scrapling 内部升阶至 Level 2（`fetch` 或 `stealthy_fetch`）。*
+**若仍打不开，必须立即向主人置顶发出严重警报提示「🚨 球探赛程页无法打开，数据通道受阻！」**，同时记录工具错误、失败状态与恢复待办。严禁静默或掩盖。
 
 ### 步骤 2：直接解析 Markdown 表格行
 从返回的 Markdown 表格中逐行提取当日比赛（匹配 `| 周[一二三四五六日]\d{3} | ... |`）：
@@ -172,10 +173,14 @@ metadata: { "emoji": "📆" }
   - **4~6 场仅仅是单批并发（Batch Size）的物理切片**，用于防止网络超时，**绝对不可将批次切片误当成推演总数！**
 - **【前置零漫游硬禁令（Zero Pre-flight Thrashing）】**：
   搬运工被派发后的第 1 个动作必须且只能是执行进货落盘命令！严禁在抓取前执行任何 `git log`、`git status`、pytest/unittest 检查；严禁思考盘赔逻辑或定性胜负！
-- **【官方一体化专职进货机械臂（Zero Ad-hoc Python 唯一首选）】**：
-  1. **首选极速路径**：
-     调度官方 Scrapling MCP 安全并发拉取 5 大接口数据，秒级落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`，并同步落盘工整表格 `data/{销售日}/{matchId}.md`（人类可视化简报）。
-  2. **步骤 2：回传状态（Announce Completion）**：
+- **【官方一体化专职进货机械臂（Scrapling 官方 Session 长连接三部曲）】**：
+  1. **步骤一：开辟全真会话（Open Session）**：
+     调用 `mcp__scrapling__open_request_session(impersonate="chrome", stealthy_headers=true, timeout=30)` 获取 `session_id`。全真模拟 Chrome TLS/JA3 指纹与真实 Client Hints 标头，抹除爬虫特征；
+  2. **步骤二：复用连接批量请求（Session Make Request）**：
+     使用同一个 `session_id`，复用底层 TCP/TLS 链路拉取单场 5 大核心接口（分析页、波胆页、竞彩接口、1x2d.js、7家变盘流水），免除重复离散握手，网络延迟立降 60%；配合选择器下推（`css_selector`）内存脱敏；若遇 403/503 或人机挑战盾，自动升阶至 `mcp__scrapling__stealthy_fetch(solve_cloudflare=true)`；
+  3. **步骤三：显式关闭会话（Close Session）**：
+     数据拉取并落盘存证（`data/{销售日}/raw/{matchId}.json` 与 `data/{销售日}/{matchId}.md`）后，强制调用 `mcp__scrapling__close_session(session_id=session_id)` 释放连接与系统句柄；
+  4. **步骤四：回传状态（Announce Completion）**：
      物理文件生成且新鲜有效后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】底层源数据已落盘，人类视图已就绪」，结束搬运任务！
 
 ### 1. 亚盘与大小球 7 大法定机构并发直取

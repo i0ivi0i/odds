@@ -11,7 +11,7 @@
 7. **凡涉及倍率与赛果推演**：按 `skills/deep-analysis/SKILL.md` 的完整分析流程执行：欧指、亚盘、大小球的赛前变动轨迹与多公司交叉验证 → 合理性及跨市场变动分析 → 关键点、疑点、矛盾与风险 → 综合评估；由 recommendation 汇总推荐，post-review 回查赛前依据并更新统计。截图训练只用图上数据，缺失维度如实标注，不另套案例口诀。
 8. **推演态三阶段硬死锁与图谱规约（阶段0赛程自检 ➔ 阶段1物理进货 ➔ 阶段2图谱深推）**：
    - **【阶段 0：赛程索引确定性自检与极速直落（Zero-State Hard Lock）】**：凡触发任何赛程同步、赛前分析、手动推演（如“今天买什么/全面分析推演/分析010”）等任何分析任务，唤醒后的**第 0 步绝对硬死锁必须先检查磁盘 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）**：
-     - 若**不存在或超期**：主会话第 0 秒推送「⚡ 今日赛程索引未初始化，正在秒级拉取落盘 meta.md...」，立即调度 Skill `match-scraper` 模式一，调用 Scrapling MCP `fetch(url="https://jc.titan007.com/index.aspx", extraction_type="markdown", network_idle=true)` 秒级提取比赛列表 ➔ 立即原子落盘 `data/{销售日}/meta.md` 并追加 `memory/{销售日}.md`（全程 < 2 秒）！
+     - 若**不存在或超期**：主会话第 0 秒推送「⚡ 今日赛程索引未初始化，正在秒级拉取落盘 meta.md...」，立即调度 Skill `match-scraper` 模式一，调用 Scrapling MCP Level 1 协议流 `bulk_get(urls=["https://jc.titan007.com/index.aspx"], extraction_type="markdown", impersonate="chrome", stealthy_headers=true)` 秒级提取比赛列表 ➔ 立即原子落盘 `data/{销售日}/meta.md` 并追加 `memory/{销售日}.md`（全程 < 2 秒）！
      - 若**已存在且有效**：直接放行进入阶段一；
      - **推演态契约专注原则**：
        ① **序贯衔接与必读心法**：阶段 0 专注于极速落盘 `meta.md`；《skills/deep-analysis/SKILL.md》是全系统核心推演大脑，在阶段 2（源数据门禁 PASS 后）**绝对强制调用 `view_file` 深度全精读并执行**，阶段 0～1 仅是不提前空转偷跑，绝非不读；
@@ -31,7 +31,7 @@
    - **EvoOntology 唯一法定看数视网膜与严禁大模型裸视数据立宪（只看事实、不作理解）**：
         **绝对严禁大模型裸视海量数据**：严禁任何大模型、大脑、Agent 或 Subagent 直接使用 `view_file` 通读底层庞杂原始数据（如 `data/**/raw/*.json` 或全文 `.md` 表格）注入上下文！直接裸视极易诱发注意力隧道效应、信息严重漏读、张冠李戴与上下文爆炸；
         **EvoOntology 专属做市视网膜**：全系统搜查、观看任何比赛数据，**必须且只能通过 EvoOntology 官方 MCP 工具**（`browse_semantics` 发现机位 ➔ `resolve_semantics` 精准提取微观字段切片）。EvoOntology 专属负责客观呈现与安全检索（**只负责看，不负责理解**）；大模型拿到数十至百余字节的纯净微观切片后专属负责 10 步博弈推理（**只负责想，绝不裸视**）；
-        **8 大只读机位雷达与 Graphify 联动**：底层原始 JSON（`raw/{matchId}.json`）承担 100% 物理无损存证职责，严禁任何截断或抽稀；EvoOntology 通过官方原生 `mappings.json`（`database_source: raw_json`）与官方 MCP 工具实现概念与原始字段的精准绑定。凡触发阻断类机位特征，契约卡必须显式开设 `【机位阻断对质】` 并做博弈反向破译，严禁指鹿为马使用反向背书词汇。本体层绝对严禁写死任何推演打分规则；
+        **法定 23 家全景做市机位视网膜与 Graphify 联动**：底层原始 JSON（`raw/{matchId}.json`）承担 100% 物理无损存证职责，严禁任何截断或抽稀；EvoOntology 通过官方原生 `terms.json` 与 `mappings.json`（`database_source: raw_json`）完整纳管法定 23 家做市商机位（涵盖英伦母盘、欧陆防守、商业做市、亚洲自营哨兵与学术共识样本）与做市博弈探针。大模型通过官方 MCP 工具（`browse_semantics` ➔ `resolve_semantics`）实现概念与微观原始字段的精准绑定提取。凡触发阻断类机位特征，契约卡必须显式开设 `【机位阻断对质】` 并做博弈反向破译，严禁指鹿为马使用反向背书词汇。本体层绝对严禁写死任何推演打分规则；
       - **EvoOntology 进化纯净宪法（只纳规律、严拒噪音）**：主人最高原则——“喜欢进化，只要进化就是好事，但是绝对不能把噪音也进化进去”。严禁将单场偶发事件（如红牌罚下、意外折射、单次失误、孤立异常数字）误当作操盘规律；提出的 Candidate 探针必须具备普遍的做市博弈因果逻辑，且必须在历史快照池上通过严格回测对质，确保无负面回归与误报警，宁缺毋滥，保持本体 100% 纯净度。
 9. **系统演化三阶总战略与 deep-analysis 封顶铁律（马斯克做减法 × 乔布斯极简原则 × 保魂去腐）**：
    - **演化三阶原则**：在以后本足球系统的优化微调中，严格遵循“① 主要优先做减法；② 其次要做微调；③ 最后在实在不得已的情况下才做加法”。想做加法必须先向主人请示报告。
@@ -87,7 +87,7 @@ subagent：抓取全量赛程 → 初始化落盘 `data/{销售日}/meta.md` 全
 - **手动指令最高穿透原则**：上述 17:00/21:00 与 22:00 早晚盘时间截断**仅在 Cron 定时任务自动触发时生效**。当主人在任何时间手动下达「全面分析推演」「今天买什么」「给推荐」或手动指定多场/全量时，**直接穿透 22:00 时间截断限制**，对当日开售赛事全量排队进表！
 
 ```
-主会话：检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；若无立即调度 Scrapling MCP fetch(index.aspx) 极速落盘 meta.md 与追加 memory.md (< 2秒) ➔ 第0秒推送「⚡ 已启动赛前分析」与锁定场次 ➔ 立即执行进货
+主会话：检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；若无立即调度 Scrapling MCP bulk_get(index.aspx) 极速落盘 meta.md 与追加 memory.md (< 2秒) ➔ 第0秒推送「⚡ 已启动赛前分析」与锁定场次 ➔ 立即执行进货
 - **【主会话前置白名单绝对硬锁（Main Session Hard-Lock Protocol）】**：
   主会话在阶段 0~1 的行为被严格约束在最简白名单：
   ① 检查并初始化 `data/{销售日}/meta.md`；
@@ -187,7 +187,7 @@ ceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、�
 
 当主人手动指定单场比赛（如「分析 018」或「分析 3003906」）时，严禁大模型在主会话中既当苦力搬运工又当分析师：
 0. **第 0 步赛程索引自检（主会话）**：
-   优先检查 `data/{销售日}/meta.md` 是否存在；若无立即调用 Scrapling MCP fetch(index.aspx) 极速生成 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，以支持编号（如 018）精准解析与全天对齐；
+   优先检查 `data/{销售日}/meta.md` 是否存在；若无立即调用 Scrapling MCP bulk_get(index.aspx) 极速生成 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，以支持编号（如 018）精准解析与全天对齐；
 1. **第 0 秒状态透传（主会话）**：
    收到单场指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动场次【{matchId} {对阵}】推演源数据抓取，专职搬运工进货中...`，杜绝黑盒盲等；
@@ -207,7 +207,7 @@ ceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、�
 
 当主人指定多场（如「分析 004 和 005」）或定时触发全天批次（早盘13场/晚盘12场）时，严格贯彻以下 4 大护城河铁律：
 0. **第 0 步赛程索引自检（Zero-State Hard Lock）**：
-   第 0 秒检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；若无立即调用 Scrapling MCP fetch(index.aspx) 极速秒落 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，严禁在索引就绪前翻阅任何推演心法或代码；
+   第 0 秒检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；若无立即调用 Scrapling MCP bulk_get(index.aspx) 极速秒落 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，严禁在索引就绪前翻阅任何推演心法或代码；
 1. **第 0 秒进度透传与分批汇报（主会话）**：
    收到多场/全量指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动【全量 X 场】推演流水线，专职搬运工正在按 4~6 场分组分批进货中...`，杜绝黑盒盲等；
@@ -485,7 +485,7 @@ ceil$；
         ③ 给每个 Worker 的 Prompt 必须短小精炼（≤ 2KB），仅包含当前承包的 6 场比赛 ID 与极简指令，且必须使用以下强制规范模板：
            ```yaml
            task:
-             goal: "【阶段一专职搬运工进货】承包场次：{matchIds}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。必须且只能直接调用官方 Scrapling MCP 工具（mcp__scrapling__bulk_get 或 mcp__scrapling__fetch）并发拉取 5 大接口数据，直接落盘底层存证 data/{销售日}/raw/{matchId}.json 与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取/清洗代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
+             goal: "【阶段一专职搬运工进货】承包场次：{matchIds}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。数据采集必须且只能依托官方 Scrapling MCP 工具：首先开辟全真 Chrome 长连接会话（mcp__scrapling__open_request_session 带 impersonate='chrome' 与 stealthy_headers=true），复用会话（session_make_request）并发拉取 5 大接口数据并下推选择器；若遇 403/503 或人机盾自动升阶 stealthy_fetch；数据落盘后强制显式关闭会话（close_session）。直接落盘底层存证 data/{销售日}/raw/{matchId}.json 与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取/清洗代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
            ```
         ④ 【Worker 行为封印三禁】：严禁 Worker 在终端或主会话执行 `git log`、`git status` 等代码工程探测；严禁思考盘赔逻辑或定性胜负；严禁自行修改或 patch 系统代码！严禁编写任何临时 `.py` 脚本！
       - **响应式汇聚**：主会话派发完蜂群数组后立即停止调用工具，依赖 Reactive Wakeup 等待全员回传。
