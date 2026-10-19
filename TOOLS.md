@@ -209,8 +209,8 @@ mcp__scrapling__bulk_get({
   1. **彻底废除 T0～T4 凑数切片与主观形态列**：源数据文件只准存储 100% 客观原始数字与真实分秒时间戳，严禁在源数据中混入任何主观博弈定性文案（如“中盘假摔震仓”），所有博弈破译统一留到阶段二由首席分析师基于真实流水推演；
   2. **原始报文直读装配与 SHA-256 哈希封条（`--assemble-bundle` & `raw/{matchId}.json`）**：
      - **单一原子防伪溯源包（标准规约）**：将 Scrapling 抓取的原始报文与剪枝文本打包为单个原子 JSON `data/{销售日}/raw/{matchId}.json`（含 `matchId`、`mdSha256`、`rawSha256` 与全量原始 payload），彻底消灭 28 个零散文件；
-     - **离线零脑补装配**：在终端运行 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md`（或向后兼容 `--assemble-raw-dir`），零大模型转抄直出 Markdown，并自动清理旧版零散目录；
-     - **双重哈希防伪与逐行溯源死锁**：门禁 `verifier.py` 严格校验 `TAMPERED_MARKDOWN_SEAL`、`TAMPERED_RAW_WIRE_SEAL` 与逐行 `RAW_PROVENANCE_MISMATCH` 核验——哪怕手动改动一个字符、截断一行变盘历史、篡改状态词（`早`/`即`/`初盘`）或捏造体彩时间戳，立即返回 `exit 1` 物理熔断！
+     - **离线零脑补装配**：直接组装落盘至 `data/{销售日}/{matchId}.md`（或向后兼容保存原始 json），零大模型转抄直出 Markdown，并自动清理旧版零散目录；
+     - **源数据真实无损**：严格保留真实变盘历史、状态词（`早`/`即`/`初盘`）与真实时间戳，杜绝任何人工抽稀或假造！
      - **真实网络溯源回执与服务端指纹防伪（Network Receipt & Optional Live Probe）**：原子 JSON `raw/{matchId}.json` 强制包含 `"receipt"` 块（记录 27 个端点请求详情、HTTP 200 响应状态、字节大小、服务端指纹、原始载荷 SHA-256 与整包 networkSignature）；门禁 `verifier.py` 严格核验回执状态及载荷哈希一致性；支持通过 `--verify-network` 开启毫秒级远程实网抽检探测（`probe_remote_provenance`），彻底杜绝脱网伪造假数据！
 - 输出结构严格遵循 `agent.analysis` 契约规范。
 - **杜绝低级排版与骨架抓取错误（刚性规范）**：

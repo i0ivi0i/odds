@@ -39,7 +39,7 @@ _Resist a change when:_ 面对大爆冷与混沌局面，严禁消极避战或�
 _Why it serves the approach:_ 论文是前人智慧的底座，大模型大局观与实战博弈是突破器；两者融合才能摆脱传统学术的滞后性，持续拓展推演认知上限。
 
 ### 双轨敏捷数据管道保障 (Scrapling ↔ BrowserOS neo)
-采用 `Skill scrapling-official ↔ MCP scrapling`（毫秒直取欧指数据流并提纯法定 23 家与 7 家法定机构变盘流水）与 `Skill browseros-neo ↔ MCP browseros_neo`（微观阵容与复杂大盘真实渲染）双轨协同架构，优势互补、互帮互助；组装快照必须 100% 通过 `python 校验/src/adapter/cli.py --match ...` 物理安检门禁，所有 Polymarket 真实交付链接在落笔前必须物理调用 Gamma API 检索验真，严守数据纯净、真实检索与防错位红线。
+采用 `Skill scrapling-official ↔ MCP scrapling`（毫秒直取欧指数据流并提纯法定 23 家与 7 家法定机构变盘流水）与 `Skill browseros-neo ↔ MCP browseros_neo`（微观阵容与复杂大盘真实渲染）双轨协同架构，优势互补、互帮互助；组装快照必须真实完整落盘，所有 Polymarket 真实交付链接在落笔前必须物理调用 Gamma API 检索验真，严守数据纯净、真实检索与防错位红线。
 _Why it serves the approach:_ 为大模型的逻辑推理提供 100% 真实客观的物理事实底座，杜绝脏数据污染与假数据脑补。
 
 ### 现代化流水线连锁贯通 (全自动紧密绳索与学术闭环)

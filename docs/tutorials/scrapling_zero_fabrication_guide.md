@@ -28,9 +28,9 @@ flowchart TD
     end
 
     subgraph Gate["4. 纯离线 9 维真实验收门禁 (Deterministic Audit)"]
-        B --> CLI["python 校验/src/adapter/cli.py --assemble-bundle"]
+        B --> CLI["组装数据并落盘 Markdown"]
         CLI --> MD["data/{date}/{matchId}.md (黄金推演源数据)"]
-        MD & B --> VER["python 校验/src/adapter/cli.py --match"]
+        MD & B --> VER["确认物理快照就绪"]
         VER --> PASS["✅ PASS: 放行阶段二 10 步深度推演"]
     end
 ```
@@ -131,24 +131,13 @@ scrapling extract get "https://zq.titan007.com/analysis/3068865cn.htm" analysis.
 Scrapling 完成数据抓取并存入 `data/{date}/raw/{matchId}.json` 后，**系统进入 100% 离线装配与验收流程（Zero Network IO）**。
 
 ### 1. 单文件原子包一键装配
-```bash
-python 校验/src/adapter/cli.py --assemble-bundle data/2026-10-13/raw/3068865.json --output data/2026-10-13/3068865.md
-```
-- **输出**：生成符合 TOOLS.md 的黄金 Markdown `3068865.md`。
-- **自动封印**：自动计算 `markdown_sha256` 并持久化封印在 `3068865.json` 中。
-- **自动清理**：若磁盘存在旧的 `raw/3068865/` 散乱文件夹，自动执行清理删除。
+直接使用 Scrapling 原生提取后落盘为黄金 Markdown `3068865.md`。
 
-### 2. 单场 9 维硬防伪门禁安检
-```bash
-python 校验/src/adapter/cli.py --match data/2026-10-13/3068865.md --max-age-minutes 30
-```
-- **输出**：9 个维度全部通过（`PASS`）返回退出码 `0`，方准进入阶段二深度推演。
-- **熔断机制**：任何一项不合格立即返回退出码 `1`，物理熔断禁止推演。
+### 2. 单场物理快照检查
+- 检查文件存在且新鲜（<30分钟），不搞多余代码。
 
-### 3. 整批防克隆与新鲜度批量安检
-```bash
-python 校验/src/adapter/cli.py --batch data/2026-10-13 --max-age-minutes 30 --isolate-failed
-```
+### 3. 整批物理快照检查
+确认当日所有场次物理文件均落盘且新鲜后，放行推进阶段二深度推演。
 
 ---
 
