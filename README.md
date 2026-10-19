@@ -34,7 +34,7 @@ npm test
 ```
 
 ### 2. 各平台运行方式
-- **爱马仕 (Hermes Agent)**：直接在当前工作区对话交互；每日自动化可参考 `agent-config-snippet.json5`。
+- **爱马仕 (Hermes Agent)**：直接在当前工作区对话交互；每日自动化已由爱马仕调度中枢接管。
 - **反重力 (Google Antigravity)**：将本工程目录作为工作区打开，直接对话即可自动读取 `AGENTS.md` 与 Skills。
 - **Claude Code / Cursor**：在当前目录下打开终端，直接调用相关指令与分析推演。
 
@@ -96,9 +96,6 @@ workspace/
 ├── MEMORY.md            # 长期记忆：累计统计、策略结论
 ├── memory/              # 每日记忆
 │   └── YYYY-MM-DD.md   # 每日分析日志
-├── scripts/             # 工具脚本
-│   └── verify_poisson.py # 泊松比分公式验证
-│   └── check_consistency.py # 口径一致性自检（防回归）
 └── skills/              # 技能
     ├── match-scraper/   # 赛程抓取
     ├── match-screening/ # 初筛

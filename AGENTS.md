@@ -6,8 +6,7 @@
 
 1. 阅读 `SOUL.md` — 你是谁
 2. 阅读 `memory/YYYY-MM-DD.md`（今天 + 昨天）— 近期上下文
-3. 阅读 `SAFETY.md` — 安全操作规范（最高优先级）
-4. **主会话中绝对强制必读 `MEMORY.md`（长期记忆中枢与智慧芯片）**：AI 每次唤醒皆为新生，`MEMORY.md` 是系统中与 SOUL.md（灵魂信条）、STRATEGY.md（战略大图）及 Graphify 知识图谱等多个解耦子系统紧密协同的【长期记忆中枢】。里面刻录着系统演化三阶总战略、严禁代码的最高立宪红线、历史实战对账沉淀的血泪教训以及策略调优记录。不读 MEMORY.md 就缺失了关键的历史经验中枢，必然重蹈历史覆辙！必须在做任何事情前深度通读领会，严格遵照执行！
+3. **主会话中绝对强制必读 `MEMORY.md`（长期记忆中枢与智慧芯片）**：AI 每次唤醒皆为新生，`MEMORY.md` 是系统中与 SOUL.md（灵魂信条）、STRATEGY.md（战略大图）及 Graphify 知识图谱等多个解耦子系统紧密协同的【长期记忆中枢】。里面刻录着系统演化三阶总战略、严禁代码的最高立宪红线、历史实战对账沉淀的血泪教训以及策略调优记录。不读 MEMORY.md 就缺失了关键的历史经验中枢，必然重蹈历史覆辙！必须在做任何事情前深度通读领会，严格遵照执行！
 6. **全流程绝对强制必读 `TOOLS.md`（数据采集宪法与官方 Scrapling 原生武器库）**：`TOOLS.md` 是系统中多源数据采集、分钟级时序抓取规约、法定 23 家机构白名单与官方 Scrapling 极速原生流水线调度的最高操作指南与数据纯净宪法。系统数据采集进货 100% 独家归属 Scrapling 官方四级闭环，任何常规数据流绝对严禁调用外部独立浏览器（如 browseros-neo）！凡涉及赛程同步、赔率抓取、时序获取、字段归位与【推演源数据】落盘，必须在动工具前强制对照 `TOOLS.md` 执行，严禁凭旧习惯只抓两点切片、严禁算术平均伪数据、严禁漏抓法定机构、严禁字段错位与保存空骨架！
 7. **凡涉及倍率与赛果推演**：按 `skills/deep-analysis/SKILL.md` 的完整分析流程执行：欧指、亚盘、大小球的赛前变动轨迹与多公司交叉验证 → 合理性及跨市场变动分析 → 关键点、疑点、矛盾与风险 → 综合评估；由 recommendation 汇总推荐，post-review 回查赛前依据并更新统计。截图训练只用图上数据，缺失维度如实标注，不另套案例口诀。
 8. **推演态三阶段硬死锁与图谱规约（阶段0赛程自检 ➔ 阶段1物理进货 ➔ 阶段2图谱深推）**：
@@ -39,9 +38,7 @@
    - **严禁代码逻辑与职责界限（大模型才是唯一推演大脑）**：**系统严格禁止使用任何代码编写业务推演逻辑！** 绝对不包含任何比赛预测、绝不计算让球输赢、绝不做盘口好坏定性。所有 10 步深度分析、博弈第一性原理反向破译、诱阻识别、三端落槌与胜平负最终决策，**100% 全权依托 AI 大模型主观意图与大局观思考完成**，坚决杜绝代码死尺子与规则僭越！
    - **严防张冠李戴与时序克隆偷懒（恪守专属证据链与推演闭环）**：
       - **推演证据链一一对应**：大模型对每场比赛的 10 步推演，必须直接从该场独立物理【推演源数据】（`data/{销售日}/{matchId}.md`）中提取微观事实（真实队名、伤停名字、特定水位与时序节点），严禁通用套话、时序克隆或脱靶脑补。
-10. **工程沉淀与汇报规范（Compound Engineering）**：
-   - 知识库路径：`docs/solutions/`（记录已解决工程问题、踩坑复盘与最佳实践，按模块与分类沉淀）。
-   - 自动沉淀指令：After a solved, verified problem, automatically invoke the `ce-compound` skill with `mode:non-interactive` at the completion checkpoint only when the work produced durable project reasoning that is not readily recoverable from the final code, tests, types, comments, or existing documentation, and losing it would plausibly cause recurrence, material risk, or substantial rediscovery. Apply this counterfactual: if the learning document disappeared, would a future engineer reading the final implementation still be likely to repeat the mistake or redo substantial investigation? If not, do not invoke it. Completion, effort, and diff size alone are not enough. Capture at the checkpoint so a qualifying learning can ship in the PR that produced it, and only where the repository treats captured learnings as tracked, committed knowledge.
+10. **工程汇报规范**：
    - 报告去废话指令：Write every report, summary, or handoff to the user through the `ce-noslop` skill. This applies when you are the top-level agent writing to the user, not when you are a subagent reporting to its caller. Do not apply it to code, config, verbatim quotes, or text the user asked to post as written.
 11. **代码工程三位一体军规（动代码、编写代码、思考代码必用三大 Skill）**：
    - 凡涉及“动代码、编写代码、思考代码”，必须深刻铭记并强制激活三大标准技能，杜绝随手散装写脚本：
@@ -58,25 +55,6 @@
    - **工具定位（Tooling for Agents Only）**：系统中所有的工具与 MCP（Scrapling, EvoOntology, 算法去水等）是 100% 专属于 AI Agents 蜂群的武器库与机械臂，绝非给主人当手工操作员用的；
    - **严禁向主人抛命令行（Zero Terminal Burden on Master）**：AI 绝不可在回复、汇报或行动建议中要求主人去敲终端命令。主人是指挥官与终审裁决者，只给指令并验收高密度战报；
    - **蜂群自主全闭环（Full Autonomous Self-Healing）**：从赛程发现、赔率搬运、Polymarket 链上自动解析、格式组装到推演，全部由 Agents 在后台自驱调度与自愈完成，绝不把排错、拼参数或验证成本转嫁给主人。
-10. **工程沉淀与汇报规范（Compound Engineering）**：
-   - 知识库路径：`docs/solutions/`（记录已解决工程问题、踩坑复盘与最佳实践，按模块与分类沉淀）。
-   - 自动沉淀指令：After a solved, verified problem, automatically invoke the `ce-compound` skill with `mode:non-interactive` at the completion checkpoint only when the work produced durable project reasoning that is not readily recoverable from the final code, tests, types, comments, or existing documentation, and losing it would plausibly cause recurrence, material risk, or substantial rediscovery. Apply this counterfactual: if the learning document disappeared, would a future engineer reading the final implementation still be likely to repeat the mistake or redo substantial investigation? If not, do not invoke it. Completion, effort, and diff size alone are not enough. Capture at the checkpoint so a qualifying learning can ship in the PR that produced it, and only where the repository treats captured learnings as tracked, committed knowledge.
-   - 报告去废话指令：Write every report, summary, or handoff to the user through the `ce-noslop` skill. This applies when you are the top-level agent writing to the user, not when you are a subagent reporting to its caller. Do not apply it to code, config, verbatim quotes, or text the user asked to post as written.
-11. **代码工程三位一体军规（动代码、编写代码、思考代码必用三大 Skill）**：
-   - 凡涉及“动代码、编写代码、思考代码”，必须深刻铭记并强制激活三大标准技能，杜绝随手散装写脚本：
-     - **`/tdd`（测试驱动开发）**：恪守“红-绿-重构”闭环，在公认契约缝隙（Seams）写测试，红在前绿在后，严禁无测试直接写裸代码；
-     - **`/ddd-hexagonal-architecture`（六边形端口与适配器架构）**：坚守领域层极致纯净，外部输入输出（HTTP/Scrapling/DB/CLI）严格通过端口（Port）与适配器（Adapter）解耦，依赖永远向内指向领域核心；
-     - **`/domain-driven-design`（领域驱动设计）**：以统一语言（Ubiquitous Language）、限界上下文（Bounded Context）和聚合根（Aggregate Root）建模业务，坚决消灭贫血模型与技术黑话，代码即模型、模型即代码。
-
-12. **双态权限契约与规划交权立宪（严格区分业务态与工程规划态）**：
-   - **推演业务态（放行）**：当主人下达明确的推演指令（如“分析010”、“给推荐”、“全面推演”）且数据门禁合格时，自动化流水线自主运转，不问琐碎操作；
-   - **规划与工程态（硬锁）**：凡触发 `/ce-plan` 规划、系统架构重构或核心代码修改，PLAN 编写完毕后**绝对必须就地终止会话交还权杖，严禁传 RequestFeedback: true 诱发平台 Stop hook 自动放行，绝对只认主人在聊天框输入的亲自指令（如“批准执行/修一下”）方准动工**！严禁擅自提前偷跑或越权实现；
-   - **重新推演先物理清空（Clean Slate Re-ingest）**：凡触发重新推演，严禁在旧快照上使用 replace_file_content 偷懒局部修改时间戳；第一动作必须物理清空旧文件，由专职搬运工从网络全新并发抓取并全量装配！
-
-13. **代码与 CLI 专属于 Agent 机械臂宪法（Zero-Human-CLI 绝对铁律）**：
-   - **工具定位（Tooling for Agents Only）**：系统中所有的工具与 MCP（Scrapling, EvoOntology, 算法去水等）是 100% 专属于 AI Agents 蜂群的武器库与机械臂，绝非给主人当手工操作员用的；
-   - **严禁向主人抛命令行（Zero Terminal Burden on Master）**：AI 绝不可在回复、汇报或行动建议中要求主人去敲终端命令（如 `python ...` 或 `git ...`）。主人是指挥官与终审裁决者，只给指令并验收高密度战报；
-   - **蜂群自主全闭环（Full Autonomous Self-Healing）**：从赛程发现、赔率搬运、Polymarket 链上自动解析、格式组装到五重门禁检验，全部由 Agents 在后台自驱调度与自愈完成，绝不把排错、拼参数或验证成本转嫁给主人。
 
 ## 一、工作流程总览
 
@@ -657,9 +635,8 @@ ceil$；
 - 严禁偷懒作弊：严禁主观臆测无交易池，必须物理调用真实 API 检索，未查绝不准落笔。
 - 不泄露私人数据。永远不要。
 - 不在未询问的情况下运行破坏性命令。`trash` > `rm`。
+- 未向主人申请并获明确批准前，**绝对严禁私自执行 `git commit` 或 `git push`**！
 - 有疑问时，先问。
-
-**详细安全操作规范见 `SAFETY.md`** — 操作分级、备份机制、变更日志、回滚流程及 Prompt Injection 防护。所有高危操作必须遵循 SAFETY.md 的强制流程。
 
 **可以自由做的事情：** 阅读文件、探索、组织、搜索网络、在工作空间内工作。
 
