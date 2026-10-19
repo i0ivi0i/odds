@@ -120,22 +120,22 @@ workspace/
 在多场深度分析执行时（例如主人要求「分析 002 和 005」，或赛前初筛通过多场并发处理），如果直接使用浏览器 CLI 并发抓取，由于浏览器实例属于共享单例，容易发生标签页互踩与数据串号。
 
 ### 架构应对策略
-1. **数据抓取层解耦**：编排阶段（阶段一）集中调用 `/scrapling-official` 并发矩阵一次性提取全量快照落盘 `data/`（`/browseros-neo` 备用辅助）；阶段二 worker 纯只读本地快照做推理，严禁抢跑思考。
+1. **数据抓取层解耦**：编排阶段（阶段一）集中调用 `/scrapling-official` 并发矩阵（官方 Scrapling MCP）一次性提取全量快照落盘 `data/`；阶段二 worker 纯只读本地快照做推理，严禁抢跑思考。
 2. **子智能体分析策略**：通过各 Agent 的子任务机制（爱马仕 `delegate_task`、反重力 `invoke_subagent`）隔离推演上下文，从根源杜绝数据污染。
 
 ---
 
-## 开发者工具：口径一致性自检（可选）
+## 算法单测自检
 
-当你改了 `skills/` 或 `docs/` 的口径（如 EV 阈值、Top 4、大小球首选/次选），可以跑一次自检防止回退：
+当需要验证 pure DDD 算法库功能时，运行官方离线数学单测：
 
 ```bash
-python3 scripts/check_consistency.py --print-ok
+py -3.13 -m unittest discover -s 算法/测试
 ```
 
 ## 注意事项
 
-- 数据抓取默认 Skill `/scrapling-official` 极速直取（`/browseros-neo` 备用辅助）。禁止先跑 sporttery-sniper 命令。其他来源齐全且对得上才能代，缺、错、少不能硬推
+- 数据抓取 100% 独家归属官方 Scrapling 原生流水线（Skill `/scrapling-official` ↔ MCP `scrapling`）。严禁调用外部独立浏览器（如 `browseros-neo`），严禁编写临时 Python 脚本。
 - 每日初筛最多 8 场（建议 3-5 场），精选 2-3 场核心推荐（最多 4 场）
 - MEMORY.md 策略调优和关键教训不允许重复，主题相同时合并更新原条目
 - 所有分析基于数据，不保证胜率，仅供参考

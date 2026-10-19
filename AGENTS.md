@@ -110,6 +110,7 @@ ceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、�
   ② 严禁 Worker 思考盘赔逻辑、构思分析思路或下达胜负预测；
   ③ 严禁 Worker 自行重写、修改或 patch 系统代码；
   ④ 严禁在推演/进货/排错全流程散装编写任何 `.py` 临时脚本，违规编写记录严格锁定为 0！
+  ⑤ 严禁调用平台工具 `execute_code` 执行任何 Python 抓取、清洗或对账代码！数据采集 100% 依托 Scrapling MCP，推演查看 100% 依托 EvoOntology MCP！
   **搬运工官方原生纯净进货管道（Minimal Ingestion Pipeline）**：
   搬运工直接调度官方 Scrapling MCP 原生流水线（分块安全拉取 5 大接口）➔ 提取落盘至 `data/{销售日}/{matchId}.md`，拿到物理文件后立即向主会话回传完成状态！全流程绝对零手写临时 Python 脚本！
   **官方合法未开盘与推演到底宪法（Anti-Drop Iron Rule）**：
@@ -191,7 +192,11 @@ ceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、�
    收到单场指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动场次【{matchId} {对阵}】推演源数据抓取，专职搬运工进货中...`，杜绝黑盒盲等；
 2. **阶段一：派发专职搬运工 Subagent（纯物理进货）**：
-   主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 专职调用 Skill `match-scraper`（Scrapling MCP `bulk_get` 极速并发）秒取 5 大接口数据 ➔ 组装落盘至 `data/{销售日}/{matchId}.md` ➔ 确认物理文件生成后 announce 回传主会话。严禁搬运工在未过验前思考盘赔或定性胜负，专注于高效进货与数据装配！
+   主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 专职调用 Skill `match-scraper`（Scrapling MCP `bulk_get` 极速并发）秒取 5 大接口数据 ➔ 组装落盘至 `data/{销售日}/{matchId}.md` ➔ 确认物理文件生成后 announce 回传主会话。
+   ```yaml
+   task:
+     goal: "【阶段一专职搬运工进货】承包场次：{matchId}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。必须且只能直接调用官方 Scrapling MCP 工具（mcp__scrapling__bulk_get 或 mcp__scrapling__fetch）并发拉取 5 大接口数据，直接落盘底层存证 data/{销售日}/raw/{matchId}.json 与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
+   ```
 3. **主会话中转放行反馈**：
    主会话收到搬运工 announce 的物理文件就绪报告后，立即推送：
    `🛡️ 【{matchId}】推演源数据已就绪，正在唤醒首席分析师进入阶段二深度推演...`
@@ -477,10 +482,12 @@ MEMORY.md 维护规则：
       - 设待分析总场数为 $N$，单批安全物理切片容量 $B=6$ 场，计算蜂群规模 $W = \lceil N/6 
 ceil$；
         ② 主会话在单次任务分发中（反重力 `invoke_subagent` 数组、爱马仕并发 `delegate_task`）一次性填入全量 $W$ 个 Worker，一枪打出，严禁分多次循环串行串烧；
-        ③ 给每个 Worker 的 Prompt 必须短小精炼（≤ 2KB），仅包含当前承包的 6 场比赛 ID 与极简指令：
-           - 调度官方 Scrapling MCP 安全拉取数据并落盘至 `data/{销售日}/{matchId}.md`；
-           - 确认物理文件生成后立即向主会话回传完成状态；
-        ④ 【Worker 行为封印三禁】：严禁 Worker 在终端或主会话执行 `git log`、`git status` 等代码工程探测；严禁思考盘赔逻辑或定性胜负；严禁自行修改或 patch 系统代码！
+        ③ 给每个 Worker 的 Prompt 必须短小精炼（≤ 2KB），仅包含当前承包的 6 场比赛 ID 与极简指令，且必须使用以下强制规范模板：
+           ```yaml
+           task:
+             goal: "【阶段一专职搬运工进货】承包场次：{matchIds}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。必须且只能直接调用官方 Scrapling MCP 工具（mcp__scrapling__bulk_get 或 mcp__scrapling__fetch）并发拉取 5 大接口数据，直接落盘底层存证 data/{销售日}/raw/{matchId}.json 与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取/清洗代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
+           ```
+        ④ 【Worker 行为封印三禁】：严禁 Worker 在终端或主会话执行 `git log`、`git status` 等代码工程探测；严禁思考盘赔逻辑或定性胜负；严禁自行修改或 patch 系统代码！严禁编写任何临时 `.py` 脚本！
       - **响应式汇聚**：主会话派发完蜂群数组后立即停止调用工具，依赖 Reactive Wakeup 等待全员回传。
       - **准入铁律**：只有当全量候选场次【推演源数据】物理文件落盘且在 30 分钟内时，才准放行进入步骤 4！若有场次缺失或过期，向主人置顶报告，严禁分发 Worker 抢跑推演！（无物理原材料严禁下锅）。
       4. 【阶段二：纯逻辑首席分析师（大模型深度推演分发）】：
@@ -545,7 +552,7 @@ ceil$；
 2. 分发单个 subagent：
    ```yaml
    task:
-     goal: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，抓取今日全量赛程，推送赛程列表给主人，写入 memory/{今天日期}.md。"
+     goal: "执行赛程同步。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。必须且只能直接调用官方 Scrapling MCP 工具（mcp__scrapling__fetch 或 mcp__scrapling__bulk_get）抓取今日全量赛程，【防偷懒最高硬锁】：绝对禁止编写或运行任何临时 .py 脚本或终端 python -c！抓取后严格按照模板，提取场次落盘 data/{今天日期}/meta.md 并推送赛程列表给主人，写入 memory/{今天日期}.md。"
    ```
 3. 保持空闲
 
