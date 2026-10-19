@@ -17,13 +17,13 @@
        ① **序贯衔接与必读心法**：阶段 0 专注于极速落盘 `meta.md`；《skills/deep-analysis/SKILL.md》是全系统核心推演大脑，在阶段 2（源数据门禁 PASS 后）**绝对强制调用 `view_file` 深度全精读并执行**，阶段 0～1 仅是不提前空转偷跑，绝非不读；
        ② **业务态与工程态分工**：推演态专注于业务流本身，数据规范以 `TOOLS.md` 为准，Python 脚本通过 CLI 命令行高效运行。推演过程中无需分心研读内部代码实现；当任务是代码重构与维护时，再自然进入工程态。
   - **【阶段 1：Agents 蜂群纯物理进货与确定性装配（Phase 1 Ingest Gate）】**：
-     主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper`（官方 Scrapling MCP 并发直取 5 大接口）组装落盘至 `data/{销售日}/{matchId}.md`。严禁搬运工思考盘赔逻辑或定性胜负！
+     主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper`（官方 Scrapling MCP 并发直取 5 大接口）落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`，并同步组装落盘人类可视化简报 `data/{销售日}/{matchId}.md`。严禁搬运工思考盘赔逻辑或定性胜负！
      **重新推演物理清空（Clean-Slate Re-ingest Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧快照文件】，全量调用 Scrapling MCP 并发抓取 5 大接口从零装配全新落盘！**绝对严禁直接拿磁盘已有旧文件跳过抓取，更绝对严禁在旧快照上局部修改时间戳做伪装！**
      **推演态零散脚本硬禁令（Zero-Script Iron Rule）**：
       推演态、进货态与排错态中，**绝对严禁**裸写临时 Python 脚本来抓取数据、排错或更新数据！所有数据搬运一律调用官方 Scrapling MCP 原生工具（`bulk_get`, `stealthy_fetch`），推演态零散脚本违规次数严格锁定为 0！
-     **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**唯一法定证据必须且只能是：`data/{销售日}/{matchId}.md` 物理文件**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何测试或检查，直接进入抓取进货，杜绝空转！
+     **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**机器推演的法定底层依据是 `data/{销售日}/raw/{matchId}.json` 经 EvoOntology 官方 MCP 直连提取的微观数据，`.md` 文件作为人类可视化复盘简报同步留存**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何测试或检查，直接进入抓取进货，杜绝空转！
    - **【阶段 2：纯逻辑首席分析师（Phase 2 Deduction Brain）】**：
-     确认物理文件存在且新鲜（<30分钟）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 Graphify 知识图谱与运行去水模型，开展 10 步深度推演与冻结认知契约卡！未见物理源数据落盘，**绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
+     确认底层物理源数据存在且新鲜（<30分钟）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 EvoOntology 官方 MCP（`browse_semantics`, `resolve_semantics`）与 Graphify 知识图谱，开展 10 步深度推演与冻结认知契约卡！未见底层物理源数据落盘，**绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
    - **Graphify 官方高阶增智规约（仅在阶段二执行，基于官方核心 `https://github.com/Graphify-Labs/graphify` 与 5.6MB 全量图谱）**：
      - **① 推演前错题反思导览**：查阅 `graphify-out/reflections/LESSONS.md` 动态认知覆盖层，自愈认知偏差，激活全局 God Nodes 与 Wiki 词条；
      - **② 推演中盘口疑难靶向穿透**：分析师针对当场具体盘口特征（如“客让半一满水退盘”、“Winkelmann 假摔震仓”），查阅 `graphify-out/wiki/` 词条或通过图谱检索靶向召回关联理论与历史战例；
@@ -37,7 +37,7 @@
    - **保魂去腐底线**：做减法只准剔除形式主义冗余、重复格式与死板表格约束；**绝对严禁大幅减少其中的博弈智慧、哲学思考、实战手感与习惯塑形**！核心心法与认知精髓寸步不让。
    - **严禁代码逻辑与职责界限（大模型才是唯一推演大脑）**：**系统严格禁止使用任何代码编写业务推演逻辑！** 绝对不包含任何比赛预测、绝不计算让球输赢、绝不做盘口好坏定性。所有 10 步深度分析、博弈第一性原理反向破译、诱阻识别、三端落槌与胜平负最终决策，**100% 全权依托 AI 大模型主观意图与大局观思考完成**，坚决杜绝代码死尺子与规则僭越！
    - **严防张冠李戴与时序克隆偷懒（恪守专属证据链与推演闭环）**：
-      - **推演证据链一一对应**：大模型对每场比赛的 10 步推演，必须直接从该场独立物理【推演源数据】（`data/{销售日}/{matchId}.md`）中提取微观事实（真实队名、伤停名字、特定水位与时序节点），严禁通用套话、时序克隆或脱靶脑补。
+      - **推演证据链一一对应**：大模型对每场比赛的 10 步推演，必须直接通过 EvoOntology 官方 MCP 从该场底层数据（`data/{销售日}/raw/{matchId}.json`）中提取微观事实（真实队名、伤停名字、特定水位与时序节点），并在人类视图（`data/{销售日}/{matchId}.md`）同步留存，严禁通用套话、时序克隆或脱靶脑补。
 10. **工程汇报规范**：
    - 报告去废话指令：Write every report, summary, or handoff to the user through the `ce-noslop` skill. This applies when you are the top-level agent writing to the user, not when you are a subagent reporting to its caller. Do not apply it to code, config, verbatim quotes, or text the user asked to post as written.
 11. **代码工程三位一体军规（动代码、编写代码、思考代码必用三大 Skill）**：
