@@ -53,7 +53,7 @@
     "relation_type": "cross_verifies",
     "target": "term_poisson_floor",
     "connection_condition": "crown_score_odds_match_poisson_top2",
-    "description": "皇冠波胆卡口设防低比分与独立泊松Top2高概率比分互相印证做市底牌",
+    "description": "皇冠波胆倍率与独立泊松高概率比分进行市场赔率辅助对照",
     "evidence_refs": [
       "evidence_match_3019156"
     ],

@@ -119,7 +119,7 @@
     "id": "term_egidi_score_snapping",
     "name": "Egidi_Score_Snapping",
     "type": "dimension",
-    "definition": "[Graphify 溯源: graphify://paper/Egidi_2022_Bivariate_Poisson_Scores] 皇冠波胆矩阵中特定低比分（如 1:0、1:1、0:1）赔率异常压低设防，而胜平负或让球盘却给出虚高赔率造势。波胆矩阵真实反映做市商净胜球与比分结算底牌。",
+    "definition": "[Graphify 溯源: graphify://paper/Egidi_2022_Bivariate_Poisson_Scores] 皇冠波胆矩阵比分倍率对照，仅作为边缘辅助市场参考。波胆抽水高、噪音大，绝不作为核心推演依据，严禁反向推翻欧亚坚挺防线。",
     "scope": "global",
     "aliases": [
       "波胆",

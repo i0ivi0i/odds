@@ -130,10 +130,10 @@
       "低比分",
       "egidi"
     ],
-    "severity": "warn",
+    "severity": "info",
     "scope": "global",
-    "confidence_level": "high",
-    "description": "【皇冠波胆矩阵卡口设防警报 (Egidi 2022)】皇冠波胆矩阵中 1:0/1:1/0:1 等核心低比分赔率极端压低且水位下调，但胜平负或让球盘却维持表面高赔。做市商真实比分结算敞口已锚定低比分，大模型严禁盲信表面大球诱惑！",
+    "confidence_level": "medium",
+    "description": "【皇冠波胆倍率只读参考 (Egidi 2022)】皇冠波胆倍率仅作为边缘市场赔率对照列，绝不能作为胜负平或让球盘推演依据，严禁作为一票否决算子。",
     "evidence_refs": [
       "evidence_match_3019156"
     ],

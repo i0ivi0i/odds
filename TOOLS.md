@@ -151,11 +151,11 @@ mcp__scrapling__bulk_get({
 ### 4. 【推演源数据】核心宪章与落盘规范（乔布斯式极简产品规范）
 
 #### 🌟 宪章级释义：什么是【推演源数据】？意味着什么？位置与生命周期？
-- **本质定义（What it is）**：【推演源数据】（`data/YYYY-MM-DD/{matchId}.md`）是自动化流水线**阶段一**由 Scrapling 极速协议流并发秒取 5 大法定接口（分析页阵容与技统、波胆页 Crown 指数、竞彩官方全玩法、百家欧指 `1x2d.js` 与变盘流水 `changeDetail`），经 `SnapshotAssembler` 精纯组装落盘的**唯一物理原材料与客观事实底牌**。
+- **本质定义（What it is）**：【推演源数据】（`data/YYYY-MM-DD/{matchId}.md`）是自动化流水线**阶段一**由 Scrapling 极速协议流并发秒取 5 大法定接口（分析页阵容与技统、波胆页 Crown 指数、竞彩官方全玩法、百家欧指 `1x2d.js` 与变盘流水 `changeDetail`），精纯组装落盘的**唯一物理原材料与客观事实底牌**。
 - **核心意义（What it means）**：
   1. **物理级防伪防火墙**：它是系统**两阶段硬隔离的核心物理边界**。没有 exit 0 的物理源数据，大模型绝对禁止动脑思考与输出赛果，彻底铲除凭记忆脑补、无根据猜想和时序克隆；
   2. **唯一法定证据链**：它是大模型 10 步深度推演、证据引用与赛后回查对账的唯一只读证据凭证；
-  3. **门禁生死线**：必须通过 `cli.py --batch data/{销售日} --max-age-minutes 30` 终审检验（退出码 0），才准发放给首席分析师。
+  3. **门禁生死线**：底层数据物理落盘且新鲜（<30分钟），经 EvoOntology 语义校验（`validate_semantics`）通过后，方准发放给首席分析师。
 - **物理位置与生命周期（Where & Lifecycle）**：
   - **总索引位置**：`data/YYYY-MM-DD/meta.md`（全天赛程索引与状态大表）；
   - **单场文件位置**：`data/YYYY-MM-DD/{matchId}.md`（工整单文件，彻底废除单体大 JSON 与多级子目录）；
@@ -212,7 +212,7 @@ mcp__scrapling__bulk_get({
      - **单一原子防伪溯源包（标准规约）**：将 Scrapling 抓取的原始报文与剪枝文本打包为单个原子 JSON `data/{销售日}/raw/{matchId}.json`（含 `matchId`、`mdSha256`、`rawSha256` 与全量原始 payload），彻底消灭 28 个零散文件；
      - **离线零脑补装配**：直接组装落盘至 `data/{销售日}/{matchId}.md`（或向后兼容保存原始 json），零大模型转抄直出 Markdown，并自动清理旧版零散目录；
      - **源数据真实无损**：严格保留真实变盘历史、状态词（`早`/`即`/`初盘`）与真实时间戳，杜绝任何人工抽稀或假造！
-     - **真实网络溯源回执与服务端指纹防伪（Network Receipt & Optional Live Probe）**：原子 JSON `raw/{matchId}.json` 强制包含 `"receipt"` 块（记录 27 个端点请求详情、HTTP 200 响应状态、字节大小、服务端指纹、原始载荷 SHA-256 与整包 networkSignature）；门禁 `verifier.py` 严格核验回执状态及载荷哈希一致性；支持通过 `--verify-network` 开启毫秒级远程实网抽检探测（`probe_remote_provenance`），彻底杜绝脱网伪造假数据！
+     - **真实网络溯源回执与服务端指纹防伪（Network Receipt & Provenance Verification）**：原子 JSON `raw/{matchId}.json` 强制包含 `"receipt"` 块（记录 27 个端点请求详情、HTTP 200 响应状态、字节大小、服务端指纹、原始载荷 SHA-256 与整包 networkSignature）；通过 EvoOntology 语义门禁（`validate_semantics`）与 Scrapling 原生回执核验载荷哈希一致性，彻底杜绝脱网伪造假数据！
 - 输出结构严格遵循 `agent.analysis` 契约规范。
 - **杜绝低级排版与骨架抓取错误（刚性规范）**：
   1. **结构化原生存储**：百家欧指必须通过 `1x2d.js` 解析后，结构化写入 `markets.europeCompanies` 数组（包含各公司初即盘、返还率与凯利独立对象），**严禁将百家数据挤入单行转义长文本**导致 JSON 仅有几十行假象！
@@ -230,7 +230,7 @@ mcp__scrapling__bulk_get({
   5. `lineupData`：首发球员评分、伤停原句；
   6. `tactics`（含攻防进失球/场均进球物理数字）与 `profiling`（相同初盘画像与盘路走势）。
 
-- **自愈机制（Self-healing）**：门禁 `verifier.py` 已打通攻防物理数据的多通道智能识别（无论是 `match.homeGoals/awayGoals`、`basicStatsText` 还是 `tactics.home/away` 结构化进失球，均可直接识别放行），彻底消灭因字段命名差异导致的拦截误报。
+- **自愈机制（Self-healing）**：EvoOntology 语义解析已打通攻防物理数据的多通道映射识别（无论是 `match.homeGoals/awayGoals`、`basicStatsText` 还是 `tactics.home/away` 结构化进失球，均可通过概念绑定精准提取），彻底消灭因字段命名差异导致的读取误报。
 
 ### 数据安全规则
 
