@@ -373,7 +373,7 @@ sessions_spawn:
 
 # 深度分析（编排 subagent 内部 spawn worker）
 sessions_spawn:
-  task: "深度分析 [英超] 阿森纳 vs 曼城（ID: 2950977）。读取 skills/deep-analysis/SKILL.md。严格按照模板，阶段一完成【推演源数据】落盘并过验，worker 纯只读加载【推演源数据】完成全部 10 步分析；超 4000 字须分段。通过 messaging 推送分析报告给主人。返回结构化综合评估结果（JSON 格式）。"
+  task: "深度分析 [英超] 阿森纳 vs 曼城（ID: 2950977）。读取 skills/deep-analysis/SKILL.md。严格按照模板，阶段一完成底层源数据落盘并过验，worker 通过 EvoOntology 官方 MCP 提取微观切片（严禁裸视海量原始报文）完成全部 10 步分析；超 4000 字须分段。通过 messaging 推送分析报告给主人。返回结构化综合评估结果（JSON 格式）。"
   label: "deep-analysis-2950977"
   runTimeoutSeconds: 900
 ```
