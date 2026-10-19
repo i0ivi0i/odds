@@ -91,7 +91,6 @@ workspace/
 ├── IDENTITY.md          # 身份：名字、角色、目标
 ├── SOUL.md              # 灵魂：性格、风格、原则、边界
 ├── AGENTS.md            # 操作手册：完整方法论和规则
-├── USER.md              # 用户偏好
 ├── TOOLS.md             # 工具指南：Scrapling 并发直取与 BrowserOS neo 规范
 ├── HEARTBEAT.md         # 定时检查清单
 ├── MEMORY.md            # 长期记忆：累计统计、策略结论
