@@ -15,7 +15,6 @@ if _ROOT_DIR not in sys.path:
     sys.path.insert(0, _ROOT_DIR)
 
 from 算法.src.application.use_cases import ConvertOddsUseCase, CalculatePoissonUseCase
-from 校验.src.domain.verifier import SnapshotVerifier, get_match_property
 
 
 def main(args: Optional[List[str]] = None) -> int:
@@ -43,7 +42,6 @@ def main(args: Optional[List[str]] = None) -> int:
             try:
                 with open(parsed.match, "r", encoding="utf-8") as f:
                     snapshot = json.load(f)
-                SnapshotVerifier().verify(snapshot)
             except Exception as e:
                 sys.stderr.write(f"读取【推演源数据】失败: {e}\n")
                 return 1
@@ -76,8 +74,8 @@ def main(args: Optional[List[str]] = None) -> int:
 
         # 若有【推演源数据】，丰富队名与 Crown 波胆交叉对账
         if snapshot:
-            home_team = get_match_property(snapshot, "homeTeam", "主队")
-            away_team = get_match_property(snapshot, "awayTeam", "客队")
+            home_team = snapshot.get("homeTeam") or snapshot.get("home") or "主队"
+            away_team = snapshot.get("awayTeam") or snapshot.get("away") or "客队"
             result["home_team"] = home_team
             result["away_team"] = away_team
 

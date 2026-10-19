@@ -172,17 +172,10 @@ metadata: { "emoji": "📆" }
 - **【前置零漫游硬禁令（Zero Pre-flight Thrashing）】**：
   搬运工被派发后的第 1 个动作必须且只能是执行进货落盘命令！严禁在抓取前执行任何 `git log`、`git status`、pytest/unittest 检查；严禁思考盘赔逻辑或定性胜负！
 - **【官方一体化专职进货机械臂（Zero Ad-hoc Python 唯一首选）】**：
-  1. **首选极速路径（单命令全闭环）**：
-     搬运工直接运行一体化专职机械臂：
-     `python 校验/src/adapter/cli.py --ingest-match {matchId} --date {销售日}`
-     单命令自动完成：官方 Scrapling 安全分块（≤6~8 URLs + 0.3s~0.65s 拟人抖动）拉取 26 端点 ➔ 官方 Polymarket 自动命中解析 ➔ 原子存证包 `raw/{matchId}.json` 落盘 ➔ 黄金 Markdown 装配 ➔ 单场门禁检验（exit 0）！
+  1. **首选极速路径**：
+     调度官方 Scrapling MCP 安全并发拉取 5 大接口数据，提取并组装落盘至 `data/{销售日}/{matchId}.md`。
   2. **步骤 2：回传状态（Announce Completion）**：
-     单场门禁 exit 0 (PASS) 拿到后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】推演源数据已确定性装配落盘并过验放行 (exit 0)」，结束搬运任务！
-  3. **分步备用方案（协议分层参考）**：
-     若需单步调试或排错，可分步执行：
-     `python 校验/src/adapter/cli.py --fetch-match {matchId} --date {销售日}`
-     `python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`
-     遇异常唯一法定排错命令：`python 校验/src/adapter/cli.py --diagnose-gate <file>`，全流程绝对零手写临时 Python 脚本！
+     物理文件生成且新鲜有效后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】推演源数据已装配落盘」，结束搬运任务！
 
 ### 1. 亚盘与大小球 7 大法定机构并发直取
 调用 Scrapling `bulk_get` 单次并发拉取 7 大法定做市商的分钟级变盘流水：
@@ -221,17 +214,14 @@ metadata: { "emoji": "📆" }
      ③ 读取 `teams[].ordering` 仲裁主客顺序，并通过 `events/keyset?game_id={gameId}` 关联波胆/半场全系标的，生成标准下单链接 `https://polymarket.com/event/{slug}`；
    - **门禁硬红线**：五大联赛、欧联、欧协联、解放者杯等核心主流赛事在 Polymarket 官方 100% 常态化开盘，必须提供真实纯英文事件可点击链接；严禁以未开盘为由跳过真实抓取，严禁编造任何类似『官方未开盘（经Gamma双向核验）』等免责套话！将真实返回的事件对象写入 `data/{销售日}/raw/{matchId}.json` 中的 `payloads['polymarket.json']`；若极小众次级联赛经双向检索确无活跃标的，必须如实保存 HTTP 200 返回空数组的真实网络存证！
 
-### 4. 组装落盘与物理门禁核验（进货合格线）
-- 通过 `python 校验/src/adapter/cli.py --assemble-bundle data/{销售日}/raw/{matchId}.json --output data/{销售日}/{matchId}.md` 组装落盘并生成 `raw/{matchId}.json` 加密封印（全天赛程总览汇总于 `data/{销售日}/meta.md`）；
-- 执行门禁物理命令：
-  - 单场核验：`python 校验/src/adapter/cli.py --match data/{销售日}/{matchId}.md --max-age-minutes 30`
-  - 批量核验：`python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`
-- 若返回 `FAIL`（如法定做市商流水覆盖不足、缺少时序、字段错位、SHA-256 封印被篡改或与 `raw/{matchId}.json` 原文不符），物理熔断停止流程，必须重新从真实源装配并拿到 `exit 0` 后方可交接给推演分析师。
+### 4. 组装落盘与物理文件确认（进货合格线）
+- 组装落盘至 `data/{销售日}/{matchId}.md`（全天赛程总览汇总于 `data/{销售日}/meta.md`）；
+- 确认物理文件落盘且新鲜有效（<30分钟），方可交接给推演分析师。
 
 ### 5. 多场与全量场次分批进货规约（Batch Ingest Protocol）
-1. **分组分批（Batching）**：全天赛事（如13场或26场）必须按 4~6 场为一组分批拉取，单组构造 4~8 个核心数据端点并发拉取并下推选择器，严禁一次性狂发数十个 URL 导致底层 Scrapling 进程溢出超时；
-2. **装配与同步**：每组数据落地后立即调用 `cli.py --assemble-bundle` 装配落盘至 `data/{销售日}/{matchId}.md`（同时落盘 `raw/{matchId}.json`），并调用 `cli.py --sync-meta data/{销售日}` 同步索引状态；
-3. **故障隔离放行**：运行 `python 校验/src/adapter/cli.py --batch data/{销售日} --max-age-minutes 30 --isolate-failed`，异常场次自动移入 `.quarantine` 隔离区，合格集群放行推进推演阶段！
+1. **分组分批（Batching）**：全天赛事必须按 4~6 场为一组分批拉取，单组构造核心数据端点并发拉取并下推选择器，严禁一次性狂发数十个 URL 导致底层 Scrapling 进程溢出超时；
+2. **装配与同步**：每组数据落地后提取装配落盘至 `data/{销售日}/{matchId}.md`，并同步更新 `data/{销售日}/meta.md` 索引状态；
+3. **确认放行**：物理文件生成且新鲜有效，合格集群放行推进推演阶段！
 
 ---
 

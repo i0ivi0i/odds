@@ -1,0 +1,184 @@
+[
+  {
+    "id": "constraint_pinnacle_stability",
+    "target": "term_pinnacle_anchor",
+    "constraint_type": "anomaly_check",
+    "trigger_keywords": [
+      "平博",
+      "pinnacle",
+      "降赔",
+      "商业庄",
+      "纹丝不动"
+    ],
+    "severity": "block",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【标杆定海神针警报】商业庄与体彩单边剧烈降赔（>=0.15），但风控标杆平博变动绝对值<=0.03（几乎纹丝不动）。此为典型商业庄顺应散户偏见出货引流形态，强制禁止将商业庄降赔直接等同于机构防守，大模型必须在认知契约卡中显式对质平博未动原因！",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_headfake_rebound",
+    "target": "term_headfake_surge",
+    "constraint_type": "pattern_check",
+    "trigger_keywords": [
+      "假摔",
+      "退盘",
+      "满水",
+      "冲高",
+      "headfake"
+    ],
+    "severity": "block",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【亚盘脉冲假摔警报】中盘亚盘曾出现主动升盘并挂超满水（>=1.04）诱多，但在终盘2小时仓皇退回初盘门槛。此为机构心虚放弃设防的假摔现行，强制禁止将初即终盘同一浅盘误判为全程平稳设防！",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_draw_extreme_high",
+    "target": "term_draw_vacuum",
+    "constraint_type": "risk_warning",
+    "trigger_keywords": [
+      "平赔",
+      "高平",
+      "4.00",
+      "筹码真空",
+      "通杀"
+    ],
+    "severity": "warn",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【高平筹码真空警报】全网百家欧指平局赔率极端顶高至 4.00+。散户大众产生极度恐高心理，平局投注陷入筹码真空。做市商面临的大众净赔付为零甚至通杀，大模型绝对严禁因平赔过高主观一票否决平局！",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_poisson_retention",
+    "target": "term_poisson_floor",
+    "constraint_type": "retention_check",
+    "trigger_keywords": [
+      "泊松",
+      "poisson",
+      "平局比分",
+      "1:1",
+      "底牌保护"
+    ],
+    "severity": "block",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【泊松数学底牌保护警报】由微观攻防得失球计算出的独立泊松比分前 2 位中包含平局（如 1:1），且与第一顺位概率差 <= 1.0%。大模型在推荐比分中严禁主观扼杀该平局比分！",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_crossmarket_misalignment",
+    "target": "term_constantinou_crossmarket",
+    "constraint_type": "anomaly_check",
+    "trigger_keywords": [
+      "欧亚背离",
+      "跨市场",
+      "折合盘",
+      "脱节",
+      "constantinou"
+    ],
+    "severity": "block",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【跨市场脱节出货警报 (Constantinou 2022)】欧指去水折合让球盘口与亚洲让球盘实际盘口相差 >= 0.5 档（如欧指折合让半球低水，亚盘实际平半高水或半一超高水）。机构利用两地市场信息不对称出货诱多，强制禁止将折合低价误当防守，大模型必须在契约卡中对质跨市场背离原因！",
+    "evidence_refs": [
+      "evidence_case_santos_flamengo"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_favorite_melt_risk",
+    "target": "term_levitt_favorite_melt",
+    "constraint_type": "risk_warning",
+    "trigger_keywords": [
+      "豪门",
+      "低赔",
+      "穿仓",
+      "大热必死",
+      "levitt"
+    ],
+    "severity": "warn",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【豪门低赔穿仓诱多警报 (Levitt 2004)】胜平负热门方赔率处于 1.20~1.35 极低区间且大众交易集中度极高。做市商面临净赔付被击穿风险，若让球盘水位持续高企拒不升盘阻筹，极大概率存在做市商逆向弃守爆冷伏击，严禁无脑做胆！",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_score_snapping_defense",
+    "target": "term_egidi_score_snapping",
+    "constraint_type": "pattern_check",
+    "trigger_keywords": [
+      "波胆",
+      "皇冠波胆",
+      "卡口",
+      "低比分",
+      "egidi"
+    ],
+    "severity": "warn",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【皇冠波胆矩阵卡口设防警报 (Egidi 2022)】皇冠波胆矩阵中 1:0/1:1/0:1 等核心低比分赔率极端压低且水位下调，但胜平负或让球盘却维持表面高赔。做市商真实比分结算敞口已锚定低比分，大模型严禁盲信表面大球诱惑！",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_sporttery_squeeze",
+    "target": "term_sporttery_had_squeeze",
+    "constraint_type": "anomaly_check",
+    "trigger_keywords": [
+      "体彩单固",
+      "关停HAD",
+      "仅开让球",
+      "逼平",
+      "单固风控"
+    ],
+    "severity": "block",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【体彩关停基础胜负逼平风控警报】中国体彩官方深盘比赛关闭普通胜负平（HAD=None）仅开让球胜平负（HHAD）。此为顶级内幕风控信号，做市商真实意图往往是深盘逼平让球方，诱导散户去让球下盘或让平，大模型必须推演体彩让球玩法并严禁弃推该场！",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_sentinel_defense",
+    "target": "term_sentinel_defense",
+    "constraint_type": "anomaly_check",
+    "trigger_keywords": [
+      "本土哨兵",
+      "体彩防守",
+      "马会防守",
+      "哨兵设防",
+      "体彩设防",
+      "哨兵防守",
+      "sentinel_defense"
+    ],
+    "severity": "block",
+    "scope": "global",
+    "confidence_level": "high",
+    "description": "【本土哨兵真防守警报 (Constantinou 2022 / Levitt 2004)】中国体彩或香港马会等本土特许机构出现单边大幅降赔（>=0.10）或超低水（<=0.75）拒收对向盘口。本土官方机构受高抽水与封闭客群约束，其单边大幅降水反映真金白银的真实风控防守底线，强制禁止无视本土哨兵设防而主观博冷！",
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active"
+  }
+]

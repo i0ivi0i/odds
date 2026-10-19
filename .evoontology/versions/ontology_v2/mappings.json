@@ -1,0 +1,146 @@
+[
+  {
+    "id": "mapping_pinnacle_odds",
+    "term_id": "term_pinnacle_anchor",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "平博",
+    "semantic_filter": "pinnacle_euro_odds",
+    "aggregation_semantics": "latest_value_vs_initial_value",
+    "grain": "match",
+    "validation": "delta_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_handicap_timeline",
+    "term_id": "term_headfake_surge",
+    "database_source": "raw_json",
+    "table": "companyDetails",
+    "column": "Bet365_ah / 皇冠_ah",
+    "semantic_filter": "asian_handicap_full_timeline",
+    "aggregation_semantics": "pulse_rebound_state_machine",
+    "grain": "match",
+    "validation": "surge_and_retreat",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_draw_odds",
+    "term_id": "term_draw_vacuum",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "draw_odds_all",
+    "semantic_filter": "draw_odds_gte_4_00",
+    "aggregation_semantics": "average_and_max",
+    "grain": "match",
+    "validation": "range_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_poisson_scores",
+    "term_id": "term_poisson_floor",
+    "database_source": "raw_json",
+    "table": "analysis",
+    "column": "poissonTopScores",
+    "semantic_filter": "dixon_coles_correlation",
+    "aggregation_semantics": "top_scores",
+    "grain": "match",
+    "validation": "draw_score_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_crossmarket_odds",
+    "term_id": "term_constantinou_crossmarket",
+    "database_source": "raw_json",
+    "table": "companyDetails",
+    "column": "europe1x2_vs_asian_handicap",
+    "semantic_filter": "crossmarket_discrepancy",
+    "aggregation_semantics": "crossmarket_delta",
+    "grain": "match",
+    "validation": "handicap_alignment_check",
+    "evidence_refs": [
+      "evidence_case_santos_flamengo"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_favorite_odds",
+    "term_id": "term_levitt_favorite_melt",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "favorite_1x2_odds",
+    "semantic_filter": "odds_between_1_20_and_1_35",
+    "aggregation_semantics": "min_odds_and_volume",
+    "grain": "match",
+    "validation": "favorite_overheat_check",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_score_matrix",
+    "term_id": "term_egidi_score_snapping",
+    "database_source": "raw_json",
+    "table": "correctScores",
+    "column": "crown_matrix",
+    "semantic_filter": "top3_scores_and_draws",
+    "aggregation_semantics": "score_clustering",
+    "grain": "match",
+    "validation": "score_matrix_validation",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_had_status",
+    "term_id": "term_sporttery_had_squeeze",
+    "database_source": "raw_json",
+    "table": "getAnalyData",
+    "column": "had",
+    "semantic_filter": "had_is_none_hhad_open",
+    "aggregation_semantics": "sporttery_risk_squeeze",
+    "grain": "match",
+    "validation": "xg_simulation_check",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_sentinel_odds",
+    "term_id": "term_sentinel_defense",
+    "database_source": "raw_json",
+    "table": "companyDetails",
+    "column": "中国体彩_eu / 香港马会_ah",
+    "semantic_filter": "sentinel_drop_and_low_water",
+    "aggregation_semantics": "delta_and_low_water",
+    "grain": "match",
+    "validation": "post_review_audit",
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  }
+]
