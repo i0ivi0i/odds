@@ -17,8 +17,8 @@
        ① **序贯衔接与必读心法**：阶段 0 专注于极速落盘 `meta.md`；《skills/deep-analysis/SKILL.md》是全系统核心推演大脑，在阶段 2（源数据门禁 PASS 后）**绝对强制调用 `view_file` 深度全精读并执行**，阶段 0～1 仅是不提前空转偷跑，绝非不读；
        ② **业务态与工程态分工**：推演态专注于业务流本身，数据规范以 `TOOLS.md` 为准，Python 脚本通过 CLI 命令行高效运行。推演过程中无需分心研读内部代码实现；当任务是代码重构与维护时，再自然进入工程态。
   - **【阶段 1：Agents 蜂群纯物理进货与确定性装配（Phase 1 Ingest Gate）】**：
-     主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper`（官方 Scrapling MCP 并发直取 5 大接口）落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`，并同步组装落盘人类可视化简报 `data/{销售日}/{matchId}.md`。严禁搬运工思考盘赔逻辑或定性胜负！
-     **重新推演物理清空（Clean-Slate Re-ingest Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧快照文件】，全量调用 Scrapling MCP 并发抓取 5 大接口从零装配全新落盘！**绝对严禁直接拿磁盘已有旧文件跳过抓取，更绝对严禁在旧快照上局部修改时间戳做伪装！**
+     主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper`（官方 Scrapling MCP Session 长连接并发拉取全量法定 26 端点）落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`（满配 26 payloads，体积 $\ge 1.0\text{MB}$，对齐 1.15MB 黄金标准），并同步组装落盘人类可视化简报 `data/{销售日}/{matchId}.md`。严禁搬运工思考盘赔逻辑或定性胜负！
+     **重新推演物理清空（Clean-Slate Re-ingest Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧快照文件】，全量调用 Scrapling MCP 并发抓取全量 26 端点从零装配全新落盘！**绝对严禁直接拿磁盘已有旧文件跳过抓取，更绝对严禁在旧快照上局部修改时间戳做伪装！**
      **推演态零散脚本硬禁令（Zero-Script Iron Rule）**：
       推演态、进货态与排错态中，**绝对严禁**裸写临时 Python 脚本来抓取数据、排错或更新数据！所有数据搬运一律调用官方 Scrapling MCP 原生工具（`bulk_get`, `stealthy_fetch`），推演态零散脚本违规次数严格锁定为 0！
      **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**机器推演的法定底层依据是 `data/{销售日}/raw/{matchId}.json` 经 EvoOntology 官方 MCP 直连提取的微观数据，`.md` 文件作为人类可视化复盘简报同步留存**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何测试或检查，直接进入抓取进货，杜绝空转！
@@ -112,7 +112,7 @@ ceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、�
   ④ 严禁在推演/进货/排错全流程散装编写任何 `.py` 临时脚本，违规编写记录严格锁定为 0！
   ⑤ 严禁调用平台工具 `execute_code` 执行任何 Python 抓取、清洗或对账代码！数据采集 100% 依托 Scrapling MCP，推演查看 100% 依托 EvoOntology MCP！
   **搬运工官方原生纯净进货管道（Minimal Ingestion Pipeline）**：
-  搬运工直接调度官方 Scrapling MCP 原生流水线（分块安全拉取 5 大接口）➔ 提取落盘至 `data/{销售日}/{matchId}.md`，拿到物理文件后立即向主会话回传完成状态！全流程绝对零手写临时 Python 脚本！
+  搬运工直接调度官方 Scrapling MCP 原生流水线（Session 长连接并发拉取全量法定 26 个底层端点）➔ 组装落盘底层无损存证 `raw/{matchId}.json`（满配 26 payloads，体积 $\ge 1.0\text{MB}$，对齐 1.15MB 黄金标准）与人类可视化视图 `data/{销售日}/{matchId}.md`，拿到物理文件后立即向主会话回传完成状态！全流程绝对零手写临时 Python 脚本！严禁生成 6 端点或 500KB 残缺半成品！
   **官方合法未开盘与推演到底宪法（Anti-Drop Iron Rule）**：
   ① **体彩深盘不开单固**：当实力悬殊深盘中国体彩未开普通胜负平（HAD）时，欧指自动覆盖其余机构，大模型必须推演体彩让球胜平负（HHAD），严禁以此为借口丢弃比赛；
   ② **次级联赛未开亚盘**：当香港马会（HKJC）等对英冠等次级联赛官方未开亚盘时，标注「官方未开盘」，比赛必须推演；
@@ -192,10 +192,10 @@ ceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、�
    收到单场指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动场次【{matchId} {对阵}】推演源数据抓取，专职搬运工进货中...`，杜绝黑盒盲等；
 2. **阶段一：派发专职搬运工 Subagent（纯物理进货）**：
-   主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 专职调用 Skill `match-scraper`（Scrapling MCP `bulk_get` 极速并发）秒取 5 大接口数据 ➔ 组装落盘至 `data/{销售日}/{matchId}.md` ➔ 确认物理文件生成后 announce 回传主会话。
+   主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 专职调用 Skill `match-scraper`（Scrapling MCP Session 长连接并发）秒取全量 26 端点底层数据 ➔ 组装落盘至 `data/{销售日}/{matchId}.md`（同时落盘 `raw/{matchId}.json`） ➔ 确认物理文件生成后 announce 回传主会话。
    ```yaml
    task:
-     goal: "【阶段一专职搬运工进货】承包场次：{matchId}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。必须且只能直接调用官方 Scrapling MCP 工具（mcp__scrapling__bulk_get 或 mcp__scrapling__fetch）并发拉取 5 大接口数据，直接落盘底层存证 data/{销售日}/raw/{matchId}.json 与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
+     goal: "【阶段一专职搬运工进货】承包场次：{matchId}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。必须且只能直接调用官方 Scrapling MCP 工具（Session 长连接并发）拉取全量 26 端点底层数据，直接落盘底层存证 data/{销售日}/raw/{matchId}.json（满配 26 payloads，体积 ≥ 1.0MB，对齐 1.15MB 黄金标准）与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
    ```
 3. **主会话中转放行反馈**：
    主会话收到搬运工 announce 的物理文件就绪报告后，立即推送：
@@ -212,7 +212,7 @@ ceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、�
    收到多场/全量指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动【全量 X 场】推演流水线，专职搬运工正在按 4~6 场分组分批进货中...`，杜绝黑盒盲等；
 2. **阶段一：纯物理分批进货（分组并发与确定性装配）**：
-   - **分批进货（Batching）**：严格以 4~6 场为一组（Batch），每个批次调用 Skill `match-scraper`（选择器下推 + 4~8 URLs 协议流并发）分批秒取 5 大接口数据，严禁一次性堆叠数十个 URL 导致底层超载；
+   - **分批进货（Batching）**：严格以 4~6 场为一组（Batch），每个批次调用 Skill `match-scraper`（选择器下推 + Session 长连接并发）分批秒取全量 26 端点底层数据，严禁一次性堆叠数十个 URL 导致底层超载；
    - **装配落盘**：批量组装落盘至 `data/{销售日}/{matchId}.md`，并自动更新同步 `data/{销售日}/meta.md`；
 3. **主会话中转放行反馈**：
    主会话确认物理文件就绪后，立即推送：
@@ -485,7 +485,7 @@ ceil$；
         ③ 给每个 Worker 的 Prompt 必须短小精炼（≤ 2KB），仅包含当前承包的 6 场比赛 ID 与极简指令，且必须使用以下强制规范模板：
            ```yaml
            task:
-             goal: "【阶段一专职搬运工进货】承包场次：{matchIds}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。数据采集必须且只能依托官方 Scrapling MCP 工具：首先开辟全真 Chrome 长连接会话（mcp__scrapling__open_request_session 带 impersonate='chrome' 与 stealthy_headers=true），复用会话（session_make_request）并发拉取 5 大接口数据并下推选择器；若遇 403/503 或人机盾自动升阶 stealthy_fetch；数据落盘后强制显式关闭会话（close_session）。直接落盘底层存证 data/{销售日}/raw/{matchId}.json 与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取/清洗代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
+             goal: "【阶段一专职搬运工进货】承包场次：{matchIds}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。数据采集必须且只能依托官方 Scrapling MCP 工具：首先开辟全真 Chrome 长连接会话（mcp__scrapling__open_request_session 带 impersonate='chrome' 与 stealthy_headers=true），复用会话（session_make_request）并发拉取全量法定 26 个底层端点数据并下推选择器；若遇 403/503 或人机盾自动升阶 stealthy_fetch；数据落盘后强制显式关闭会话（close_session）。直接落盘底层存证 data/{销售日}/raw/{matchId}.json（满配 26 payloads，体积 ≥ 1.0MB，对齐 1.15MB 黄金标准）与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取/清洗代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
            ```
         ④ 【Worker 行为封印三禁】：严禁 Worker 在终端或主会话执行 `git log`、`git status` 等代码工程探测；严禁思考盘赔逻辑或定性胜负；严禁自行修改或 patch 系统代码！严禁编写任何临时 `.py` 脚本！
       - **响应式汇聚**：主会话派发完蜂群数组后立即停止调用工具，依赖 Reactive Wakeup 等待全员回传。

@@ -1,14 +1,14 @@
 ---
 name: match-scraper
-description: "从球探体育(titan007)抓取竞彩足球赛程数据与单场【推演源数据】。在用户说「抓取赛程」「获取今日比赛」「进货」「拉取推演源数据」或赛前分析阶段一进行推演源数据抓取与门禁质检时使用。"
+description: "从球探体育(titan007)抓取竞彩足球赛程数据与单场【推演源数据】。不仅在用户说「抓取赛程」「获取今日比赛」「进货」「拉取推演源数据」时使用，当任何 Agent / Subagent 在定时任务、自动化工作流、阶段零（赛程自检与索引初始化）或阶段一（推演源数据抓取与门禁质检）需要获取数据时也必须主动调用。"
 metadata: { "emoji": "📆" }
 ---
 
 # 赛程与推演源数据采集（match-scraper）
 
 本技能包含两大工作模式：
-- **模式一：赛程同步与索引初始化**（每日 11:10 或用户查询）：抓取当日竞彩足球全量赛程，落盘 `data/{YYYY-MM-DD}/meta.md` 并写入 memory。
-- **模式二：【推演底层源数据】抓取与人类视图装配**（赛前分析阶段一专属搬运工）：Scrapling MCP 并发秒取 5 大接口，秒级落盘底层真实存证 `data/{销售日}/raw/{matchId}.json` 解锁推演；同步组装落盘 `data/{销售日}/{matchId}.md` 作为人类可视化复盘简报。
+- **模式一：赛程同步与索引初始化**（每日 11:10 定时触发、用户主动查询、或任何 Agent 阶段零自检缺盘触发）：抓取当日竞彩足球全量赛程，落盘 `data/{YYYY-MM-DD}/meta.md` 并写入 memory。
+- **模式二：【推演底层源数据】抓取与人类视图装配**（赛前分析阶段一专属搬运工 / Agent 蜂群自驱调用）：Scrapling MCP 并发秒取 5 大接口，秒级落盘底层真实存证 `data/{销售日}/raw/{matchId}.json` 解锁推演；同步组装落盘 `data/{销售日}/{matchId}.md` 作为人类可视化复盘简报。
 
 用 Skill `/scrapling-official` 官方原生流水线并发抓取球探页面。严禁调用外部独立浏览器（如 `browseros-neo`），禁止先跑 `npm run schedule`。
 
@@ -164,7 +164,7 @@ metadata: { "emoji": "📆" }
 # 第二部分：模式二·单场【推演源数据】采集与人类视图装配（阶段一专属搬运工）
 
 底层源数据（`data/{销售日}/raw/{matchId}.json`）是 EvoOntology 官方 MCP 直连与推演大脑做深度推演的**唯一真实物理原材料**；`data/{销售日}/{matchId}.md` 同步生成作为面向人类的可视化复盘简报。
-编排者在阶段一作为纯物理进货搬运工，必须在此并发采集 5 大数据源，极速落盘底层存证与人类视图后交付。
+编排者在阶段一作为纯物理进货搬运工，必须在此并发采集法定 26 个物理端点（含 4 大核心数据、7 家做市商 21 张变盘流水与 Polymarket 精准事件），极速原子落盘 1.15MB 满配底层存证 `raw/{matchId}.json` 与人类视图 `data/{销售日}/{matchId}.md` 后交付。
 
 ### 0. 单场/多场极速进货执行路径（搬运工 Subagent 专属操作规程）
 当被主会话以 `Data Ingest Worker` 派发执行进货任务时，搬运工严格按照开箱即用 2 步闭环执行，绝无任何模糊地带，严禁查阅代码源码、严禁在终端漫游：
@@ -176,12 +176,15 @@ metadata: { "emoji": "📆" }
 - **【官方一体化专职进货机械臂（Scrapling 官方 Session 长连接三部曲）】**：
   1. **步骤一：开辟全真会话（Open Session）**：
      调用 `mcp__scrapling__open_request_session(impersonate="chrome", stealthy_headers=true, timeout=30)` 获取 `session_id`。全真模拟 Chrome TLS/JA3 指纹与真实 Client Hints 标头，抹除爬虫特征；
-  2. **步骤二：复用连接批量请求（Session Make Request）**：
-     使用同一个 `session_id`，复用底层 TCP/TLS 链路拉取单场 5 大核心接口（分析页、波胆页、竞彩接口、1x2d.js、7家变盘流水），免除重复离散握手，网络延迟立降 60%；配合选择器下推（`css_selector`）内存脱敏；若遇 403/503 或人机挑战盾，自动升阶至 `mcp__scrapling__stealthy_fetch(solve_cloudflare=true)`；
-  3. **步骤三：显式关闭会话（Close Session）**：
-     数据拉取并落盘存证（`data/{销售日}/raw/{matchId}.json` 与 `data/{销售日}/{matchId}.md`）后，强制调用 `mcp__scrapling__close_session(session_id=session_id)` 释放连接与系统句柄；
+  2. **步骤二：复用连接批量请求（Session Make Request 直出 Markdown）**：
+     使用同一个 `session_id`，复用底层 TCP/TLS 链路拉取单场法定 26 个底层端点（1x2d.js、analysis.html、odds.html、analy.json、7家机构 ah_*.html/ou_*.html/eu_*.html 共21张变盘表）与 Polymarket 精准事件：
+     - **HTML 页面直转 Markdown**：配置 `extraction_type="markdown"`，配合选择器下推（`css_selector`）内存脱敏，由 Scrapling 原生直出纯净 Markdown 表格，**严禁写任何自定义 .py 或 node 解析脚本**！
+     - **Polymarket 精准单事件防溢出**：必须且只能请求单事件 slug（`https://gamma-api.polymarket.com/events?slug={slug}`），未开盘直接记录 `[官方未开盘]`，严禁请求无参数 `/events`；
+     - **挑战自动升阶**：若遇 403/503 或人机挑战盾，自动升阶至 `mcp__scrapling__stealthy_fetch(solve_cloudflare=true)`；
+  3. **步骤三：直接原子落盘与显式关闭会话（Write Files & Close Session）**：
+     将 Scrapling 原生提取的 Markdown 结构直接通过 `write_to_file` 保存为 `data/{销售日}/{matchId}.md`，原始回执保存为 `data/{销售日}/raw/{matchId}.json`，落盘后强制调用 `mcp__scrapling__close_session(session_id=session_id)` 释放连接句柄；
   4. **步骤四：回传状态（Announce Completion）**：
-     物理文件生成且新鲜有效后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】底层源数据已落盘，人类视图已就绪」，结束搬运任务！
+     物理文件生成且新鲜有效后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】底层源数据已落盘，人类视图已就绪」，结束搬运任务！严禁编写任何中间胶水脚本！
 
 ### 1. 亚盘与大小球 7 大法定机构并发直取
 调用 Scrapling `bulk_get` 单次并发拉取 7 大法定做市商的分钟级变盘流水：
@@ -222,7 +225,11 @@ metadata: { "emoji": "📆" }
 
 ### 4. 组装落盘与物理文件确认（进货合格线）
 - 组装落盘至 `data/{销售日}/{matchId}.md`（全天赛程总览汇总于 `data/{销售日}/meta.md`）；
-- 确认物理文件落盘且新鲜有效（<30分钟），方可交接给推演分析师。
+- **法定 26 端点与 1.15MB 满配质检门禁（Hard Check Gate）**：
+  1. `data/{销售日}/raw/{matchId}.json` 中 `payloads` 数量必须为 **26 个**，绝对严禁遗漏 21 张变盘流水表；
+  2. 单场底层存证文件体积必须 **$\ge 1.0\text{MB}$**（历史黄金标准为 1.10MB ~ 1.25MB），严禁生成 500KB 或仅 6 端点的残缺残次品；
+  3. 回执记录校验 `receipt.all_success == true` 且 SHA256 签名完整；
+  4. 确认物理文件落盘且新鲜有效（<30分钟），方可放行交接给推演分析师。
 
 ### 5. 多场与全量场次分批进货规约（Batch Ingest Protocol）
 1. **分组分批（Batching）**：全天赛事必须按 4~6 场为一组分批拉取，单组构造核心数据端点并发拉取并下推选择器，严禁一次性狂发数十个 URL 导致底层 Scrapling 进程溢出超时；

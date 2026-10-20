@@ -11,6 +11,8 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 2. **严禁调用外部独立浏览器**：全流程绝对严禁在任何数据采集、赛程同步、变盘流水或页面抓取环节调用外部独立浏览器（如 `Skill /browseros-neo` ↔ `MCP browseros_neo`）！外部独立浏览器仅限主人亲自交互浏览，AI 在常规和异常业务流中绝对禁止擅自启动或降级调用！
 3. **全流程严禁任何临时 `.py` 脚本、跑批脚本、数据清洗脚本、复盘对账脚本或 `python -c`！** 违者视为严重工程违规与作弊。
 4. **【平台工具 `execute_code` 绝对硬锁禁令】**：全流程绝对严禁调用平台工具 `execute_code` 执行任何 Python 脚本代码！严禁借 `execute_code` 编写爬虫抓取逻辑、数据清洗或对账代码！数据获取必须且只能直接调用官方 MCP 工具（`mcp__scrapling__*`），推演查看必须且只能直接调用官方 MCP 工具（`mcp__evoontology__*`）。违反者视为严重违规越权！
+5. **【Scrapling 官方零代码立宪（Zero-Custom-Script Law）】**：官方 D4Vinci/Scrapling 原生设计哲学为 "Without Writing Any Code"。系统进货 100% 独家依赖官方 Scrapling MCP 工具（`bulk_get`, `open_request_session`, `session_make_request`），直接利用原生 `extraction_type="markdown"` 直出纯净表格与结构。绝对严禁编写任何第三方 `.py` 解析器、手搓正则表达式或 Node 胶水脚本，杜绝开历史倒车与自研死锁！
+6. **【Polymarket 链上单事件精准约束（Anti-Frame-Overflow Law）】**：调用 Polymarket Gamma API 时，必须且只能精准请求单事件唯一 slug（`https://gamma-api.polymarket.com/events?slug={slug}`），绝对严禁调用无参数 `/events` 大列表；单次返回体确保 $\le 10\text{KB}$；若未开盘直接在文件记录 `[官方未开盘]`，彻底根除 Antigravity MCP 协议栈 `JSON-RPC frame exceeded maximum line length` 溢出崩溃！
 
 **Scrapling 官方两级分层进货架构与会话闭环军规（D4Vinci/Scrapling Native Specs）**：
 依循官方原生分层理念，球探网纯静态服务端渲染接口与动态反爬接口严格分流：
@@ -27,13 +29,18 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
   - 构造候选场次分批矩阵（严格按 4~6 场为一组 Batch、4~8 URLs 协议流并发 + 选择器下推），调用 `mcp__scrapling__bulk_get` 分批秒取数据；
   - **法定装配落盘与物理清空重抓**：专职搬运工直接通过 Scrapling MCP 并发拉取 26 端点与 Polymarket 解析，装配落盘至 `data/{销售日}/{matchId}.md`（同时落盘 `raw/{matchId}.json` 原子存证包）；**严禁大模型手动拼接 Markdown 避免封条失真！凡触发重新推演，第一动作绝对强制物理清空旧快照，严禁在旧文件上用 replace_file_content 局部打补丁改时间作弊伪造活水！**
   - 严禁单场串行磨洋工，严禁单批超载倾倒，未见快照物理落盘且新鲜有效（<30分钟）前，绝对禁止开脑推演！
-- **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（1~2 秒全量并发直取）**：
-  - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，通过 `mcp__scrapling__bulk_get` 一次性并发秒取单场全部 5 大数据源：
-    1. **阵容伤停与基本面技统**：`https://zq.titan007.com/analysis/{id}cn.htm`（含伤停名单、主客得失球、盘路走势、进球时段、未来赛程）；
-    2. **Crown 皇冠波胆与半全场**：`https://zq.titan007.com/analysis/odds/{id}.htm`（含 0:0~4:4 比分波胆、总入球、半全场、角球、必发指数）；
-    3. **体彩全玩法与半场指数**：`https://zq.titan007.com/default/getAnalyData?sid={id}&t=1`（含体彩 HAD/HHAD/TTG/CRS/HAFU 及半场欧亚大）；
-    4. **百家欧指与分钟级流水**：`https://1x2d.titan007.com/{id}.js`（含 23 家法定机构初即盘、返还率、凯利指数及全部变盘历史）；
-    5. **7 大做市商亚盘与大小球流水**：`https://vip.titan007.com/changeDetail/handicap.aspx` 与 `overunder.aspx`。
+- **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（法定 26 端点无损原子存证矩阵）**：
+  - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，单场比赛必须且只能全量并发拉取以下 **法定 26 个底层物理端点**，完整装配为 `raw/{matchId}.json`（体积稳定在 1.10MB ~ 1.25MB，严禁缺失任何端点）：
+| 序号 | Payload Key | 请求目标 URL 规范 | 编码 | 选择器下推 / 模式 | 业务作用 |
+| :---: | :--- | :--- | :---: | :--- | :--- |
+| **1** | `1x2d.js` | `https://1x2d.titan007.com/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯23家) | 百家欧指初即盘、返还率、凯利及变盘流水 |
+| **2** | `analysis.html` | `https://zq.titan007.com/analysis/{mid}cn.htm` | UTF-8 | 可选 `#team_lineup` | 微观首发阵容、主客进球时段、伤停名单 |
+| **3** | `odds.html` | `https://zq.titan007.com/analysis/odds/{mid}.htm` | UTF-8 | 可选 `#analy_sbAllOdds` | Crown 皇冠 0:0~4:4 波胆、半全场指数 |
+| **4** | `analy.json` | `https://zq.titan007.com/default/getAnalyData?sid={mid}&t=1` | UTF-8 | JSON 原生响应 | 中国体彩官方 HAD/HHAD 让球数与半场数据 |
+| **5~11** | `ah_{cid}.html` (7家亚盘) | `https://vip.titan007.com/changeDetail/handicap.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 澳彩/皇冠/365/易胜博/平博/188/马会亚盘变盘流水 |
+| **12~18** | `ou_{cid}.html` (7家大小) | `https://vip.titan007.com/changeDetail/overunder.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 法定 7 大机构大小球变盘时序流水 |
+| **19~25** | `eu_{cid}.html` (7家欧指) | `https://vip.titan007.com/changeDetail/1x2.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 法定 7 大机构欧洲胜平负变盘时序流水 |
+| **26** | `polymarket.json` | `https://gamma-api.polymarket.com/events?slug={slug}` | UTF-8 | JSON 精准单事件 | 链上真实去中心化真金白银定价概率 |
   - **常规与异常流程 100% 由 Scrapling 官方内部四级闭环极速完成，严禁启动外部独立浏览器！**
 - **赛后复盘赛果极速提取规约（赋能 skills/post-review 的 Scrapling 选择器下推通道）**：
   - 赛后复盘获取已完场比分时，作为 `skills/post-review` 的底层数据通道，调用 `mcp__scrapling__bulk_get` 批量并发抓取 `https://live.titan007.com/detail/{matchId}cn.htm`；
@@ -210,7 +217,31 @@ mcp__scrapling__stealthy_fetch({
 
 ## 三、欧洲指数百家做市商清单（法定 23 家）
 | 机构类型 | 机构 | 初盘主胜 | 初盘平局 | 初盘客胜 | 初返还 | 即时主胜 | 即时平局 | 即时客胜 | 即时返还 | 凯利(主/平/客) |
-（严格按 1x2d.js 原始报文提纯法定白名单机构，严禁对未开盘机构填充假赔率）
+| 机构类型 | 公司ID (cid) | 机构标准名称 | 做市属性分类 | 核心业务职能与博弈定位 |
+| :---: | :---: | :--- | :--- | :--- |
+| 核心做市 | **80 / 1** | **澳彩 (Macau)** | 亚洲母盘 / 核心做市 | 亚洲盘口风向标，抽水低、操盘稳健，防守意图明显 |
+| 核心做市 | **545 / 3** | **皇冠 (Crown)** | 核心做市 / 资金晴雨表 | 全球最大受注平台，贴水敏感，反映真实主力资金动向 |
+| 商业做市 | **281 / 8** | **Bet365 (365bet)** | 商业做市 / 散户巨头 | 散户筹码最集中，善用微调高低水诱导大众偏好 |
+| 核心做市 | **90 / 12** | **易胜博 (Easybet)** | 核心做市 / 操盘激进 | 亚洲传统老庄，深盘开盘激进，变盘果断 |
+| 欧陆防守 | **177 / 47** | **平博 (Pinnacle)** | 欧陆防守 / 低抽水标杆 | 全球最高赔付限额与最低抽水率，真实概率去水基准 (CORP) |
+| 亚洲哨兵 | **432 / 48** | **香港马会 (HKJC)** | 亚洲防守哨兵 | 专营做市，极度厌恶风险，临盘降赔防守信号极强 |
+| 亚洲哨兵 | **42** | **188 (188bet)** | 亚洲自营哨兵 | 与皇冠/365形成铁三角，防范异动资金冲击 |
+| 英伦母盘 | **115** | **威廉希尔 (William Hill)** | 英伦母盘 / 欧陆标杆 | 欧洲传统老牌，胜平负经典分布，散户基准定价 |
+| 英伦母盘 | **82** | **立博 (Ladbrokes)** | 英伦母盘 / 欧陆标杆 | 经常与威廉希尔形成微差互搏，观察欧陆分流意图 |
+| 核心做市 | **81** | **伟德 (Victor Chandler)** | 核心做市 | 英系老牌，胜平负返还率高，敏感度高 |
+| 欧陆保守 | **104** | **Interwetten** | 欧陆保守标杆 | 奥地利老牌，平局赔率通常压极低，欧洲防守探针 |
+| 商业做市 | **255** | **Bwin** | 商业做市 | 欧洲大众品牌，平负赔率波动大，易于诱导散户 |
+| 意系哨兵 | **110** | **SNAI** | 意系防守哨兵 | 意大利本土垄断机构，对意系赛事（意甲/意乙）具备绝对内幕定力 |
+| 交易所 | **2** | **Betfair (必发)** | 交易所撮合市场 | 纯撮合交易，反映挂牌大单与真实市场对冲头寸 |
+| 老庄机构 | **474** | **SBO (利记)** | 老庄机构 | 东南亚传统庄家，走地敏锐，早盘防守 |
+| 老庄机构 | **649** | **沙巴 (IBCBET)** | 老庄机构 | 亚洲知名体育平台，亚盘受注量大 |
+| 论文样本 | **800** | **Marathon (马拉松)** | 学术论文样本 | 返还率极高（97%+），极限去水对账基准 |
+| 论文样本 | **482** | **Betway (必威)** | 学术论文样本 | 欧洲主流机构，对账参考 |
+| 论文样本 | **386** | **Unibet (优胜客)** | 学术论文样本 | 北欧大型机构，对北欧联赛具有极高定价权威 |
+| 论文样本 | **826** | **Paddy Power** | 学术论文样本 | 爱尔兰巨头，擅长炒作热门与利用大众偏见 |
+| 论文样本 | **16** | **10Bet** | 学术论文样本 | 辅助样本做市商 |
+| 终端履约 | **1129** | **中国体彩 (Sporttery)** | 终端履约与开售核验 | 仅用于核验场次编号（如周一001）、单固/让球玩法及销售截断 |
+（严格按 1x2d.js 原始报文提纯上述法定白名单机构，严禁对未开盘机构填充假赔率；底层 raw 存证完整封存 26 端点）
 
 ---
 
