@@ -60,9 +60,9 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
   - **全流程严禁编写任何 `.py` 正则提取脚本、清洗脚本或中间统计代码！**
 - **自主智能调度与职责界限（物理门禁不僭越大脑）**：
   - AI 大模型拥有完全自主的选择、切换与组合调度权；
-  - 无论选用哪一个工具，最终进货必须原子落盘底层无损存证 `data/YYYY-MM-DD/raw/{matchId}.json`，供 EvoOntology 官方 MCP 提取微观数据；同时组装落盘工整单文件 `data/YYYY-MM-DD/{matchId}.md` 作为人类可视化复盘简报（全天赛程索引统一汇总于 `data/YYYY-MM-DD/meta.md`），确保物理源数据新鲜有效（<30分钟）。
+  - 无论选用哪一个工具，最终进货必须原子落盘底层无损存证 `data/YYYY-MM-DD/raw/{matchId}.json`，供 EvoOntology 官方 MCP 寻址微观数据；同时组装落盘工整单文件 `data/YYYY-MM-DD/{matchId}.md` 作为人类可视化复盘简报（全天赛程索引统一汇总于 `data/YYYY-MM-DD/meta.md`），确保物理源数据新鲜有效（<30分钟）。
   - **核心分工红线**：物理文件只做**数据纯净度客观存证**（防空骨架、防字段错位、防缺机构），**绝对不包含任何代码推演判断、绝不输出预测胜负**。所有倍率推演、博弈破译与做市商反审全权由 **AI 大模型的大脑自主完成**，语义机位由 EvoOntology 官方原生 MCP 支持！
-  - **EvoOntology 专属视网膜铁律（只负责看，不负责理解）**：全系统搜查、观看任何比赛数据必须使用 EvoOntology 官方 MCP 工具。EvoOntology 专属负责看数据（按机位定向检索、字段精准提取与投喂切片），严禁大模型直接用 `view_file` 裸视庞杂原始 JSON 或全篇 Markdown，坚决消灭上下文爆炸、漏读与幻觉！
+  - **EvoOntology 官方双层看数视网膜（语义罗盘 vs 原生数据切片）**：全系统搜查、观看任何比赛数据必须分为两层：① **语义导航层**：EvoOntology 官方 MCP（`browse_semantics` ➔ `resolve_semantics`）负责做市机位召回、23 家状态核销（遇 `gap` 立即触发 `block` 强阻断，防漏看）与输出权威 Mapping 路径（锁死 cid，防看错）；② **原生切片层**：宿主工具严格按 Mapping 路径定点读取几十字节微观事实，严禁大模型全文裸视整篇原始数据文件，更严禁在后台编写 Node 脚本手工硬编码伪造假数据！未开盘必须如实标记 `[官方未开盘]`，坚守第一性真理！
 
 ---
 
@@ -448,38 +448,12 @@ Polymarket 链上智能合约、标的名称及底层 Gamma 数据库 **100% 为
 4. **伤停空表处理**：分析页抽出的阵容表若印「暂无数据」，如实标注【暂无数据 / 伤停未核实】，保留页上原句，**允许继续十步推演，严禁脑补无伤停**。
 5. **时点分立**：实际抓取、分析截至、报价、开球、保存与发布时间分开记录，严禁用赛后记录或未来时点倒填赛前。
 
-## Subagent 工具
+## Subagent 工具（跨智能体平台通用适配机制）
 
-### 当前Hermes入口：delegate_task
+本足球系统为**跨智能体平台通用系统**，业务推演、数据抓取与质量门禁保持 100% 统一规范，后台子任务按当前宿主 Agent 平台自适应分发：
+- **爱马仕 (Hermes Agent)**：调用 `delegate_task(tasks=[{"goal": "...", "context": "..."}])` 分发子任务，通过 `delegate_task(action='list'/'stop')` 进行状态控制；
+- **反重力 (Google Antigravity)**：调用 `invoke_subagent(Role="...", TypeName="self", Prompt="...")` 派发专职搬运工或分析师子代理；
+- **Claude Code / Cursor / 通用平台**：调用环境内建的 subagent 工具或后台隔离任务并发拉取；
+- **OpenClaw (历史参考)**：调用 `sessions_spawn`。
 
-用 `delegate_task(tasks=[{"goal":"任务","context":"所需背景与回传要求"}])` 派发任务；同批最多3个单场worker，不能要求worker再次委派。worker只回传待验收结果，不自行发送消息；主会话作为唯一写入者在整批摘要保存后交付。状态用 `delegate_task(action="list")`，停止用 `delegate_task(action="stop",subagent_id="实际ID")`。定时最终报告仅交调度器投递。
-
-### sessions_spawn — 历史平台接口（非当前Hermes调用）
-
-将耗时任务交给后台 subagent 执行，主会话立即返回，保持可用。
-
-**参数**：
-
-| 参数                | 必填 | 说明                                       |
-| ------------------- | ---- | ------------------------------------------ |
-| `task`              | 是   | 任务指令（subagent 收到的 prompt）         |
-| `label`             | 否   | 标签，方便 `/subagents list` 识别          |
-| `model`             | 否   | 指定 subagent 使用的模型（默认继承主会话） |
-| `runTimeoutSeconds` | 否   | 超时秒数（默认 3600 = 60 分钟）            |
-
-**返回**：`{ status: "accepted", runId, childSessionKey }` — 非阻塞，立即返回。
-
-**历史使用示例（仅保留接口来源，包含的自行推送与嵌套派发不再执行）**：
-
-```
-# 赛程同步（单个 subagent）
-sessions_spawn:
-  task: "执行赛程同步。读取 skills/match-scraper/SKILL.md。严格按照模板，使用 /scrapling-official 抓球探竞足页全量赛程，禁止先跑 npm run schedule。通过 messaging 推送赛程列表给主人，写入 memory/{今天日期}.md。"
-  label: "match-sync"
-
-# 深度分析（编排 subagent 内部 spawn worker）
-sessions_spawn:
-  task: "深度分析 [英超] 阿森纳 vs 曼城（ID: 2950977）。读取 skills/deep-analysis/SKILL.md。严格按照模板，阶段一完成底层源数据落盘并过验，worker 通过 EvoOntology 官方 MCP 提取微观切片（严禁裸视海量原始报文）完成全部 10 步分析；超 4000 字须分段。通过 messaging 推送分析报告给主人。返回结构化综合评估结果（JSON 格式）。"
-  label: "deep-analysis-2950977"
-  runTimeoutSeconds: 900
-```
+无论在哪个平台运行，专职搬运工（Data Ingest Worker）均严格遵循 Scrapling 原生流水线并发进货，主会话收齐后统一交付，严禁跨平台逻辑分裂。
