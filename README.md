@@ -22,17 +22,13 @@
 
 ## 快速上手与运行环境
 
-### 1. 通用环境准备
+### 1. 通用环境准备与核心 MCP 矩阵
+本系统已完成**全库零 `.py` 终极纯净化**，主仓库 100% 蜕变为纯 Agent 认知与知识库圣殿。所有数据采集、做市看数与纯数学算力均通过标准 MCP 工具闭环驱动，零本地脚本依赖、零终端命令行负担：
+
 - **官方原生数据采集通道**：100% 独家归属 Skill `/scrapling-official` ↔ MCP `scrapling`（极速并发全包直取），严禁调用外部独立浏览器（如 `browseros-neo`）
 - **EvoOntology 专属做市视网膜**：大模型/Agents 查看比赛数据 100% 必须经由 EvoOntology MCP（`browse_semantics` ➔ `resolve_semantics`）提取微观切片，严禁裸视海量原始报文
-
-- **Python**: v3.11+（用于验证泊松比分与运行图谱工具）
-
-```bash
-# 算法库离线数学单测（不是抓取入口）
-py -3.13 -m unittest discover -s 算法/测试
-
-```
+- **纯 MCP 架构**：全库物理清零全部 `.py` 文件，纯数学算力 100% 外挂至宿主级独立 MCP 服务（`sports-math`），零本地环境冲突。
+- **全流程 MCP 机械臂闭环**：进货调度 `scrapling`，做市看数调度 `evo-semantic`，概率去水与泊松调度 `sports-math`，理论反思调度 `graphify`。
 
 ### 2. 各平台运行方式
 - **爱马仕 (Hermes Agent)**：直接在当前工作区对话交互；每日自动化已由爱马仕调度中枢接管。
@@ -95,6 +91,7 @@ workspace/
 ├── TOOLS.md             # 工具指南：Scrapling 原生流水线与 EvoOntology 视网膜规范
 ├── HEARTBEAT.md         # 定时检查清单
 ├── MEMORY.md            # 长期记忆：累计统计、策略结论
+├── README.md            # 架构与上手指南
 ├── memory/              # 每日记忆
 │   └── YYYY-MM-DD.md   # 每日分析日志
 └── skills/              # 技能
@@ -126,13 +123,24 @@ workspace/
 
 ---
 
-## 算法单测自检
+## 核心 MCP 服务与关联项目矩阵
 
-当需要验证 pure DDD 算法库功能时，运行官方离线数学单测：
+系统采用“零 `.py` 纯知识库 + 宿主 MCP 机械臂”架构，核心依赖四大 MCP 与三大关联项目：
 
-```bash
-py -3.13 -m unittest discover -s 算法/测试
-```
+### 1. 核心 MCP 武器库
+| MCP 服务名 | 定位 | 能力与职责 | 核心工具接口 |
+| ---------- | ---- | ---------- | ------------ |
+| **`scrapling`** | 数据搬运流水线 | 26 个底层端点长连接并发提取、二进制保真解码与防反爬 | `bulk_get`, `stealthy_fetch` |
+| **`evo-semantic`** | 做市概念视网膜 | 纳管法定 23 家做市商机位与微观探针，客观切片提取，严禁大模型裸视长文本 | `browse_semantics`, `resolve_semantics`, `validate_semantics` |
+| **`sports-math`** | 纯数学算力引擎 | 东京大学 Shota Goto (2026) OO-EPC 凸优化去水与 Dixon-Coles 修正泊松比分算力 | `devig_oo_epc`, `poisson_dixon_coles` |
+| **`graphify`** | 知识图谱中枢 | 5.6MB 全量博弈图谱、错题反思导览与 God Nodes 穿透 | `query_graph`, `get_node`, `god_nodes` |
+| **`bigballs-sports-data`** | 体育垂直数据源 | 覆盖五大联赛与美职足的真实伤停与球员微观体能负荷 | `get_matches`, `get_standings` |
+
+### 2. 关联项目与协同基础设施
+- **足球主知识库（`d:\100-工作\200-交易\倍率分析推演`）**：纯 Agent 知识库圣殿，沉淀战法库、推演规范与每日战报，全库 0 个 `.py` 文件。
+- **宿主独立数学服务（`C:\Users\home\.gemini\services\sports-math`）**：外挂式独立微服务，由 `mcp_config.json` 全局驱动，杜绝本地依赖冲突。
+- **语义本体底座（`.evoontology`）**：对齐 `ruc-datalab/EvoOntology` 规范，实现字段级 1:1 Schema 核验。
+- **博弈知识图谱（`graphify-out`）**：对齐 `Graphify-Labs/graphify` 规范，承载错题反思与核心理论节点。
 
 ## 注意事项
 

@@ -251,18 +251,31 @@ mcp__scrapling__stealthy_fetch({
 
 ---
 
-## 四、核心做市商与终端标的真实变盘时序流水（逐行原样零篡改）
-### 第一战区：欧亚双盘全能做市商（澳彩/皇冠/Bet365/易胜博/平博/188Bet/香港马会，共7家）
-（各家逐行原样列出赛前真实变盘记录：`| 变盘时间 | 盘口 | 主水 | 客水 | 状态 |`；球探网有几行真实变盘就写几行，彻底废除 T0~T4 五阶段凑数、废除「维持区间」假行、废除主观「做市形态学识别」列！）
-### 第三战区：终端履约实盘标的（中国体彩 HAD/HHAD + Polymarket 链上撮合，共2家）
-（彻底废除第二战区 14 家纯欧指机构的凑数伪时序子表，其初即盘与凯利已在第三节完整呈现）
+## 四、核心做市商与终端标的真实变盘时序流水（法定 7 家 × 3 盘 = 21 张全量大表，逐行原样零篡改）
+### 1. 澳彩 (欧亚双盘核心, 核心做市, cid=80)
+#### 亚盘真实变盘流水 / #### 大小球真实变盘流水 / #### 欧指真实变盘流水（3 张表）
+### 2. 皇冠 (欧亚双盘核心, 核心做市, cid=545)（3 张表）
+### 3. Bet365 (商业做市散户巨头, cid=281)（3 张表）
+### 4. 易胜博 (操盘激进老庄, cid=90)（3 张表）
+### 5. 平博 (欧陆防守标杆, cid=177)（3 张表）
+### 6. 188Bet (亚洲自营哨兵, cid=115)（3 张表）
+### 7. 香港马会 (亚洲防守哨兵, cid=82)（3 张表）
+*注：7 家机构各输出亚盘、大小球、欧指共 21 张独立流水大表，倒序排列，有几行写几行，严禁截断与抽稀！*
 
 ---
 
-## 五、Crown 皇冠全指数波胆与比分矩阵
-- **波胆比分赔率**：1:0 ｜ 2:0 ｜ 2:1 ｜ 0:0 ｜ 1:1 ｜ 0:1 ｜ 0:2 ｜ 1:2 ...
-- **总进球赔率**：0~1球 ｜ 2~3球 ｜ 4~6球 ｜ 7+球
-- **半全场赔率**：主/主 ｜ 主/和 ｜ 和/主 ｜ 和/和 ｜ 客/客 ...
+## 五、波胆与终端履约标的（Crown 比分矩阵 & 体彩官方玩法 & Polymarket）
+- **Crown 皇冠 0:0 ~ 4:4 比分矩阵赔率**：完整表格呈现各比分初即赔率；
+- **中国体育彩票官方代号与赔率**：HAD 普通胜平负与 HHAD 让球胜平负让球数与初即赔率；
+- **Polymarket 预测市场**：链上挂单与点击链接。
+```
+
+#### 人类可视化简报（`matchId.md`）黄金物理装配门禁硬指标（Hard Integrity Gates）
+1. **行数硬门禁（Line Count Gate）**：装配后的 `data/{销售日}/{matchId}.md` 行数必须 **$\ge 350$ 行**（满配对齐 380~450 行黄金标杆，文件体积 $\ge 15\text{KB}$），严禁生成 100~200 行的残缺抽稀半成品；
+2. **战区全覆盖门禁（5-Section Completeness Gate）**：必须 100% 包含上述全量 5 大战区（阵容/战绩/23家欧指/21张变盘流水/波胆体彩），缺少任何一个战区直接阻断并报错；
+3. **21 张变盘流水表硬门禁（21 Odds Tables Gate）**：战区四中 7 大法定机构的亚盘、大小球、欧指必须各自独立建表，共计 **21 张流水表格**（官方合法未开盘除外），严禁偷工减料只留亚盘或只留 4 家；
+4. **23 家欧洲指数全景对比门禁（23 Bookmakers Gate）**：战区三必须完整列出法定 23 家初即盘、返还率与凯利指数，严禁删减；
+5. **熔断与重新装配**：凡任何指标不达标，进货流水线立即自动熔断，阻断进入推演阶段，强制重新基于底层 1.15MB 原始存证全量装配！
 ```
 - **原汁原味真实流水与加密封条铁律（Zero Fabrication & Cryptographic Seal）**：
   1. **彻底废除 T0～T4 凑数切片与主观形态列**：源数据文件只准存储 100% 客观原始数字与真实分秒时间戳，严禁在源数据中混入任何主观博弈定性文案（如“中盘假摔震仓”），所有博弈破译统一留到阶段二由首席分析师基于真实流水推演；
@@ -297,29 +310,52 @@ mcp__scrapling__stealthy_fetch({
 - **缺失不臆造**：如果某家公司或某类市场缺失，报告中必须标注数据缺口，并降低对应维度权重。
 - **平博用途**：平博可作为主流公司交叉验证参考，不单独用于决策依据。
 
-### 纯数学去水算法工具（算法/src/adapter/cli.py）
+### 官方 sports-math MCP 纯数学算力服务
 
-标准东京大学 Shota Goto (2026) OO-EPC 官方原版去水计算器。
-用于欧指分析第 4 步、四项论文质问之二及七列表第 5 列的点概率计算。杜绝大模型心算与概率失真。
+标准东京大学 Shota Goto (2026) OO-EPC 官方原版去水计算器与 Dixon-Coles 修正泊松引擎已作为独立 MCP 服务封装挂载（宿主级 `sports-math`），仓库内 100% 物理剔除本地 `.py` 脚本，杜绝终端命令行调用与大模型心算失真。
 
-```bash
-# 标准计算（文本输出）
-python 算法/src/adapter/cli.py 2.10 3.40 3.55
-
-# 结构化计算（JSON输出，供程序与 Worker 消费）
-python 算法/src/adapter/cli.py 2.10 3.40 3.55 --json
-
-# 纯数学单元回归测试（21项全绿）
-python -m unittest discover -s 算法/测试 -p "test_*.py"
+#### 1. 欧指无偏去水（devig_oo_epc）
+用于欧指分析第 4 步、四项论文质问之二及七列表第 5 列的点概率计算。
+```json
+call_mcp_tool(
+  ServerName="sports-math",
+  ToolName="devig_oo_epc",
+  Arguments={"home_odds": 2.10, "draw_odds": 3.40, "away_odds": 3.55}
+)
 ```
+- 返回参数：`probabilities` (无偏胜平负点概率字典), `overround` (盘口原始抽水率), `converged` (布尔状态)。
 
-### EvoOntology 官方语义本体 MCP 工具（evo-semantic）
+#### 2. 比分分布与低比分修正泊松（poisson_dixon_coles）
+用于比分基准推演与 Top 比分概率排序。
+```json
+call_mcp_tool(
+  ServerName="sports-math",
+  ToolName="poisson_dixon_coles",
+  Arguments={"home_lambda": 1.45, "away_lambda": 1.10, "top_n": 6}
+)
+```
+- 返回参数：`top_scores` (Top N 修正比分概率), `lambda_home`, `lambda_away`。
 
-基于官方原生 `ruc-datalab/EvoOntology`，零第三方 Python 代码包装：
-- `browse_semantics`：只读感知做市商博弈机位（假摔、真空、锚点等）；
-- `resolve_semantics`：解析概念对应的底层原始数据映射；
-- `validate_semantics`：官方本体一致性约束检验；
-- `list_versions`：列出当前生效本体版本（如 ontology_v2）。
+### EvoOntology 官方语义视网膜交互规约（Official Semantic Interaction Protocol v1）
+
+系统全面对齐官方原生 `ruc-datalab/EvoOntology` 架构，建立标准化视网膜操作规约：
+
+1. **视网膜绝对解耦宪章（The Eye & Camera Invariant）**：
+   - 官方权威立宪：本体层 100% 独家充当“只读光学透镜与微观约束探针（Eyes and Cameras）”，严禁入侵推演与决策大脑；
+   - 绝对禁止在本体层中编码任何比赛预测、绝不计算让球输赢、绝不做盘口好坏定性；推演与博弈破译 100% 全权由自研 AI 大模型完成。
+2. **两阶段交互标准流（browse_semantics ➔ resolve_semantics）**：
+   - **第一步：概念发现（browse_semantics）**：大模型根据当前分析需求发起定向检索，如 `browse_semantics(query="平博")` 检索 Term；
+   - **第二步：微观切片与约束解析（resolve_semantics）**：调用 `resolve_semantics(mentions=["平博"])`，获取精确 `database_source: "raw_json"` 映射（`table: "europe1x2"`, `column: "平博"`）、关联探针与告警约束（`constraints`）；
+   - **第三步：认知契约卡前置对质**：若返回的 `constraints` 中包含 `severity: block`（如商业庄降赔而平博纹丝不动、亚盘脉冲假摔退盘），推演大模型必须在认知契约卡中显式对质，杜绝盲目跟风。
+3. **防看错与防漏看 23 家数据机制（Anti-Misreading & Anti-Omission）**：
+   - **防看错（Grounding Anchor）**：每个概念由 `Mapping` 刚性锚定至 `raw/{matchId}.json` 的确切字段，彻底杜绝大模型在庞杂报文中注意力漂移、行列张冠李戴与列名幻觉；
+   - **防漏看（Equivalence & Hierarchy Graph）**：法定 23 家做市商建立完整的 Schema v1 语义谱系图谱，通过 `browse_semantics` 目录全纳管；凡解析出现脱靶立即显式返回 `gap` 报警，绝不静默丢失。
+4. **本体静态安全门禁（validate_semantics）**：
+   - 严格执行 `validate_semantics(workspace="...")`，保障 Schema v1 规范（5 种官方 `relation_type`，标准 `confidence` 与约束分类），确保零语法与运行时错误。
+
+
+
+
 
 ## Polymarket 下单链接与法定第 6 接口（官方 Discover Markets API 检索标准）
 
