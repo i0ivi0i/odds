@@ -86,10 +86,7 @@
 ```
 workspace/
 ├── IDENTITY.md          # 身份：名字、角色、目标
-├── SOUL.md              # 灵魂：性格、风格、原则、边界
-├── AGENTS.md            # 操作手册：完整方法论和规则
-├── TOOLS.md             # 工具指南：Scrapling 原生流水线与 EvoOntology 视网膜规范
-├── HEARTBEAT.md         # 定时检查清单
+├── AGENTS.md            # 核心宪章：职业精算师灵魂信条、五大原生 Skill 升级管辖权与推演操作规约
 ├── MEMORY.md            # 长期记忆：累计统计、策略结论
 ├── README.md            # 架构与上手指南
 ├── memory/              # 每日记忆
@@ -128,13 +125,13 @@ workspace/
 系统采用“零 `.py` 纯知识库 + 宿主 MCP 机械臂”架构，核心依赖四大 MCP 与三大关联项目：
 
 ### 1. 核心 MCP 武器库
-| MCP 服务名 | 定位 | 能力与职责 | 核心工具接口 |
-| ---------- | ---- | ---------- | ------------ |
-| **`scrapling`** | 数据搬运流水线 | 26 个底层端点长连接并发提取、二进制保真解码与防反爬 | `bulk_get`, `stealthy_fetch` |
-| **`evo-semantic`** | 做市概念视网膜 | 纳管法定 23 家做市商机位与微观探针，客观切片提取，严禁大模型裸视长文本 | `browse_semantics`, `resolve_semantics`, `validate_semantics` |
-| **`sports-math`** | 纯数学算力引擎 | 东京大学 Shota Goto (2026) OO-EPC 凸优化去水与 Dixon-Coles 修正泊松比分算力 | `devig_oo_epc`, `poisson_dixon_coles` |
-| **`graphify`** | 知识图谱中枢 | 5.6MB 全量博弈图谱、错题反思导览与 God Nodes 穿透 | `query_graph`, `get_node`, `god_nodes` |
-| **`bigballs-sports-data`** | 体育垂直数据源 | 覆盖五大联赛与美职足的真实伤停与球员微观体能负荷 | `get_matches`, `get_standings` |
+| MCP 服务名 | 官方 GitHub / 访问链接 | 定位 | 能力与职责 | 核心工具接口 |
+| ---------- | ---------------------- | ---- | ---------- | ------------ |
+| **`scrapling`** | [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling) | 数据搬运流水线 | 26 个底层端点长连接并发提取、二进制保真解码与防反爬 | `bulk_get`, `stealthy_fetch` |
+| **`evo-semantic`** | [ruc-datalab/EvoOntology](https://github.com/ruc-datalab/EvoOntology) | 做市概念视网膜 | 纳管法定 23 家做市商机位与微观探针，客观切片提取，严禁大模型裸视长文本 | `browse_semantics`, `resolve_semantics`, `validate_semantics` |
+| **`sports-math`** | [宿主自研独立服务](file:///C:/Users/home/.gemini/services/sports-math) (Goto 2026 / Dixon-Coles) | 纯数学算力引擎 | 东京大学 Shota Goto (2026) OO-EPC 凸优化去水与 Dixon-Coles 修正泊松比分算力 | `devig_oo_epc`, `poisson_dixon_coles` |
+| **`graphify`** | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | 知识图谱中枢 | 5.6MB 全量博弈图谱、错题反思导览与 God Nodes 穿透 | `query_graph`, `get_node`, `god_nodes` |
+| **`bigballs-sports-data`** | [Big Balls Data MCP](https://mcp.bigballsdata.com/mcp) | 体育垂直数据源 | 覆盖五大联赛与美职足的真实伤停与球员微观体能负荷 | `get_matches`, `get_standings` |
 
 ### 2. 关联项目与协同基础设施
 - **足球主知识库（`d:\100-工作\200-交易\倍率分析推演`）**：纯 Agent 知识库圣殿，沉淀战法库、推演规范与每日战报，全库 0 个 `.py` 文件。
