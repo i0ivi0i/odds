@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "倍率分析推演系统通用数据源与API矩阵统一配置",
   "datasources": {
     "primary_odds": {
@@ -7,7 +7,7 @@
       "type": "lightweight_data_stream",
       "status": "active",
       "base_urls": {
-        "schedule": "https://jc.titan007.com/xml/odds_jc.txt",
+        "schedule": "https://jc.titan007.com/index.aspx",
         "detail": "https://live.titan007.com/detail",
         "analysis": "https://zq.titan007.com/analysis",
         "europe_odds": "https://1x2d.titan007.com",
@@ -16,20 +16,28 @@
         "crown_full_index": "https://vip.titan007.com/Crown/FullIndex.aspx"
       },
       "tracked_bookmakers": [
-        { "id": "115", "name": "威廉", "role": "英伦古典三巨头·主认证" },
-        { "id": "281", "name": "365bet", "role": "全球资金盘第一巨头·主认证" },
-        { "id": "82", "name": "立博", "role": "英伦古典三巨头·主认证" },
-        { "id": "81", "name": "伟德", "role": "英伦古典三巨头·初盘标杆·主认证" },
-        { "id": "177", "name": "平博", "role": "全球顶尖做市商·尖锐对账·主认证" },
-        { "id": "104", "name": "Interwetten", "role": "德系与欧陆防守·德国联赛三家交叉认证必抓" },
-        { "id": "255", "name": "Bwin", "role": "欧洲大陆散户风向标·重点参考" },
-        { "id": "110", "name": "SNAI", "role": "意系国家特许巨头·意系赛事特看" },
-        { "id": "2", "name": "必发", "role": "全球第一对冲撮合交易所·对冲参考" },
-        { "id": "1", "name": "澳彩", "role": "亚洲盘口鼻祖·亚盘四家主认证·亚洲五家必抓" },
-        { "id": "3", "name": "皇冠", "role": "亚洲主力庄家·亚盘四家主认证·全指数波胆页面来源" },
-        { "id": "12", "name": "易胜博", "role": "亚洲知名机构·亚盘四家主认证" },
-        { "id": "48", "name": "香港马会", "role": "本地特许受限盘·亚洲五家必抓" },
-        { "id": "976", "name": "188", "role": "亚洲做市商辅助" }
+        { "id": "1", "alt_id": "80", "name": "澳彩", "role": "亚洲母盘 / 核心做市" },
+        { "id": "3", "alt_id": "545", "name": "皇冠", "role": "核心做市 / 资金晴雨表" },
+        { "id": "8", "alt_id": "281", "name": "365bet", "role": "商业做市 / 散户巨头" },
+        { "id": "12", "alt_id": "90", "name": "易胜博", "role": "核心做市 / 操盘激进" },
+        { "id": "47", "alt_id": "177", "name": "平博", "role": "欧陆防守 / 低抽水标杆" },
+        { "id": "48", "alt_id": "432", "name": "香港马会", "role": "亚洲防守哨兵" },
+        { "id": "42", "alt_id": "976", "name": "188", "role": "亚洲自营哨兵" },
+        { "id": "115", "name": "威廉", "role": "英伦母盘 / 散户基准" },
+        { "id": "82", "name": "立博", "role": "英伦母盘 / 欧陆标杆" },
+        { "id": "81", "name": "伟德", "role": "核心做市 / 初盘标杆" },
+        { "id": "104", "name": "Interwetten", "role": "欧陆保守标杆 / 平局探针" },
+        { "id": "255", "name": "Bwin", "role": "商业做市 / 散户风向标" },
+        { "id": "110", "name": "SNAI", "role": "意系防守哨兵" },
+        { "id": "2", "name": "必发", "role": "交易所撮合市场 / 对冲参考" },
+        { "id": "474", "name": "SBO (利记)", "role": "老庄机构 / 走地敏锐" },
+        { "id": "649", "name": "沙巴 (IBCBET)", "role": "老庄机构 / 亚洲知名" },
+        { "id": "800", "name": "Marathon (马拉松)", "role": "学术论文样本 / 高返还率" },
+        { "id": "482", "name": "Betway (必威)", "role": "学术论文样本 / 欧洲主流" },
+        { "id": "386", "name": "Unibet (优胜客)", "role": "学术论文样本 / 北欧权威" },
+        { "id": "826", "name": "Paddy Power", "role": "学术论文样本 / 爱尔兰巨头" },
+        { "id": "16", "name": "10Bet", "role": "学术论文样本 / 辅助样本" },
+        { "id": "1129", "name": "中国体彩", "role": "终端履约 / 开售核验" }
       ]
     },
     "injuries_and_lineups": {
@@ -61,11 +69,10 @@
       "polymarket": {
         "name": "Polymarket 预测市场",
         "type": "web3_prediction_market",
-        "gamma_search_api": "https://gamma-api.polymarket.com/public-search",
-        "gamma_events_api": "https://gamma-api.polymarket.com/events",
         "gamma_sports_api": "https://gamma-api.polymarket.com/sports",
+        "gamma_events_api": "https://gamma-api.polymarket.com/events",
         "clob_api": "https://clob.polymarket.com",
-        "web_base": "https://polymarket.com/zh/sports"
+        "web_base": "https://polymarket.com/event"
       }
     },
     "standby_open_apis": {

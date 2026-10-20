@@ -8,7 +8,7 @@ metadata: { "emoji": "📆" }
 
 本技能包含两大工作模式：
 - **模式一：赛程同步与索引初始化**（每日 11:10 定时触发、用户主动查询、或任何 Agent 阶段零自检缺盘触发）：抓取当日竞彩足球全量赛程，落盘 `data/{YYYY-MM-DD}/meta.md` 并写入 memory。
-- **模式二：【推演底层源数据】抓取与人类视图装配**（赛前分析阶段一专属搬运工 / Agent 蜂群自驱调用）：Scrapling MCP 并发秒取 5 大接口，秒级落盘底层真实存证 `data/{销售日}/raw/{matchId}.json` 解锁推演；同步组装落盘 `data/{销售日}/{matchId}.md` 作为人类可视化复盘简报。
+- **模式二：【推演底层源数据】抓取与人类视图装配**（赛前分析阶段一专属搬运工 / Agent 蜂群自驱调用）：Scrapling MCP 并发秒取法定 26 个底层端点，秒级落盘底层真实存证 `data/{销售日}/raw/{matchId}.json` 解锁推演；同步组装落盘 `data/{销售日}/{matchId}.md` 作为人类可视化复盘简报。
 
 用 Skill `/scrapling-official` 官方原生流水线并发抓取球探页面。严禁调用外部独立浏览器（如 `browseros-neo`），禁止先跑 `npm run schedule`。
 
@@ -18,7 +18,7 @@ metadata: { "emoji": "📆" }
 - 严禁在根目录或任何位置自写临时 `.py` 脚本！
 - **【零脚本硬锁】绝对禁止在 terminal 执行任何 `python -c`、自写临时 `.py`、跑批脚本或爬虫代码！数据采集与选择器下推 100% 依托 Scrapling MCP 原生工具调用！**
 - 抓取赛程目标页面：`https://jc.titan007.com/index.aspx` 抽编号、比赛 ID、开球、对阵、分析页。
-- 抓取推演源数据目标页面：单场 5 大数据源（分析页、波胆页、竞彩接口、1x2d.js、7家变盘流水）。
+- 抓取推演源数据目标页面：单场法定 26 个底层端点（分析页、波胆页、竞彩接口、1x2d.js、7家做市商亚欧大 21 张变盘流水、Polymarket 链上预测）。
 - 抓不到或场次不全：置顶报告，结束流程，不写残缺记录进 memory。
 - **每次必须实时重新抓取**，不得复用之前抓取的旧数据。
 
@@ -177,7 +177,7 @@ metadata: { "emoji": "📆" }
   1. **步骤一：开辟全真会话（Open Session）**：
      调用 `mcp__scrapling__open_request_session(impersonate="chrome", stealthy_headers=true, timeout=30)` 获取 `session_id`。全真模拟 Chrome TLS/JA3 指纹与真实 Client Hints 标头，抹除爬虫特征；
   2. **步骤二：复用连接批量请求（Session Make Request 直出 Markdown）**：
-     使用同一个 `session_id`，复用底层 TCP/TLS 链路拉取单场法定 26 个底层端点（1x2d.js、analysis.html、odds.html、analy.json、7家机构 ah_*.html/ou_*.html/eu_*.html 共21张变盘表）与 Polymarket 精准事件：
+     使用同一个 `session_id`，复用底层 TCP/TLS 链路拉取单场法定 26 个底层端点（1x2d.txt、analysis.html、odds.html、analy.txt、7家机构 ah_*.html/ou_*.html/eu_*.html 共21张变盘表，变盘流水基于 bytes 显式 GB18030 解码）与 Polymarket 精准事件：
      - **HTML 页面直转 Markdown**：配置 `extraction_type="markdown"`，配合选择器下推（`css_selector`）内存脱敏，由 Scrapling 原生直出纯净 Markdown 表格，**严禁写任何自定义 .py 或 node 解析脚本**！
      - **Polymarket 精准单事件防溢出**：必须且只能请求单事件 slug（`https://gamma-api.polymarket.com/events?slug={slug}`），未开盘直接记录 `[官方未开盘]`，严禁请求无参数 `/events`；
      - **挑战自动升阶**：若遇 403/503 或人机挑战盾，自动升阶至 `mcp__scrapling__stealthy_fetch(solve_cloudflare=true)`；
@@ -201,15 +201,16 @@ metadata: { "emoji": "📆" }
   - 大小球：`https://vip.titan007.com/changeDetail/overunder.aspx?id={matchId}&companyID={cid}&l=0`
 - 编码与过滤：解码使用 `gb18030`；严格过滤掉开球后的滚球记录，仅保留赛前真实变动流水（有几条写几条，严禁凑 `T0~T4` 或伪造 `"维持区间"`）。
 
-### 2. 欧洲指数 23 家法定机构全覆盖与全时序解构（抓取时内存提纯，严禁 Raw Dump）
+### 2. 欧洲指数 23 家法定机构全覆盖与全时序解构（抓取时内存提纯与 Anti-Mismatch 字典防漏）
 - 请求端点：`https://1x2d.titan007.com/{matchId}.js`
 - **【Scrapling 官方抓取时提纯铁律（In-Flight Targeted Extraction）】**：
   1. **禁止直接回传 Raw JS 至对话上下文**：`1x2d.js` 包含全网 163 家机构数万行变盘，严禁将原始大包作为工具输出抛给 Agent 上下文；
-  2. **流入内存即刻提纯与原样落盘**：使用预编译法定 23 家 ID 集合（`80, 545, 281, 90, 177, 115, 82, 81, 104, 255, 110, 432, 976, 2, 474, 649, 800, 482, 386, 826, 16, 1129`）与 `Titan007RawParser` 直取，并将原始返回存入 `raw/{matchId}/1x2d.js` 供门禁溯源比对；
-  3. **丢弃外来野鸡机构**：其余 140+ 家机构立即抛弃，向外传递的欧指结构严格控制在 23 家以内；
-  4. **单场数据预算硬顶**：单场提取结果向外交付体积严格限制在 **5KB 以内（约 1,000 Tokens）**，超过 10KB 视为严重采集违规。
+  2. **流入内存即刻提纯与原样落盘**：`var game=Array(...)` 中各字符串以竖线 `|` 分割，其首项 `parts[0]` 为机构 ID（cid），`parts[1]` 为赔率 ID（oddsId）。**绝对严禁将 `parts[1]` 错当为 cid！** 必须以法定 23 家权威 cid 集合（`80, 545, 281, 90, 177, 115, 82, 81, 104, 255, 110, 432, 976, 2, 474, 649, 800, 482, 386, 826, 16, 1129`）为唯一键构建 Hash Map 进行 $O(1)$ 常数级精准匹配提取，并将原始返回统一保存为 `raw/{matchId}/1x2d.txt`（依据 Scrapling CLI 规范落盘）；
+  3. **23 家法定机构 100% 满格点亮质检断言（Hard Assertion Gate）**：装配人类视图与存证 JSON 时，必须对 23 家法定机构做逐项布尔校验。除极少数特殊盘型官方合法未开盘（如体彩深盘未开普通胜负平、次级联赛香港马会未开亚盘）外，凡主流做市商出现脱靶缺失，立即判定为采集遗漏并物理阻断，严禁流出残缺半成品！
+  4. **丢弃外来野鸡机构**：其余 140+ 家机构立即抛弃，向外传递的欧指结构严格控制在 23 家以内；
+  5. **单场数据预算硬顶**：单场提取结果向外交付体积严格限制在 **5KB 以内（约 1,000 Tokens）**，超过 10KB 视为严重采集违规。
 
-### 3. 单场 5 大数据源抓取时精准提取规范（Scrapling 官方选择器下推）
+### 3. 单场法定 26 个底层端点精准提取规范（Scrapling 官方选择器下推）
 1. **微观阵容与基本面**：`https://zq.titan007.com/analysis/{matchId}cn.htm`
    - **必须选择器下推 (Selector Pushdown)**：强制传递 `css_selector="#team_lineup"`（仅阵容表格）或战绩精简容器，禁止抓取整页 50 场交锋与裁判档案原始 HTML；
 2. **Crown 皇冠全指数波胆**：`https://zq.titan007.com/analysis/odds/{matchId}.htm`（提取 0:0~4:4 波胆赔率矩阵）

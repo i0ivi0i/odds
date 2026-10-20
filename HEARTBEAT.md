@@ -1,6 +1,6 @@
 # Heartbeat 检查清单
 
-读取实时北京时间与每日 memory，按实际场次、处理状态、待办和投递回执检查，不以标题存在判完成。本文是收到巡检触发时的操作清单，不是常驻定时器；真实定时任务以 Hermes Cron 列表、运行及投递记录为准。补漏抓取优先调用 Skill `/scrapling-official` 极速并发直取（`/browseros-neo` 备用辅助），禁止先跑 `npm run schedule` / `analyze` / `review`。
+读取实时北京时间与每日 memory，按实际场次、处理状态、待办和投递回执检查，不以标题存在判完成。本文是收到巡检触发时的操作清单，不是常驻定时器；真实定时任务以 Hermes Cron 列表、运行及投递记录为准。补漏抓取独家调用 Skill `/scrapling-official` 极速原生流水线并发直取，严禁调用外部独立浏览器（如 browseros-neo），禁止先跑 `npm run schedule` / `analyze` / `review`。
 
 先查同一批次是否有仍在运行的 Cron/子任务，有则不重复启动；仅文件写「进行中」但无活跃任务时核对最后进度再恢复。已完成且无待办、无投递错误则 `HEARTBEAT_OK`。永久缺失赛前资料记「已完成但部分指标不可评分」，不伪称完整方法验证，不无限重跑。
 

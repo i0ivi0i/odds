@@ -23,14 +23,15 @@
 ## 快速上手与运行环境
 
 ### 1. 通用环境准备
-- **双轨数据采集通道**：优先调用 Skill `/scrapling-official` ↔ MCP `scrapling`（极速并发全包直取），`/browseros-neo` 真实 Chromium 渲染作为备用辅助兜底（不是让主人自己开网页）
-- **Node.js**: v20+（仅 `scripts/sporttery-sniper` 离线解析与 `npm test`，不是线上抓取入口）
+- **官方原生数据采集通道**：100% 独家归属 Skill `/scrapling-official` ↔ MCP `scrapling`（极速并发全包直取），严禁调用外部独立浏览器（如 `browseros-neo`）
+- **EvoOntology 专属做市视网膜**：大模型/Agents 查看比赛数据 100% 必须经由 EvoOntology MCP（`browse_semantics` ➔ `resolve_semantics`）提取微观切片，严禁裸视海量原始报文
+
 - **Python**: v3.11+（用于验证泊松比分与运行图谱工具）
 
 ```bash
-# 离线解析单测（不是抓取入口）
-cd scripts/sporttery-sniper
-npm test
+# 算法库离线数学单测（不是抓取入口）
+py -3.13 -m unittest discover -s 算法/测试
+
 ```
 
 ### 2. 各平台运行方式
@@ -91,7 +92,7 @@ workspace/
 ├── IDENTITY.md          # 身份：名字、角色、目标
 ├── SOUL.md              # 灵魂：性格、风格、原则、边界
 ├── AGENTS.md            # 操作手册：完整方法论和规则
-├── TOOLS.md             # 工具指南：Scrapling 并发直取与 BrowserOS neo 规范
+├── TOOLS.md             # 工具指南：Scrapling 原生流水线与 EvoOntology 视网膜规范
 ├── HEARTBEAT.md         # 定时检查清单
 ├── MEMORY.md            # 长期记忆：累计统计、策略结论
 ├── memory/              # 每日记忆

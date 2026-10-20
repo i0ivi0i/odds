@@ -14,7 +14,7 @@ metadata: { "emoji": "🎯" }
 
 **交易交付核验（权威对齐官方 Polymarket `https://docs.polymarket.com/llms.txt` 规范）**：
 1. **官方标准发现流（Discover Markets via API，严禁客户端拼词猜 Slug）**：
-   - 调用 Gamma API 搜索主队英文名：`GET https://gamma-api.polymarket.com/public-search?q={HomeTeamEn}`；若未命中则回退检索客队 `AwayTeamEn`；
+   - 严禁模糊盲搜 `public-search`（防范天气市场冲刷与老完场赛事占位）；调用 Gamma API 权威字典（`GET https://gamma-api.polymarket.com/events?series_id={id}&closed=false&limit=100`，如欧冠 UCL 10204、英超 EPL 10188）分类精准锁定；单事件请求严格锁定单 `slug`（`GET /events?slug={slug}`），杜绝长报文溢出；
    - 在返回事件中比对对阵双方与开球日期，核验活性（`active: true` 且 `closed: false`）及 `teams[].ordering` 主客顺序，提取官方原生 `event.slug` 与 `gameId`；
 2. **可执行流动性与挂单核验（CLOB API & Derivates）**：
    - 真实买卖报价：调用 CLOB API `GET https://clob.polymarket.com/book?token_id={tokenId}` 核验 Yes 合约买卖深度与实际成交价；Gamma 展示价仅作参考，不当买入保证；

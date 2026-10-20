@@ -13,6 +13,10 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 4. **【平台工具 `execute_code` 绝对硬锁禁令】**：全流程绝对严禁调用平台工具 `execute_code` 执行任何 Python 脚本代码！严禁借 `execute_code` 编写爬虫抓取逻辑、数据清洗或对账代码！数据获取必须且只能直接调用官方 MCP 工具（`mcp__scrapling__*`），推演查看必须且只能直接调用官方 MCP 工具（`mcp__evoontology__*`）。违反者视为严重违规越权！
 5. **【Scrapling 官方零代码立宪（Zero-Custom-Script Law）】**：官方 D4Vinci/Scrapling 原生设计哲学为 "Without Writing Any Code"。系统进货 100% 独家依赖官方 Scrapling MCP 工具（`bulk_get`, `open_request_session`, `session_make_request`），直接利用原生 `extraction_type="markdown"` 直出纯净表格与结构。绝对严禁编写任何第三方 `.py` 解析器、手搓正则表达式或 Node 胶水脚本，杜绝开历史倒车与自研死锁！
 6. **【Polymarket 链上单事件精准约束（Anti-Frame-Overflow Law）】**：调用 Polymarket Gamma API 时，必须且只能精准请求单事件唯一 slug（`https://gamma-api.polymarket.com/events?slug={slug}`），绝对严禁调用无参数 `/events` 大列表；单次返回体确保 $\le 10\text{KB}$；若未开盘直接在文件记录 `[官方未开盘]`，彻底根除 Antigravity MCP 协议栈 `JSON-RPC frame exceeded maximum line length` 溢出崩溃！
+7. **【Scrapling 原生 JSON 支持与 CLI 扩展名分流规范（Native JSON & CLI Boundary）】**：Scrapling 框架**绝对原生深度支持 JSON**（内置 `page.json()`、`Adaptor.json()` 与 `result.items.to_json()`，直解为标准结构化字典）。需要严格区分的是官方 CLI 导出工具（`Convertor.write_content_to_file`）在设计上仅面向网页抓取，参数强制限定输出扩展名为 `.html`、`.md`、`.txt` 三类。凡通过 CLI 命令行请求非 HTML 纯文本或静态数据流（如 `1x2d.js`、`analy.json`、`polymarket.json`）时，CLI 命令行输出必须统一使用 `.txt` 后缀（如 `1x2d.txt`、`analy.txt`、`polymarket.txt`），绝非 Scrapling 不支持 JSON！程序消费时依托官方原生 `.json()` / `Adaptor.json()` 反序列化；若直接指定 `.js` 或 `.json` 后缀会导致底层引擎抛出 `ValueError: Unknown file type` 异常并静默丢失！
+8. **【Scrapling 官方编码与二进制流保真军规（Raw Bytes & Encoding Protocol）】**：球探网二级变盘流水页面（`changeDetail/*.aspx`）为历史遗留的 `gb18030` 编码。必须严格依循 Scrapling 官方 `Selector(content, encoding='gb18030')` 与保留 `page.body`（原始二进制流）的设计规约，抓取或装配环节必须基于原始字节流显式以 `gb18030` 解码（如 `new TextDecoder('gb18030').decode(buf)`），绝对严禁在外部以默认 UTF-8 强行转换为字符串，彻底杜绝队名、盘口汉字乱码与正则脱靶！
+9. **【法定 23 家做市商 Anti-Mismatch 字典防漏门禁（Bookmaker Hash Map Law）】**：在解析 `1x2d.js` 时，`var game=Array(...)` 中各字符串以竖线 `|` 分割，其首项 `parts[0]` 为做市商机构 ID（cid），而 `parts[1]` 为赔率 ID（oddsId）。系统必须且只能以法定 23 家权威 cid 集合为键构建 Hash Map 进行 $O(1)$ 常数级精准匹配提取，绝对禁止将 `parts[1]` 错当为 cid，绝对禁止通过线性索引偏移遍历！所有 23 家做市商必须 100% 逐项布尔对账，缺任何一家直接阻断报警！
+10. **【Scrapling 官方自适应指纹记忆（`adaptive=True` 与 `storage_args`）】**：官方自适应抓取通过 `auto_save=True` 记录元素 DOM 祖先结构和特征指纹，开启 `adaptive=True` 可以在目标网页微调改版时依据相似度自动重定位元素，杜绝漏项；本地存储统一重定向至 `storage_args={"storage_file": "data/scrapling_storage.db"}`，确保指纹跨会话持久化。
 
 **Scrapling 官方两级分层进货架构与会话闭环军规（D4Vinci/Scrapling Native Specs）**：
 依循官方原生分层理念，球探网纯静态服务端渲染接口与动态反爬接口严格分流：
@@ -154,7 +158,9 @@ mcp__scrapling__stealthy_fetch({
 ```
 
 #### 实战踩坑必记
-1. **编码陷阱**：球探二级页面（`changeDetail/*.aspx`）为旧版编码，默认 UTF-8 会导致队名和盘口乱码，必须使用 `gb18030` 解码；
+1. **GB18030 编码陷阱与二进制流保真**：球探二级页面（`changeDetail/*.aspx`）为旧版 GB18030 编码，外部严禁以 UTF-8 强行转换为 string（否则队名和盘口会变成乱码导致解析脱靶），必须获取 `page.body` 原始二进制流后通过 `new TextDecoder('gb18030').decode(buf)` 或 Scrapling 原生 `Selector(content, encoding='gb18030')` 进行精准解码；
+1.1. **CLI 文件扩展名硬约束**：官方 Scrapling CLI（`Convertor.write_content_to_file`）仅支持 `.txt`、`.html`、`.md` 三大格式。抓取 `1x2d.js`、`analy.json`、`polymarket.json` 等非 HTML 资源时，落盘必须指定 `.txt` 后缀（如 `1x2d.txt`、`analy.txt`），若直接传 `.js` 或 `.json` 会被底层抛出 `ValueError: Unknown file type` 导致静默丢失；
+1.2. **欧指 1x2d.js 字段解构与 23 家 Hash Map 字典防漏**：`var game=Array(...)` 中各字符串以竖线 `|` 分割，其首项 `parts[0]` 为机构 ID（cid），而 `parts[1]` 为赔率 ID（oddsId）。严禁将 `parts[1]` 错当为 cid！必须以法定 23 家机构权威 cid 集合为唯一键做 $O(1)$ 哈希字典映射匹配，严禁通过线性切片偏移遍历；
 2. **欧指百家非 SSR 与白名单提纯**：`oddslist/{id}.htm` 为空骨架，真实数据存储在 `https://1x2d.titan007.com/{id}.js` 中，直接抓 JS 文件并经法定 23 家白名单提纯收拢；
 3. **欧指历史流水参数与并发直取**：`OddsHistory.aspx` 若只传 `sid` 和 `cid` 会返回空表，必须传 `id={odds_id}` 参数方可提取分钟级变盘流水；核心做市商（澳彩 1、Crown 3、Bet365 8）可直接请求 `vip.titan007.com/changeDetail/1x2.aspx` 直取全量时序；
 4. **剔除滚球盘口**：调赔时序必须严格截断至比赛开球前，状态标记为“滚”或比分非 0:0 的记录必须物理剔除；
@@ -264,7 +270,7 @@ mcp__scrapling__stealthy_fetch({
      - **单一原子防伪溯源包（标准规约）**：将 Scrapling 抓取的原始报文与剪枝文本打包为单个原子 JSON `data/{销售日}/raw/{matchId}.json`（含 `matchId`、`mdSha256`、`rawSha256` 与全量原始 payload），彻底消灭 28 个零散文件；
      - **离线零脑补装配**：直接组装落盘至 `data/{销售日}/{matchId}.md`（或向后兼容保存原始 json），零大模型转抄直出 Markdown，并自动清理旧版零散目录；
      - **源数据真实无损**：严格保留真实变盘历史、状态词（`早`/`即`/`初盘`）与真实时间戳，杜绝任何人工抽稀或假造！
-     - **真实网络溯源回执与服务端指纹防伪（Network Receipt & Provenance Verification）**：原子 JSON `raw/{matchId}.json` 强制包含 `"receipt"` 块（记录 27 个端点请求详情、HTTP 200 响应状态、字节大小、服务端指纹、原始载荷 SHA-256 与整包 networkSignature）；通过 EvoOntology 语义门禁（`validate_semantics`）与 Scrapling 原生回执核验载荷哈希一致性，彻底杜绝脱网伪造假数据！
+     - **真实网络溯源回执与服务端指纹防伪（Network Receipt & Provenance Verification）**：原子 JSON `raw/{matchId}.json` 强制包含 `"receipt"` 块（记录 26 个端点请求详情、HTTP 200 响应状态、字节大小、服务端指纹、原始载荷 SHA-256 与整包 networkSignature）；通过 EvoOntology 语义门禁（`validate_semantics`）与 Scrapling 原生回执核验载荷哈希一致性，彻底杜绝脱网伪造假数据！
 - 输出结构严格遵循 `agent.analysis` 契约规范。
 - **杜绝低级排版与骨架抓取错误（刚性规范）**：
   1. **结构化原生存储**：百家欧指必须通过 `1x2d.js` 解析后，结构化写入 `markets.europeCompanies` 数组（包含各公司初即盘、返还率与凯利独立对象），**严禁将百家数据挤入单行转义长文本**导致 JSON 仅有几十行假象！
@@ -322,12 +328,12 @@ python -m unittest discover -s 算法/测试 -p "test_*.py"
 7 列表最后一格必须物理调用 Gamma API 真实核查（严禁脑补与跳过）：
 
 ### 1. 官方市场发现标准规约（Discover Markets via API - 严禁客户端拼接猜测 Slug）
-Polymarket 官方架构明确立宪：**Slugs 不保证任何固定命名规律（如曼城vs巴黎为全名、林茨为 lin2、南安普敦为 sot），严禁客户端程序化拼接猜测 Slug！**
+Polymarket 官方架构明确立宪：**Slugs 不保证任何固定命名规律（如曼城vs巴黎为全名、林茨为 lin2、南安普敦为 sot），严禁客户端程序化拼接猜测 Slug！严禁使用 `public-search` 盲搜以防天气市场冲刷与历史完场老赛事占位！**
 客户端猜测 Slug 是导致「404 坏链」与「误判未开盘」的唯一根因。必须严格依照官方标准流动态发现：
-1. **第一步（免费文本动态搜索，首选）**：调用官方搜索接口获取候选事件列表：
-   `GET https://gamma-api.polymarket.com/public-search?q={HomeTeamEn}`
-   若主队英文词未命中或属杯赛，回退使用客队英文词：
-   `GET https://gamma-api.polymarket.com/public-search?q={AwayTeamEn}`
+1. **第一步（查官方权威联赛字典与批量直取）**：调用 `GET https://gamma-api.polymarket.com/sports` 获取 `series_id`，再批量直取活跃事件：
+   `GET https://gamma-api.polymarket.com/events?series_id={id}&closed=false&limit=100`
+   Windows 环境带 `--ssl-no-revoke --http1.1` 防止长 JSON 管道截断；按对阵与比赛日期精准锁定目标；
+   - 过滤与定位：按对阵与比赛日期精准锁定活跃目标；
 2. **第二步（事件匹配与活性校验）**：
    - 在返回的 `events` 列表中，核验对阵另一方英文名称（`title` 或 `slug` 包含另一方）；
    - 核验事件状态：必须为当前活跃盘口（`active: true` 且 `closed: false`）；
