@@ -22,29 +22,36 @@ metadata: { "emoji": "📆" }
 - 抓不到或场次不全：置顶报告，结束流程，不写残缺记录进 memory。
 - **每次必须实时重新抓取**，不得复用之前抓取的旧数据。
 
-## Scrapling 官方防反爬隐身、分层架构与原生协议规约（Official Stealth & Tiered Architecture）
+## Scrapling 官方防反爬隐身、分层架构与四大原生护栏规约（Official Stealth & 4 Native Guardrails）
 
-为了确保系统永不被球探网风控与反爬 WAF 识别阻断，全流程进货必须严格依循 D4Vinci/Scrapling 官方两级分层架构与 MCP 原生参数契约：
+为了确保系统永不被球探网风控与反爬 WAF 识别阻断，全流程进货必须严格依循 D4Vinci/Scrapling 官方两级分层架构与四大原生护栏参数契约：
+
+0. **Scrapling 官方自适应记忆（Adaptive Scraping）物理边界澄清**：
+   - **DOM 特征指纹自愈（官方设计本质）**：Scrapling 的记忆机制是将元素的 DOM 结构指纹（标签、属性、祖先拓扑、兄弟路径）持久化存储于 SQLite 中。当目标网站改版、改 class 名或微调结构时，利用相似度算法自动重定位目标元素，防止爬虫因选择器失效报错；
+   - **绝非赔率数值缓存**：**Adaptive 记忆的是网页骨架指纹，绝对不是赔率数字缓存！** 足球博弈赔率每时每刻都在发生真金白银的变动（即时活水），绝不能用历史记忆替代最新盘口，每次推演必须通过 Scrapling MCP 实时全量抓取。
 
 1. **官方两级分层进货架构（Tiered Ingestion Architecture）**：
    - **Level 1（纯 HTTP 协议流，首选必选）**：基于 `curl_cffi`，毫秒级响应，零无头浏览器启动开销。所有球探网静态服务端渲染端点（赛程页 `index.aspx`、百家欧指 `1x2d.js`、变盘流水 `handicap.aspx`、微观阵容 `analysis/{id}cn.htm`）默认 100% 优先采用 `mcp__scrapling__bulk_get` 或 `session_make_request`。
    - **Level 2（Playwright 无头浏览器，升阶容灾）**：仅在 Level 1 返回 HTTP 403/503、频繁超时，或源站下发 Cloudflare Turnstile 等动态人机挑战盾时，在 Scrapling 内部升阶至 `mcp__scrapling__stealthy_fetch`。静态数据严禁无故直接调用 Level 2 浏览器！
 
-2. **官方全真协议模拟与指纹装配（MCP Native Impersonation & Stealth）**：
-   - **真实 Chrome TLS 与 HTTP/2 指纹**：调用必带 `impersonate="chrome"`（Scrapling 官方默认模拟最新 Chrome 协议与 TLS/JA3 指纹特征，杜绝裸奔请求与 WAF 拦截）；
-   - **拟真浏览器标头（`stealthy_headers=true`）**：自动注入与真实 Chrome 完全一致的完整请求标头簇（含 Client Hints、Sec-Fetch-* 与安全 Referer），消除自动化请求特征；
-   - **精准上下文 Referer 拓扑**：变盘流水端点绑定 `https://vip.titan007.com/`，百家欧指绑定 `https://titan007.com/`，消除外源异常流量特征。
+2. **官方四大原生护栏（The 4 Scrapling Native Guardrails）**：
+   - **护栏一：Anti-Mismatch Guardrail（防错位防串号护栏）**：
+     - **URL 与市场实体显式绑定**：在并发抓取前显式建立端点 URL 字典（如 `ah_url`, `ou_url`, `eu_url`, `1x2d_url`），绝不依赖盲目的数组索引遍历；
+     - **特征词双向断言**：处理批量返回时，必须校验专属特征词（亚盘验证 `Crown 亚让/让球`、欧指验证 `百家做市/返还率`、大小球验证 `高于/低于`），发现错位立即报警阻断，杜绝跨盘串号与数据张冠李戴；
+     - **GB18030 二进制保真解码**：球探网二级变盘流水页面（`changeDetail/*.aspx`）必须基于原始 bytes 显式以 `gb18030` 解码，严禁外部默认 UTF-8 强解导致队名盘口汉字乱码。
+   - **护栏二：Anti-Omission 23 家法定白名单布尔断言（防漏 23 家护栏）**：
+     - **Cid 提取防偏规约**：在 `1x2d.js` 的 `var game=Array(...)` 中，竖线分割的第一项 `parts[0]` 为机构 ID (`cid`)。**绝对严禁错用 `parts[1]`**！
+     - **23 家白名单 Hash Map**：以法定 23 家权威 cid 集合构建 Hash Map 进行常数级精确提取；
+     - **23 项布尔存在性核销**：组装简报时必须逐家执行布尔核对清单（Boolean Checklist），除体彩深盘不开单固、次级联赛香港马会未开亚盘外，所有法定做市商缺失立即判定为采集遗漏并物理阻断，缺失项必须显式标记「官方未开盘」，严禁静默漏报！
+   - **护栏三：In-Flight Selector Pushdown & 26 端点 Schema 防伪（防虚标/防垃圾护栏）**：
+     - **选择器底层下推（`css_selector`）**：抓取 HTML 页面时强制传递 `css_selector`（如 `css_selector="#team_lineup"` 或 `css_selector="#table_odds"`），由 Cython 引擎在内存中修剪 90%+ 无关 DOM；
+     - **26 端点 Schema 结构强断言**：底层存证 `raw/{matchId}.json` 必须包含 26 个特定 API 键（`1x2d.js`, `analysis.html`, `odds.html`, `analy.json`, 7家机构21张流水HTML与polymarket.json）。任何通过填充乱码、空白字符串或伪造文本虚标体积的行为，均会导致 JSON Schema 解析破裂与装配阶段直接抛出 KeyError，从物理根源杜绝 AI 作弊填充！
+   - **护栏四：Dynamic DOM Escalation Guardrail（动态渲染升级护栏，防空壳抽稀）**：
+     - **空骨架判定标准**：若 Level 1 `bulk_get` 提取到的数据表格行数（`<tr>` 数量）$< 2$ 且页面包含动态加载脚本，自动无缝升阶至 `mcp__scrapling__stealthy_fetch(network_idle=True)`，等待网络静默完成再抽取 DOM，彻底杜绝只抓 190 行残缺骨架！
 
-3. **官方选择器下推与内容过滤（Cython Selector Pushdown & Extraction）**：
-   - **选择器底层下推（`css_selector`）**：抓取 HTML 分析页（如阵容、战绩）时，显式传递 `css_selector`（如 `css_selector="#team_lineup"` 或 `css_selector="#analy_sbAllOdds, #odds"`），由底层 C/Cython 引擎在内存中就地剔除 90% 以上无关 DOM 节点，杜绝 Token 膨胀与解析超时；
-   - **正文纯净提取（`main_content_only=true`）**：仅提取 `<body>` 内真实业务数据，自动丢弃页面首尾外围噪音；
-   - **格式选择契约（`extraction_type`）**：结构化页面提取选择 `"markdown"`，静态 JS 大包（如 `1x2d.js`）或纯文本提取选择 `"text"`。
-
-4. **官方连接会话生命周期三部曲（Session Lifecycle: Open -> Batch -> Close）**：
-   - **步骤一·创建长连接会话**：在拉取单场多端点或批次比赛时，优先调用 `mcp__scrapling__open_request_session(impersonate="chrome", stealthy_headers=true)` 获取 `session_id`；
-   - **步骤二·复用连接并发请求**：通过 `mcp__scrapling__session_make_request` 复用底层 TCP/TLS 连接与浏览器指纹，避免高频离散握手触发源站频控；批量抓取单批物理切片严格锁定 $\le 4\sim 8$ URLs；
-   - **步骤三·显式关闭释放资源（强制）**：进货完成且文件确认落盘后，**必须强制调用 `mcp__scrapling__close_session(session_id=session_id)` 显式释放连接句柄与内存**，杜绝后台空闲孤儿会话与内存泄露；
-   - **指数退避重试（Exponential Backoff）**：遭遇网络抖动或偶发 HTTP 429 频控时自动退避重试（配置 `retries: 3`, `retry_delay: 1`），严禁高频硬冲引发 WAF 阻断。
+3. **官方全真协议模拟与会话生命周期（Impersonation & Session Lifecycle）**：
+   - **Chrome JA3/TLS 与标头全真伪装**：调用带 `impersonate="chrome"` 与 `stealthy_headers=true`；
+   - **三部曲生命周期管理**：`open_request_session` ➔ `session_make_request` ➔ `close_session`，文件落盘后强制显式关闭连接，释放网络句柄与内存，杜绝空闲孤儿会话。
 
 ---
 
@@ -164,7 +171,7 @@ metadata: { "emoji": "📆" }
 # 第二部分：模式二·单场【推演源数据】采集与人类视图装配（阶段一专属搬运工）
 
 底层源数据（`data/{销售日}/raw/{matchId}.json`）是 EvoOntology 官方 MCP 直连与推演大脑做深度推演的**唯一真实物理原材料**；`data/{销售日}/{matchId}.md` 同步生成作为面向人类的可视化复盘简报。
-编排者在阶段一作为纯物理进货搬运工，必须在此并发采集法定 26 个物理端点（含 4 大核心数据、7 家做市商 21 张变盘流水与 Polymarket 精准事件），极速原子落盘 1.15MB 满配底层存证 `raw/{matchId}.json` 与人类视图 `data/{销售日}/{matchId}.md` 后交付。
+编排者在阶段一作为纯物理进货搬运工，必须在此并发采集法定 26 个物理端点（含 4 大核心数据、7 家做市商 21 张变盘流水与 Polymarket 精准事件），极速原子落盘法定 26 端点满配底层存证 `raw/{matchId}.json` 与人类视图 `data/{销售日}/{matchId}.md` 后交付。
 
 ### 0. 单场/多场极速进货执行路径（搬运工 Subagent 专属操作规程）
 当被主会话以 `Data Ingest Worker` 派发执行进货任务时，搬运工严格按照开箱即用 2 步闭环执行，绝无任何模糊地带，严禁查阅代码源码、严禁在终端漫游：
@@ -182,7 +189,9 @@ metadata: { "emoji": "📆" }
      - **Polymarket 精准单事件防溢出**：必须且只能请求单事件 slug（`https://gamma-api.polymarket.com/events?slug={slug}`），未开盘直接记录 `[官方未开盘]`，严禁请求无参数 `/events`；
      - **挑战自动升阶**：若遇 403/503 或人机挑战盾，自动升阶至 `mcp__scrapling__stealthy_fetch(solve_cloudflare=true)`；
   3. **步骤三：直接原子落盘与显式关闭会话（Write Files & Close Session）**：
-     将 Scrapling 原生提取的 Markdown 结构直接通过 `write_to_file` 保存为 `data/{销售日}/{matchId}.md`，原始回执保存为 `data/{销售日}/raw/{matchId}.json`，落盘后强制调用 `mcp__scrapling__close_session(session_id=session_id)` 释放连接句柄；
+     - **底层存证落盘（无损满配）**：将全量 26 个端点的真实 Raw 字符串内容（`1x2d.js`、`analysis.html`、`odds.html`、`analy.json`，以及 7 家做市商 21 张变盘流水 HTML 源码、Polymarket 返回）全量注入 `raw/{matchId}.json` 的 `payloads` 对象中！严格断言 26 个特定端点真实报文载荷 100% 存在且有效可解析；严禁只存收据头（receipt）而漏写 raw 报文（严禁生成空收据）！
+     - **人类简报装配**：将提取组装的 Markdown 结构保存为 `data/{销售日}/{matchId}.md`（行数必须 $\ge 350$ 行）；
+     - **释放连接**：落盘后强制调用 `mcp__scrapling__close_session(session_id=session_id)` 释放连接句柄；
   4. **步骤四：回传状态（Announce Completion）**：
      物理文件生成且新鲜有效后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】底层源数据已落盘，人类视图已就绪」，结束搬运任务！严禁编写任何中间胶水脚本！
 
@@ -229,10 +238,10 @@ metadata: { "emoji": "📆" }
 - **【双重物理质检门禁（Dual Hard Check Gates）】**：
   1. **底层存证 JSON 满配门禁（`raw/{matchId}.json`）**：
      - `payloads` 数量必须为 **26 个**，绝对严禁遗漏 21 张变盘流水表；
-     - 底层文件体积必须 **$\ge 1.0\text{MB}$**（历史黄金标准为 1.10MB ~ 1.25MB），严禁生成 500KB 或仅 6 端点的残缺残次品；
+     - 底层存证 Schema 门禁：`payloads` 必须包含全量 26 个端点键，且各键内容必须为有效字符串（可被 DOM/JSON 正常解析，绝非垃圾填充）；
      - 回执记录校验 `receipt.all_success == true` 且 SHA256 签名完整。
   2. **人类可视化简报黄金装配门禁（`data/{销售日}/{matchId}.md`）**：
-     - **行数与体积硬红线**：行数必须 **$\ge 350$ 行**（满配对齐 380~450 行黄金标杆，文件体积 $\ge 15\text{KB}$），严禁生成 100~200 行的抽稀半成品；
+     - **行数与战区硬红线**：行数必须 **$\ge 350$ 行**（满配对齐 380~450 行标准格式），严禁生成 100~200 行的抽稀半成品；
      - **战区全覆盖**：必须 100% 包含全量 5 大战区（一·阵容伤停、二·基础战绩、三·23家欧指、四·21张变盘流水、五·波胆与体彩）；
      - **21 张变盘流水表全量点亮**：战区四中 7 大法定机构（澳彩、皇冠、Bet365、易胜博、平博、188Bet、香港马会）必须按亚盘、大小球、欧指各自建表（共 21 张表，倒序排列），严禁偷工减料只留亚盘或只留 4 家；
      - **23 家做市商全景对比**：战区三必须完整列出法定 23 家初即盘、返还率与凯利指数；

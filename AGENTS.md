@@ -17,7 +17,7 @@
        ① **序贯衔接与必读心法**：阶段 0 专注于极速落盘 `meta.md`；《skills/deep-analysis/SKILL.md》是全系统核心推演大脑，在阶段 2（源数据门禁 PASS 后）**绝对强制调用 `view_file` 深度全精读并执行**，阶段 0～1 仅是不提前空转偷跑，绝非不读；
        ② **业务态与工程态分工**：推演态专注于业务流本身，数据规范以 `TOOLS.md` 为准，Python 脚本通过 CLI 命令行高效运行。推演过程中无需分心研读内部代码实现；当任务是代码重构与维护时，再自然进入工程态。
   - **【阶段 1：Agents 蜂群纯物理进货与确定性装配（Phase 1 Ingest Gate）】**：
-     主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper`（官方 Scrapling MCP Session 长连接并发拉取全量法定 26 端点）落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`（满配 26 payloads，体积 $\ge 1.0\text{MB}$，对齐 1.15MB 黄金标准），并同步组装落盘人类可视化简报 `data/{销售日}/{matchId}.md`。严禁搬运工思考盘赔逻辑或定性胜负！
+     主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 4~6 场分组调用 `match-scraper`（官方 Scrapling MCP Session 长连接并发拉取全量法定 26 端点）落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`（满配 26 payloads 原生报文 Schema），并同步组装落盘人类可视化简报 `data/{销售日}/{matchId}.md`。严禁搬运工思考盘赔逻辑或定性胜负！
      **重新推演物理清空（Clean-Slate Re-ingest Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧快照文件】，全量调用 Scrapling MCP 并发抓取全量 26 端点从零装配全新落盘！**绝对严禁直接拿磁盘已有旧文件跳过抓取，更绝对严禁在旧快照上局部修改时间戳做伪装！**
      **推演态零散脚本硬禁令（Zero-Script Iron Rule）**：
       推演态、进货态与排错态中，**绝对严禁**裸写临时 Python 脚本来抓取数据、排错或更新数据！所有数据搬运一律调用官方 Scrapling MCP 原生工具（`bulk_get`, `stealthy_fetch`），推演态零散脚本违规次数严格锁定为 0！
@@ -31,7 +31,7 @@
    - **EvoOntology 唯一法定看数视网膜与严禁大模型裸视数据立宪（只看事实、不作理解）**：
         **绝对严禁大模型裸视海量数据**：严禁任何大模型、大脑、Agent 或 Subagent 直接使用 `view_file` 通读底层庞杂原始数据（如 `data/**/raw/*.json` 或全文 `.md` 表格）注入上下文！直接裸视极易诱发注意力隧道效应、信息严重漏读、张冠李戴与上下文爆炸；
         **EvoOntology 专属做市视网膜**：全系统搜查、观看任何比赛数据，**必须且只能通过 EvoOntology 官方 MCP 工具**（`browse_semantics` 发现机位 ➔ `resolve_semantics` 精准提取微观字段切片）。EvoOntology 专属负责客观呈现与安全检索（**只负责看，不负责理解**）；大模型拿到数十至百余字节的纯净微观切片后专属负责 10 步博弈推理（**只负责想，绝不裸视**）；
-        **法定 23 家全景做市机位视网膜与 Graphify 联动**：底层原始 JSON（`raw/{matchId}.json`）承担 100% 物理无损存证职责，严禁任何截断或抽稀；EvoOntology 通过官方原生 `terms.json` 与 `mappings.json`（`database_source: raw_json`）完整纳管法定 23 家做市商机位（涵盖英伦母盘、欧陆防守、商业做市、亚洲自营哨兵与学术共识样本）与做市博弈探针。大模型通过官方 MCP 工具（`browse_semantics` ➔ `resolve_semantics`）实现概念与微观原始字段的精准绑定提取。凡触发阻断类机位特征，契约卡必须显式开设 `【机位阻断对质】` 并做博弈反向破译，严禁指鹿为马使用反向背书词汇。本体层绝对严禁写死任何推演打分规则；
+        **法定 23 家全景做市机位视网膜与 Graphify 联动**：底层原始 JSON（`raw/{matchId}.json`）承担 100% 物理无损存证职责，严禁任何截断或抽稀；EvoOntology 通过官方原生 `terms.json` 与 `mappings.json`（`database_source: raw_json`）完整纳管法定 23 家做市商机位（涵盖英伦母盘、欧陆防守、商业做市、亚洲自营哨兵与学术共识样本）与做市博弈探针。大模型通过官方 MCP 工具（`browse_semantics` ➔ `resolve_semantics`）实现概念与微观原始字段的精准绑定提取，并严格核验 23 家机构的 `status: "supported"`（遇非预期 `gap` 缺口立即阻断推演报警！）。凡触发阻断类机位特征，契约卡必须显式开设 `【EvoOntology机位阻断对质】` 并做博弈反向破译，严禁指鹿为马使用反向背书词汇。本体层绝对严禁写死任何推演打分规则；
       - **EvoOntology 进化纯净宪法（只纳规律、严拒噪音）**：主人最高原则——“喜欢进化，只要进化就是好事，但是绝对不能把噪音也进化进去”。严禁将单场偶发事件（如红牌罚下、意外折射、单次失误、孤立异常数字）误当作操盘规律；提出的 Candidate 探针必须具备普遍的做市博弈因果逻辑，且必须在历史快照池上通过严格回测对质，确保无负面回归与误报警，宁缺毋滥，保持本体 100% 纯净度。
 9. **系统演化三阶总战略与 deep-analysis 封顶铁律（马斯克做减法 × 乔布斯极简原则 × 保魂去腐）**：
    - **演化三阶原则**：在以后本足球系统的优化微调中，严格遵循“① 主要优先做减法；② 其次要做微调；③ 最后在实在不得已的情况下才做加法”。想做加法必须先向主人请示报告。
@@ -65,6 +65,13 @@
      ② 机器做市看数 100% 归属 `evo-semantic` MCP；
      ③ 纯数学去水与比分算力 100% 归属宿主外部独立 `sports-math` MCP；
    - **纯知识库圣殿**：主工程保持极致轻量、零运行时环境冲突、零 stdio 污染与零终端执行负担，推演 100% 由 Agent 大脑自主调度完成。
+
+15. **分层校验与真相对账宪法（Layered Grounding & Anti-False-Positive Invariant）**：
+   - **分层核验（Layer Separation）**：
+     ① **第一层：业务数字层**（赔率点位是否符合真实盘面，如竞彩 1.42/4.10/5.50 是否与球探现场一致）；
+     ② **第二层：物理存证层**（`raw/{matchId}.json` 是否装载全量 26 端点真实 raw 报文字符串 Schema，各键反序列化是否有效）。业务数字吻合绝不等于存证合格，严禁混为一谈！
+   - **真相对账与严禁假阳性自检（Zero-False-Positive Inspection）**：
+     主会话或 Agent 在自检或回答主人核对数据时，**绝对禁止单凭肉眼打开人类可视化 `.md` 文本看一眼数字就声称“核验全部正确”**！必须强制调用 EvoOntology MCP（`validate_semantics` 与 `resolve_semantics`）对底层 JSON 存证执行机器级对质。若底层 26 端点键缺失或 `resolve_semantics` 返回非合法 `gap` / `block`，立即判定为抽稀损坏！
 
 ## 一、工作流程总览
 
@@ -120,13 +127,13 @@ ceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、�
   ④ 严禁在推演/进货/排错全流程散装编写任何 `.py` 临时脚本，违规编写记录严格锁定为 0！
   ⑤ 严禁调用平台工具 `execute_code` 执行任何 Python 抓取、清洗或对账代码！数据采集 100% 依托 Scrapling MCP，推演查看 100% 依托 EvoOntology MCP！
   **搬运工官方原生纯净进货管道与双重门禁（Minimal Ingestion Pipeline & Dual Quality Gates）**：
-  搬运工直接调度官方 Scrapling MCP 原生流水线（Session 长连接并发拉取全量法定 26 个底层端点）➔ 组装落盘底层无损存证 `raw/{matchId}.json`（满配 26 payloads，体积 $\ge 1.0\text{MB}$，对齐 1.15MB 黄金标准）与人类可视化视图 `data/{销售日}/{matchId}.md`（$\ge 350$ 行，满配对齐 380~450 行黄金标杆），拿到物理文件并通过双重质检门禁后立即向主会话回传完成状态！全流程绝对零手写临时 Python 脚本！
+  搬运工直接调度官方 Scrapling MCP 原生流水线（Session 长连接并发拉取全量法定 26 个底层端点）➔ 组装落盘底层无损存证 `raw/{matchId}.json`（满配 26 payloads 原生报文 Schema）与人类可视化视图 `data/{销售日}/{matchId}.md`（$\ge 350$ 行标准格式），拿到物理文件并通过双重质检门禁后立即向主会话回传完成状态！全流程绝对零手写临时 Python 脚本！
   **【人类可视化视图 `matchId.md` 黄金装配四重断言门禁】**：
-  ① **行数与体积硬门禁**：`data/{销售日}/{matchId}.md` 行数必须 **$\ge 350$ 行**（文件体积 $\ge 15\text{KB}$），严禁生成 100~200 行的残缺抽稀半成品；
+  ① **行数与格式硬门禁**：`data/{销售日}/{matchId}.md` 行数必须 **$\ge 350$ 行**，严禁生成 100~200 行的残缺抽稀半成品；
   ② **战区全覆盖硬门禁**：必须 100% 包含全量 5 大战区（一·微观阵容与首发伤停 / 二·基础战绩与攻防客观底牌 / 三·欧洲指数百家做市商清单 / 四·核心做市商与终端标的真实变盘时序流水 / 五·波胆与终端履约标的）；
   ③ **21 张变盘流水大表硬门禁**：战区四中 7 大法定机构（澳彩、皇冠、Bet365、易胜博、平博、188Bet、香港马会）必须按亚盘、大小球、欧指各自建表，共计 **21 张流水大表**（倒序时序，首行即时终盘、末行初盘起点），严禁偷工减料只留亚盘或只留 4 家；
   ④ **23 家做市商全景对比门禁**：战区三必须完整列出法定 23 家初即盘、返还率与凯利指数，逐项布尔校验杜绝遗漏；
-  ⑤ **熔断与自愈重装**：凡人类视图抽稀残缺，立即判定进货失败并物理阻断，强制重新基于底层 1.15MB 原始存证全量装配！
+  ⑤ **熔断与自愈重装**：凡人类视图抽稀残缺，立即判定进货失败并物理阻断，强制重新基于底层 26 端点原始存证全量装配！
   **【Scrapling 官方三大避坑铁律（搬运工底层执行守则）】**：
   ① **CLI 后缀硬约束与原生 JSON 解耦**：Scrapling 框架原生深度支持 JSON（具备 `page.json()`），但官方 CLI 导出器仅认 txt/html/md，非 HTML 静态数据流落盘统一使用 `.txt` 后缀（如 `1x2d.txt`），读取后由官方 `.json()` 反序列化，严禁直接指定 `.js` 或 `.json` 导致底层拋出 `ValueError` 静默丢失；
   ② **GB18030 二进制保真解码**：球探网二级变盘流水页面（`changeDetail/*.aspx`）必须基于原始 bytes 显式以 `gb18030` 解码，严禁外部默认 UTF-8 强解导致队名盘口汉字乱码；
@@ -213,7 +220,7 @@ ceil$。必须在单次任务分发中（反重力 `invoke_subagent` 数组、�
    主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 专职调用 Skill `match-scraper`（Scrapling MCP Session 长连接并发）秒取全量 26 端点底层数据 ➔ 组装落盘至 `data/{销售日}/{matchId}.md`（同时落盘 `raw/{matchId}.json`） ➔ 确认物理文件生成后 announce 回传主会话。
    ```yaml
    task:
-     goal: "【阶段一专职搬运工进货】承包场次：{matchId}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。必须且只能直接调用官方 Scrapling MCP 工具（Session 长连接并发）拉取全量 26 端点底层数据，直接落盘底层存证 data/{销售日}/raw/{matchId}.json（满配 26 payloads，体积 ≥ 1.0MB，对齐 1.15MB 黄金标准）与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
+     goal: "【阶段一专职搬运工进货】承包场次：{matchId}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。必须且只能直接调用官方 Scrapling MCP 工具（Session 长连接并发）拉取全量 26 端点底层数据，严格恪守四大原生护栏（Anti-Mismatch特征词双向断言、Anti-Omission 23家做市商布尔核销、26端点Schema强断言、遇到空骨架自动升阶stealthy_fetch），直接落盘底层存证 data/{销售日}/raw/{matchId}.json（满配 26 payloads 原生报文 Schema）与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
    ```
 3. **主会话中转放行反馈**：
    主会话收到搬运工 announce 的物理文件就绪报告后，立即推送：
@@ -503,7 +510,7 @@ ceil$；
         ③ 给每个 Worker 的 Prompt 必须短小精炼（≤ 2KB），仅包含当前承包的 6 场比赛 ID 与极简指令，且必须使用以下强制规范模板：
            ```yaml
            task:
-             goal: "【阶段一专职搬运工进货】承包场次：{matchIds}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。数据采集必须且只能依托官方 Scrapling MCP 工具：首先开辟全真 Chrome 长连接会话（mcp__scrapling__open_request_session 带 impersonate='chrome' 与 stealthy_headers=true），复用会话（session_make_request）并发拉取全量法定 26 个底层端点数据并下推选择器；若遇 403/503 或人机盾自动升阶 stealthy_fetch；数据落盘后强制显式关闭会话（close_session）。直接落盘底层存证 data/{销售日}/raw/{matchId}.json（满配 26 payloads，体积 ≥ 1.0MB，对齐 1.15MB 黄金标准）与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取/清洗代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
+             goal: "【阶段一专职搬运工进货】承包场次：{matchIds}，销售日：{销售日}。必须首先读取 TOOLS.md 与 skills/match-scraper/SKILL.md。数据采集必须且只能依托官方 Scrapling MCP 工具并严格恪守四大原生护栏（Anti-Mismatch特征词双向断言、Anti-Omission 23家做市商布尔核销、26端点Schema强断言、遇到空骨架自动升阶stealthy_fetch）：首先开辟全真 Chrome 长连接会话（mcp__scrapling__open_request_session 带 impersonate='chrome' 与 stealthy_headers=true），复用会话（session_make_request）并发拉取全量法定 26 个底层端点数据并下推选择器；若遇 403/503 或人机盾自动升阶 stealthy_fetch；数据落盘后强制显式关闭会话（close_session）。直接落盘底层存证 data/{销售日}/raw/{matchId}.json（满配 26 payloads 原生报文 Schema）与人类简报 data/{销售日}/{matchId}.md。【防偷懒最高铁律】：绝对禁止编写或生成任何临时 .py 脚本！绝对禁止在 terminal 运行 python -c 或写任何抓取/清洗代码！绝对禁止思考盘赔逻辑或定性胜负！落盘后立即 announce 回传完成状态。"
            ```
         ④ 【Worker 行为封印三禁】：严禁 Worker 在终端或主会话执行 `git log`、`git status` 等代码工程探测；严禁思考盘赔逻辑或定性胜负；严禁自行修改或 patch 系统代码！严禁编写任何临时 `.py` 脚本！
       - **响应式汇聚**：主会话派发完蜂群数组后立即停止调用工具，依赖 Reactive Wakeup 等待全员回传。

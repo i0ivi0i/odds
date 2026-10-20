@@ -16,7 +16,14 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
 7. **【Scrapling 原生 JSON 支持与 CLI 扩展名分流规范（Native JSON & CLI Boundary）】**：Scrapling 框架**绝对原生深度支持 JSON**（内置 `page.json()`、`Adaptor.json()` 与 `result.items.to_json()`，直解为标准结构化字典）。需要严格区分的是官方 CLI 导出工具（`Convertor.write_content_to_file`）在设计上仅面向网页抓取，参数强制限定输出扩展名为 `.html`、`.md`、`.txt` 三类。凡通过 CLI 命令行请求非 HTML 纯文本或静态数据流（如 `1x2d.js`、`analy.json`、`polymarket.json`）时，CLI 命令行输出必须统一使用 `.txt` 后缀（如 `1x2d.txt`、`analy.txt`、`polymarket.txt`），绝非 Scrapling 不支持 JSON！程序消费时依托官方原生 `.json()` / `Adaptor.json()` 反序列化；若直接指定 `.js` 或 `.json` 后缀会导致底层引擎抛出 `ValueError: Unknown file type` 异常并静默丢失！
 8. **【Scrapling 官方编码与二进制流保真军规（Raw Bytes & Encoding Protocol）】**：球探网二级变盘流水页面（`changeDetail/*.aspx`）为历史遗留的 `gb18030` 编码。必须严格依循 Scrapling 官方 `Selector(content, encoding='gb18030')` 与保留 `page.body`（原始二进制流）的设计规约，抓取或装配环节必须基于原始字节流显式以 `gb18030` 解码（如 `new TextDecoder('gb18030').decode(buf)`），绝对严禁在外部以默认 UTF-8 强行转换为字符串，彻底杜绝队名、盘口汉字乱码与正则脱靶！
 9. **【法定 23 家做市商 Anti-Mismatch 字典防漏门禁（Bookmaker Hash Map Law）】**：在解析 `1x2d.js` 时，`var game=Array(...)` 中各字符串以竖线 `|` 分割，其首项 `parts[0]` 为做市商机构 ID（cid），而 `parts[1]` 为赔率 ID（oddsId）。系统必须且只能以法定 23 家权威 cid 集合为键构建 Hash Map 进行 $O(1)$ 常数级精准匹配提取，绝对禁止将 `parts[1]` 错当为 cid，绝对禁止通过线性索引偏移遍历！所有 23 家做市商必须 100% 逐项布尔对账，缺任何一家直接阻断报警！
-10. **【Scrapling 官方自适应指纹记忆（`adaptive=True` 与 `storage_args`）】**：官方自适应抓取通过 `auto_save=True` 记录元素 DOM 祖先结构和特征指纹，开启 `adaptive=True` 可以在目标网页微调改版时依据相似度自动重定位元素，杜绝漏项；本地存储统一重定向至 `storage_args={"storage_file": "data/scrapling_storage.db"}`，确保指纹跨会话持久化。
+10. **【Scrapling 官方四大原生护栏规约（Official 4 Native Guardrails）】**：
+    - **护栏一：Anti-Mismatch Guardrail（防错防串）**：抓取前显式建立端点 URL 字典，返回批量数据时强制双向断言特征词（亚盘核对 `Crown 亚让/让球`、大小球核对 `高于/低于`、欧指核对 `百家做市/返还率`），杜绝跨市场数据串号或列数组偏移；二级流水页面依循 GB18030 二进制流原生保真解码；
+    - **护栏二：Anti-Omission 23 家布尔断言（防漏 23 家）**：装配战区三欧指时，逐项布尔校验 23 家做市商（Boolean Checklist），除体彩深盘不开单固、次级联赛未开亚盘显式标记「官方未开盘」外，任何主流机构静默缺失直接判定为进货失败；
+    - **护栏三：In-Flight Selector Pushdown & 26 端点 Schema 防伪（防塞垃圾伪造）**：HTML 页面底层下推 `css_selector` 在 Cython 引擎过滤 90%+ 噪声；底层存证 `raw/{matchId}.json` 强制校验 26 个特定 API 键（`1x2d.js`, `analysis.html`, `odds.html`, `analy.json`, 7家机构21张流水HTML与polymarket.json），塞乱码填充直接导致 Schema 破裂抛出异常，从根源杜绝 AI 伪造体积；
+    - **护栏四：Dynamic DOM Escalation Guardrail（动态渲染升级，防空壳抽稀）**：若 Level 1 `bulk_get` 遇到客户端动态构建的空表格骨架（数据行数 $< 2$ 且含动态加载脚本），自动升阶至 `mcp__scrapling__stealthy_fetch(network_idle=True)`，等待网络静默再抽取 DOM，彻底杜绝只抓 190 行残缺骨架！
+11. **【Scrapling 官方自适应指纹记忆边界（Adaptive Scraping vs Live Odds）】**：
+    - **自适应记忆的物理本质**：官方自适应抓取通过 `auto_save=True` 记录元素 DOM 祖先结构和特征指纹（本地重定向至 `storage_args={"storage_file": "data/scrapling_storage.db"}`），开启 `adaptive=True` 可以在目标网页改版时依据相似度自动重定位元素（Auto-healing），杜绝选择器因样式变更报错；
+    - **严禁当成赔率缓存**：**Adaptive 记忆的是 DOM 结构指纹，绝对不是赔率数字缓存！** 足球博弈赔率每分钟都在波动，每次分析必须实时重新并发获取活水数据，严禁借记忆偷懒复用旧盘口！
 
 **Scrapling 官方两级分层进货架构与会话闭环军规（D4Vinci/Scrapling Native Specs）**：
 依循官方原生分层理念，球探网纯静态服务端渲染接口与动态反爬接口严格分流：
@@ -34,7 +41,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
   - **法定装配落盘与物理清空重抓**：专职搬运工直接通过 Scrapling MCP 并发拉取 26 端点与 Polymarket 解析，装配落盘至 `data/{销售日}/{matchId}.md`（同时落盘 `raw/{matchId}.json` 原子存证包）；**严禁大模型手动拼接 Markdown 避免封条失真！凡触发重新推演，第一动作绝对强制物理清空旧快照，严禁在旧文件上用 replace_file_content 局部打补丁改时间作弊伪造活水！**
   - 严禁单场串行磨洋工，严禁单批超载倾倒，未见快照物理落盘且新鲜有效（<30分钟）前，绝对禁止开脑推演！
 - **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（法定 26 端点无损原子存证矩阵）**：
-  - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，单场比赛必须且只能全量并发拉取以下 **法定 26 个底层物理端点**，完整装配为 `raw/{matchId}.json`（体积稳定在 1.10MB ~ 1.25MB，严禁缺失任何端点）：
+  - 原生集成 Chrome 136+ TLS 指纹伪装与抗封锁能力，单场比赛必须且只能全量并发拉取以下 **法定 26 个底层物理端点**，完整装配为 `raw/{matchId}.json`（严禁缺失任何端点）：
 | 序号 | Payload Key | 请求目标 URL 规范 | 编码 | 选择器下推 / 模式 | 业务作用 |
 | :---: | :--- | :--- | :---: | :--- | :--- |
 | **1** | `1x2d.js` | `https://1x2d.titan007.com/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯23家) | 百家欧指初即盘、返还率、凯利及变盘流水 |
@@ -275,12 +282,12 @@ mcp__scrapling__stealthy_fetch({
 2. **战区全覆盖门禁（5-Section Completeness Gate）**：必须 100% 包含上述全量 5 大战区（阵容/战绩/23家欧指/21张变盘流水/波胆体彩），缺少任何一个战区直接阻断并报错；
 3. **21 张变盘流水表硬门禁（21 Odds Tables Gate）**：战区四中 7 大法定机构的亚盘、大小球、欧指必须各自独立建表，共计 **21 张流水表格**（官方合法未开盘除外），严禁偷工减料只留亚盘或只留 4 家；
 4. **23 家欧洲指数全景对比门禁（23 Bookmakers Gate）**：战区三必须完整列出法定 23 家初即盘、返还率与凯利指数，严禁删减；
-5. **熔断与重新装配**：凡任何指标不达标，进货流水线立即自动熔断，阻断进入推演阶段，强制重新基于底层 1.15MB 原始存证全量装配！
+5. **熔断与重新装配**：凡任何指标不达标，进货流水线立即自动熔断，阻断进入推演阶段，强制重新基于底层 26 端点原始存证全量装配！
 ```
 - **原汁原味真实流水与加密封条铁律（Zero Fabrication & Cryptographic Seal）**：
   1. **彻底废除 T0～T4 凑数切片与主观形态列**：源数据文件只准存储 100% 客观原始数字与真实分秒时间戳，严禁在源数据中混入任何主观博弈定性文案（如“中盘假摔震仓”），所有博弈破译统一留到阶段二由首席分析师基于真实流水推演；
   2. **原始报文直读装配与 SHA-256 哈希封条（`--assemble-bundle` & `raw/{matchId}.json`）**：
-     - **单一原子防伪溯源包（标准规约）**：将 Scrapling 抓取的原始报文与剪枝文本打包为单个原子 JSON `data/{销售日}/raw/{matchId}.json`（含 `matchId`、`mdSha256`、`rawSha256` 与全量原始 payload），彻底消灭 28 个零散文件；
+     - **单一原子防伪溯源包（标准规约）**：将 Scrapling 抓取的原始报文与剪枝文本打包为单个原子 JSON `data/{销售日}/raw/{matchId}.json`（含 `matchId`、`sealedAt`、`receipt` 与全量 26 个端点原始 payload 字符串）。**底层存证硬红线：`payloads` 对象必须包含全量 26 个端点真实报文字符串（1x2d.js、analysis.html、odds.html、analy.json、7家机构21张流水HTML与polymarket.json），严禁只写 receipt 收据头而不装载原始报文（严禁生成空收据）！**
      - **离线零脑补装配**：直接组装落盘至 `data/{销售日}/{matchId}.md`（或向后兼容保存原始 json），零大模型转抄直出 Markdown，并自动清理旧版零散目录；
      - **源数据真实无损**：严格保留真实变盘历史、状态词（`早`/`即`/`初盘`）与真实时间戳，杜绝任何人工抽稀或假造！
      - **真实网络溯源回执与服务端指纹防伪（Network Receipt & Provenance Verification）**：原子 JSON `raw/{matchId}.json` 强制包含 `"receipt"` 块（记录 26 个端点请求详情、HTTP 200 响应状态、字节大小、服务端指纹、原始载荷 SHA-256 与整包 networkSignature）；通过 EvoOntology 语义门禁（`validate_semantics`）与 Scrapling 原生回执核验载荷哈希一致性，彻底杜绝脱网伪造假数据！
@@ -343,14 +350,19 @@ call_mcp_tool(
 1. **视网膜绝对解耦宪章（The Eye & Camera Invariant）**：
    - 官方权威立宪：本体层 100% 独家充当“只读光学透镜与微观约束探针（Eyes and Cameras）”，严禁入侵推演与决策大脑；
    - 绝对禁止在本体层中编码任何比赛预测、绝不计算让球输赢、绝不做盘口好坏定性；推演与博弈破译 100% 全权由自研 AI 大模型完成。
+   - 官方三大核心公理：`Semantic guidance is not a final answer`（语义指导不是最终答案）、`Semantic information should remain traceable`（语义信息保持可溯源）、`Native data operations remain the evidence source`（底层原生数据操作依然是证据唯一来源）。
 2. **两阶段交互标准流（browse_semantics ➔ resolve_semantics）**：
-   - **第一步：概念发现（browse_semantics）**：大模型根据当前分析需求发起定向检索，如 `browse_semantics(query="平博")` 检索 Term；
-   - **第二步：微观切片与约束解析（resolve_semantics）**：调用 `resolve_semantics(mentions=["平博"])`，获取精确 `database_source: "raw_json"` 映射（`table: "europe1x2"`, `column: "平博"`）、关联探针与告警约束（`constraints`）；
-   - **第三步：认知契约卡前置对质**：若返回的 `constraints` 中包含 `severity: block`（如商业庄降赔而平博纹丝不动、亚盘脉冲假摔退盘），推演大模型必须在认知契约卡中显式对质，杜绝盲目跟风。
-3. **防看错与防漏看 23 家数据机制（Anti-Misreading & Anti-Omission）**：
+   - **第一步：概念发现（browse_semantics）**：大模型根据分析需求定向检索 Term（如 `browse_semantics(query="欧指23家")`）；
+   - **第二步：微观切片与状态核销（resolve_semantics）**：调用 `resolve_semantics(mentions=[23家机构])`，获取精确 `database_source: "raw_json"` 映射（`table: "europe1x2"`, `column: "平博"`），核对返回体中每家机构的 `status` 字段（`supported` 放行，非预期 `gap` 立即阻断报警）；
+   - **第三步：认知契约卡前置对质（Constraint Probe）**：若返回的 `constraints` 中包含 `severity: block`，推演大模型必须在认知契约卡中显式开设 `【EvoOntology机位阻断对质】`，给出反向博弈破译，无对质严禁下槌！
+3. **已激活三大做市阻断探针（Active Block Probes）**：
+   - **探针一：`constraint_pinnacle_stability`（标杆定海神针警报）**：商业庄与体彩大幅降赔（$\ge 0.15$），但平博变动绝对值 $\le 0.03$ 纹丝不动，强制禁止将商业庄降赔定性为防守，强制对质平博未动原因；
+   - **探针二：`constraint_headfake_rebound`（亚盘脉冲假摔警报）**：中盘亚盘主动升盘挂超满水（$\ge 1.04$）诱多，终盘仓皇退回初盘门槛，强制判定为假摔现行；
+   - **探针三：`constraint_draw_extreme_high`（高平筹码真空通杀警报）**：欧指平赔极端高挂（$\ge 4.00$）处于筹码真空区，强制防范做市商通杀大众低赔筹码。
+4. **防看错与防漏看 23 家数据机制（Anti-Misreading & Anti-Omission）**：
    - **防看错（Grounding Anchor）**：每个概念由 `Mapping` 刚性锚定至 `raw/{matchId}.json` 的确切字段，彻底杜绝大模型在庞杂报文中注意力漂移、行列张冠李戴与列名幻觉；
-   - **防漏看（Equivalence & Hierarchy Graph）**：法定 23 家做市商建立完整的 Schema v1 语义谱系图谱，通过 `browse_semantics` 目录全纳管；凡解析出现脱靶立即显式返回 `gap` 报警，绝不静默丢失。
-4. **本体静态安全门禁（validate_semantics）**：
+   - **防漏看（Status Gap Alarm）**：法定 23 家做市商通过 `terms.json` 全纳管；若出现任何非预期缺失，`resolve_semantics` 显式返回 `status: "gap"` 报警，绝不静默丢失。
+5. **本体静态安全门禁（validate_semantics）**：
    - 严格执行 `validate_semantics(workspace="...")`，保障 Schema v1 规范（5 种官方 `relation_type`，标准 `confidence` 与约束分类），确保零语法与运行时错误。
 
 

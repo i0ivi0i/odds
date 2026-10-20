@@ -205,7 +205,9 @@
       "皇冠",
       "Crown",
       "皇冠商业盘",
-      "冠1"
+      "冠1",
+      "盈禾",
+      "Wewbet"
     ],
     "evidence_refs": [
       "evidence_match_3019156"
@@ -557,5 +559,59 @@
     ],
     "lifecycle_state": "active",
     "graphify_ref": "graphify://terminal/Polymarket_Web3"
+  },
+  {
+    "id": "term_12bet",
+    "name": "TwelveBet_Asia",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/TwelveBet_Asia] 12Bet（壹贰博）作为亚洲知名自营主流庄家，大额注额与水位调整稳健，常用于亚洲二线主流盘口的对比参照。",
+    "scope": "global",
+    "aliases": [
+      "12bet",
+      "12Bet",
+      "壹贰博",
+      "12博"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/TwelveBet_Asia"
+  },
+  {
+    "id": "term_mansion88",
+    "name": "Mansion88_Asia",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/Mansion88_Asia] 明陞（M88）作为亚洲老牌主流机构，盘口敏锐，对东南亚及亚洲区域资金有直接承载力。",
+    "scope": "global",
+    "aliases": [
+      "明陞",
+      "明升",
+      "M88",
+      "Mansion88",
+      "mansion88"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/Mansion88_Asia"
+  },
+  {
+    "id": "term_18bet",
+    "name": "EighteenBet_Europe",
+    "type": "dimension",
+    "definition": "[Graphify 溯源: graphify://bookmaker/EighteenBet_Europe] 18Bet 作为欧洲/国际二线做市商，开盘丰富，用于国际共识池补充参照。",
+    "scope": "global",
+    "aliases": [
+      "18Bet",
+      "18bet",
+      "18博"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://bookmaker/EighteenBet_Europe"
   }
 ]

@@ -494,5 +494,53 @@
     ],
     "lifecycle_state": "active",
     "confidence_level": "high"
+  },
+  {
+    "id": "mapping_12bet_odds",
+    "term_id": "term_12bet",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "12bet",
+    "semantic_filter": "twelvebet_secondary_asia",
+    "aggregation_semantics": "asian_consensus_delta",
+    "grain": "match",
+    "validation": "asian_tier2_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_mansion88_odds",
+    "term_id": "term_mansion88",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "明陞",
+    "semantic_filter": "mansion88_asian_flow",
+    "aggregation_semantics": "regional_liquidity_delta",
+    "grain": "match",
+    "validation": "mansion88_market_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_18bet_odds",
+    "term_id": "term_18bet",
+    "database_source": "raw_json",
+    "table": "europe1x2",
+    "column": "18Bet",
+    "semantic_filter": "eighteenbet_tier2_odds",
+    "aggregation_semantics": "international_odds_delta",
+    "grain": "match",
+    "validation": "eighteenbet_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
   }
 ]

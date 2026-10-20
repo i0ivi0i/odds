@@ -219,5 +219,48 @@
       "evidence_match_3013728_osasuna"
     ],
     "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_raw_payload_integrity",
+    "target": "term_pinnacle_anchor",
+    "constraint_type": "data_quality",
+    "trigger_keywords": [
+      "数据完整性",
+      "payload",
+      "存证",
+      "抽稀",
+      "raw",
+      "物理存证",
+      "Schema"
+    ],
+    "severity": "block",
+    "scope": "global",
+    "confidence": "high",
+    "description": "【底层物理存证 Schema 完整性警报】底层存证 raw/{matchId}.json 必须真实装载法定 26 端点原生报文 Schema（payloads 必须包含 1x2d.js、analysis.html、odds.html、analy.json、7家亚盘/大小球/欧指变盘流水及 polymarket.json 等 26 个特定 API 键），且各键内容必须为有效字符串（可正常反序列化，绝非空骨架或假冒字符串）。若缺少任一端点或载荷损坏，强制判定底层数据失效，严禁大模型定性胜负，立即触发阻断！",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_23_bookmakers_completeness",
+    "target": "term_crown_matrix",
+    "constraint_type": "data_quality",
+    "trigger_keywords": [
+      "23家",
+      "做市商",
+      "漏看",
+      "机构缺口",
+      "全景做市",
+      "gap"
+    ],
+    "severity": "block",
+    "scope": "global",
+    "confidence": "high",
+    "description": "【法定 23 家做市商显式 Gap 阻断警报】依据 EvoOntology 官方规范，法定 23 家做市商（澳彩、皇冠、Bet365、易胜博、平博、马会、188Bet、威廉希尔、立博、伟德、Interwetten、Bwin、SNAI、必发、利记、沙巴、Marathon、Betway、Unibet、Paddy Power、10Bet、中国体彩、Polymarket）必须逐项通过 resolve_semantics 进行语义对账并确保 status: 'supported'。除官方合法未开盘（体彩深盘关停HAD、次级联赛未开亚盘）放行外，若任一机构出现非预期 gap 或 unavailable，立即抛出 block 级硬阻断，严禁大模型主观脑补！",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active"
   }
 ]

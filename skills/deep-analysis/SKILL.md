@@ -89,11 +89,12 @@ metadata: { "emoji": "📊" }
 - **基本面数据**（排名、战绩、伤停、交锋、赛程等）与**赔率数据**（欧指、亚盘、大小球变化）：在“重新分析/刷新”模式下，**每次都必须重新调用阶段一 `match-scraper`（Skill `/scrapling-official` ↔ MCP `scrapling` `bulk_get` 官方通道）全量并发抓取最新实时活水推演源数据**，原地覆盖落盘并通过门禁，绝对禁止复用当日 memory 或本地旧数据炒冷饭。
 - **仅当主人明确选择“看之前的分析报告”**时，允许跳过步骤 1/1.5，直接复读当日 memory 中该场的摘要（不刷新赔率）。
 
-#### 检查底层源数据与通过 EvoOntology 提取微观切片
+#### 检查底层源数据与通过 EvoOntology 提取微观切片（双门禁验证）
 
-优先检查本地 `data/{销售日}/raw/{matchId}.json`【底层源数据】是否存在。若已由阶段一 `match-scraper` 提取并落盘，大模型通过 EvoOntology 官方 MCP 直接解析提取微观事实；同时系统异步生成 `data/{销售日}/{matchId}.md` 供人类复盘查看；若底层原始数据不存在或需刷新：
-
-必须先由 `match-scraper` 通过 Skill `/scrapling-official` ↔ MCP `scrapling` 并发直取法定 26 个底层端点，落盘底层源数据后再进入推演。**禁止先 `npm run analyze`。**
+1. **底层物理存证 Schema 门禁**：优先检查本地 `data/{销售日}/raw/{matchId}.json`【底层源数据】。必须装载全量 26 端点原生报文 Schema（`payloads` 必须包含 1x2d.js、analysis.html、odds.html、analy.json、7家机构21张流水HTML与polymarket.json）。若 payloads 键不全或反序列化失败：判定底层数据损坏，必须立即物理阻断并移交 `match-scraper` 从零全新重抓！
+2. **EvoOntology 专属机器视网膜立宪（绝对禁止裸视数据）**：全流程绝对严禁大模型调用 `read_file` 裸视底层原始报文 `raw/*.json` 或全文 `.md` 表格！所有推演事实（23 家做市商初即盘、体彩 HAD/HHAD、首发伤停、攻防得失球）必须且只能通过 EvoOntology 官方 MCP 工具（`browse_semantics` ➔ `resolve_semantics`）提取微观纯净切片。
+3. **23 家做市商显式 Gap 与 block 阻断门禁**：调用 `resolve_semantics(mentions=["澳彩", "皇冠", "Bet365", "平博", "易胜博", "香港马会", ...])`，核验 23 家机构全部为 `status: "supported"`。除官方合法未开盘（体彩深盘关HAD、次级联赛未开亚盘）放行外，若任一机构返回 `status: "gap"` / `unavailable`，或触发 `severity: "block"` 约束（如平博定海神针、脉冲假摔、高平真空、存证损坏），强制就地暂停推演并设立 `【EvoOntology机位阻断对质】`！
+4. **底层源数据不存在或超期处理**：必须先由 `match-scraper` 调取官方 Scrapling MCP 并发直取法定 26 个底层端点，落盘底层源数据后再进入推演。**禁止先 `npm run analyze`。**
 
 若网络异常，或验收门（法定 7 家双盘全流水、法定 23 家欧指全行、主客场/近6数字、真实性防克隆）缺一门：
 
@@ -701,7 +702,10 @@ call_mcp_tool(ServerName="sports-math", ToolName="poisson_dixon_coles", Argument
 - **德国联赛**：必抓**威廉(9)、365(8)、Interwetten(19)** **三家交叉认证**（三家一致 → 德国市场共识；若有 1 家与另 2 家不一致 → 在第 7 步重点分析；2 家以上不一致 → 重大分歧，在第 7 步重点分析）；重点结合 Bwin(255) 以及英系主流辅助。
 - **亚洲联赛**：澳彩(1)、皇冠(3)、365(8)、易胜博(12)、马会(48) **5 家交叉认证**（4 家 + 马会）。
 
-数据来源：步骤 1/1.5 过验【推演源数据】的各公司欧指变化。
+数据来源与 EvoOntology 视网膜门禁：大模型严禁直接裸视底层原始报文！必须且只能通过 EvoOntology 官方 MCP 工具提取微观机位数据：
+1. **概念发现与提取（browse_semantics ➔ resolve_semantics）**：调用 `browse_semantics` 检索法定 23 家做市商机位，并通过 `resolve_semantics(mentions=["澳彩", "皇冠", "平博", ...])` 批量获取 `database_source: raw_json` 的微观字段切片与约束；
+2. **23 家机构防漏门禁（status: supported）**：核验返回结果中 23 家机构全部为 `supported`；若出现非预期的 `gap` 缺口，必须立即阻断推演报警，严禁在残缺数据上推演！
+3. **做市阻断探针对质（severity: block）**：若返回的 `constraints` 中包含 `severity: "block"`（如平博定海神针、脉冲假摔、高平真空通杀），认知契约卡必须显式开设 `【EvoOntology机位阻断对质】` 区块进行反向博弈破译，无对质严禁下槌！
 
 **去水无偏概率工具与 Goto (2021) 概率定位解绑（强制调用）**：核算分析依据公司的真实无偏概率与抽水率时，必须调用官方 sports-math MCP 工具：`devig_oo_epc(home_odds=..., draw_odds=..., away_odds=...)` 获取客观标准点概率，严禁大模型主观心算或凭空捏造。
 - **Goto 学术定位解绑**：明确 OO-EPC 仅仅是当前赔率盘面所对应的“市场即时无偏概率映射”，**绝对不等于做市商对真实赛果的终极预测**！当做市商设局诱多时，即时报价本身就是引流诱饵；终审决策由三端博弈产生，绝对严禁倒果为因、盲目将 OO-EPC 最高概率项直接当成最终推荐。
