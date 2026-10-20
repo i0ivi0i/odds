@@ -21,7 +21,7 @@ metadata: { "emoji": "🎯" }
    - 衍生全系标的：通过 `gameId` 调用 `GET https://gamma-api.polymarket.com/events/keyset?game_id={gameId}` 展开 Exact Score（波胆比分）与 Halftime（半场盘）；
 3. **交付标准与门禁**：
    - 7 列表最后一格格式严格锁定为：`[{主队 vs 客队}](https://polymarket.com/event/{slug})` 或带报价版 `[{主队 vs 客队}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})`；
-   - 核心主流联赛（英冠、欧冠、五大联赛等）Polymarket 必定开盘，必须通过主客英文名及别名深度检索定位真实标的，严禁使用任何借口打标未开盘；若偶遇极冷门边缘次级赛事且官方经 Gamma/CLOB 确未收录，方可如实标注『官方未开盘』并保留空链接，绝不允许编造任何免责套话或格式假声明。详见 `docs/Polymarket链接查找教程.md`。
+   - 核心主流联赛（英冠、欧冠、五大联赛等）Polymarket 必定开盘，必须通过主客英文名及别名深度检索定位真实标的，严禁使用任何借口打标未开盘；若偶遇极冷门边缘次级赛事且官方经 Gamma/CLOB 确未收录，方可如实标注『官方未开盘』并保留空链接，绝不允许编造任何免责套话或格式假声明。链接规范已全面内化，严禁猜测拼接。
 
 来自 deep-analysis 的每场比赛综合评估结果。**执行 recommendation 时**，以收齐的 announce 所包含的**综合评估与 memory 摘要**为输入，**无需**再从 memory 读取 `## 深度分析`。
 
@@ -202,7 +202,7 @@ metadata: { "emoji": "🎯" }
 > **推演终审 7 列表格（全局硬性规范）**：
 > | 场次/时间 | 对阵双方 | <span style="white-space:nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;胜负平&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> | <span style="white-space:nowrap">&nbsp;&nbsp;&nbsp;&nbsp;让球&nbsp;&nbsp;&nbsp;&nbsp;</span> | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接 |
 > |---|---|---|---|---|---|---|
-> | {编号/时间} | {主队 vs 客队} | <span style="white-space:nowrap">首选：**{胜/平/负}**&nbsp;｜&nbsp;次选：**{胜/平/负}**</span> | <span style="white-space:nowrap">**[{letBall}] {让胜/让平/让负}**</span> | 胜 {XX.X%}<br>平 {XX.X%}<br>负 {XX.X%} | {庄家引流与对冲底牌破译} | {可点击 URL，查找见 docs/Polymarket链接查找教程.md} |
+> | {编号/时间} | {主队 vs 客队} | <span style="white-space:nowrap">首选：**{胜/平/负}**&nbsp;｜&nbsp;次选：**{胜/平/负}**</span> | <span style="white-space:nowrap">**[{letBall}] {让胜/让平/让负}**</span> | 胜 {XX.X%}<br>平 {XX.X%}<br>负 {XX.X%} | {庄家引流与对冲底牌破译} | [{主队 vs 客队}](https://polymarket.com/event/{slug}) |
 > ⚠️ **第 6 列【庄家诱盘破译】全时序规范**：严禁只写初即两端死板套话（如“初X退即Y”），强制必须体现时序动态全貌：初盘形态 ➔ 中盘假摔/拉高/试探动作 ➔ 临盘真实出清意图（若全程平稳则注明「全程无异动初盘已定价」）。
 
 ### {编号} {联赛} {主队} vs {客队}

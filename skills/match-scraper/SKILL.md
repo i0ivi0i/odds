@@ -253,12 +253,33 @@ metadata: { "emoji": "📆" }
 3. **体彩官方玩法与代号**：`https://zq.titan007.com/default/getAnalyData?sid={matchId}&t=1`（仅提取 HAD/HHAD 赔率与让球数）
 4. **百家欧指与时序**：`https://1x2d.titan007.com/{matchId}.js`（仅提取法定 23 家初即盘与真实返还率/凯利，严禁默认 `90.0` 或 `[0.94, 0.88, 0.84]`）
 5. **7 大做市商亚盘、大小球与欧指变盘流水**：`https://vip.titan007.com/changeDetail/handicap.aspx`、`overunder.aspx`、`1x2.aspx`（7家核心流水，GB18030 解码，剔除滚球，5列纯净表格：`时间戳 | 机构 | 主水/大球 | 盘口 | 客水/小球`）
-6. **Polymarket 链上预测市场**：严格遵循官方 Discover Markets API 规约（严禁客户端盲目拼凑或猜测 Slug！严禁使用 `public-search` 进行队名模糊盲搜以防天气市场冲刷与历史完场老赛事占位！）。
-   - **官方标准发现步骤**：
-     ① 查官方权威联赛字典：`https://gamma-api.polymarket.com/sports` 获取该联赛对应 `series_id` 或 `primaryTag`（如 UEL 欧联杯 10209、COL 欧协联 10437、LIB 解放者杯 10289、EPL 英超 10188、UCL 欧冠 10204 等）；
-     ② 分类批量直取活跃事件：调用 `https://gamma-api.polymarket.com/events?series_id={id}&closed=false&limit=100`（Windows 环境带 `--ssl-no-revoke --http1.1` 防止长 JSON 管道截断），按对阵与比赛日期精准锁定目标；
-     ③ 读取 `teams[].ordering` 仲裁主客顺序，并通过 `events/keyset?game_id={gameId}` 关联波胆/半场全系标的，生成标准下单链接 `https://polymarket.com/event/{slug}`；
-   - **门禁硬红线**：五大联赛、欧联、欧协联、解放者杯等核心主流赛事在 Polymarket 官方 100% 常态化开盘，必须提供真实纯英文事件可点击链接；严禁以未开盘为由跳过真实抓取，严禁编造任何类似『官方未开盘（经Gamma双向核验）』等免责套话！将真实返回的事件对象写入 `data/{销售日}/raw/{matchId}.json` 中的 `payloads['polymarket.json']`；若极小众次级联赛经双向检索确无活跃标的，必须如实保存 HTTP 200 返回空数组的真实网络存证！
+6. **Polymarket 链上预测市场（第 26 端点法定进货规范，内化原 Polymarket 教程全部干货）**：
+   - **官方权威文档索引**：
+     - 全局 LLM 发现索引：`https://docs.polymarket.com/llms.txt`（AI 交互首选地图）；
+     - 中文 API 索引：`https://docs.polymarket.com/_llms/cn.txt` 及 `_llms/cn/api.txt`；
+     - 三大接口分工：Gamma API（市场发现与事件检索）+ CLOB API（买卖挂单深度与可买报价）+ Data API v2（历史统计）。
+   - **时序图反查与体彩现价对账（仅有图无对阵时触发）**：
+     - 拉取体彩现价网关（Windows 带证书与浏览器伪装）：
+       `curl.exe -sS --ssl-no-revoke -A "Mozilla/5.0" -H "Referer: https://www.lottery.gov.cn/" "https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry?channel=c"`；
+     - 终盘三档数字对账 `had`（胜平负）与 `hhad`（让球含 `goalLine`），三档全对上才锁定比赛；开球日期取国际开球日（中国凌晨 02:45 比赛对应国际日期常用前一日）。
+   - **官方标准三步发现（彻底根治天气市场冲刷与老完场占坑）**：
+     ① **查官方联赛分类字典**：调用 `https://gamma-api.polymarket.com/sports` 获取 484 个赛事元数据：
+        - 欧联杯 (UEL): `sport="uel"`, `series="10209"`, `primaryTag=101787`；
+        - 欧协联 (COL): `sport="col"`, `series="10437"`, `primaryTag=102763`；
+        - 解放者杯 (LIB): `sport="lib"`, `series="10289"`, `primaryTag=102562`；
+        - 英超 (EPL): `sport="epl"`, `series="10188"`, `primaryTag=306`；
+        - 欧冠 (UCL): `sport="ucl"`, `series="10204"`, `primaryTag=1234`；
+     ② **按联赛 Series 批量拉取活跃事件**（Windows 环境带 `--ssl-no-revoke --http1.1` 防止长 JSON 管道截断）：
+        `curl.exe -s --ssl-no-revoke --http1.1 -A "Mozilla/5.0" "https://gamma-api.polymarket.com/events?series_id={id}&closed=false&limit=100"`；
+        一次请求即可拿到全量活跃事件，按国际开球日与英文队名秒级锁定目标真实 `slug`。小众冷门赛事才调用 `/public-search?q={英文队名}` 兜底；
+     ③ **主客队序权威核销与衍生全系市场拉取**：
+        - 调用 `https://gamma-api.polymarket.com/events/slug/{slug}` 读取 `teams[].ordering`，严格校验 `home` 与 `away` 队序，杜绝主客倒置；
+        - 读取 `gameId` 调用 `https://gamma-api.polymarket.com/events/keyset?game_id={gameId}&limit=20` 关联衍生标的：`{slug}-exact-score`（波胆）、`{slug}-halftime-result`（半场）、`{slug}-more-markets`（大小球/让分）；
+   - **价格读取与倍率换算公式**：
+     - Gamma 展示价 `outcomePrices` 转化为美分与倍数：例如 `0.295` = **29.5¢**，对应买入赔率倍数 $\approx 1 / 0.295 \approx 3.4$ 倍；
+     - 核实可买报价查 CLOB 对应 Yes 合约最佳卖价、买卖差与深度；
+     - **推演边界铁律**：分析胜负平仍以球探/体彩与 23 家主流做市商为准，**严禁将 Polymarket 价格当作庄家底牌，不进入十步去水基准，仅作为跨市场公众资金与链上信心的辅助交叉验证**。
+   - **门禁硬红线**：五大联赛、欧联、欧协联、解放者杯等核心主流赛事在 Polymarket 官方 100% 常态化开盘，必须提供真实纯英文事件可点击链接（格式为 `https://polymarket.com/event/{slug}`）；严禁以未开盘为由跳过真实抓取，严禁编造任何类似『官方未开盘（经Gamma双向核验）』等免责套话！将真实返回的事件对象写入 `data/{销售日}/raw/{matchId}.json` 中的 `payloads['polymarket.json']`；若极小众次级联赛经双向检索确无活跃标的，必须如实保存 HTTP 200 返回空数组 `[]` 的真实网络存证！
 
 ### 4. 组装落盘与物理文件确认（进货合格线与双重门禁）
 - 组装落盘至 `data/{销售日}/{matchId}.md`（全天赛程总览汇总于 `data/{销售日}/meta.md`）；
