@@ -1,147 +1,216 @@
-# 通用足球庄家倍率精算 AI 智能体体系 (Pansuan Engine)
+<div align="center">
 
-本项目是一套立足**庄家精算第一性原理（少赔多赚 / 净赔付最小化 / 双盘联动）**的通用足彩分析与量化推演系统。不绑单一助手平台，任意能读工作区的 AI 助手都能用。实现全自动赛程抓取、盘赔初筛、10步深度推演与赛后自愈复盘。本仓库由主人维护。
+# ⚡ Pansuan Engine (盘算引擎)
+### 现代工业 4.0 足彩倍率分析推演智能工厂 · 中央总控台 (Command & Dispatch NOC)
 
-## 多平台 AI Agent 原生适配
+[![Architecture](https://img.shields.io/badge/Architecture-Industrial_4.0_NOC-0A84FF?style=for-the-badge&logo=diagram-next&logoColor=white)](AGENTS.md)
+[![Zero-Script](https://img.shields.io/badge/Zero--Script-100%25_MCP_Native-34C759?style=for-the-badge&logo=shield&logoColor=white)](AGENTS.md#第四工段流水线品控防错与工业安全断路器)
+[![Platform](https://img.shields.io/badge/Agentic-Antigravity_%7C_Hermes_%7C_Claude-AF52DE?style=for-the-badge&logo=probot&logoColor=white)](#多平台-ai-agent-原生适配)
+[![Data Pipeline](https://img.shields.io/badge/Data_Ingest-Scrapling_Official-FF9500?style=for-the-badge&logo=fastapi&logoColor=white)](https://github.com/D4Vinci/Scrapling)
+[![Semantic Retina](https://img.shields.io/badge/Retina-EvoOntology_23_Makers-5856D6?style=for-the-badge&logo=databricks&logoColor=white)](https://github.com/ruc-datalab/EvoOntology)
+[![Math Engine](https://img.shields.io/badge/Math-OO--EPC_%2B_Dixon--Coles-FF2D55?style=for-the-badge&logo=wolframmathematica&logoColor=white)](#底层硬核技术基座与-mcp-机械臂矩阵)
+[![Cognitive Graph](https://img.shields.io/badge/Knowledge_Graph-Graphify_5.6MB-00C7BE?style=for-the-badge&logo=neo4j&logoColor=white)](https://github.com/Graphify-Labs/graphify)
+[![Evaluation](https://img.shields.io/badge/Evals-Alibaba_Skill--Up-FF3B30?style=for-the-badge&logo=alibabacloud&logoColor=white)](https://github.com/alibaba/skill-up)
 
-| 运行环境 | 接入方式 | 智能体交互机制 | 适用场景 |
-| -------- | -------- | -------------- | -------- |
-| **爱马仕 (Hermes Agent)** | 本地工作区原生交互 / CLI 挂载 | `delegate_task` 并发调度、Cronjob 定时、桌面/通道推送 | 桌面常驻、自主循环、渠道推送 |
-| **反重力 (Google Antigravity)** | 工作区直接打开 | `invoke_subagent` 任务隔离、图谱实时检索 | 深度交互、多智能体协同、知识图谱推演 |
-| **Claude Code / Cursor** | 终端命令行 / 工作区直接打开 | 终端交互、代码审查与实时脚本推演 | 终端沉浸式交互、本地极速推演 |
-
-## 功能概览
-
-| 功能     | 说明                                                                           | 触发方式          |
-| -------- | ------------------------------------------------------------------------------ | ----------------- |
-| 赛程抓取 | 从球探体育(titan007)抓取当日全量赛程                                           | 自动(Cron) / 手动 |
-| 赛事初筛 | 6 阶段流程筛选出 3-8 场高价值比赛                                              | 自动(Cron) / 手动 |
-| 深度分析 | 10 步分析法（基本面→伤停→泊松基准→欧指→亚盘→大小球→合理性→变动→关键点/疑点/矛盾→风险），随后输出综合评估 | 自动(Cron) / 手动 |
-| 推荐输出 | 逐场推送 → 精选 2-3 场 → 汇总（含串关建议）                                    | 自动(Cron) / 手动 |
-| 赛后复盘 | 核对结果、计算命中率、分析失误、更新统计                                       | 自动(Cron) / 手动 |
-
-## 快速上手与运行环境
-
-### 1. 通用环境准备与核心 MCP 矩阵
-本系统已完成**全库零 `.py` 终极纯净化**，主仓库 100% 蜕变为纯 Agent 认知与知识库圣殿。所有数据采集、做市看数与纯数学算力均通过标准 MCP 工具闭环驱动，零本地脚本依赖、零终端命令行负担：
-
-- **官方原生数据采集通道**：100% 独家归属 Skill `/scrapling-official` ↔ MCP `scrapling`（极速并发全包直取），严禁调用外部独立浏览器（如 `browseros-neo`）
-- **EvoOntology 专属做市视网膜**：大模型/Agents 查看比赛数据 100% 必须经由 EvoOntology MCP（`browse_semantics` ➔ `resolve_semantics`）提取微观切片，严禁裸视海量原始报文
-- **纯 MCP 架构**：全库物理清零全部 `.py` 文件，纯数学算力 100% 外挂至宿主级独立 MCP 服务（`sports-math`），零本地环境冲突。
-- **全流程 MCP 机械臂闭环**：进货调度 `scrapling`，做市看数调度 `evo-semantic`，概率去水与泊松调度 `sports-math`，理论反思调度 `graphify`。
-
-### 2. 各平台运行方式
-- **爱马仕 (Hermes Agent)**：直接在当前工作区对话交互；每日自动化已由爱马仕调度中枢接管。
-- **反重力 (Google Antigravity)**：将本工程目录作为工作区打开，直接对话即可自动读取 `AGENTS.md` 与 Skills。
-- **Claude Code / Cursor**：在当前目录下打开终端，直接调用相关指令与分析推演。
-
-## 使用方式
-
-### 自动模式（推荐）
-
-安装完成后，Agent会按 Cron 配置自动执行：
-
-- **每天 11:10**：抓取当日赛程，推送赛程列表（仅展示，不分析）
-- **每天 17:00 与 21:00（同一条任务）**：赛前分析。开跑先查北京时间：17:00 只推开球 ≤ 22:00 的早盘；21:00 只推开球 > 22:00 及次日凌晨的晚盘。无该窗口场次则空仓跳过。
-- **每天 10:30**：获取赛果 → 复盘 → 更新统计（推送复盘报告）
-
-### 手动模式
-
-也可以随时通过消息和Agent交互：
-
-**分步操作**（掌控模式）：
-
-| 你说                                       | Agent做什么                            | 是否等你确认     |
-| ------------------------------------------ | -------------------------------------- | ---------------- |
-| 「同步赛程」「同步比赛」「今天有什么比赛」 | 重新抓取并展示赛程（每次刷新最新数据） | 展示后停下       |
-| 「筛选比赛」「帮我筛一下」                 | 初筛，推送带编号的候选列表             | **等你确认**     |
-| 「精选比赛」「精选3场」「精选1,3,5场」     | 对指定场次深度分析 + 推荐（一条龙）    | 全自动           |
-| 「去掉第3场」「加上利物浦那场」            | 调整候选列表                           | **等你再次确认** |
-
-**一步到位**（懒人模式）：
-
-| 你说                                              | Agent做什么                            |
-| ------------------------------------------------- | -------------------------------------- |
-| 「给推荐」「今天买什么」                          | 全流程一条龙（不停顿）                 |
-| 「分析 2950979」                                  | 用比赛 ID 直接深度分析 + 推荐          |
-| 「分析这场 https://zq.titan007.com/analysis/...」 | 用 URL 直接深度分析 + 推荐             |
-| 「昨天结果怎么样」「复盘」                        | 赛后复盘（赛果→命中率→失误分析）       |
-| 「战绩怎么样」                                    | 展示累计统计                           |
-| 「只看英超」「英冠也要看」                        | 调整联赛筛选范围                       |
-| 「多推几场」「今天来 4 场」                       | 放宽精选数量                           |
-| 「今天不分析了」「今天休息」                      | 写入跳过标记，当日不再自动触发赛前分析 |
-| 「还是分析吧」「恢复分析」                        | 删除跳过标记，恢复自动触发             |
-
-### 调整参数
-
-直接告诉Agent即可：
-
-- 「以后最多推 3 场」→ 调整 ELITE_DAILY（精选场次数）
-- 「今天来 4 场」→ 临时扩展精选到 4 场
-- 「英冠也要看」→ 调整联赛层级
-- 「推送时间改到 16:00」→ 调整 Cron 配置
-
-## 文件结构
-
-```
-workspace/
-├── IDENTITY.md          # 身份：名字、角色、目标
-├── AGENTS.md            # 核心宪章：职业精算师灵魂信条、五大原生 Skill 升级管辖权与推演操作规约
-├── MEMORY.md            # 长期记忆：累计统计、策略结论
-├── README.md            # 架构与上手指南
-├── memory/              # 每日记忆
-│   └── YYYY-MM-DD.md   # 每日分析日志
-└── skills/              # 技能
-    ├── match-scraper/   # 赛程抓取
-    ├── match-screening/ # 初筛
-    ├── deep-analysis/   # 深度分析
-    ├── recommendation/  # 推荐输出
-    └── post-review/     # 赛后复盘
-```
-
-## 渠道支持
-
-| 渠道     | 状态     | 说明                               |
-| -------- | -------- | ---------------------------------- |
-| Telegram | 原生支持 | 各 Agent 原生通道 / Telegram Bot   |
-| 飞书     | 需适配   | 通过飞书机器人 Webhook + bash/curl |
-| 企业微信 | 需适配   | 通过企业微信 Webhook + bash/curl   |
-
-建议先用桌面聊天或 Telegram 跑通全流程，再通过 Webhook 扩展到飞书/企业微信。
-
-## 深度分析与并发数据抓取说明（重要）
-
-### 问题背景
-在多场深度分析执行时（例如主人要求「分析 002 和 005」，或赛前初筛通过多场并发处理），如果直接使用浏览器 CLI 并发抓取，由于浏览器实例属于共享单例，容易发生标签页互踩与数据串号。
-
-### 架构应对策略
-1. **数据抓取层解耦**：编排阶段（阶段一）集中调用 `/scrapling-official` 并发矩阵（官方 Scrapling MCP）一次性提取全量快照落盘 `data/`；阶段二 worker 纯只读本地快照做推理，严禁抢跑思考。
-2. **子智能体分析策略**：通过各 Agent 的子任务机制（爱马仕 `delegate_task`、反重力 `invoke_subagent`）隔离推演上下文，从根源杜绝数据污染。
+<p align="center">
+  <b>立足庄家精算第一性原理 · 净赔付最小化 · 双盘联动博弈 · 神经中枢与车间统一</b><br/>
+  <i>面向职业足彩盘口分析的多智能体分布式量化生产线与认知自愈闭环</i>
+</p>
 
 ---
 
-## 核心 MCP 服务与关联项目矩阵
+</div>
 
-系统采用“零 `.py` 纯知识库 + 宿主 MCP 机械臂”架构，核心依赖四大 MCP 与三大关联项目：
+## 🏭 工厂愿景与第一性原理
 
-### 1. 核心 MCP 武器库
-| MCP 服务名 | 官方 GitHub / 访问链接 | 定位 | 能力与职责 | 核心工具接口 |
-| ---------- | ---------------------- | ---- | ---------- | ------------ |
-| **`scrapling`** | [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling) | 数据搬运流水线 | 26 个底层端点长连接并发提取、二进制保真解码与防反爬 | `bulk_get`, `stealthy_fetch` |
-| **`evo-semantic`** | [ruc-datalab/EvoOntology](https://github.com/ruc-datalab/EvoOntology) | 做市概念视网膜 | 纳管法定 23 家做市商机位与微观探针，客观切片提取，严禁大模型裸视长文本 | `browse_semantics`, `resolve_semantics`, `validate_semantics` |
-| **`sports-math`** | [宿主自研独立服务](file:///C:/Users/home/.gemini/services/sports-math) (Goto 2026 / Dixon-Coles) | 纯数学算力引擎 | 东京大学 Shota Goto (2026) OO-EPC 凸优化去水与 Dixon-Coles 修正泊松比分算力 | `devig_oo_epc`, `poisson_dixon_coles` |
-| **`graphify`** | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | 知识图谱中枢 | 5.6MB 全量博弈图谱、错题反思导览与 God Nodes 穿透 | `query_graph`, `get_node`, `god_nodes` |
-| **`bigballs-sports-data`** | [Big Balls Data MCP](https://mcp.bigballsdata.com/mcp) | 体育垂直数据源 | 覆盖五大联赛与美职足的真实伤停与球员微观体能负荷 | `get_matches`, `get_standings` |
+**Pansuan Engine** 深刻融入马克思唯物主义关于“**高度专业化分工、科学流水线生产节拍器、神经中枢与执行车间相统一**”的现代工业 4.0 智慧：
 
-### 2. 关联项目与协同基础设施
-- **足球主知识库（`d:\100-工作\200-交易\倍率分析推演`）**：纯 Agent 知识库圣殿，沉淀战法库、推演规范与每日战报，全库 0 个 `.py` 文件。
-- **宿主独立数学服务（`C:\Users\home\.gemini\services\sports-math`）**：外挂式独立微服务，由 `mcp_config.json` 全局驱动，杜绝本地依赖冲突。
-- **语义本体底座（`.evoontology`）**：对齐 `ruc-datalab/EvoOntology` 规范，实现字段级 1:1 Schema 核验。
-- **博弈知识图谱（`graphify-out`）**：对齐 `Graphify-Labs/graphify` 规范，承载错题反思与核心理论节点。
+- **拒绝黑盒玄学，回归做市本源**：从胜平负、让球与大小球的初盘和变动，逆向解构庄家如何诱买、阻热及控制风险；欧亚背离优先审让球防守底线，逆向线路移动（RLM）主动追查尖锐资金痕迹。
+- **全库零临时脚本硬铁律（Zero-Script Invariant）**：主仓库 100% 蜕变为纯 Agent 认知与知识库圣殿，杜绝任何全语种（`.py/.ps1/.js/.bat/.sh`）临时脚本与磁盘 `tmp_*` 暂存中转。
+- **全流程 MCP 机械臂闭环**：数据进货 100% 调度官方 Scrapling 原生流式通道，做市看数 100% 依托 EvoOntology 双层视网膜微观切片，纯数学算力外挂宿主独立服务（Goto 2026 OO-EPC 去水 + Dixon-Coles 修正泊松），全量理论反思依托 Graphify 5.6MB 博弈图谱。
 
-## 注意事项
+---
 
-- 数据抓取 100% 独家归属官方 Scrapling 原生流水线（Skill `/scrapling-official` ↔ MCP `scrapling`）。严禁调用外部独立浏览器（如 `browseros-neo`），严禁编写临时 Python 脚本。
-- 每日初筛最多 8 场（建议 3-5 场），精选 2-3 场核心推荐（最多 4 场）
-- MEMORY.md 策略调优和关键教训不允许重复，主题相同时合并更新原条目
-- 所有分析基于数据，不保证胜率，仅供参考
+## 🏛️ 中央总控台五大工段架构 (Command & Dispatch NOC)
+
+全系统中央总控台详见 [`AGENTS.md`](AGENTS.md)，划分为五大严密协同的工业级工段：
+
+```mermaid
+flowchart LR
+    subgraph S1 ["第一工段：工厂意志"]
+      D1["精算师灵魂信条<br/>十六条博弈原则"]
+    end
+
+    subgraph S2 ["第二工段：中央调度"]
+      D2["时钟节拍器<br/>三阶段硬死锁<br/>蜂群并发调度"]
+    end
+
+    subgraph S3 ["第三工段：车间矩阵"]
+      D3["五大高内聚原生车间<br/>进货 ➔ 初筛 ➔ 推演<br/>交付 ➔ 复盘"]
+    end
+
+    subgraph S4 ["第四工段：品控防错"]
+      D4["EvoOntology 双层视网膜<br/>23家做市商布尔核销<br/>Zero-Script 断路器"]
+    end
+
+    subgraph S5 ["第五工段：自愈演化"]
+      D5["主动心跳巡检<br/>每日 Memory 单写原子封存<br/>Graphify 图谱演化"]
+    end
+
+    S1 --> S2 --> S3 --> S4 --> S5
+```
+
+| 工段编号 | 核心职能 | 关键机制与工业标准 |
+| :---: | :--- | :--- |
+| **第一工段** | **工厂意志与精算师最高灵魂宪章** | 确立精算师六大核心特质、十六条做市博弈第一性原则、沟通风格与行为边界。 |
+| **第二工段** | **中央总控台调度系统与节拍器** | 会话启动三部曲、推演态三阶段硬死锁（阶段 0 ➔ 1 ➔ 2）、蜂群 Central Scheduler 滑动窗口流控。 |
+| **第三工段** | **五大专业化生产车间工位矩阵** | 五大原生车间工位标准化契约、输入输出报文规范与十六大实操推演心法。 |
+| **第四工段** | **流水线品控防错与工业安全断路器** | EvoOntology 官方视网膜、法定 26 端点与 23 家机构机位核销、全语种零临时脚本铁律、分层对账。 |
+| **第五工段** | **巡检自愈、成品仓储与系统演化中枢** | 赛前/临盘/赛后三大主动巡检、每日 `memory/YYYY-MM-DD.md` 唯一单写原子封存、Graphify 图谱演进。 |
+
+---
+
+## 🛠️ 五大专业化生产车间工位矩阵
+
+系统解散历史单体冗余结构，解耦落地为五大独立、高内聚的原生 Skill 生产车间：
+
+```
+skills/
+├── match-scraper/      # 工位 1：全权数据进货局 (Scrapling MCP 官方原生流式并发)
+├── match-screening/    # 工位 2：业务初筛局 (6 阶段基本面与机构冷热漏斗)
+├── deep-analysis/      # 工位 3：推演大脑总装局 (EvoOntology 视网膜 + 10 步深度推演)
+├── recommendation/     # 工位 4：战报交付局 (工整标准 7 列表格 + 契约卡)
+└── post-review/        # 工位 5：复盘审计局 (赛后对账 + 认知自愈反思)
+```
+
+| 车间工位 | 核心职责 | 机械臂绑定与标准协议 | 交付产物 |
+| :--- | :--- | :--- | :--- |
+| **工位 1：全权数据进货局**<br/>`skills/match-scraper` | 赛程索引抓取、26 底层端点长连接并发提取、23 家机构核销 | `scrapling` MCP (`bulk_get`, `stealthy_fetch`) 带 `impersonate="chrome"` 与选择器下推 | `data/{销售日}/meta.md`<br/>`raw/{id}.json` (SSOT)<br/>`data/{销售日}/{id}.md` (≥350行) |
+| **工位 2：业务初筛局**<br/>`skills/match-screening` | 联赛级别分级过滤、机构分歧度测算、多维度冷热扫描 | 纯逻辑初筛漏斗，严禁碰赔率时序细节与未解包报文 | `memory/{销售日}.md` 候选比赛列表 (3~8 场) |
+| **工位 3：推演大脑总装局**<br/>`skills/deep-analysis` | 真实伤停核查、去水点概率测算、Dixon-Coles 泊松分布、10 步庄家博弈破译 | `evo-semantic` MCP (`browse_semantics`, `resolve_semantics`)<br/>`sports-math` MCP (`devig_oo_epc`, `poisson_dixon_coles`)<br/>`graphify` 知识图谱 | 认知契约卡 (Cognitive Contract)<br/>10 步深度推演战报 |
+| **工位 4：战报交付局**<br/>`skills/recommendation` | 多场战报格式化装配、Polymarket 真实链接核验、去水点概率对账 | 格式校验闸门（绝不折行、字段强校验、链接真实性） | **标准 7 列表格** (胜负平/让球/去水概率/诱盘破译/真实链接) |
+| **工位 5：复盘审计局**<br/>`skills/post-review` | 赛果真实比对、净胜球核验、失误归因、战法库反思进化 | `graphify` 错题反思导览 + 长期记忆库 (`MEMORY.md`) | 每日复盘审计专报<br/>`足球庄家倍率精算师` 签名 |
+
+---
+
+## ⏱️ 流水线时钟节拍器：推演态三阶段硬死锁
+
+为杜绝大模型在无物理数据时空转偷跑、提前猜测胜负或违规编写脚本，总控台确立**推演态三阶段硬死锁节拍器**：
+
+```mermaid
+flowchart TD
+    Z["【阶段 0：赛程索引自检】<br/>检查 data/{销售日}/meta.md 是否存在且新鲜 (< 2小时)"]
+    Z_NO{"是否存在且新鲜?"}
+    Z_GET["调度 Scrapling bulk_get(index.aspx)<br/>秒级拉取落盘 meta.md 并追加 memory (< 2秒)"]
+    P1["【阶段 1：蜂群纯物理进货】<br/>派发专职搬运工 Subagent (Data Ingest Worker)<br/>1~3 场切片并发抓取全量 26 端点<br/>落盘 raw/{id}.json 与 matchId.md (≥350行)"]
+    P1_GATE{"双重质检门禁核销<br/>23家做市商 + 26端点 Schema"}
+    P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1800行)<br/>EvoOntology 视网膜微观切片 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
+    OUT["【阶段 3：交付与单写原子封存】<br/>写入 memory/{销售日}.md 深度分析摘要与契约卡<br/>交付标准 7 列表格 (含 Polymarket 真实链接)"]
+
+    Z --> Z_NO
+    Z_NO -- 否或过期 --> Z_GET --> P1
+    Z_NO -- 是 --> P1
+    P1 --> P1_GATE
+    P1_GATE -- 质检 PASS --> P2
+    P1_GATE -- 抽稀或失败 --> P1
+    P2 --> OUT
+```
+
+---
+
+## 🔬 底层硬核技术基座与 MCP 机械臂矩阵
+
+系统采用“**零临时脚本纯知识库 + 宿主 MCP 机械臂**”顶级工程架构，六大核心工具链全量协同：
+
+| 工具服务 | 官方源 / 规范链接 | 工业定位 | 核心接口与技术规格 |
+| :--- | :--- | :--- | :--- |
+| **`scrapling`** | [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling) | 官方原生数据采集通道 | `bulk_get`, `stealthy_fetch`<br/>Level 1/2 协议流，支持 `impersonate="chrome"`、选择器原地下推与 Markdown 原生直出 |
+| **`evo-semantic`** | [ruc-datalab/EvoOntology](https://github.com/ruc-datalab/EvoOntology) | 专属双层做市看数视网膜 | `browse_semantics`, `resolve_semantics`, `validate_semantics`<br/>法定 23 家做市商机位语义映射与定点微观切片提取，严禁裸视海量原始报文 |
+| **`sports-math`** | [宿主独立微服务](file:///C:/Users/home/.gemini/services/sports-math) | 纯数学算力引擎 | `devig_oo_epc`, `poisson_dixon_coles`<br/>东京大学 Shota Goto (2026) 凸优化去水算法与 Dixon-Coles 修正泊松分布 |
+| **`graphify`** | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | 知识图谱与错题反思中枢 | `query_graph`, `get_node`, `god_nodes`<br/>5.6MB 全息博弈图谱，支持推演前错题反思导览、疑难穿透与因果涟漪扩散 |
+| **`skill-up-observer`** | [alibaba/skill-up](https://github.com/alibaba/skill-up) | 技能评测与演化观测器 | `mark_skill_invocation`, `write_observation_case`<br/>阿里巴巴官方 Agent 技能观测与回归用例沉淀体系 |
+| **`bigballs-sports-data`** | [Big Balls Data MCP](https://mcp.bigballsdata.com/mcp) | 球员微观体能与真实伤停 | `get_matches`, `get_standings`, `find_players`<br/>覆盖五大联赛与美职足的真实伤停与双赛体能负荷断崖核查 |
+
+---
+
+## 🤖 多平台 AI Agent 原生适配
+
+本项目不绑定任何单一助手平台，任意具备文件读写与标准 MCP 调度能力的 AI 智能体均可原生接入：
+
+| 平台名称 | 交互通道 | 智能体调度与协作机制 | 推荐应用场景 |
+| :--- | :--- | :--- | :--- |
+| **反重力 (Google Antigravity)** | 工作区直接加载 | `invoke_subagent` 蜂群任务并发隔离、Graphify 图谱原生穿透 | 深度交互、多场并发切片推演、知识进化 |
+| **爱马仕 (Hermes Agent)** | 本地工作区原生交互 / CLI | `delegate_task` 并发调度、Cronjob 周期巡检、渠道 Webhook 交付 | 桌面常驻、无人值守自驱流水线、外部群聊推送 |
+| **Claude Code / Cursor** | 终端命令行 / IDE 工作区 | 终端沉浸式交互、代码审查、实时流式推理 | 终端极速诊断、策略规约调优 |
+
+---
+
+## 🚀 生产作业运行模式与交互矩阵
+
+### 1. 自动巡航模式 (Cron Autopilot)
+
+按系统预设的流水线生产时钟自动巡检触发：
+
+- **🌅 每天 11:10 (早盘赛程同步)**：极速拉取当日赛程，落盘 `meta.md` 并展示赛程索引列表（只同步，不盲目推演）。
+- **🎯 每天 17:00 / 21:00 (赛前两阶段推演)**：
+  - `17:00` 窗口：锁定开球时间 $\le$ 22:00 的早盘赛事；
+  - `21:00` 窗口：锁定开球时间 > 22:00 及次日凌晨的晚盘赛事；
+  - 无符合窗口场次则主动声明空仓，杜绝无意义消耗。
+- **📊 每天 10:30 (赛后复盘自愈)**：抓取真实赛果 ➔ 计算命中率 ➔ 偏差归因 ➔ 追加更新 `MEMORY.md` 战法库。
+
+### 2. 人工交互指令矩阵
+
+| 你对 Agent 说 | 调度室工位执行动作 | 交互门禁响应 |
+| :--- | :--- | :--- |
+| 「同步赛程」「今天有什么比赛」 | 调度工位 1 拉取最新赛程并落盘 `data/{销售日}/meta.md` | 展示列表后就地停下，等待指令 |
+| 「筛选比赛」「帮我筛一下」 | 调度工位 2 启动 6 阶段业务初筛，生成 3~8 场候选池 | **推送候选清单，等待主人确认** |
+| 「精选比赛」「分析 002 和 005」 | 启动阶段 1 蜂群进货 ➔ 阶段 2 首席推演 ➔ 阶段 3 战报交付 | 严格执行三阶段硬死锁，全自动闭环 |
+| 「给推荐」「今天买什么」 | 全流程端到端自动化推进（同步 ➔ 进货 ➔ 推演 ➔ 交付） | 交付工整标准 7 列表格 |
+| 「昨天结果怎么样」「复盘」 | 调度工位 5 执行赛后复盘审计，更新统计指标与对账 | 输出复盘专报与精算师签名 |
+| 「今天不分析了」「今天休息」 | 写入当日跳过标记，暂停当日定时推送任务 | 响应确认，保持静默 |
+
+---
+
+## 📂 现代工业级工作区拓扑树
+
+```text
+倍率分析推演/
+├── .evoontology/             # EvoOntology 本体工程与语义版本管辖
+├── config/                  # 静态配置文件与凭据字典 (联赛分级、Token配置)
+├── data/                    # 销售日推演原始报文与人类简报
+│   └── {销售日}/
+│       ├── meta.md          # 当日赛程全景索引
+│       ├── {matchId}.md     # 人类可视化推演快照 (≥350行)
+│       └── raw/
+│           └── {matchId}.json # 法定 26 端点原生报文 SSOT 存证
+├── docs/                    # 系统设计规范与工业演化文档
+├── graphify-out/            # Graphify 5.6MB 全息博弈知识图谱与反思词条
+├── memory/                  # 每日记忆流水线唯一单写原子落盘
+│   └── YYYY-MM-DD.md        # 每日战报存盘与认知契约卡
+├── skills/                  # 五大高内聚生产车间工位
+│   ├── deep-analysis/       # 工位 3：推演大脑总装局 (SKILL.md ≤ 1800行)
+│   ├── match-scraper/       # 工位 1：全权数据进货局
+│   ├── match-screening/     # 工位 2：业务初筛局
+│   ├── post-review/         # 工位 5：复盘审计局
+│   └── recommendation/      # 工位 4：战报交付局
+├── AGENTS.md                # 核心宪章：五大工段中央总控台与最高行为规约
+├── MEMORY.md                # 长期记忆中枢：累计胜率、战法库与血泪教训
+├── README.md                # 本文件：智能工厂中央总控台看板与上手指南
+└── STRATEGY.md              # 战略大图：产品长期路线图与工业化演进阶梯
+```
+
+---
+
+## 🛡️ 工业安全生产守则与红线规约
+
+1. **全语种零临时脚本铁律**：严禁在运行中编写或执行任何 `.py/.ps1/.js/.bat/.sh` 临时脚本，严禁在磁盘建立 `tmp_*` 暂存文件夹或倾倒 `.txt` 中转文件！
+2. **法定 23 家做市商机位布尔核销**：大模型/Agents 查看做市赔率必须 100% 依托 EvoOntology 视网膜按映射路径提取 raw JSON 微观数据，严禁后台造假伪造未开盘数据，未开盘如实标记 `[官方未开盘]`。
+3. **真实伤停与物理体能前置**：推演胜负前必须查明双方球员微观伤停与双赛体能负荷断崖，未见物理数据前严禁主观盲猜。
+4. **标准 7 列表格交付规范**：交付格式绝对锁定为标准 7 列表格，第 7 列不可遗漏 Polymarket 真实链接或官方未开盘说明。
+5. **单一主分支与原子 Git 提交**：全系统严格基于 `main` 单一分支推进，严禁未经主人明确授权私自创建临时分支或私自执行破坏性 Git 动作。
+
+---
+
+<div align="center">
+  <sub>Pansuan Engine · 工业级足球倍率分析推演智能工厂 · 遵循极简、求真、严谨之精算之道</sub>
+</div>
