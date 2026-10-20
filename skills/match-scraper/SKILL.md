@@ -15,8 +15,9 @@ metadata: { "emoji": "📆" }
 ## 前提条件
 
 - 数据进货 100% 独家归属 Skill `/scrapling-official` ↔ MCP `scrapling`（官方四级闭环）。严禁调用外部独立浏览器！
-- 严禁在根目录或任何位置自写临时 `.py` 脚本！
-- **【零脚本硬锁】绝对禁止在 terminal 执行任何 `python -c`、自写临时 `.py`、跑批脚本或爬虫代码！数据采集与选择器下推 100% 依托 Scrapling MCP 原生工具调用！**
+- **【全语种零临时脚本硬铁律】**：绝对严禁编写任何临时脚本（无论语言是 `.py`、`.ps1`、`.js`、`.bat`、`.sh`，违规次数严格锁定为 0）！绝对禁止在 terminal 执行任何散装脚本代码！
+- **【零磁盘中转垃圾硬铁律】**：绝对严禁在磁盘创建任何 `tmp_*` 暂存文件夹，绝对严禁倾倒任何 `.txt` 原始中间文件！全流程 100% 内存流式直出落盘！
+- **【Scrapling 原生 Markdown 直转】**：变盘流水页面（21 张大表）强制传 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，由 Scrapling C/Cython 引擎原地生成纯净 Markdown 表格，内存直取直接拼入人类简报，严禁手写任何胶水解析脚本！
 - 抓取赛程目标页面：`https://jc.titan007.com/index.aspx` 抽编号、比赛 ID、开球、对阵、分析页。
 - 抓取推演源数据目标页面：单场法定 26 个底层端点（分析页、波胆页、竞彩接口、1x2d.js、7家做市商亚欧大 21 张变盘流水、Polymarket 链上预测）。
 - 抓不到或场次不全：置顶报告，结束流程，不写残缺记录进 memory。
@@ -177,20 +178,20 @@ metadata: { "emoji": "📆" }
 当被主会话以 `Data Ingest Worker` 派发执行进货任务时，搬运工严格按照开箱即用 2 步闭环执行，绝无任何模糊地带，严禁查阅代码源码、严禁在终端漫游：
 - **【指令范围与批次切片原则】**：
   - 推演目标场次（Scope）完全由主人指令决定（「全部」= 当日开售全量排队；「早盘」= ≤22:00；「晚盘」= >22:00；「指定」= 仅指定场次）；
-  - **4~6 场仅仅是单批并发（Batch Size）的物理切片**，用于防止网络超时，**绝对不可将批次切片误当成推演总数！**
+  - **1~3 场仅仅是单批并发（Batch Size）的物理切片**（1~3场极速直出），用于防止网络超时，**绝对不可将批次切片误当成推演总数！**
 - **【前置零漫游硬禁令（Zero Pre-flight Thrashing）】**：
   搬运工被派发后的第 1 个动作必须且只能是执行进货落盘命令！严禁在抓取前执行任何 `git log`、`git status`、pytest/unittest 检查；严禁思考盘赔逻辑或定性胜负！
 - **【官方一体化专职进货机械臂（Scrapling 官方 Session 长连接三部曲）】**：
   1. **步骤一：开辟全真会话（Open Session）**：
      调用 `mcp__scrapling__open_request_session(impersonate="chrome", stealthy_headers=true, timeout=30)` 获取 `session_id`。全真模拟 Chrome TLS/JA3 指纹与真实 Client Hints 标头，抹除爬虫特征；
   2. **步骤二：复用连接批量请求（Session Make Request 直出 Markdown）**：
-     使用同一个 `session_id`，复用底层 TCP/TLS 链路拉取单场法定 26 个底层端点（1x2d.txt、analysis.html、odds.html、analy.txt、7家机构 ah_*.html/ou_*.html/eu_*.html 共21张变盘表，变盘流水基于 bytes 显式 GB18030 解码）与 Polymarket 精准事件：
-     - **HTML 页面直转 Markdown**：配置 `extraction_type="markdown"`，配合选择器下推（`css_selector`）内存脱敏，由 Scrapling 原生直出纯净 Markdown 表格，**严禁写任何自定义 .py 或 node 解析脚本**！
+     使用同一个 `session_id`，复用底层 TCP/TLS 链路拉取单场法定 26 个底层端点（1x2d.js、analysis.html、odds.html、analy.json、7家机构 ah_*.html/ou_*.html/eu_*.html 共21张变盘表，变盘流水基于 bytes 显式 GB18030 解码）与 Polymarket 精准事件：
+     - **变盘流水 HTML 原生直转 Markdown**：7 家机构 21 张变盘流水表在请求时强制配置 `extraction_type="markdown"` 与 `css_selector="#table_odds"`，由 Scrapling C/Cython 引擎在内存中原地生成工整纯净 Markdown 表格，直接拼入人类简报！**严禁在磁盘建立 `tmp_*` 暂存目录，严禁导出 `.txt` 临时文件，严禁编写 `assemble.ps1` 或 `.js` 组装脚本**！
      - **Polymarket 精准单事件防溢出**：必须且只能请求单事件 slug（`https://gamma-api.polymarket.com/events?slug={slug}`），未开盘直接记录 `[官方未开盘]`，严禁请求无参数 `/events`；
      - **挑战自动升阶**：若遇 403/503 或人机挑战盾，自动升阶至 `mcp__scrapling__stealthy_fetch(solve_cloudflare=true)`；
   3. **步骤三：直接原子落盘与显式关闭会话（Write Files & Close Session）**：
      - **底层存证落盘（无损满配）**：将全量 26 个端点的真实 Raw 字符串内容（`1x2d.js`、`analysis.html`、`odds.html`、`analy.json`，以及 7 家做市商 21 张变盘流水 HTML 源码、Polymarket 返回）全量注入 `raw/{matchId}.json` 的 `payloads` 对象中！严格断言 26 个特定端点真实报文载荷 100% 存在且有效可解析；严禁只存收据头（receipt）而漏写 raw 报文（严禁生成空收据）！
-     - **人类简报装配**：将提取组装的 Markdown 结构保存为 `data/{销售日}/{matchId}.md`（行数必须 $\ge 350$ 行）；
+     - **人类简报装配**：将提取组装的 Markdown 结构保存为 `data/{销售日}/{matchId}.md`（行数必须 $\ge 350$ 行），**该文件严格专用于人类赛后复盘与肉眼核验，严禁分析大脑在推演过程中读取它（推演切片 100% 必须面向底层 raw JSON 执行）**！
      - **释放连接**：落盘后强制调用 `mcp__scrapling__close_session(session_id=session_id)` 释放连接句柄；
   4. **步骤四：回传状态（Announce Completion）**：
      物理文件生成且新鲜有效后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】底层源数据已落盘，人类视图已就绪」，结束搬运任务！严禁编写任何中间胶水脚本！
@@ -214,7 +215,7 @@ metadata: { "emoji": "📆" }
 - 请求端点：`https://1x2d.titan007.com/{matchId}.js`
 - **【Scrapling 官方抓取时提纯铁律（In-Flight Targeted Extraction）】**：
   1. **禁止直接回传 Raw JS 至对话上下文**：`1x2d.js` 包含全网 163 家机构数万行变盘，严禁将原始大包作为工具输出抛给 Agent 上下文；
-  2. **流入内存即刻提纯与原样落盘**：`var game=Array(...)` 中各字符串以竖线 `|` 分割，其首项 `parts[0]` 为机构 ID（cid），`parts[1]` 为赔率 ID（oddsId）。**绝对严禁将 `parts[1]` 错当为 cid！** 必须以法定 23 家权威 cid 集合（`80, 545, 281, 90, 177, 115, 82, 81, 104, 255, 110, 432, 976, 2, 474, 649, 800, 482, 386, 826, 16, 1129`）为唯一键构建 Hash Map 进行 $O(1)$ 常数级精准匹配提取，并将原始返回统一保存为 `raw/{matchId}/1x2d.txt`（依据 Scrapling CLI 规范落盘）；
+  2. **流入内存即刻提纯与原样落盘**：`var game=Array(...)` 中各字符串以竖线 `|` 分割，其首项 `parts[0]` 为机构 ID（cid），`parts[1]` 为赔率 ID（oddsId）。**绝对严禁将 `parts[1]` 错当为 cid！** 必须以法定 23 家权威 cid 集合（`80, 545, 281, 90, 177, 115, 82, 81, 104, 255, 110, 432, 976, 2, 474, 649, 800, 482, 386, 826, 16, 1129`）为唯一键构建 Hash Map 进行 $O(1)$ 常数级精准匹配提取，并将原始返回统一保存入 `raw/{matchId}.json` 的 `payloads['1x2d.js']`（纯内存直存，严禁在磁盘建立 tmp 目录或写入 .txt 临时文件）；
   3. **23 家法定机构 100% 满格点亮质检断言（Hard Assertion Gate）**：装配人类视图与存证 JSON 时，必须对 23 家法定机构做逐项布尔校验。除极少数特殊盘型官方合法未开盘（如体彩深盘未开普通胜负平、次级联赛香港马会未开亚盘）外，凡主流做市商出现脱靶缺失，立即判定为采集遗漏并物理阻断，严禁流出残缺半成品！
   4. **丢弃外来野鸡机构**：其余 140+ 家机构立即抛弃，向外传递的欧指结构严格控制在 23 家以内；
   5. **单场数据预算硬顶**：单场提取结果向外交付体积严格限制在 **5KB 以内（约 1,000 Tokens）**，超过 10KB 视为严重采集违规。
@@ -249,7 +250,7 @@ metadata: { "emoji": "📆" }
   3. 确认物理双文件落盘且新鲜有效（<30分钟），方可放行交接给推演分析师；若有任何抽稀遗漏，必须立即物理阻断并自愈重装！
 
 ### 5. 多场与全量场次分批进货规约（Batch Ingest Protocol）
-1. **分组分批（Batching）**：全天赛事必须按 4~6 场为一组分批拉取，单组构造核心数据端点并发拉取并下推选择器，严禁一次性狂发数十个 URL 导致底层 Scrapling 进程溢出超时；
+1. **分组分批（Batching）**：全天赛事必须按 1~3 场为一组分批拉取（1~3场极速直出），单组构造核心数据端点并发拉取并下推选择器，严禁一次性狂发数十个 URL 导致底层 Scrapling 进程溢出超时；
 2. **装配与同步**：每组数据落地后提取装配落盘至 `data/{销售日}/{matchId}.md`，并同步更新 `data/{销售日}/meta.md` 索引状态；
 3. **确认放行**：物理文件生成且新鲜有效，合格集群放行推进推演阶段！
 

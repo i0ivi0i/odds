@@ -37,7 +37,7 @@ Skills 定义了工具的工作方式。此文件记录当前仓库中可用的�
   - **严禁漫游翻书铁律**：在 `data/{销售日}/meta.md` 确立前，绝对禁止阅读 `skills/deep-analysis` 技能、绝对禁止查看任何 Python 源码、绝对禁止思考盘赔逻辑！
 - **批量赛事分批并发矩阵与进货门禁规约（First-Action Batch Matrix）**：
   - 赛程索引就绪后，由主人指令锁定推演范围（全部/早盘/晚盘/指定，严禁任何 AI 将分批大小当成推演总数！）；
-  - 构造候选场次分批矩阵（严格按 4~6 场为一组 Batch、4~8 URLs 协议流并发 + 选择器下推），调用 `mcp__scrapling__bulk_get` 分批秒取数据；
+  - 构造候选场次分批矩阵（严格按 1~3 场为一组 Batch、1~3 场并发极速直出 + 选择器下推），调用 `mcp__scrapling__bulk_get` 分批秒取数据；
   - **法定装配落盘与物理清空重抓**：专职搬运工直接通过 Scrapling MCP 并发拉取 26 端点与 Polymarket 解析，装配落盘至 `data/{销售日}/{matchId}.md`（同时落盘 `raw/{matchId}.json` 原子存证包）；**严禁大模型手动拼接 Markdown 避免封条失真！凡触发重新推演，第一动作绝对强制物理清空旧快照，严禁在旧文件上用 replace_file_content 局部打补丁改时间作弊伪造活水！**
   - 严禁单场串行磨洋工，严禁单批超载倾倒，未见快照物理落盘且新鲜有效（<30分钟）前，绝对禁止开脑推演！
 - **主力全包引擎：Skill `/scrapling-official` ↔ MCP `scrapling`（法定 26 端点无损原子存证矩阵）**：
@@ -440,13 +440,18 @@ Polymarket 链上智能合约、标的名称及底层 Gamma 数据库 **100% 为
    - **微观首发与伤停情况**：通过 Scrapling 访问分析页（`analysis/{id}cn.htm`）提取「阵容情况」与球员评分；
    - **Crown 皇冠波胆全指数**：通过 Scrapling 访问波胆页（`analysis/odds/{id}.htm`）提取 0:0～4:4 比分波胆赔率矩阵及半全场。
 2. **确定性【推演源数据】自动化装配规范**：
-   - 严禁大模型在会话里手写文本或拼凑散装 Markdown！原始数据采集后，直接将原子数据包转化为符合黄金契约的单文件 Markdown `data/YYYY-MM-DD/{matchId}.md`。
+   - **机器推演 SSOT**：底层物理无损存证为 `data/YYYY-MM-DD/raw/{matchId}.json`（满配 26 端点原生报文 Schema），面向人类的可视化简报为 `data/YYYY-MM-DD/{matchId}.md`（$\ge 350$ 行）。推演微观切片必须且只能面向 `raw/{matchId}.json` 执行，**绝对严禁大模型偷看 `.md` 简报**！
    - 负责结构化提纯法定 23 家欧指、7 大做市商双盘时序、Crown 波胆与官方玩法，保证字段 100% 规范无噪音。
 3. **物理存证确认与新鲜度核验**：
-   - 检查物理文件 `data/YYYY-MM-DD/{matchId}.md` 是否存在且新鲜（<30分钟）；
+   - 检查底层物理源数据 `data/YYYY-MM-DD/raw/{matchId}.json` 是否存在且新鲜（<30分钟）；
    - 数据齐全无误方可进入 10 步推演；若物理文件缺失或数据为空，必须立即中止并重新拉取。
 4. **伤停空表处理**：分析页抽出的阵容表若印「暂无数据」，如实标注【暂无数据 / 伤停未核实】，保留页上原句，**允许继续十步推演，严禁脑补无伤停**。
 5. **时点分立**：实际抓取、分析截至、报价、开球、保存与发布时间分开记录，严禁用赛后记录或未来时点倒填赛前。
+6. **Scrapling 官方流式 Markdown 原生直出与零磁盘暂存铁律（Anti-Glue-Script Invariant）**：
+   - **选择器原地下推（`css_selector="#table_odds"`）**：7 大做市商 21 张变盘流水请求强制传 `css_selector="#table_odds"`，直接在 Scrapling C/Cython 引擎中修剪 90%+ 无关 DOM 骨架；
+   - **原生 Markdown 直转（`extraction_type="markdown"`）**：直接输出工整纯净 Markdown 表格字符串，内存直收后直接拼入人类简报 `data/{销售日}/{matchId}.md`；
+   - **全语种零临时脚本（Zero-Script Invariant）**：绝对严禁任何 Agent 编写 `assemble.ps1`、`assemble.js`、`assemble.py` 等外挂胶水脚本，违者立宪阻断；
+   - **零磁盘中转垃圾（Zero-Disk-Spillover）**：绝对严禁在磁盘建立 `tmp_*` 暂存目录或倾倒 `.txt` 原始中间文件，存证 100% 内存直写 `raw/{matchId}.json`，简报 100% 内存直写 `{matchId}.md`！
 
 ## Subagent 工具（跨智能体平台通用适配机制）
 
@@ -457,3 +462,37 @@ Polymarket 链上智能合约、标的名称及底层 Gamma 数据库 **100% 为
 - **OpenClaw (历史参考)**：调用 `sessions_spawn`。
 
 无论在哪个平台运行，专职搬运工（Data Ingest Worker）均严格遵循 Scrapling 原生流水线并发进货，主会话收齐后统一交付，严禁跨平台逻辑分裂。
+
+## EvoOntology Mapping 驱动的底层 Raw JSON 微观切片指令集 (Native JSON Slicing Cookbook)
+
+依循 EvoOntology 官方协议（`ruc-datalab/EvoOntology`）Principle 3：“Native data operations remain the evidence source”。
+EvoOntology MCP 提供语义概念与 Mapping 路径，宿主原生只读工具必须严格按照 Mapping 路径直接对底层无损存证 `data/{销售日}/raw/{matchId}.json` 执行定点微观切片（**严禁偷看面向人类的可视化 `.md` 表格！严禁大模型裸视长文件！**）。
+
+### 1. 欧指机构即时与初盘切片（以平博 cid=177 为例，推荐极速 .NET 正则直取，<50ms）
+```powershell
+$raw = [System.IO.File]::ReadAllText("data/{销售日}/raw/{matchId}.json")
+$m = [regex]::Match($raw, '"177\|[^"]+')
+if ($m.Success) {
+    $p = $m.Value.Split('|')
+    # $p[2] 机构名, $p[3..5] 初盘 (胜/平/负), $p[10..12] 即盘 (胜/平/负)
+}
+```
+
+### 2. 亚盘做市变盘流水切片（以皇冠 cid=3 为例）
+```powershell
+$raw = [System.IO.File]::ReadAllText("data/{销售日}/raw/{matchId}.json")
+# 提取 ah_3.html 中的首行（即时终盘）与末行（初盘起点）
+```
+
+### 3. 体彩实盘 (HAD/HHAD) 与 Polymarket 真实挂单切片
+```powershell
+$raw = [System.IO.File]::ReadAllText("data/{销售日}/raw/{matchId}.json")
+$m = [regex]::Match($raw, '"polymarket\.json":\s*"(.*?)"')
+# 若为 "[]" 则实录 [官方未开盘]，若有数值则直出撮合价
+```
+
+### 4. 工具职责四级分工界线（四位一体）
+1. **数据搬运**：100% 独家归属 `scrapling` MCP（Level 1 协议流 Session 并发拉取 26 端点）；
+2. **语义导航与防漏**：100% 独家归属 `evo-semantic` MCP（`browse_semantics` ➔ `resolve_semantics` 逐项核销 23 家，遇 gap 强阻断）；
+3. **微观数据切片**：100% 独家归属宿主原生安全命令行工具（按 Mapping 路径直取 `raw/{matchId}.json` 微观数值，提取几十字节事实，杜绝偷看 MD）；
+4. **精算去水与概率**：100% 独家归属宿主独立 `sports-math` MCP（`devig_oo_epc` 与 `poisson_dixon_coles`）。
