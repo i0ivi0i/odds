@@ -10,7 +10,7 @@ metadata: { "emoji": "📋" }
 
 ## 论文应用回检
 
-原文在 `docs/论文/`（PDF 才是原文；`README.md` 只是索引）。复盘时必须打开对应 PDF 或用 `graphify query` 取回带 `source_location` 的原句再引用。**禁止用案例号、门禁名、索引里的「一句话」代替原文。** 论文指导怎么复盘，不证明本项目能赚钱。
+原文在 `docs/论文/`（PDF 才是原文；`README.md` 只是索引）。复盘时必须打开对应 PDF 或调用 Graphify 官方 MCP 工具（`query_graph` / `get_node`）取回带真实 `source_location` 的原句再引用。**禁止用案例号、门禁名、索引里的「一句话」代替原文。** 论文指导怎么复盘，不证明本项目能赚钱。
 
 **paper-application-v2**：十九篇通过 `docs/论文/README.md` 对应到初筛、十步、推荐记录和本节回检。研究不另设下注门禁，也不把让球优先、RLM、诱阻推演改成中性观察。每场追查实际应用的方法对首选有何帮助或误导，原句用于有争议的方法核对，不要求无关论文逐篇打卡。
 
@@ -41,7 +41,7 @@ metadata: { "emoji": "📋" }
 - [ ] 布莱尔分，或写明「无概率，只记命中」（Wheatcroft）
 - [ ] 待验证表已回检（支持/反对/无触发），不满 5 场不改永久规矩
 - [ ] 21 天日落机制已执行（超 21 天无触发条目已打上已日落归档）
-- [ ] `graphify query` 能命中本场用到的论文节点
+- [ ] Graphify MCP（`query_graph` / `get_node`）能命中本场用到的论文节点与真实证据链（带 `source_location`）
 - [ ] `validate_semantics` 语义门禁与探针验真已核验：调用 EvoOntology 校验赛前推演是否存在探针冲突；核查赛前是否调用 `resolve_semantics` 核销了 23 家 `supported` 状态；若赛前触发了 `block` 探针（如平博定海神针、脉冲假摔），认知契约卡是否足额进行了反向破译对质；若遗漏探针对质直接定性为分析师失职！
 - [ ] 对本场实际应用的方法记录作用与失误位置；未涉及的论文不为凑数填表
 - [ ] 欧亚折合与造热：写了折合 vs 实盘；造热只记疑点；未把升盘降水写成必出对面
@@ -577,11 +577,24 @@ read_file(path="MEMORY.md")
 - **策略调优记录**：不允许重复。新策略与已有条目主题相同时，合并更新原条目（补充新数据/案例、修正结论），不另起一条
 - **关键教训**：不允许重复。新教训与已有条目主题相同时，合并更新原条目（追加验证案例、强化或修正结论），不另起一条
 
-### 步骤 8.5：官方图谱经验反思归卷（Graphify Reflect）
+### 步骤 8.5：官方图谱经验反思归卷（Graphify Reflect & 四态流转闭环）
 
-在完成记忆入账后，自动调用官方自进化算子更新知识图谱工作记忆与置信度半衰期：
-1. **沉淀实战记忆**：对本批次各场赛果执行 `graphify save-result --memory-dir graphify-out/memory`，命中场次记 `--outcome useful`，失误场次记 `--outcome corrected --correction "{反思教训}"`，对步骤 4.6 判定为「已淘汰（证伪废弃）」的假设记 `--outcome retired` 施加半衰期惩罚并降权，对判定为「已采用（内化为本能）」的经验记 `--outcome adopted` 固化为长期高频 God Node 连接；
-2. **聚合并反思自进化**：查阅 `graphify-out/reflections/LESSONS.md` 与 `.graphify_learning.json`，将所有命中的经验节点与失误节点自动提炼沉淀，实现官方图谱自动化自愈与自进化闭环。
+在完成记忆入账后，自动触发 Graphify 官方自进化反思飞轮，更新知识图谱工作记忆、错题集与置信度半衰期：
+1. **沉淀实战记忆与四态标记（The 4-State Outcome Standard）**：
+   复盘完成后，通过标准 `graphify save-result` 命令将每场博弈推演与实际对账结果写入工作记忆（`graphify-out/memory/`，官方 CLI `--outcome` 严格支持 `{useful, dead_end, corrected}`，对应假设四态流转）：
+   - **`useful`（核心首选命中 · 验证中加权）**：赛前做市商博弈假说与落槌依据被赛果正面印证，强化相关论文节点与战法连接权重：
+     `graphify save-result --question "{比赛ID/对阵 核心盘面特征}" --answer "{赛前推导与实际打出首选}" --nodes "{引用的论文或战法节点ID}" --outcome useful --memory-dir graphify-out/memory`
+   - **`corrected`（失误反思纠偏 · 归因改进）**：首选未命中或发生重大偏差，启动决策归因审计，指出赛前被忽视的做市陷阱或偏见漏洞：
+     `graphify save-result --question "{比赛ID/对阵 核心盘面特征}" --answer "{赛前推导与实际赛果}" --nodes "{引用的论文或战法节点ID}" --outcome corrected --correction "{纠偏发现与战法改进}" --memory-dir graphify-out/memory`
+   - **`retired`（假设被证伪淘汰 · dead_end 惩罚降权）**：针对步骤 4.6 判定为【已淘汰（证伪废弃）】或 21 天未触发的假设，使用官方 `--outcome dead_end` 标记死胡同，促使 `reflect` 施加半衰期惩罚并降权，同步在 `MEMORY.md` 标记为「已淘汰」：
+     `graphify save-result --question "{比赛ID/对阵 假设特征}" --answer "{被证伪事实}" --nodes "{引用的论文或战法节点ID}" --outcome dead_end --memory-dir graphify-out/memory`
+   - **`adopted`（经验内化转正 · 固化为长期 God Node）**：针对满 5 场前瞻验证且支持率 $\ge 70\%$ 的成熟经验，在 `MEMORY.md` 标记为「已采用（内化为本能）」，其在 `graphify reflect` 中凭借多次 `--outcome useful` 的互证强化（`--min-corroboration 2`），正式固化为长期高频 God Node 骨干枢纽。
+2. **聚合并反思自进化（Reflect Flywheel）**：
+   运行官方反思算子：
+   `graphify reflect --memory-dir graphify-out/memory --out graphify-out/reflections/LESSONS.md`
+   聚合并自动刷新 `graphify-out/reflections/LESSONS.md` 与 `.graphify_learning.json`，确保推演大脑在次日分析时通过阶段二导览直接获取最新的实战教训与置信度修正。
+3. **注入官方诚实证据链标准（Honesty Rules）**：
+   所有复盘报告与经验总结中引述的学术论文原句、定理或历史战例，**强制要求带入真实确凿的 `source_location`**（包含具体文件名与段落/页码，如 `source_location: "docs/论文/2022_Constantinou_AH_1X2.pdf#p12"` 或 `source_location: "graphify-out/wiki/5._平博_欧亚双盘核心.md#L15"`），坚决杜绝“幻觉论文”、“口头断言”或凭空编造引用。
 
 ### 步骤 9：推送
 

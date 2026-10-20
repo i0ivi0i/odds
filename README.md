@@ -127,9 +127,37 @@ flowchart TD
 | **`scrapling`** | [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling) | 官方原生数据采集通道 | `bulk_get`, `stealthy_fetch`<br/>Level 1/2 协议流，支持 `impersonate="chrome"`、选择器原地下推与 Markdown 原生直出 |
 | **`evo-semantic`** | [ruc-datalab/EvoOntology](https://github.com/ruc-datalab/EvoOntology) | 专属双层做市看数视网膜 | `browse_semantics`, `resolve_semantics`, `validate_semantics`<br/>法定 23 家做市商机位语义映射与定点微观切片提取，严禁裸视海量原始报文 |
 | **`sports-math`** | [宿主独立微服务](file:///C:/Users/home/.gemini/services/sports-math) | 纯数学算力引擎 | `devig_oo_epc`, `poisson_dixon_coles`<br/>东京大学 Shota Goto (2026) 凸优化去水算法与 Dixon-Coles 修正泊松分布 |
-| **`graphify`** | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | 知识图谱与错题反思中枢 | `query_graph`, `get_node`, `god_nodes`<br/>5.6MB 全息博弈图谱，支持推演前错题反思导览、疑难穿透与因果涟漪扩散 |
+| **`graphify`** | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | 知识图谱与错题反思中枢 | `query_graph`, `get_node`, `shortest_path`, `god_nodes`, `get_community`, `get_neighbors`, `graph_stats`<br/>5.6MB 全息博弈图谱，支持三大战区调兵、疑难穿透、理论裁决与三重保鲜生命周期 |
 | **`skill-up-observer`** | [alibaba/skill-up](https://github.com/alibaba/skill-up) | 技能评测与演化观测器 | `mark_skill_invocation`, `write_observation_case`<br/>阿里巴巴官方 Agent 技能观测与回归用例沉淀体系 |
 | **`bigballs-sports-data`** | [Big Balls Data MCP](https://mcp.bigballsdata.com/mcp) | 球员微观体能与真实伤停 | `get_matches`, `get_standings`, `find_players`<br/>覆盖五大联赛与美职足的真实伤停与双赛体能负荷断崖核查 |
+
+### 🧠 Graphify 官方认知飞轮与三重保鲜生命周期 (The 3-Loop Freshness Engine)
+
+全系统 5.6MB 博弈知识图谱与 19 篇顶刊论文资产绝非死数据，而是通过官方原生三重保鲜生命周期时刻满血自驱运转：
+
+```mermaid
+flowchart TD
+    subgraph L1 ["循环 1：提交即保鲜 (Commit-Triggered)"]
+      C1["Git Commit 提交"] --> C2["post-commit / post-checkout hook"]
+      C2 --> C3["增量 AST 刷新 ➔ 更新 graph.json 与 GRAPH_REPORT.md"]
+    end
+
+    subgraph L2 ["循环 2：长时守护态 (Daemon Watch)"]
+      W1["推演守护进程"] --> W2["graphify . --watch (3秒防抖监听)"]
+      W2 --> W3["实时感知代码变动 ➔ 官方 Wiki 社区百科导览 (345篇)"]
+    end
+
+    subgraph L3 ["循环 3：复盘自愈闭环 (Reflect Flywheel)"]
+      R1["赛后复盘对账"] --> R2["graphify save-result (CLI: useful/dead_end/corrected ➔ 四态流转)"]
+      R2 --> R3["graphify reflect 聚合 ➔ 刷新 reflections/LESSONS.md 错题本"]
+    end
+
+    L1 -.时刻保鲜.-> L2 -.实战推演.-> L3 -.经验回流.-> L1
+```
+
+1. **循环 1（提交即保鲜 · Git Hook 增量刷新）**：依托系统已注册的 Git `post-commit` / `post-checkout` hooks，在每次代码、战法或文档提交后，秒级增量重构 AST 与拓扑关联，保证知识图谱与本地代码库 100% 绝对同步；
+2. **循环 2（长时守护态保鲜 · Watch 守护监听）**：在长时推演运行环境中，调度 `graphify . --watch` 后台守护，3 秒防抖自动捕获新增文件；同时配套 `graphify-out/wiki/` 345 篇针对 23 家做市商机位与典型历史战例的深度维基，供推演大脑随时调阅；
+3. **循环 3（赛后自愈归卷 · Reflect 经验自进化）**：每日赛后复盘时，通过 `graphify save-result` 对实战进行经验打标（官方 `--outcome` 支持 `useful` 命中加权、`corrected` 失误纠偏、`dead_end` 淘汰降权，对应假设四态流转：`useful` 验证中、`corrected` 纠偏、`dead_end` 流转为 `retired` 已淘汰、累计验证流转为 `adopted` 已采用），随后调用 `graphify reflect` 聚合并自动刷新 `graphify-out/reflections/LESSONS.md`，实现从赛果真实对账到错题本自愈的闭环演进。
 
 ---
 

@@ -68,4 +68,4 @@ Shin（1993）期刊原文需订阅，未放入。隔壁 `足球预测/温故而
 
 完整技能入口：`skills/match-screening/SKILL.md` 阶段5、`skills/deep-analysis/SKILL.md` 研究应用入口及第4–9步、`skills/recommendation/SKILL.md` 推荐留存、`skills/post-review/SKILL.md` 概率评分／方法比较。不新增技能，不改抓取脚本；本次落实的是可执行分析和记录方法，不声称已训练或验证十九套模型。
 
-图谱检索先 `graphify query`，再回当前原文核对；`source_location` 带文件页码／行号。旧图谱节点不替代当前正文。不要求每场十九篇打卡，不能把论文一句话变成新门禁。旧九篇的转写图表核查覆盖以各文件头部和 `核对记录.md` 为准，本次原句回检不是重新完整校准。
+图谱检索先调用 MCP `query_graph(question=...)`，再回当前原文核对；`source_location` 带文件页码／行号。旧图谱节点不替代当前正文。不要求每场十九篇打卡，不能把论文一句话变成新门禁。旧九篇的转写图表核查覆盖以各文件头部和 `核对记录.md` 为准，本次原句回检不是重新完整校准。

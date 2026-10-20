@@ -162,10 +162,19 @@ flowchart TD
 
 #### 阶段 2：纯逻辑首席分析师（Phase 2 Deduction Brain）
 - 确认底层物理源数据存在且新鲜（<30分钟）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 EvoOntology 官方 MCP（`browse_semantics`, `resolve_semantics`）与 Graphify 知识图谱，开展 10 步深度推演与冻结认知契约卡！未见底层物理源数据落盘，**绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
-- **Graphify 官方高阶增智规约（仅在阶段二执行，基于官方核心与 5.6MB 全量图谱）**：
-  - ① **推演前错题反思导览**：查阅 `graphify-out/reflections/LESSONS.md` 动态认知覆盖层，自愈认知偏差，激活全局 God Nodes 与 Wiki 词条；
-  - ② **推演中盘口疑难靶向穿透**：分析师针对当场具体盘口特征（如“客让半一满水退盘”、“Winkelmann 假摔震仓”），查阅 `graphify-out/wiki/` 词条或通过图谱检索靶向召回关联理论与历史战例；
-  - ③ **关键变量因果涟漪扩散**：当关键球员临盘伤停或盘口剧烈洗盘时，穿透因果影响链路，识别主力诱筹与防守底线。
+- **Graph-First 认知优先铁律（Graph-First Cognitive Invariant）**：
+  推演态面临疑难盘口、做市博弈破译、多机构背离与战法匹配时，**必须且只能优先通过 Graphify MCP 机械臂检索 5.6MB 全息因果图谱与 345 篇官方 Wiki 词条**，严禁盲目裸搜源码、代码文件或凭空无根据猜想！
+- **Graphify 官方 MCP 机械臂标准契约（Strict MCP Tool Call Protocol）**：
+  严格禁止大模型在思维链中裸写伪 CLI 脚本（如 `graphify query`），大模型必须且只能通过标准 MCP 协议接口调用机械臂：
+  1. `query_graph(question="...", mode="bfs"|"dfs", depth=..., token_budget=...)`：战前初诊（BFS 广度遍历，`mode="bfs", depth=2, token_budget=1500`）快速定位全市场共识与宏观博弈框架；客观物理因果穿透（DFS 深度溯源，`mode="dfs", depth=3`）调取学术论文模型（Egidi、Macri、Winkelmann）；
+  2. `get_node(node_id="...")` / `get_node(label="...")`：精确获取特定学术节点（如 `docs_odds_winkelmann_head_fake` / `label="Winkelmann (2026) 隐状态空间假摔突破形态（Head-Fake瞬态流动性诱买）"`）或战法节点的完整属性与论文证据；
+  3. `shortest_path(source="...", target="...", undirected=true)`：欧亚背离或理论冲突时，寻找庄家防守底线的最短因果链路与桥接理论（如 source="欧亚双盘背离", target="庄家净赔付最小化"）；
+  4. `god_nodes(top_n=10)`：脱靶自愈时直接调取图谱度数最高的骨干枢纽（Minimax 净赔付最小化、Constantinou 亚洲让球盘等），避免认知盲区；
+  5. `get_community(community_id=...)` 与 `get_neighbors(node_id=...)`：分析联赛宏观操盘特征与特定机构邻居关联。
+- **Graphify 官方高阶增智规约（三大战区主动调兵）**：
+  - ① **推演前错题反思导览**：查阅 `graphify-out/reflections/LESSONS.md` 动态认知覆盖层，自愈认知偏差，激活全局 God Nodes 与 `graphify-out/wiki/` 社区词条（345 篇深度维基百科）；
+  - ② **推演中盘口疑难靶向穿透**：分析师针对当场具体盘口特征（如“客让半一满水退盘”、“Winkelmann 假摔震仓”），查阅 Wiki 词条或通过 `query_graph` 靶向召回关联理论与历史战例；
+  - ③ **关键变量因果涟漪扩散与理论冲突自愈**：当关键球员临盘伤停或盘口剧烈洗盘时，穿透因果影响链路；当欧亚信号背离时调用 `shortest_path` 以庄家净赔付最小化第一性原理进行理论收敛（让球防守底线优先于欧指表面宣传）。
 
 ### 2.3 蜂群 Central Scheduler 调度算法、排队军规与跨平台适配
 
@@ -196,7 +205,7 @@ task:
 #### 标准推演分析师 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。必须首先读取 MEMORY.md（装载《庄家操盘战法库》六大分类与《待验证表》）以及 skills/deep-analysis/SKILL.md。本场专属底层物理存证已在阶段一落盘至 data/{销售日}/raw/{matchId}.json（.md 作为人类可视化简报）。Worker 严禁使用 view_file 裸视庞杂长文本，必须且只能调用 EvoOntology 官方 MCP（browse_semantics ➔ resolve_semantics）提取微观做市机位切片进行推演，严禁访问网络抓取或手搓临时脚本。依据 Graphify 官方高阶增智规约：分析师针对当场具体盘口疑难查阅 graphify-out/wiki/ 词条靶向穿透关联理论与战例；从 EvoOntology 提取 tactics（真实压制力技统、进球时段、未来赛程）与 profiling（相同初盘画像、盘路走势、半场双盘），站在庄家第一性原理反向破译，推演主梁必须以「欧指 1X2 × 亚洲让球盘（AH）× 大小球（OU）」主力博弈为主线（大小球为决定总进球空间与净胜球门槛的核心支柱），Crown 波胆倍率仅作为边缘辅助参考，绝不能作为核心推演依据更严禁一票否决；绝不孤立单看一个盘口，且绝不单看单一机构（必须比对Sharp标杆平博、Retail商业庄皇冠/365与Sentinel防守哨兵澳彩/立博/马会的协同与背离），严格对照 MEMORY.md 战法库六大经典做市分类进行套路破译；严格按照模板执行完整10步分析与学术文献四大主动质问纠偏（Levitt净赔付审计/Tversky小数定律审计/Gilovich热手偏见审计/Constantinou跨市场均衡审计），欧指去水点概率必须调用官方 sports-math MCP 工具 devig_oo_epc 获取真值，严禁心算。直接继承源数据已包含的 Polymarket 真实链接（主流核心联赛必须为真实事件可点击链接形如 [{对阵}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})，严禁谎称未开盘或批量复制粘贴），小众联赛确实无标的方可标未开盘说明；先回传待验收结果与执行证据，不得自行对外发布。由主会话/编排验收后逐场推送。返回结构化综合评估结果（含 memory 摘要、认知契约卡与 Polymarket 真实直达链接）。"
+  goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。必须首先读取 MEMORY.md（装载《庄家操盘战法库》六大分类与《待验证表》）以及 skills/deep-analysis/SKILL.md。本场专属底层物理存证已在阶段一落盘至 data/{销售日}/raw/{matchId}.json（.md 作为人类可视化简报）。Worker 严禁使用 view_file 裸视庞杂长文本，必须且只能调用 EvoOntology 官方 MCP（browse_semantics ➔ resolve_semantics）提取微观做市机位切片进行推演，严禁访问网络抓取或手搓临时脚本。依据 Graphify 官方高阶增智规约：分析师针对当场具体盘口疑难优先通过 Graphify MCP（query_graph/get_node/shortest_path，严禁裸写伪 CLI 脚本）调兵并查阅 graphify-out/wiki/ 词条靶向穿透关联理论与战例；从 EvoOntology 提取 tactics（真实压制力技统、进球时段、未来赛程）与 profiling（相同初盘画像、盘路走势、半场双盘），站在庄家第一性原理反向破译，推演主梁必须以「欧指 1X2 × 亚洲让球盘（AH）× 大小球（OU）」主力博弈为主线（大小球为决定总进球空间与净胜球门槛的核心支柱），Crown 波胆倍率仅作为边缘辅助参考，绝不能作为核心推演依据更严禁一票否决；绝不孤立单看一个盘口，且绝不单看单一机构（必须比对Sharp标杆平博、Retail商业庄皇冠/365与Sentinel防守哨兵澳彩/立博/马会的协同与背离），严格对照 MEMORY.md 战法库六大经典做市分类进行套路破译；严格按照模板执行完整10步分析与学术文献四大主动质问纠偏（Levitt净赔付审计/Tversky小数定律审计/Gilovich热手偏见审计/Constantinou跨市场均衡审计），欧指去水点概率必须调用官方 sports-math MCP 工具 devig_oo_epc 获取真值，严禁心算。直接继承源数据已包含的 Polymarket 真实链接（主流核心联赛必须为真实事件可点击链接形如 [{对阵}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})，严禁谎称未开盘或批量复制粘贴），小众联赛确实无标的方可标未开盘说明；先回传待验收结果与执行证据，不得自行对外发布。由主会话/编排验收后逐场推送。返回结构化综合评估结果（含 memory 摘要、认知契约卡与 Polymarket 真实直达链接）。"
 ```
 
 ### 2.4 流水线作业模式与全场景交互矩阵
@@ -464,15 +473,17 @@ flowchart LR
 
 - **全语种零临时脚本**：足球主仓库（`d:\100-工作\200-交易\倍率分析推演`）内部严禁编写或残留任何临时脚本（无论语言是 `.py`、`.ps1`、`.js`、`.bat`、`.sh`），违规次数严格锁定为 0；
 - **零磁盘中转垃圾**：严禁在磁盘上建立 `tmp_*` 暂存目录或倾倒 `.txt` 中转文本，所有数据搬运在内存中流式直出；
-- **三层 MCP 架构全闭环**：
+- **四层 MCP 架构全闭环**：
   ① 数据搬运进货 100% 归属 `scrapling` MCP（HTML 变盘流水表传入 `css_selector="#table_odds"` 与 `extraction_type="markdown"` 原生流式直出）；
-  ② 机器做市看数 100% 归属 `evo-semantic` MCP；
-  ③ 纯数学去水与比分算力 100% 归属宿主外部独立 `sports-math` MCP；
+  ② 机器做市看数 100% 归属 `evo-semantic` MCP（`browse_semantics`, `resolve_semantics` 定点微观切片）；
+  ③ 纯数学去水与比分算力 100% 归属宿主外部独立 `sports-math` MCP（`devig_oo_epc`, `poisson_dixon_coles`）；
+  ④ 知识图谱与错题反思 100% 归属 `graphify` MCP（`query_graph`, `get_node`, `god_nodes`, `shortest_path`）；
 - **纯知识库圣殿**：主工程保持极致轻量、零运行时环境冲突、零 stdio 污染与零终端执行负担，推演 100% 由 Agent 大脑自主调度完成。
 
 ### 4.4 工具定位专属于 Agent 机械臂宪法（Zero-Human-CLI 绝对铁律）
 
 - **工具定位专属于 Agent**：系统中的工具与 MCP 是 100% 专属于 AI Agents 蜂群的武器库与机械臂，绝非给主人当手工操作员用的；
+- **MCP 原生标准契约与严禁伪命令行（Zero Pseudo-CLI Invariant）**：大模型与 Agents 在思维链和工作流中，调用工具必须严格遵循宿主标准 MCP 契约（如 `call_mcp_tool` 或原生协议接口：`query_graph`, `get_node`, `god_nodes`, `shortest_path`, `resolve_semantics` 等），**绝对严禁在思考过程或输出中裸写伪 CLI 指令**（如擅自打出 `graphify query "..."` 或手写伪终端命令假装执行），杜绝伪指令乱象；
 - **严禁向主人抛命令行（Zero Terminal Burden on Master）**：AI 绝不可在回复、汇报或行动建议中要求主人去敲终端命令。主人是指挥官与终审裁决者，只给指令并验收高密度战报；
 - **蜂群自主全闭环**：从赛程发现、赔率搬运、Polymarket 链上自动解析、格式组装到推演，全部由 Agents 在后台自驱调度与自愈完成，绝不把排错、拼参数或验证成本转嫁给主人。
 
@@ -572,7 +583,11 @@ flowchart LR
 
 ### 5.5 Graphify 认知图谱联动与系统演化三阶总战略
 
-- **Graphify 认知图谱联动**：基于官方核心（`https://github.com/Graphify-Labs/graphify`）与 5.6MB 全量知识图谱，通过全局 God Nodes、Wiki 词条库与动态反思层（`graphify-out/reflections/LESSONS.md`），为推演大脑提供跨越时空的知识召回与因果穿透增智；
+- **Graphify 认知图谱联动与三重保鲜生命周期 (The 3-Loop Freshness Engine)**：
+  基于官方核心（`https://github.com/Graphify-Labs/graphify`）与 5.6MB 全量知识图谱，通过全局 God Nodes、Wiki 词条库（345 篇社区维基）与动态反思层（`graphify-out/reflections/LESSONS.md`），为推演大脑提供跨越时空的知识召回与因果穿透增智。图谱不是静态死数据，严格贯彻三重保鲜生命周期：
+  - **循环 1（提交即保鲜 · Git Hook 增量刷新）**：依托已安装的 Git `post-commit` / `post-checkout` hooks，在每次代码或核心文档提交后，自动在后台秒级触发增量 AST 与语义图谱重构，同步更新 `graphify-out/graph.json` 与 `graphify-out/GRAPH_REPORT.md`，保障图谱时刻最新；
+  - **循环 2（长时守护态保鲜 · Watch 守护监听）**：在长时会话与守护进程中，可通过官方 `graphify . --watch` 监听模式，基于 3 秒防抖自动感知文件变动并实时重构图谱；通过 `graphify-out/wiki/` 社区百科提供结构化知识导览；
+  - **循环 3（赛后自愈归卷 · Reflect 经验自进化）**：每日赛后复盘时，通过 `graphify save-result` 对实战进行经验打标（官方 `--outcome` 支持 `useful` 命中加权、`corrected` 失误纠偏、`dead_end` 淘汰降权，对应假设四态流转：`useful` 验证中、`corrected` 纠偏、`dead_end` 流转为 `retired` 已淘汰、累计验证流转为 `adopted` 已采用），随后调用 `graphify reflect` 聚合并自动刷新 `graphify-out/reflections/LESSONS.md`，实现从实战对账到错题本自愈的闭环演进。
 - **系统演化三阶总战略（马斯克做减法 × 乔布斯极简原则 × 保魂去腐）**：
   - ① **主要优先做减法**；② **其次要做微调**；③ **最后在实在不得已的情况下才做加法**（想做加法必须先向主人请示报告）；
   - `skills/deep-analysis/SKILL.md` 行数严格控制在 **$\le 1800$ 行**，避免无节制大幅膨胀或随意堆砌死板规则；
