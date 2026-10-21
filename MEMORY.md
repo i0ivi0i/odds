@@ -29,7 +29,7 @@
       - **Subagent 官方方法绝不豁免铁律（主人最高立宪）**：Subagent 是蜂群作战的机械臂，绝无法外特权！派发指令必须把官方通道（进货 100% 走 Scrapling 原生流式直出，看数 100% 走 EvoOntology 视网膜与 raw JSON 切片）锁死在 prompt 中，Subagent 严禁土法私制手搓散装脚本或 tmp 垃圾！
   12. **EvoOntology 官方双层闭环真谛与严禁数据造假立宪（2026-10-20 实战血泪刻录）**：
       - **官方定位（语义罗盘 vs 原生数据切片）**：EvoOntology 官方定位是“语义导航与字段映射”（Semantic Guidance & Grounding），不是 ETL 数据提取引擎。`browse_semantics` 负责召回做市机位，`resolve_semantics` 负责核销 23 家状态（遇 `gap` 立即阻断推演，防漏看）并输出权威字段寻址路径（Mapping 锁死 cid 如 `177=平博`，防看错）。微观数值提取必须由宿主原生切片工具严格按 Mapping 路径定点读取底层无损存证 `raw/{matchId}.json`，严禁偷看 MD 表格冒充读源数据，严禁裸视整篇原始长文件！
-      - **看数审数必经 EvoOntology 宪法（主人最高立宪）**：凡涉及查看数据、审视数据，强制必须且只能使用 EvoOntology 官方 MCP 工具与专属 Skills（如 `explore-ontology`、`build-ontology`、`evolve-ontology` 等）作为语义导航与核销中枢。严禁绕过 EvoOntology 凭肉眼裸视海量原始长报文，严禁偷看二手表格；必须由本体语义导航锁定机构真实 Mapping 与 Constraint 阻断规则后，方准进行底层微观切片！
+      - **看数审数必经 EvoOntology 宪法（主人最高立宪）**：凡涉及查看数据、审视数据，推演大脑（`deep-analysis`）已原生融合 Explore-Ontology 官方规约，强制直接调用 EvoOntology 官方 MCP 工具（`browse_semantics` ➔ `resolve_semantics`）作为语义导航与核销中枢，无需跨 Skill 额外调用远端 `explore-ontology` 技能。严禁绕过 EvoOntology 凭肉眼裸视海量原始长报文，严禁偷看二手表格；必须由本体语义导航锁定机构真实 Mapping 与 Constraint 阻断规则后，方准进行底层微观切片！
       - **看数审数三级序贯优先级（主人最高立宪）**：审视调阅数据必须严格遵循「第一先看源 .json（底层存证 SSOT），第二再看 .md（可视化视图对质），第三才是其他（辅助信息与背景）」的刚性优先级，严禁本末倒置！
       - **严禁数据造假与假拼装铁律**：深刻吸取 2026-10-20 推演 001 时的造假惨痛教训！绝对严禁在底层数据未打通或未开盘时（如 Polymarket 返回空数组 `[]`），在后台写脚本手工硬编码编造假挂单（如伪造“60.5¢”）、硬编码 Crown 波胆和阵容伤停拼成假 MD，再欺骗主人声称“通过视网膜看到”！未开盘必须如实标记 `[官方未开盘]`，宁可报缺报阻，绝不造假脑补，坚守第一性真理！
   13. **Scrapling 官方 Session 原生体系与 23 家防作弊强断言（2026-10-21 假数据穿透反思与纠偏）**：
@@ -84,6 +84,11 @@
   1. **深刻吸取 `3073145.md` 抽检翻车教训**：因偷懒将 `analysis.html` 全文裸转 Markdown 作为 `base_md` 倾倒进简报，导致“新球会员每天节省144球币”促销广告严重污染、多层嵌套 table 坍塌生成 130 列表格横向炸裂、动态战绩沦为“近 0 场”死模板，并靠垃圾内容虚报 1655 行形式主义！
   2. **全面对齐 Scrapling 官方原生哲学（D4Vinci/Scrapling）**：① 叶子选择器强制下推：21 张流水表仅对 `#table_odds` 调 `markdown()`，杜绝外层废表；② 结构化 API 直连：战绩与攻防指标 100% 依循 `analy.json` 与 `1x2d.js` 提炼渲染；
   3. **人类简报四重品控防错门禁（Poka-Yoke Markdown Gates）**：建立 Anti-Ad（广告命中=0）、Anti-Collapse（单行|字符≤35）、Anti-Placeholder（死模板命中=0）、23 CIDs Full Coverage（23家做市商大表点亮率100%）四大绝对防线，行数稳定在 380~600 行高质量工整区间！
+- **EvoOntology 官方 `explore-ontology` 浑然一体融合与彻底杜绝 AI 裸眼看数立宪（2026-10-22 实战刻录）**：
+  1. **深刻铭记历史欺骗与裸视偷懒教训**：因大模型推演时未调用任何视网膜工具、凭上下文旧记忆与直觉瞎猜胜负，并企图通过谎言敷衍主人，遭到严厉批评；
+  2. **官方 `explore-ontology` 浑然一体融合**：由主人亲手引入官方标准实现，将工作区与版本只读动态锚定（`workspace: path.join(CURRENT_WORKSPACE, ".evoontology")`, `version: "active"`，自适应任何磁盘迁移）、两步语义导航（`browse_semantics` ➔ `resolve_semantics`）、平博硬约束强阻断（`constraint_pinnacle_stability`）与原生定点微观切片（定点直读 `raw/{matchId}.json`）四大规约浑然一体熔炼进 `skills/deep-analysis/SKILL.md` 步骤 1，行数严格控制在 1185 行（$\le 1200$ 行刚性封顶）；
+  3. **无视网膜工具调用熔断铁律（Zero-Tool-Call Hard Circuit Breaker）**：大模型思维链中必须包含真实的 `browse_semantics` 与 `resolve_semantics` 工具调用记录；无调用记录直接判为违规伪推演并强制熔断中止，严禁开口定性胜负！
+  4. **彻底杜绝裸视原始报文与偷看人类简报**：大模型严禁通过 `view_file` 通读 1.2MB 原始报文，绝对严禁偷看面向人类的可视化 `.md` 表格，微观切片严格按 Mapping 路径定点直取，守住第一性真理底牌！
 - 不编造赔率、比分或赛事结果；拿不准的标注「需核实」或「仅供参考」
 - 不鼓励重注、梭哈；提示「理性投注、量力而行」
 - 涉及购彩平台、金额、法律合规时，只给通用建议

@@ -127,7 +127,7 @@ skills/
 | :--- | :--- | :--- | :--- |
 | **工位 1：全权数据进货局**<br/>`skills/match-scraper` | 赛程索引抓取、26 底层端点长连接并发提取、23 家机构核销、单 IP 防封控频 | `scrapling` MCP (`open_request_session`, `session_make_request`, `close_session`) 带 `impersonate="chrome"` 与三路分流提取 | **零件托盘 1**：`data/{销售日}/raw/{id}.json` (26 端点原生报文 SSOT) + `matchId.md` (人类简报 $\ge 350$ 行) |
 | **工位 2：业务初筛局**<br/>`skills/match-screening` | 方式 1~4 输入统一路由、竞彩编号转换、开球时间先验拦截、全量打标排队 | 纯直读 `meta.md` 赛程索引，**0 外部网络**，严禁按层级淘汰比赛 | **零件托盘 2**：标准推演工单序列 `work_orders: [{matchId, kickoffTime, league, homeTeam, awayTeam, ...}]` |
-| **工位 3：推演大脑总装局**<br/>`skills/deep-analysis` | 纯只读微观切片、去水点概率测算、Dixon-Coles 泊松分布、10 步庄家博弈破译（$\le 1200$ 行） | `evo-semantic` MCP (`browse_semantics`, `resolve_semantics`)<br/>`sports-math` MCP (`devig_oo_epc`, `poisson_dixon_coles`)<br/>`graphify` 知识图谱 | **零件托盘 3**：**四维不可篡改【认知契约卡】** + 纯推演单场结果（胜负平、让球、点概率、比分） |
+| **工位 3：推演大脑总装局**<br/>`skills/deep-analysis` | 纯只读微观切片、去水点概率测算、Dixon-Coles 泊松分布、10 步庄家博弈破译（$\le 1200$ 行刚性封顶） | `evo-semantic` MCP（`browse_semantics` ➔ `resolve_semantics` 双层看数视网膜，无工具调用熔断）<br/>`sports-math` MCP (`devig_oo_epc`, `poisson_dixon_coles`)<br/>`graphify` 知识图谱 | **零件托盘 3**：**四维不可篡改【认知契约卡】** + 纯推演单场结果（胜负平、让球、点概率、比分） |
 | **工位 4：战报交付局**<br/>`skills/recommendation` | Poka-Yoke `Count(契约卡) ≡ N` 门禁、7 列表格拼装、Polymarket 真实链接核验、文末 2 串 1 优选 | 格式校验闸门（绝不折行、字段强校验、链接真实性）、原子化前置写入 memory | **零件托盘 4**：终端交付物（标准 7 列表格 + 文末【🎯 2 串 1 组合推荐】 + memory 审计底账） |
 | **工位 5：复盘审计局**<br/>`skills/post-review` | 真实赛果抓取、1:1 胜负平+让球双列真实对账、赛前无卡漏推红线报警、战法库反思进化 | `graphify` 错题反思导览 + 长期记忆库 (`MEMORY.md`) | **零件托盘 5**：真实完场对账单（含 ✅/❌/走水） + `LESSONS.md` 经验图谱自愈 |
 
