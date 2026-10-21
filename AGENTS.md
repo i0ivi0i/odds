@@ -131,7 +131,7 @@ _你不是聊天机器人。你是一位有血有肉的职业足彩庄家盘口�
 flowchart TD
     Z["【阶段 0：赛程索引自检】<br/>检查 data/{销售日}/meta.md 是否存在且新鲜 (< 2小时)"]
     Z_NO{"是否存在且新鲜?"}
-    Z_GET["调度 Scrapling bulk_get(index.aspx)<br/>秒级拉取落盘 meta.md 并追加 memory (< 2秒)"]
+    Z_GET["调度 Scrapling make_request(index.aspx)<br/>秒级拉取落盘 meta.md 并追加 memory (< 2秒)"]
     P1["【阶段 1：蜂群纯物理进货】<br/>派发专职搬运工 Subagent (Data Ingest Worker)<br/>1~3 场切片并发抓取全量 26 端点<br/>落盘 raw/{id}.json 与 matchId.md (≥350行)"]
     P1_GATE{"双重质检门禁核销"}
     P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1200行)<br/>EvoOntology 视网膜微观切片 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
@@ -151,7 +151,7 @@ flowchart TD
 
 #### 阶段 0：赛程索引确定性自检与极速直落（Zero-State Hard Lock）
 - 凡触发任何赛程同步、赛前分析、手动推演（如“今天买什么/全面分析推演/分析010”）等任务，第 0 步绝对硬死锁必须先检查磁盘 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）：
-  - **若不存在或超期**：主会话第 0 秒推送「⚡ 今日赛程索引未初始化，正在秒级拉取落盘 meta.md...」，立即调度 Skill `match-scraper` 模式一，调用 Scrapling MCP Level 1 协议流 `bulk_get(urls=["https://jc.titan007.com/index.aspx"], extraction_type="markdown", impersonate="chrome", stealthy_headers=true)` 秒级提取比赛列表 ➔ 立即原子落盘 `data/{销售日}/meta.md` 并追加 `memory/{销售日}.md`（全程 < 2 秒）；
+  - **若不存在或超期**：主会话第 0 秒推送「⚡ 今日赛程索引未初始化，正在秒级拉取落盘 meta.md...」，立即调度 Skill `match-scraper` 模式一，调用 Scrapling MCP Level 1 协议流 `make_request(url="https://jc.titan007.com/index.aspx", extraction_type="markdown", impersonate="chrome", stealthy_headers=true)` 秒级提取比赛列表 ➔ 立即原子落盘 `data/{销售日}/meta.md` 并追加 `memory/{销售日}.md`（全程 < 2 秒）；
   - **若已存在且有效**：直接放行进入阶段 1；
 - **推演态契约专注原则**：
   ① **序贯衔接与必读心法**：阶段 0 专注于极速落盘 `meta.md`；《skills/deep-analysis/SKILL.md》是全系统核心推演大脑，在阶段 2（源数据门禁 PASS 后）**绝对强制调用 `view_file` 深度全精读并执行**，阶段 0～1 仅是不提前空转偷跑，绝非不读；
@@ -202,7 +202,7 @@ flowchart TD
 #### 标准进货 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "【阶段一专职搬运工极速进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，严禁读取任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用），严禁执行代码与 git 探测！严格按 3 步闭环秒级完成：①【一枪齐发（单IP多指纹安全流）】：直接调用官方 Scrapling MCP bulk_get(urls=[各场26端点完整URL矩阵：1x2d.js、analysis.html、odds.html、analy.json、oddslist.htm 及 7 家法定机构 ah/ou/eu 共 21 张变盘表]，impersonate=['chrome', 'firefox', 'safari'], extraction_type='markdown', css_selector='#table_odds', stealthy_headers=true, retries=3, retry_delay=1)；若遇 429 频控自动延时 2 秒重试，若遇 403/拦截盾自动升阶 stealthy_fetch(solve_cloudflare=true)；②【原子落盘与23家核销】：确保各场 1x2d.js 报文 23 家做市商布尔核销齐全后，将返回数据直接装配写入底层存证 data/{销售日}/raw/{matchId}.json（满配 26 payloads 原生报文 Schema）与人类简报 data/{销售日}/{matchId}.md（行数≥350）；③【立即回传】：确认各场落盘后立即 announce 回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
+  goal: "【阶段一专职搬运工官方Session进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，严禁读取任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用），严禁执行代码与 git 探测！严格按官方 Session 三部曲秒级完成：①【会话建立与三路分流】：调用官方 Scrapling MCP open_request_session(session_id='ingest_{matchId}', impersonate='chrome') 建立全真指纹连接；通过 session_make_request 对法定 26 端点执行三路分流提取（1x2d.js/analy.json/polymarket.json 走 text、main_content_only=false、无 selector；analysis.html/odds.html 走 html、无 selector；21 张流水表走 css_selector='#table_odds'）；拉取完毕强制 close_session；若遇 429 自动延时重试，若遇 403/盾自动升阶 browser_fetch(solve_cloudflare=true)；②【原子落盘与23家核销硬断言】：核销 1x2d.js 字符数必须 ≥300KB 且 23 家做市商全部存在，断言 receipt 记录大小与真实 payload 长度 1:1 一致（严禁造假或虚报大小！），将真实报文直接装配写入底层存证 data/{销售日}/raw/{matchId}.json（满配 26 原生报文 SSOT）与人类简报 data/{销售日}/{matchId}.md（行数≥350）；③【立即回传】：确认各场落盘且体积达标后立即 announce 回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
 ```
 
 #### 标准推演分析师 Worker 工单 Prompt 规范模板
@@ -289,17 +289,17 @@ subagent：获取赛果 → 对比推荐（胜负平+让球双核对） → 计�
 
 #### 单场推演两阶段硬隔离执行标准
 当主人手动指定单场比赛（如「分析 018」或「分析 3003906」）时，严禁大模型在主会话中既当苦力搬运工又当分析师：
-0. **第 0 步赛程索引自检（主会话）**：优先检查 `data/{销售日}/meta.md` 是否存在；若无立即调用 Scrapling MCP bulk_get(index.aspx) 极速生成 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，以支持编号（如 018）精准解析与全天对齐；
+0. **第 0 步赛程索引自检（主会话）**：优先检查 `data/{销售日}/meta.md` 是否存在；若无立即调用 Scrapling MCP make_request(index.aspx) 极速生成 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，以支持编号（如 018）精准解析与全天对齐；
 1. **第 0 秒状态透传（主会话）**：收到单场指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动场次【{matchId} {对阵}】推演源数据抓取，专职搬运工进货中...`，杜绝黑盒盲等；
-2. **阶段一：派发专职搬运工 Subagent（纯物理进货）**：主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 依据闭环工单直接调度官方 Scrapling MCP `bulk_get`（一枪并发秒取全量 26 端点底层数据）➔ 组装原子落盘至 `data/{销售日}/{matchId}.md`（同时落盘底层存证 `raw/{matchId}.json`）➔ 确认物理文件生成后立即 announce 回传主会话；
+2. **阶段一：派发专职搬运工 Subagent（纯物理进货）**：主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 依据闭环工单直接调度官方 Scrapling MCP Session 会话（高效流式拉取全量 26 端点底层数据）➔ 组装原子落盘至 `data/{销售日}/{matchId}.md`（同时落盘底层存证 `raw/{matchId}.json`）➔ 确认物理文件生成且体积达标后立即 announce 回传主会话；
 3. **主会话中转放行反馈**：主会话收到搬运工 announce 的物理文件就绪报告后，立即推送：
    `🛡️ 【{matchId}】推演源数据已就绪，正在唤醒首席分析师进入阶段二深度推演...`；
 4. **阶段二：纯逻辑首席分析师（深度推演与交付）**：主会话切换或 spawn 分析师 Subagent（Role: `Chief Match Analyst`），通过 EvoOntology 官方 MCP 提取微观事实切片（严禁大模型裸视海量原始报文） ➔ 通读 `skills/deep-analysis/SKILL.md` 心法 ➔ Graphify 三大战区检索 ➔ OO-EPC 算法去水 ➔ 10 步深度推演与四维认知契约卡 ➔ 原子化前置保存至 `memory/{销售日}.md` ➔ 交付标准 7 列表格至前台！
 
 #### 多场与全量流水线四大护城河
 当主人指定多场（如「分析 004 和 005」）或定时触发全天批次（早盘13场/晚盘12场）时，严格贯彻以下 4 大护城河铁律：
-0. **第 0 步赛程索引自检（Zero-State Hard Lock）**：第 0 秒检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；若无立即调用 Scrapling MCP bulk_get(index.aspx) 极速秒落 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，严禁在索引就绪前翻阅任何推演心法或代码；
+0. **第 0 步赛程索引自检（Zero-State Hard Lock）**：第 0 秒检查 `data/{销售日}/meta.md` 是否存在且新鲜（< 2小时）；若无立即调用 Scrapling MCP make_request(index.aspx) 极速秒落 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，严禁在索引就绪前翻阅任何推演心法或代码；
 1. **第 0 秒进度透传与分批汇报（主会话）**：收到多场/全量指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动【全量 X 场】推演流水线，专职搬运工正在按 1~3 场分组分批进货中...`，杜绝黑盒盲等；
 2. **阶段一：纯物理分批进货（分组并发与确定性装配）**：
@@ -398,43 +398,32 @@ flowchart LR
 
 ### 3.1 工位 1：全权数据进货局（`skills/match-scraper`）
 
-- **工位定位**：系统唯一全权网络进货局，独揽全网抓取、赛程同步、26 端点并发、单 IP 防封、429 退避与 403 自愈破盾。其余 4 个 Skill 绝对 0 网络！
+- **指挥定位**：系统唯一全权网络进货局，独揽全网抓取、赛程同步、26 端点并发、单 IP 防封控频（≤5场 1~2s，>5场 额外停顿 2s）、429 退避与 403 自愈破盾。其余 4 个 Skill 绝对 0 网络！
 - **输入物**：赛事 ID、销售日、目标 URL 矩阵。
-- **装配与存证标准（SSOT vs 可视化视图）**：
-  1. **底层存证 `raw/{matchId}.json`**：装填全量 26 端点真实 raw 报文字符串 Schema，各键反序列化有效；
-  2. **人类可视化简报 `{matchId}.md` 黄金装配四重断言门禁**：
-     - ① **行数硬门禁**：行数必须 **$\ge 350$ 行**，严禁生成残缺抽稀半成品；
-     - ② **五大战区全覆盖**：必须 100% 包含全量 5 大战区（一·微观阵容与首发伤停 / 二·基础战绩与攻防客观底牌 / 三·欧洲指数百家做市商清单 / 四·核心做市商与终端标的真实变盘时序流水 / 五·波胆与终端履约标的）；
-     - ③ **21 张变盘流水大表硬门禁**：战区四中 7 大法定机构（澳彩、皇冠、Bet365、易胜博、平博、188Bet、香港马会）必须按亚盘、大小球、欧指各自建表，共计 **21 张流水大表**（倒序时序，首行即时终盘、末行初盘起点），由 Scrapling 原生 Markdown 直转无损贴入；
-     - ④ **23 家做市商全景对比门禁**：战区三必须完整列出法定 23 家初即盘、返还率与凯利指数，逐项布尔校验杜绝遗漏；
-     - ⑤ **熔断与自愈重装**：凡人类视图抽稀残缺，立即判定进货失败并物理阻断，强制重新基于底层 26 端点原始存证全量装配！
-- **Scrapling 官方三大原生铁律**：
-  - ① **官方流式 Markdown 与选择器下推（零中间文件铁律）**：变盘流水页面（21张大表）必须传 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，由 Scrapling C/Cython 引擎原地生成纯净 Markdown，内存直出组装写入人类简报！严禁建立 `tmp_*` 暂存目录，严禁导出 `.txt` 临时文件，严禁编写组装脚本；
-  - ② **GB18030 二进制保真解码**：球探网二级变盘流水页面（`changeDetail/*.aspx`）必须基于原始 bytes 显式以 `gb18030` 解码，严禁外部默认 UTF-8 强解导致队名盘口汉字乱码；
-  - ③ **23 家法定机构 Anti-Mismatch 字典防漏**：`1x2d.js` 中 `parts[0]` 为 cid（严禁错当成 parts[1]），以法定 23 家权威白名单 Hash Map 精准提取，执行逐项布尔校验，杜绝数组索引偏移遗漏！
-- **Polymarket Gamma 发现与主客核销**：
-  主流核心联赛 100% 必须提供真实纯英文事件可点击链接形如 `[对阵（平局 XX¢ / X.XX倍）](https://polymarket.com/event/{slug})`，调用 Gamma API 检索，严格核销主客队名与赛事日期，严禁编造虚假 Slug 或拼凑假链接；严禁使用任何类似『官方未开盘（经Gamma双向核验）』等免责套话。小众联赛确实无标的方可标官方未开盘说明。
-- **官方合法未开盘与推演到底宪法（Anti-Drop Iron Rule）**：
-  - ① **体彩深盘不开单固**：当实力悬殊深盘中国体彩未开普通胜负平（HAD）时，欧指自动覆盖其余机构，大模型必须推演体彩让球胜平负（HHAD），严禁以此为借口丢弃比赛；
-  - ② **次级联赛未开亚盘**：当香港马会（HKJC）等对英冠等次级联赛官方未开亚盘时，标注「官方未开盘」，比赛必须推演；
-  - ③ **全量推演不漏一场**：严禁任何 AI 以机构未开盘为由擅自拒绝推演或从推演总表中删除比赛！只要是当日待分析场次，无论盘型多深、无论玩法多偏，必须 100% 穷尽推演到底！
+- **出厂标准零件托盘 1（Standard Parts Tray 1 Contract）**：
+  1. **底层真实存证 SSOT**：`data/{销售日}/raw/{matchId}.json`（满配 26 payloads 原生报文 Schema，带 SHA256 与 sealedAt 密封时间戳，严禁漏建 raw 目录！）；
+  2. **人类可视化简报**：`data/{销售日}/{matchId}.md`（行数必须 $\ge 350$ 行，必须完整包含法定 7 家主流做市商的 21 张亚盘、大小球与欧指真实变盘流水）；
+  3. **禁入红线**：严禁思考盘赔逻辑、严禁定性胜负、严禁在磁盘根目录倾倒任何 `*.txt` 散落中间文件（违规立即自动清除）。
+- **指挥指针**：
+  👉 **【进货车间采掘协议、26 端点标准与单 IP 防封流控详见 [skills/match-scraper/SKILL.md](file:///d:/100-工作/200-交易/倍率分析推演/skills/match-scraper/SKILL.md)】**
 
 ### 3.2 工位 2：业务初筛局（`skills/match-screening`）
 
-- **工位定位**：流水线工单分发中心与调度时钟，**0 网络请求**，只读 `data/{销售日}/meta.md`。
-- **工单生成与出厂标准零件托盘 2（Standard Parts Tray 2 Contract）**：
-  - **交付标准**：标准推演工单序列 `work_orders: [{matchId, kickoffTime, league, homeTeam, awayTeam, analysisUrl}]`；
-  - **输入模式 1~4 统一路由**：方式 1（全量初筛打标）、方式 2（比赛ID）、方式 3（分析页URL）、方式 4（竞彩编号解析如 010 从 meta.md 反查）；
-  - **开球时间先验拦截（Kickoff Prior Intercept）**：当前系统时间 $\ge$ 开球时间的场次在工单生成时打上 `already_started` 拦截标记，绝不流向下游推演大脑；
-  - **全量排队全覆盖纪律**：维持 `MAX_DAILY_ANALYSIS: ALL`，严格执行 6 阶段打标与排序，不以层级淘汰比赛；
-  - 初筛通过 0 场时仍须生成对应窗口 `## 推荐`（内容为「本窗口无候选场次」）并推送，以便心跳识别流程闭环。
+- **指挥定位**：流水线工单分发中心与调度时钟，**0 网络请求**，只读 `data/{销售日}/meta.md`。
+- **出厂标准零件托盘 2（Standard Parts Tray 2 Contract）**：
+  - **核心交付物**：标准推演工单序列 `work_orders: [{matchId, kickoffTime, league, homeTeam, awayTeam, analysisUrl}]`；
+  - **调度职责**：阶段 0 赛程索引自检（meta.md 新鲜度 < 2小时）、方式 1~4 用户输入统一路由解析、开球时间先验拦截（已开赛场次标记跳过，未开赛场次 100% 转化为推演工单）；
+  - **全量排队纪律**：维持 `MAX_DAILY_ANALYSIS: ALL`，严格执行全量打标与推演优先级排序，绝不以层级淘汰或截断比赛；
+  - **禁入红线**：严禁发起外部网络抓取（纯直读 meta.md）、严禁私自淘汰丢弃比赛。
+- **指挥指针**：
+  👉 **【初筛车间调度规约、工单格式与全量打标策略详见 [skills/match-screening/SKILL.md](file:///d:/100-工作/200-交易/倍率分析推演/skills/match-screening/SKILL.md)】**
 
 ### 3.3 工位 3：推演大脑总装局（`skills/deep-analysis`）
 
-- **工位定位**：纯逻辑推演大脑，**0 网络请求，0 页面排版**，严禁代码编写业务推演逻辑，行数严格遵守 **$\le 1200$ 行刚性封顶纪律**（已由 1705 行精简纯化至 1200 行内）。
+- **指挥定位**：纯逻辑推演大脑，**0 网络请求，0 页面排版**，严禁代码编写业务推演逻辑，物理行数严格遵守 **$\le 1200$ 行刚性封顶纪律**。
 - **输入物**：标准零件托盘 1（EvoOntology 视网膜微观切片）、标准零件托盘 2（标准推演工单）、Graphify 检索战法。
 - **出厂标准零件托盘 3（Standard Parts Tray 3 Contract）**：
-  - **核心交付物**：**四维不可篡改【认知契约卡】** + 单场结构化评估结果（胜负平首选/次选、让球盘口、OO-EPC 去水概率、独立泊松比分 Top 4~6）；
+  - **核心交付物**：**四维不可篡改【认知契约卡】** + 单场结构化评估结果（胜负平首选/次选、让球盘口、OO-EPC 去水点概率、独立泊松比分分布）；
   - **职责边界**：推演大脑零网络抓取、零 7 列表格排版、零 2 串 1 串关计算、零并发文件锁管理，专注于纯逻辑博弈推演！
 - **十步推演与博弈第一性原理（大模型唯一推演主权）**：
   1. **庄家运作第一性原理**：庄家是自营博弈方而非抽水佣金中介（Levitt 2004），核心目标是极小化最大损失：
@@ -458,6 +447,8 @@ flowchart LR
   6. **豪门偏见与伤停绝对真理剥离铁律**：
      - **Anti-Big-Club-Bias**：严禁使用“退盘做阻多特/豪门”、“抬高客胜做阻”等双标逻辑；当客胜欧指暴涨 $\ge 0.20$ 且平博同步跟拉时，强制 100% 判定为庄家弃守；交付端规范为“高确定性核心基准项”，严禁使用“稳胆/做胆”等散户心理词汇；
      - **Anti-Injury-Deflection**：伤停是滞后公开信息（Macri 2025），做市商定价模型已迅速内化（Priced-in）。当球队面临伤停但平博/皇冠低水深盘坚挺时，以真金白银资金防守底牌为准，严禁赛后甩锅伤停。
+- **指挥指针**：
+  👉 **【推演大脑 10 步深度推演、EvoOntology 视网膜接入与学术反审全景详见 [skills/deep-analysis/SKILL.md](file:///d:/100-工作/200-交易/倍率分析推演/skills/deep-analysis/SKILL.md)】**
 
 ### 3.4 核心做市博弈推演心法与十六大全局实操原则
 
@@ -481,32 +472,27 @@ flowchart LR
 
 ### 3.5 工位 4：战报交付局（`skills/recommendation`）
 
-- **工位定位**：整批战报交付与汇总呈现局，独家全权垄断战报排版、7 列表格输出、Polymarket 真实链接核验与胜负平 2 串 1 优选建议。
+- **指挥定位**：整批战报交付与汇总呈现局，独家全权垄断战报排版、标准 7 列表格输出、Polymarket 真实链接核验与胜负平 2 串 1 优选建议。
 - **出厂标准零件托盘 4（Standard Parts Tray 4 Contract）**：
   - **终端战报交付物**：工整标准 7 列表格 + 文末【🎯 精选 2 串 1 组合推荐】；
   - **底层审计底账**：`memory/{销售日}.md` 深度分析结构化摘要与四维认知契约卡原子封存；
-  - **Polymarket 交易链接**：独揽 Gamma/CLOB 挂单核验与真实事件链接呈现。
-- **交付表头 7 规范**：
+  - **Polymarket 交易链接**：独揽 Gamma/CLOB 挂单核验与真实纯英文事件链接呈现（未开盘实录 `[官方未开盘]`）。
+- **标准 7 列表头法定契约**：
   `【场次/时间 | 对阵双方 | 胜负平 | 让球 | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接】`
-  - 第 3 列标题必须叫「胜负平」（首选/次选不折行，如 `主胜（次选平局）`，严禁写成“终审人话指令”）；
-  - 第 4 列标题必须叫「让球」（带官方让球数如 `[-1]` 或 `[+1]` 与选项如 `[-1] 让平（次选让负）`，与胜负平自洽闭环）；
-  - 第 5 列标题必须叫「胜/平/负点概率（OO-EPC去水）」（调用 sports-math 算力直出的三个点概率，严禁写成“真实赛果剧本”）；
-  - 第 6 列标题必须叫「庄家诱盘破译」（动态时序演进与真实意图）；
-  - 第 7 列标题必须叫「Polymarket 真实链接」（真实纯英文事件可点击链接形如 `[对阵（平局 XX¢ / X.XX倍）](https://polymarket.com/event/{slug})`）。
-- **原子化前置封存机制（先存后发与 1:1 强断言）**：向前台发送任何标准七列表格前，必须先在后台将当期开售全部 $N$ 场比赛（$\text{Count}(\text{契约卡}) \equiv N$）的决策摘要（含物理三维推演与认知契约卡）逐场保存写入 `memory/YYYY-MM-DD.md`！缺少任何 1 场契约卡禁止向前台发送战报！
+- **Poka-Yoke 原子化前置封存门禁**：
+  必须严格断言 `Count(进货) ≡ Count(推演) ≡ Count(契约卡) ≡ Count(交付行) ≡ N`！先 100% 写入 memory，再向前台交付表格；若数量 $< N$ 立即触发停线阻断。
+- **指挥指针**：
+  👉 **【战报交付车间排版标准、2 串 1 推荐与封存门禁详见 [skills/recommendation/SKILL.md](file:///d:/100-工作/200-交易/倍率分析推演/skills/recommendation/SKILL.md)】**
 
 ### 3.6 工位 5：复盘审计局（`skills/post-review`）
 
-- **工位定位**：赛后对账与自愈审计局，**0 临时脚本**，端到端执行赛果核对与经验流转。
+- **指挥定位**：赛后对账与自愈审计局，**0 临时脚本**，端到端执行赛果核对与经验流转。
 - **出厂标准零件托盘 5（Standard Parts Tray 5 Contract）**：
   - **真实完场对账单**：工整标准 7 列表格，第 3 列【胜负平】与第 4 列【让球】双列打标（✅/❌/走水）；
-  - **学术概率分解报告**：Dimitriadis CORP 与布莱尔三项分解、独立泊松模型质量评估；
-  - **图谱自愈与战法沉淀**：更新 `graphify-out/reflections/LESSONS.md`，推进待验证经验四态流水线（5 场前瞻验证 + 21 天日落）闭环。
-- **审计规范**：
-  - 严格输出标准 7 列表，第 3 列【胜负平】与第 4 列【让球】双列打标（✅/❌/走水）；
-  - 执行 Dimitriadis CORP 布莱尔三项分解与泊松模型质量评估；
-  - 赛后庄家操盘暗号大起底：逐场对质赛前冻结的核心做市推导链，沉淀战法入库；
-  - 待验证经验四态流水线打卡：推进 5 场前瞻验证与 21 天日落代谢闭环。
+  - **🚨 赛前无卡漏推置顶红线报警**：若某场赛前 memory 中无契约卡，强制标注 `[赛前未推演/不可评分]` 并置顶报警；
+  - **学术概率分解与经验回流**：Dimitriadis CORP 布莱尔分解、推进待验证经验四态流水线（5 场前瞻验证 + 21 天日落）与 Graphify `save-result` / `reflect` 知识图谱自愈。
+- **指挥指针**：
+  👉 **【复盘审计车间端到端对账 SOP 与图谱自愈规范详见 [skills/post-review/SKILL.md](file:///d:/100-工作/200-交易/倍率分析推演/skills/post-review/SKILL.md)】**
 
 ---
 
@@ -526,6 +512,10 @@ flowchart LR
 
 机器推演的法定底层依据是 `data/{销售日}/raw/{matchId}.json`（经 EvoOntology 直连提取），`.md` 文件作为人类可视化复盘简报同步留存：
 - **存证与视图序贯优先级**：审视调阅数据必须严格遵循「最好先看源 `.json`（底层存证 SSOT），其次再看 `.md`（可视化视图校对），然后才是其他的（辅助资料）」刚性优先级！
+- **真实体积与 Receipt 反作弊双死锁**：
+  1. `payloads['1x2d.js']` 真实长度必须 $\ge 300,000$ 字符（$\ge 300\text{KB}$），严禁截断为仅有几家机构的缩略模拟数据；
+  2. `receipt.endpoints[i].size` 必须与 `payloads[name]` 的实际字符长度 1:1 精确匹配，凡检测到 size 虚报或手搓占位假数据，立即判定为作弊违规并物理阻断；
+  3. 底层 raw JSON 单文件满配体积必须在 $500\text{KB}\sim 1.2\text{MB}$ 之间，低于 $300\text{KB}$ 强行断路停线！
 - **法定 23 家权威做市商白名单核销**：
   澳彩、皇冠、Bet365、易胜博、平博、188Bet、香港马会、威廉希尔、立博、Bwin、Interwetten、SNAI、Eurobet、Oddset、Unibet、Titanbet、Betclick、Marathonbet、10Bet、12Bet、利记、明陞、沙巴。逐项布尔校验杜绝遗漏！
 

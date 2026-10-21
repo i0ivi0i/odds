@@ -32,7 +32,7 @@ metadata: { "emoji": "📆" }
    - **绝非赔率数值缓存**：**Adaptive 记忆的是网页骨架指纹，绝对不是赔率数字缓存！** 足球博弈赔率每时每刻都在发生真金白银的变动（即时活水），绝不能用历史记忆替代最新盘口，每次推演必须通过 Scrapling MCP 实时全量抓取。
 
 1. **官方两级分层进货架构（Tiered Ingestion Architecture）**：
-   - **Level 1（纯 HTTP 协议流，首选必选）**：基于 `curl_cffi`，毫秒级响应，零无头浏览器启动开销。所有球探网静态服务端渲染端点（赛程页 `index.aspx`、百家欧指 `1x2d.js`、变盘流水 `handicap.aspx`、微观阵容 `analysis/{id}cn.htm`）默认 100% 优先采用 `mcp__scrapling__bulk_get` 或 `session_make_request`。
+   - **Level 1（纯 HTTP 协议流，首选必选）**：基于 `curl_cffi`，毫秒级响应，零无头浏览器启动开销。所有球探网静态服务端渲染端点（赛程页 `index.aspx`、百家欧指 `1x2d.js`、变盘流水 `handicap.aspx`、微观阵容 `analysis/{id}cn.htm`）默认 100% 优先采用 `session_make_request` 或 `make_request`。
    - **Level 2（Playwright 无头浏览器，升阶容灾）**：仅在 Level 1 返回 HTTP 403/503、频繁超时，或源站下发 Cloudflare Turnstile 等动态人机挑战盾时，在 Scrapling 内部升阶至 `mcp__scrapling__stealthy_fetch`。静态数据严禁无故直接调用 Level 2 浏览器！
 
 2. **官方四大原生护栏（The 4 Scrapling Native Guardrails）**：
@@ -48,7 +48,7 @@ metadata: { "emoji": "📆" }
      - **选择器底层下推（`css_selector`）**：抓取 HTML 页面时强制传递 `css_selector`（如 `css_selector="#team_lineup"` 或 `css_selector="#table_odds"`），由 Cython 引擎在内存中修剪 90%+ 无关 DOM；
      - **26 端点 Schema 结构强断言**：底层存证 `raw/{matchId}.json` 必须包含 26 个特定 API 键（`1x2d.js`, `analysis.html`, `odds.html`, `analy.json`, 7家机构21张流水HTML与polymarket.json）。任何通过填充乱码、空白字符串或伪造文本虚标体积的行为，均会导致 JSON Schema 解析破裂与装配阶段直接抛出 KeyError，从物理根源杜绝 AI 作弊填充！
    - **护栏四：Dynamic DOM Escalation Guardrail（动态渲染升级护栏，防空壳抽稀）**：
-     - **空骨架判定标准**：若 Level 1 `bulk_get` 提取到的数据表格行数（`<tr>` 数量）$< 2$ 且页面包含动态加载脚本，自动无缝升阶至 `mcp__scrapling__stealthy_fetch(network_idle=True)`，等待网络静默完成再抽取 DOM，彻底杜绝只抓 190 行残缺骨架！
+     - **空骨架判定标准**：若 Level 1 请求提取到的数据表格行数（`<tr>` 数量）$< 2$ 且页面包含动态加载脚本，自动无缝升阶至 `mcp__scrapling__browser_fetch(network_idle=True)`，等待网络静默完成再抽取 DOM，彻底杜绝只抓 190 行残缺骨架！
 
 3. **官方全真协议模拟与会话生命周期（Impersonation & Session Lifecycle）**：
    - **Chrome JA3/TLS 与标头全真伪装**：调用带 `impersonate="chrome"` 与 `stealthy_headers=true`；
@@ -74,10 +74,10 @@ metadata: { "emoji": "📆" }
 ## 极速单动执行规约（Scrapling MCP 官方极速通道）
 
 ### 步骤 1：协议流直取球探竞足页（Level 1 纯 HTTP 极速通道）
-首选调用 MCP `scrapling` 的 `bulk_get` 或 `make_request`（纯 HTTP 协议流，零浏览器开销）：
+首选调用 MCP `scrapling` 的 `make_request`（纯 HTTP 协议流，零浏览器开销）：
 ```json
 {
-  "urls": ["https://jc.titan007.com/index.aspx"],
+  "url": "https://jc.titan007.com/index.aspx",
   "extraction_type": "markdown",
   "impersonate": "chrome",
   "stealthy_headers": true
@@ -181,34 +181,41 @@ metadata: { "emoji": "📆" }
   - **1~3 场仅仅是单批并发（Batch Size）的物理切片**（1~3场极速直出），用于防止网络超时，**绝对不可将批次切片误当成推演总数！**
 - **【前置零漫游硬禁令（Zero Pre-flight Thrashing）】**：
   搬运工被派发后的第 1 个动作必须且只能是执行进货落盘命令！严禁在抓取前执行任何 `git log`、`git status`、pytest/unittest 检查；严禁思考盘赔逻辑或定性胜负！
-- **【官方一体化专职进货机械臂（Scrapling 官方 bulk_get 一枪并发极速直出）】**：
-  1. **步骤一：全量端点一枪齐发（Direct bulk_get Multi-Browser Concurrency）**：
-     构造单场法定 26 个底层物理端点 URL 列表，直接调用 Scrapling MCP `mcp__scrapling__bulk_get`：
-     ```python
-     # 传入全量 26 个端点 URL 列表，单 IP 随机轮换真实浏览器 TLS 指纹，底层 Cython 异步池秒级并发拉回
-     mcp__scrapling__bulk_get(
-         urls=[...26_urls...],
-         impersonate=["chrome", "firefox", "safari"],  # 官方动态随机多浏览器指纹
-         extraction_type="markdown",
-         css_selector="#table_odds",
-         stealthy_headers=True,
-         retries=3,
-         retry_delay=1,
-         timeout=30
-     )
+- **【官方一体化专职进货机械臂（Scrapling 官方 Session 长连接三部曲）】**：
+  1. **步骤一：开辟全真会话（Open Session）**：
+     调用 Scrapling MCP `mcp__scrapling__open_request_session`：
+     ```json
+     {
+       "session_id": "ingest_{matchId}_{timestamp}",
+       "impersonate": "chrome"
+     }
      ```
-     - **变盘流水 HTML 原生直转 Markdown**：7 家机构 21 张变盘流水表在 `bulk_get` 中由 Scrapling 引擎自动在内存中原地生成工整纯净 Markdown 表格，直接拼入人类简报！**严禁在磁盘建立 `tmp_*` 暂存目录，严禁导出 `.txt` 临时文件，严禁编写 `assemble.ps1` 或 `.js` 组装脚本**！
-     - **Polymarket 精准单事件防溢出**：必须且只能请求单事件 slug（`https://gamma-api.polymarket.com/events?slug={slug}`），未开盘直接记录 `[官方未开盘]`，严禁请求无参数 `/events`；
-     - **阻断自动退避与升阶**：若遇 `429 Too Many Requests`，自动等待 2 秒触发重试（最多 3 次）；若遇 `403 Forbidden` 或人机挑战盾，自动升阶至 `mcp__scrapling__stealthy_fetch(solve_cloudflare=true)` 原地破盾；
-  2. **步骤二：直接原子落盘与 23 家机构核销（Write Files & Boolean Grounding）**：
+     全真模拟 Chrome TLS/JA3 指纹与真实 Client Hints 标头，底层连接池持久复用，抹除爬虫特征；
+  2. **步骤二：三路端点分流流式拉取（Three-Way Typed Stream Requests）**：
+     复用同一个 `session_id`，调用 `mcp__scrapling__session_make_request` 针对 26 端点执行**三路分流提取**，严禁一刀切选择器破坏：
+     - **① 纯数据与脚本流（`1x2d.js`、`analy.json`、`polymarket.json`）**：
+       - `extraction_type="text"`，`main_content_only=false`，`css_selector=null`；
+       - 直出 100% 原始长串，`1x2d.js` 体积必须 $\ge 300\text{KB}$（涵盖全网 160+ 家机构完整欧指），绝不进行截断！
+     - **② 完整分析 DOM 流（`analysis.html`、`odds.html`）**：
+       - `extraction_type="html"`，`main_content_only=false`，`css_selector=null`；
+       - 完整保留攻防时序、伤停阵型与波胆赔率 DOM；
+     - **③ 变盘流水表格流（21 张 `ah_*.html`、`ou_*.html`、`eu_*.html`）**：
+       - `extraction_type="markdown"` 或 `"html"`，`css_selector="#table_odds"`，`main_content_only=true`；
+       - 内存原地精准截取 7 大做市商历史变盘流水表格，拼入人类简报；
+     - **阻断自动退避与升阶**：若遇 `429 Too Many Requests`，自动等待 2 秒触发重试（最多 3 次）；若遇 `403 Forbidden` 或人机挑战盾，自动升阶至 `mcp__scrapling__browser_fetch(solve_cloudflare=true)` 原地破盾；
+  3. **步骤三：显式关闭会话（Close Session）**：
+     拉取完毕后立即调用 `mcp__scrapling__close_session(session_id=session_id)` 显式释放 TCP 连接与系统句柄；
+  4. **步骤四：直接原子落盘与 23 家机构核销（Write Files & Boolean Grounding）**：
      - **23 家做市商布尔核销断言**：解析 `1x2d.js` 报文中的百家欧指数据，严格核销法定 23 家机构（澳彩/皇冠/365/易胜博/平博/188/香港马会等）初即盘赔率齐全；若有缺失立即触发异常阻断报警，绝不放行空残数据！
-     - **底层存证落盘（无损满配）**：将全量 26 个端点的真实 Raw 字符串内容（`1x2d.js`、`analysis.html`、`odds.html`、`analy.json`，以及 7 家做市商 21 张变盘流水 HTML 源码、Polymarket 返回）全量注入 `raw/{matchId}.json` 的 `payloads` 对象中！严格断言 26 个特定端点真实报文载荷 100% 存在且有效可解析；严禁只存收据头（receipt）而漏写 raw 报文（严禁生成空收据）！
-     - **人类简报装配**：将提取组装的 Markdown 结构保存为 `data/{销售日}/{matchId}.md`（行数必须 $\ge 350$ 行），**该文件严格专用于人类赛后复盘与肉眼核验，严禁分析大脑在推演过程中读取它（推演切片 100% 必须面向底层 raw JSON 执行）**！
-  3. **步骤三：回传状态（Announce Completion）**：
-     物理文件生成且新鲜有效后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】底层源数据已落盘，人类视图已就绪」，结束搬运任务！严禁编写任何中间胶水脚本！
+     - **底层存证落盘（无损满配 SSOT，严禁漏建 raw/ 目录）**：强制确保目标目录 `data/{销售日}/raw/` 存在；将全量 26 个端点的真实 Raw 字符串内容（`1x2d.js`、`analysis.html`、`odds.html`、`analy.json`，以及 7 家做市商 21 张变盘流水 HTML 源码、Polymarket 返回）全量注入 `raw/{matchId}.json` 的 `payloads` 对象中！严格断言 26 个特定端点真实报文载荷 100% 存在且有效可解析；
+     - **真实体积与 Receipt 反作弊强死锁**：断言 `payloads['1x2d.js']` 长度 $\ge 300\text{KB}$，断言 `receipt.endpoints[i].size` 必须与 `payloads[name]` 真实字符数 1:1 精准相等，严禁虚报大小或手搓模拟数据作弊！
+     - **严防散装文本违规倾倒（Anti-Dumping Invariant）**：绝对严禁在 `data/{销售日}/` 根目录下导出任何 `*_1x2.txt`、`*_analy.txt` 等任何中间临时文件！一旦检测到此类文件，视为严重违规并立即自动清除；
+     - **人类简报装配（≥350行饱满交付）**：将提取组装的 Markdown 结构保存为 `data/{销售日}/{matchId}.md`（行数必须 $\ge 350$ 行，必须完整包含法定 7 家主流做市商的亚盘、大小球与欧指真实变盘流水），**该文件严格专用于人类赛后复盘与肉眼核验，严禁分析大脑在推演过程中读取它（推演切片 100% 必须面向底层 raw JSON 执行）**！
+  5. **步骤五：回传状态（Announce Completion）**：
+     物理双文件生成、体积达标且新鲜有效后，搬运工立即向主会话 announce 汇报：「✅ 【{matchId}】底层源数据已落盘（满配），人类视图已就绪（≥350行）」，结束搬运任务！严禁编写任何中间胶水脚本！
 
 ### 1. 亚盘与大小球 7 大法定机构并发直取
-调用 Scrapling `bulk_get` 单次并发拉取 7 大法定做市商的分钟级变盘流水：
+在会话内调用 Scrapling `session_make_request` 并配置 `css_selector="#table_odds"` 拉取 7 大法定做市商的分钟级变盘流水：
 - 法定做市商完整名单：
   - `cid=1`: 澳彩 (Macau)
   - `cid=3`: 皇冠 (Crown)
@@ -314,14 +321,14 @@ metadata: { "emoji": "📆" }
    - 待抓取场次 $\le 5$ 场时，每场/每页抓取间隔维持 1~2 秒；
    - 待抓取场次 $> 5$ 场时，每抓取 5 场后额外主动暂停 2 秒，防止高频瞬态流量触发目标源站 WAF 封禁；
 3. **单 IP 动态多浏览器指纹轮换（`impersonate=['chrome', 'firefox', 'safari']`）**：
-   - `bulk_get` 传参强制配置官方多指纹列表，底层 `curl_cffi` 在每次请求中自动随机混淆 TLS 指纹、ALPN 扩展与 Client Hints，消灭单一爬虫指纹特征；
+   - `open_request_session` 传参强制配置官方浏览器指纹（默认 "chrome"），底层 `curl_cffi` 在请求中自动混淆 TLS 指纹、ALPN 扩展与 Client Hints，消灭单一爬虫指纹特征；
 4. **抓取异常与阶梯式自动升阶重试（Ingest Retry & Escalation Strategy）**：
    - 遇到网络波动、DNS 超时，原地重试（最大重试 3 次，递增等待 1s, 2s, 3s）；
    - 遇到 `429 Too Many Requests`，触发指数退避（等待 2~4 秒重试）；
-   - 遇到 `403 Forbidden`、`503 Service Unavailable` 或 Cloudflare Turnstile 挑战盾，立即自动升阶至 Level 2 `stealthy_fetch(solve_cloudflare=true)`，由本地真实无头 Chrome 接管解锁并继承 Cookie，零换 IP 亦可安全通行；
+   - 遇到 `403 Forbidden`、`503 Service Unavailable` 或 Cloudflare Turnstile 挑战盾，立即自动升阶至 Level 2 `browser_fetch(solve_cloudflare=true)`，由本地真实无头 Chrome 接管解锁并继承 Cookie，零换 IP 亦可安全通行；
    - 连续 3 次重试仍失败，立即置顶向总控台发出红色高危警报并记录失败上下文，严禁静默吞掉异常；
 5. **动态 DOM 渲染与空骨架自检自愈（Dynamic DOM Auto-Escalation & Empty Skeleton Repair）**：
-   - Level 1 `bulk_get` 提取的数据表格行数（`<tr>` 数量）$< 2$ 且页面包含动态加载脚本时，判定为空骨架，自动升阶至 `stealthy_fetch(network_idle=True)` 等待网络静默完成再抽取 DOM，彻底杜绝只抓残缺骨架；
+   - 请求提取的数据表格行数（`<tr>` 数量）$< 2$ 且页面包含动态加载脚本时，判定为空骨架，自动升阶至 `browser_fetch(network_idle=True)` 等待网络静默完成再抽取 DOM，彻底杜绝只抓残缺骨架；
 6. **23 家做市商布尔核销与数据零缺失门禁**：
    - `1x2d.js` 底层报文必须 100% 包含法定 23 家机构，遇缺失立即报警阻断，严禁产出抽稀残缺数据。
 
@@ -330,8 +337,8 @@ metadata: { "emoji": "📆" }
 1. **彻底消除顺序倒置漏洞**：
    - 专职搬运工（Data Ingest Worker）是专职执行机械臂，**严禁在任务派发后调用 `read_file` 阅读 `SKILL.md`、代码文件或 `git log`**；
    - 规则与参数由主会话在派发时直接印在 Prompt 工单中，Worker 醒来 0 秒即刻执行；
-2. **`bulk_get` 一枪并发齐发代替 26 步单步串行**：
-   - 单场 26 端点由 `bulk_get(urls=[...])` 在单个工具交互中一次性传回，底层由 Cython 异步并发拉取，彻底消除 Agent 与 MCP 之间 26 次串行往返等待；
+2. **Session 会话长连接高效流式拉取**：
+   - 单场 26 端点通过 `open_request_session` 建立长连接，复用底层链路高速流式拉取，彻底消除离散握手延迟；
 3. **防手搓刚性护栏**：
    - 工单严格锁死官方 Scrapling MCP，严禁手搓任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本，严禁在磁盘建立 tmp 暂存目录，纯内存流式直出落盘！
 
@@ -340,7 +347,7 @@ metadata: { "emoji": "📆" }
 - **官方 CLI 扩展名分流规范**：官方 CLI 导出工具（`Convertor.write_content_to_file`）在设计上仅面向网页抓取，参数强制限定输出扩展名为 `.html`、`.md`、`.txt` 三类。凡通过 CLI 命令行请求非 HTML 纯文本或静态数据流（如 `1x2d.js`、`analy.json`、`polymarket.json`）时，CLI 命令行输出必须统一使用 `.txt` 后缀（如 `1x2d.txt`、`analy.txt`、`polymarket.txt`），绝非 Scrapling 不支持 JSON！程序消费时依托官方原生 `.json()` / `Adaptor.json()` 反序列化；若直接指定 `.js` 或 `.json` 后缀会导致底层引擎抛出 `ValueError: Unknown file type` 异常并静默丢失！
 
 ### 4. 赛后复盘赛果极速提取规约（赋能 post-review 的 Scrapling 选择器下推通道）
-- 赛后复盘获取已完场比分时，作为 `skills/post-review` 的底层数据通道，调用 `mcp__scrapling__bulk_get` 批量并发抓取 `https://live.titan007.com/detail/{matchId}cn.htm`；
+- 赛后复盘获取已完场比分时，作为 `skills/post-review` 的底层数据通道，在 Session 会话中调用 `session_make_request` 批量拉取 `https://live.titan007.com/detail/{matchId}cn.htm`；
 - **强制配置选择器下推**：指定 `css_selector=".score, .analyhead, .team-name"` 仅提取比分与主客队名核心节点，彻底过滤百 KB 庞杂 HTML；
 - **百字节极速直出**：每场仅返回数十至百余字节的纯净文本直接作为技能输入送入模型上下文，由 `skills/post-review` 规约直接驱动对账与概率打分；
 - **全流程严禁编写任何 `.py` 正则提取脚本、清洗脚本或中间统计代码！**

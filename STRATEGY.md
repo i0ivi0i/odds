@@ -1,6 +1,6 @@
 ---
 name: 倍率分析推演 (Pansuan Engine)
-last_updated: 2026-10-09
+last_updated: 2026-10-21
 ---
 
 # 倍率分析推演 (Pansuan Engine) Strategy

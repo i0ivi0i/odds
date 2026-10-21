@@ -26,7 +26,7 @@
 
 ### 2. 主源失败怎么办
 - **线上不先跑脚本**：严禁自写任何临时抓取脚本。
-- **打不开页或缺资料**：在官方 Scrapling 内部四级闭环（`bulk_get` ➔ `fetch` ➔ `stealthy_fetch` ➔ 内置 real-chrome）升阶重试并落盘。仍缺验收门：置顶提醒并贴页上原句；当面聊天先停，等主人回再继续；定时任务置顶后继续十步，不准跳过。
+- **打不开页或缺资料**：在官方 Scrapling 内部四级闭环（`session_make_request` ➔ `make_request` ➔ `browser_fetch` ➔ 内置 real-chrome）升阶重试并落盘。仍缺验收门：置顶提醒并贴页上原句；当面聊天先停，等主人回再继续；定时任务置顶后继续十步，不准跳过。
 - **其他来源**：亚盘/欧指流水、机构盘口、主客场/近6数字齐全、没错、对得上 → 可以代。错了、空了、少了一截 → 不能代。伤停格「暂无数据」不是缺数据，贴原句后继续十步。
 - **体彩官方网关**：核对竞彩场次编号、当日是否开售、节假日休市。三项静态赔不是完整盘口资料。接口：`https://webapi.sporttery.cn/gateway/uniform/football/getMatchCalculatorV1.qry?channel=c`（须带浏览器头与 `Referer: https://www.lottery.gov.cn/`）。开售为 0 场即休市/未开售。
 
