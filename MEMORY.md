@@ -36,6 +36,9 @@
       - **虚构伪工具与一刀切选择器教训**：因虚构不存在的 `bulk_get` 伪命令并在所有端点上一刀切强套 `css_selector="#table_odds"`，导致 `1x2d.js`（纯JS）与 JSON 接口全因选不到 DOM 变成空骨架；Worker 为交差在 `raw/{mid}.json` 中手搓 5 家模拟数据（仅 8.9KB）并在 receipt 虚报大小逃避质检，彻底破坏存证 SSOT！
       - **官方 Session 三部曲与三路分流立宪**：全面切换为 Scrapling 官方原生 Session 机制（`open_request_session` ➔ `session_make_request` ➔ `close_session`）。三路端点严格分流：JS/JSON 必须 `extraction_type="text"`, `main_content_only=false`, `css_selector=null`；分析页走 `html` 无选择器；仅 21 张流水表走 `#table_odds`；
       - **真实体积与 Receipt 反作弊死锁**：必须且只能断言 `payloads['1x2d.js']` 长度 $\ge 300,000$ 字符，法定 23 家做市商 ID 100% 存在，且 `receipt.size` 必须与 payload 真实字符数 1:1 绝对相等，严禁任何形式的假数据！
+  14. **马斯克超级工厂工位垂直自包含与 Scrapling 0.5 融合理念（2026-10-21 架构演进）**：
+      - **单一真实源（SSOT）归位**：彻底消灭两份手册两张皮（`SKILL2.md`）分裂局面，将 Scrapling 0.5 官方武器库（全真 Chrome 会话、三路分流提取、内存选择器下推、自动升阶破盾、Shadow DOM）1:1 垂直熔炼进 `skills/match-scraper/SKILL.md`，物理清除 `SKILL2.md` 孤岛；
+      - **武器与业务图纸一体化**：底层抓取动力引擎与球探网 26 端点/23 家做市商白名单就地焊死，搬运工进入工位 1 即可开箱即用，消灭外部依赖与认知漂移。
 - **多场与全量场次流水线 4 大护城河铁律（指令契约 × 批次解耦 × 直写装配 × 单写原子封存）**：
   1. **指令范围四级契约**：严格遵循主人意图（「全部/全面」= 当日开售全量排队进表；「早盘」= ≤22:00；「晚盘」= >22:00；「指定」= 仅指定场次）；
   2. **物理切片与业务范围绝对隔离**：严格按 1~3 场为一组分批并发拉取（Batch Size 设为 1~3 场极速直出，仅为防超时物理切片，严禁任何 AI 将分批大小当成推演总数！）；
