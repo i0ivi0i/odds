@@ -10,7 +10,7 @@
 - **Skill 第一公民能力架构宪法（Skill-First 唯一能力单元）**：系统的能力扩充与认知演进必须且只能依托【Skill 技能体系】完成！数据抓取归 `skills/match-scraper`，初筛归 `skills/match-screening`，倍率推演归 `skills/deep-analysis`，赛后复盘归 `skills/post-review`。业务能力永远沉淀在 Skill 规约中，底层工具（Scrapling/BrowserOS）严格作为适配器为 Skill 赋能，坚决杜绝随手写散装 `.py` 脚本做业务，也坚决杜绝虚无空泛的“纯内存口算”！大模型是系统唯一的推演大脑，代码仅仅是物理质检员，严禁在代码中编写推演规则或复盘逻辑！
 - **严禁张冠李戴与时序克隆偷懒（恪守专属证据链与推演闭环）**：大模型推演必须具备严格的“证据闭环自觉”，每场分析推演必须直接深度消化本场专属物理【推演源数据】（`data/{销售日}/{matchId}.md`），推演报告中必须逐一显式引用【推演源数据】内的真实主客队名、关键伤停名单、特定时间戳水位与技统压制力数字。推演必须完全建立在当场独立完整的微观盘口时序与真实攻防数据之上，坚决杜绝脱离【推演源数据】凭空泛化脑补、跨场次移植时序或机械套用案例模版！
 - **重新分析即全量实时刷新铁律（严禁拿旧【推演源数据】炒冷饭）**：凡遇到主人指令“重新分析”、“从头分析”或“重新看某场”，**绝对禁止直接读取本地旧【推演源数据】炒冷饭**！盘口赔率是分秒波动的活水资产，拿旧数据重新分析毫无实战意义。必须强制先调 Scrapling 抓取此时此刻的最新赔率时序、最新伤停首发与即时波胆，原地更新覆盖落盘并重过门禁，再用最干净新鲜的当刻活水展开推演！
-- **最高采集红线（严禁临时 .py 脚本）**：全流程绝对禁止在根目录或项目内编写/运行任何临时 `.py` 脚本、跑批脚本或 `python -c` 爬取彩池、盘口与赔率！数据采集必须且只能使用官方通道：主力全包引擎为 **`Skill /scrapling-official` ↔ `MCP scrapling`**（基于官方开源框架 `https://github.com/D4Vinci/Scrapling`，毫秒直取 1x2d/getAnalyData/changeDetail 等核心数据流），**`BrowserOS neo`**（真实 Chromium 渲染）仅作为极端反爬封锁时的纯备用辅助。所有彩池与盘赔数据必须真实核验，严禁自造野鸡脚本偷懒作弊！
+- **最高采集红线（严禁临时 .py 脚本）**：全流程绝对禁止在根目录或项目内编写/运行任何临时 `.py` 脚本、跑批脚本或 `python -c` 爬取彩池、盘口与赔率！数据采集必须且只能使用官方通道：主力全包引擎为工位 1 **`skills/match-scraper`（内嵌 Scrapling 0.5 官方武器库）↔ `MCP scrapling`**（基于官方开源框架 `https://github.com/D4Vinci/Scrapling`，毫秒直取 1x2d/getAnalyData/changeDetail 等核心数据流），**`BrowserOS neo`**（真实 Chromium 渲染）仅作为极端反爬封锁时的纯备用辅助。所有彩池与盘赔数据必须真实核验，严禁自造野鸡脚本偷懒作弊！
 - **Scrapling 官方长连接 Session 与 26 端点满配存证立宪（铭记 b441d2e 误删惨痛教训）**：
   1. **深刻铭记历史断崖教训**：提交 `b441d2e` 过激执行“做减法”，误将 20,493 行装配代码物理删除，导致后继临时脚本偷工减料只抓取 `1x2d.js`，将原本 26 端点、1.15MB 满配存证腰斩为 6 端点、507KB 残次品，遗漏了 21 张二级流水大表！
   2. **法定 26 端点不可动摇黄金标准**：单场底层存证 `raw/{matchId}.json` 必须 100% 满配法定 26 个底层物理端点（含 4 大核心数据、7 家做市商 21 张变盘流水与 Polymarket 精准事件），26 个特定 API 端点真实报文载荷 Schema 100% 具备，`receipt.endpoints_count == 26` 且 `all_success == true`；
@@ -23,7 +23,7 @@
   9. **真相对账与分层校验教训（2026-10-20 实战刻录）**：在 3008217 核验中犯了严重自洽与假阳性错误：检查人员仅查对了人类可视化表格 `3008217.md` 中的赔率数字与球探网一致，就轻率宣布“核验全部通过”，忽视了底层 `raw/3008217.json` 严重抽稀仅有 6KB（漏装了 24 个端点的 raw 报文字符串）！立宪两项铁律：① 业务数字正确不等于物理存证合格，二者必须绝对分层校验；② 凡自检或回答主人数据核对，严禁单凭肉眼看 `.md` 文本，必须强制调用 EvoOntology MCP（`validate_semantics` 与 `resolve_semantics`）对底层 JSON 存证做机器级物理对质；若底层 26 端点键缺失或 `resolve_semantics` 返回非合法 `gap` / `block`，立即判定为抽稀损坏！
   10. **彻底废除文件体积表象死尺子，落地 EvoOntology 官方 Gap 阻断与端点 Schema 验真（2026-10-20 实战刻录）**：主人深刻指出，用文件字节大小（如 1.0MB / 1.15MB）来确定数据是否齐全极其幽默离谱——塞入 1MB 无效空白或重复乱码体积同样达标，而紧凑纯净的有效数据反被误杀！对齐 EvoOntology 官方架构（RUC-DataLab）立宪：① 废除一切磁盘字节数死尺子；② 底层存证验真 100% 依据 26 个特定端点原生 Schema 键存在性与反序列化有效性；③ 23 家做市商防漏 100% 依托 `resolve_semantics` 逐项核验 `coverage_status: "supported"`；④ 一旦出现非合法缺口或规则违反，由 `Constraint` 抛出 `severity: "block"` 强阻断，杜绝大模型裸视海量原始报文，坚守第一性语义真相！
   11. **Scrapling 官方武器库进货优先与四大原生护栏立宪（2026-10-20 实战刻录）**：
-      - **获取数据优先铁律**：凡涉及获取数据、网页抓取与时序拉取，强制 100% 优先调度 Scrapling 官方项目（https://github.com/D4Vinci/Scrapling）及其专属 Skills（如 `scrapling-official`）与 MCP 原生工具（FetchEngine 会话长连接、`stealthy_fetch` 穿透挑战盾、Cython 选择器下推、Adaptive 自愈）。严禁调用外部独立浏览器（如 browseros-neo），严禁裸写临时 Python 脚本！
+      - **获取数据优先铁律**：凡涉及获取数据、网页抓取与时序拉取，强制 100% 优先调度工位 1 `skills/match-scraper`（内嵌 Scrapling 0.5 官方武器库）与 MCP 原生工具（FetchEngine 会话长连接、`browser_fetch` 穿透挑战盾、Cython 选择器下推、Adaptive 自愈）。严禁调用外部独立浏览器（如 browseros-neo），严禁裸写临时 Python 脚本！
       - **全语种零临时脚本与零磁盘暂存（“堵不如疏”官方原生直出，2026-10-20 实战刻录）**：深刻吸取 Subagent 因被禁 `.py` 擅自转写 `assemble.ps1`、建立 `tmp_*` 目录与倾倒 `.txt` 文件的偷鸡教训！严禁全语种（`.py/.ps1/.js/.bat/.sh`）任何临时脚本！必须且只能依循 Scrapling 官方能力：变盘流水传入 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，由引擎在内存中原地直出纯净 Markdown 表格并直接拼入简报，存证直接内存直写 `raw/{matchId}.json`，彻底消灭外挂胶水脚本与磁盘暂存垃圾！
       - **四大原生护栏**：① 防错防串（URL字典绑定与特征词双向断言）；② 防漏23家（`1x2d.js` 的 cid Hash Map 提纯与 Boolean Checklist 核销）；③ 防伪造垃圾（选择器下推与26端点Schema强断言）；④ 防空壳抽稀（数据行 $<2$ 时自动升阶 `stealthy_fetch(network_idle=True)`）。澄清 Adaptive 是 DOM 指纹自愈，非赔率缓存，赔率必须分钟级活水真抓！
       - **Subagent 官方方法绝不豁免铁律（主人最高立宪）**：Subagent 是蜂群作战的机械臂，绝无法外特权！派发指令必须把官方通道（进货 100% 走 Scrapling 原生流式直出，看数 100% 走 EvoOntology 视网膜与 raw JSON 切片）锁死在 prompt 中，Subagent 严禁土法私制手搓散装脚本或 tmp 垃圾！
@@ -80,6 +80,10 @@
   2. **微调无损迁移，原位留指挥（Pointers & Command Tokens）**：绝不推倒重构 `AGENTS.md`，只做精准无损迁移。将堆叠在 `AGENTS.md` 中的具体端点明细、具体提取逻辑、具体排版参数等细则无损下放至对应专属车间（Skills）；在 `AGENTS.md` 原位保留精炼权威的指挥令牌、出厂标准零件托盘契约与工位红线指针；
   3. **井井有条，敏捷微调（Modular Elegance & Decoupled Tuning）**：回答任何问题、布置任何任务、做任何优化微调一目了然：微调进货找工位 1，微调初筛找工位 2，微调推演找工位 3，微调战报找工位 4，微调复盘找工位 5，总控台骨架岿然不动；
   4. **彻底根除 10-21 进货退化暗疾（Eliminate Ingest Degradation）**：物理清空 `data/2026-10-21/` 散落的违规 `*.txt` 文件，补齐 `raw/` 目录与 001~003 满配 26 端点原生报文 SSOT 存证，简报恢复 $\ge 350$ 行饱满交付，固化单 IP 防封控频（≤5场 1~2s，>5场 额外停顿 2s）与 Anti-Dumping 严防倾倒散装垃圾铁律。
+- **彻底肃清全页 HTML 裸转 Markdown 污染与人类简报装配器四重门禁立宪（2026-10-21 实战血泪刻录）**：
+  1. **深刻吸取 `3073145.md` 抽检翻车教训**：因偷懒将 `analysis.html` 全文裸转 Markdown 作为 `base_md` 倾倒进简报，导致“新球会员每天节省144球币”促销广告严重污染、多层嵌套 table 坍塌生成 130 列表格横向炸裂、动态战绩沦为“近 0 场”死模板，并靠垃圾内容虚报 1655 行形式主义！
+  2. **全面对齐 Scrapling 官方原生哲学（D4Vinci/Scrapling）**：① 叶子选择器强制下推：21 张流水表仅对 `#table_odds` 调 `markdown()`，杜绝外层废表；② 结构化 API 直连：战绩与攻防指标 100% 依循 `analy.json` 与 `1x2d.js` 提炼渲染；
+  3. **人类简报四重品控防错门禁（Poka-Yoke Markdown Gates）**：建立 Anti-Ad（广告命中=0）、Anti-Collapse（单行|字符≤35）、Anti-Placeholder（死模板命中=0）、23 CIDs Full Coverage（23家做市商大表点亮率100%）四大绝对防线，行数稳定在 380~600 行高质量工整区间！
 - 不编造赔率、比分或赛事结果；拿不准的标注「需核实」或「仅供参考」
 - 不鼓励重注、梭哈；提示「理性投注、量力而行」
 - 涉及购彩平台、金额、法律合规时，只给通用建议
@@ -245,7 +249,7 @@
   3. `法定 23 家机构初即盘与凯利总表`（初即盘赔率 + 返还率 + 凯利风险警戒值，严禁算术平均）；
   4. `法定 23 家机构五阶段时序生命周期矩阵`（严格解耦为三大战区，每家每玩法提炼 T0~T4 核心节点各 1 行，绝不倾倒冗余碎步流水）；
   5. `Crown 皇冠全指数波胆与比分矩阵`（比分赔率、进球数与半全场）。
-- **Scrapling 100% 极速全包铁律（BrowserOS 退居纯备用辅助）**：单场黄金模板全部 5 大模块（`analysis/{id}cn.htm` 伤停与技统、`analysis/odds/{id}.htm` 皇冠波胆、`getAnalyData` 体彩全玩法、`1x2d.js` 百家欧指、`changeDetail` 亚盘大小球）均由 **`Skill /scrapling-official` ↔ `MCP scrapling` (官方 Session 长连接) 1~2 秒流式并发全取**（基于 `https://github.com/D4Vinci/Scrapling`）。由于 `BrowserOS neo` 启动与渲染太慢，仅作为极端封锁时的备用辅助兜底，常规流程严禁启动！
+- **Scrapling 100% 极速全包铁律（BrowserOS 退居纯备用辅助）**：单场黄金模板全部 5 大模块（`analysis/{id}cn.htm` 伤停与技统、`analysis/odds/{id}.htm` 皇冠波胆、`getAnalyData` 体彩全玩法、`1x2d.js` 百家欧指、`changeDetail` 亚盘大小球）均由工位 1 **`skills/match-scraper`（内嵌 Scrapling 0.5 官方武器库）↔ `MCP scrapling` (官方 Session 长连接) 1~2 秒流式并发全取**（基于 `https://github.com/D4Vinci/Scrapling`）。由于 `BrowserOS neo` 启动与渲染太慢，仅作为极端封锁时的备用辅助兜底，常规流程严禁启动！
 - **与庄共舞第一性原理（反散户战意线性偏见）**：散户赌“谁更想赢/谁无战意”，庄家收割“谁信谁想赢”。系统必须破译庄家借战意预期设立的非对称做市陷阱，永远站在庄家防守与少赔多赚视角推演！
 
 **2026-10-03 系统演化三阶总战略（主人亲授立宪）**：

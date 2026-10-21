@@ -135,7 +135,7 @@ read_file(path="memory/{复盘日期}.md")
 ### 步骤 2：获取比赛结果
 
 **【数据采集最高立宪红线（100% Scrapling 独家体系，绝对严禁外部独立浏览器）】**：
-赛果与比分采集 100% 独家归属 **`Skill /scrapling-official` ↔ `MCP scrapling`** 官方原生流水线！
+赛果与比分采集 100% 独家归属工位 1 **`skills/match-scraper` ↔ `MCP scrapling`** 官方原生流水线！
 **绝对严禁调用任何外部独立浏览器（如 `Skill /browseros-neo` ↔ `MCP browseros_neo`）！** 违规调用外部浏览器抓取比分视为严重违纪与输入污染行为！
 
 从推荐记录中取出每场比赛的比赛 ID，优先通过官方 Scrapling MCP 长连接会话并发抓取即时详情页获取完场赛果：
@@ -153,7 +153,7 @@ read_file(path="memory/{复盘日期}.md")
 
 批量并发获取，如遇偶发超时重试一次。
 
-若推荐记录中比赛 ID 丢失或需要查看整日开售赛果，用 `/scrapling-official` 官方流水线打开球探竞足页切到昨日销售日，禁止先 `npm run schedule`。
+若推荐记录中比赛 ID 丢失或需要查看整日开售赛果，用工位 1 `skills/match-scraper` 官方流水线打开球探竞足页切到昨日销售日，禁止先 `npm run schedule`。
 
 ### 步骤 3：逐场核对
 

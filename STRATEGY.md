@@ -46,7 +46,7 @@ _Why it serves the approach:_ 论文是前人智慧的底座，大模型大局�
 _Why it serves the approach:_ 视网膜负责“精准看数”，认知图谱负责“博弈调兵与错题自愈”，算力引擎负责“客观数学底牌”，三者相辅相成，构筑坚不可摧的职业精算工业流水线。
 
 ### 官方敏捷数据管道保障 (Scrapling 官方原生流水线)
-采用 `Skill scrapling-official ↔ MCP scrapling`（毫秒直取欧指数据流并提纯法定 23 家与 7 家法定机构变盘流水）官方原生流水线，100% 独家物理闭环采集，严禁常规流调用外部独立浏览器（如 `browseros-neo`）；组装快照必须真实完整落盘，所有 Polymarket 真实交付链接在落笔前必须物理调用 Gamma API 检索验真，严守数据纯净、真实检索与防错位红线。
+采用工位 1 `skills/match-scraper`（内嵌 Scrapling 0.5 官方武器库 ↔ MCP `scrapling`，毫秒直取欧指数据流并提纯法定 23 家与 7 家法定机构变盘流水）官方原生流水线，100% 独家物理闭环采集，严禁常规流调用外部独立浏览器（如 `browseros-neo`）；组装快照必须真实完整落盘，所有 Polymarket 真实交付链接在落笔前必须物理调用 Gamma API 检索验真，严守数据纯净、真实检索与防错位红线。
 _Why it serves the approach:_ 为大模型的逻辑推理提供 100% 真实客观的物理事实底座，杜绝脏数据污染与假数据脑补。
 
 ### 现代化流水线连锁贯通 (全自动紧密绳索与学术闭环)

@@ -444,15 +444,45 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 
 ### 1.5 官方本地深度参考库（references/）与代码样例（examples/）
 
-进货车间本地已完整内嵌配套技术资产，可通过相对路径按需直接索引：
-- **`references/mcp-server.md`** - MCP 服务工具定义、长连接持久会话、远程 CDP 浏览器自动化、认证机制与高级特性
-- **`references/building-rag-systems.md`** - 配合 `Response.markdown()` 与 `ContentSpider` 将网页直转为 LLM 消费级 Markdown
-- **`references/parsing/`** - HTML 节点解析、自适应指纹学习、CSS/XPath 混合提取与容错重定位
-- **`references/fetching/`** - 高阶网络请求、动态无头抓取、指纹混淆与 Session 会话持久化
-- **`references/spiders/`** - 并发爬虫架构、代理轮换池、断点续传（Checkpoints）与规则式路由
-- **`references/integrations/scrapy.md`** - 在既有 Scrapy 工程中无缝集成 Scrapling 解析器
-- **`references/migrating_from_beautifulsoup.md`** - 从 BeautifulSoup 迁移至 Scrapling 极速解析器的 API 映射字典
-- **`examples/` 目录（官方代码样例）**：本地包含 `01_fetcher_session.py`、`02_browser_session.py`、`04_spider.py` 等官方示例，作为只读语法参考。*注：在推演业务态下严格遵循全禁脚本铁律，不得作为临时脚本直接执行。*
+进货车间本地已完整内嵌配套技术资产，各模块通过相对路径有机打通、互为支撑：
+
+#### 1.5.1 references/ 本地深度参考文档（18 篇深层技术内功字典）
+- **核心协议与服务**：
+  - `references/mcp-server.md` - MCP 服务工具定义、长连接持久会话、远程 CDP 浏览器自动化、认证机制与高级特性
+  - `references/building-rag-systems.md` - 配合 `Response.markdown()` 与 `ContentSpider` 将网页直转为 LLM 消费级 Markdown
+- **网络请求与破盾（fetching/）**：
+  - `references/fetching/choosing.md` - 抓取通道选型阶梯指南（HTTP vs 无头浏览器）
+  - `references/fetching/static.md` - 基于 `curl_cffi` 的极速静态与长连接会话持久化
+  - `references/fetching/stealthy.md` - 无头自动化、指纹混淆、Shadow DOM 穿透与 Cloudflare 挑战盾破解
+- **自适应解析与提取（parsing/）**：
+  - `references/parsing/adaptive.md` - DOM 拓扑指纹持久化、自动容错重定位与学习机制
+  - `references/parsing/main_classes.md` - `Selector` 与 `Response` 核心对象方法全集
+  - `references/parsing/selection.md` - CSS / XPath 混合提取、文本匹配与链式导航
+- **并发爬虫框架（spiders/）**：
+  - `references/spiders/architecture.md` - 异步爬虫架构、状态机与中间件调度
+  - `references/spiders/getting-started.md` - 爬虫快速入门、并发控制与回调机制
+  - `references/spiders/generic-templates.md` - `CrawlSpider`, `SitemapSpider`, `XMLFeedSpider`, `CSVFeedSpider` 通用模板
+  - `references/spiders/platform-templates.md` - 平台定制爬虫模板（如 `ShopifySpider`）
+  - `references/spiders/sessions.md` - 多会话混合路由管理
+  - `references/spiders/proxy-blocking.md` - 代理池轮换、智能退避与反封锁
+  - `references/spiders/requests-responses.md` - 请求响应模型与元数据传递
+  - `references/spiders/advanced.md` - 检查点断点续传（Checkpoints）与开发缓存重放
+- **生态整合与迁移**：
+  - `references/integrations/scrapy.md` - 在 Scrapy 工程中无缝集成 Scrapling 解析器
+  - `references/migrating_from_beautifulsoup.md` - 从 BeautifulSoup 迁移至 Scrapling 极速解析器的 API 映射字典
+
+#### 1.5.2 examples/ 官方代码样例（4 类最佳实践样板）
+本地包含 4 套端到端官方示例代码与 `README.md`，作为工位 1 的只读模式模板参考（业务态下受零脚本铁律约束，仅供模式学习，严禁直接手搓运行）：
+- `examples/01_fetcher_session.py` - 持久 HTTP 会话（`FetcherSession`），适用于静态 API 与极速翻页
+- `examples/02_browser_session.py` - 动态无头浏览器（`StealthySession`），适用于 SPA 动态单页渲染
+- `examples/03_stealthy_session.py` - 隐形破盾浏览器（`StealthySession`），专治 Cloudflare 与高级指纹检测
+- `examples/04_spider.py` - 自动并发爬虫（`Spider`），全量站点深度抓取与自动翻页
+- `examples/README.md` - 官方选型升阶阶梯指南（`FetcherSession ➔ StealthySession ➔ Spider`）
+
+#### 1.5.3 三维一体协同沟通关系
+1. **`SKILL.md`（生产总控中枢）**：承接总控台调度工单，将球探 26 端点业务需求与 Scrapling 规范焊合；
+2. **`references/`（深度知识外脑）**：为 Agent 在遭遇冷门加密、Shadow DOM 或特殊反爬时提供 18 篇即查即用官方方案；
+3. **`examples/`（架构形态蓝图）**：提供官方标准的会话管理与异常升阶代码范式，规范 MCP 交互行为。
 
 ### 1.6 官方通用护栏（Official Guardrails）
 - Only scrape content you're authorized to access.
@@ -623,14 +653,19 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 1. **底层存证 JSON 满配门禁（`data/{销售日}/raw/{matchId}.json`）**：
    - `payloads` 数量必须为 **26 个**，绝对严禁遗漏 21 张变盘流水表；
    - 底层存证 Schema 门禁：`payloads` 必须包含全量 26 个端点键，且各键内容必须为有效字符串（可被 DOM/JSON 正常解析，绝非垃圾填充）；
-   - `payloads['1x2d.js']` 真实长度必须 $\ge 300\text{KB}$；
+   - `payloads['1x2d.js']` 真实长度必须 $\ge 300\text{KB}$（确保 100+ 做市商无截断）；
    - 校验 `receipt.endpoints[i].size` 必须与 `payloads[name]` 真实字符数 1:1 精确匹配，虚报立即熔断报警。
 2. **人类可视化简报黄金装配门禁（`data/{销售日}/{matchId}.md`）**：
-   - **行数与战区硬红线**：行数必须 **$\ge 350$ 行**（满配对齐 380~450 行标准格式），严禁生成 100~200 行的抽稀半成品；
-   - **战区全覆盖**：必须 100% 包含全量 5 大战区（一·阵容伤停、二·基础战绩、三·23家欧指、四·21张变盘流水、五·波胆与体彩）；
-   - **21 张变盘流水表全量点亮**：战区四中 7 大法定机构按亚盘、大小球、欧指各自建表（共 21 张表，倒序排列）；
-   - **23 家做市商全景对比**：战区三必须完整列出法定 23 家初即盘、返还率与凯利指数；
-   - **波胆与体彩实盘**：战区五必须完整呈现 Crown 皇冠 0:0~4:4 波胆比分表格与中国体彩 HAD/HHAD 官方玩法表格。
+   - **严禁全页裸拼（Zero Full-Page Dump Invariant）**：绝对严禁将 `analysis.html` 全文或未加选择器的 HTML 页面直接调用 `markdown()` 倾倒入 `.md` 简报！`.md` 文件必须由五大标准组件自底向上纯净构建；
+   - **四重品控防错门禁（Poka-Yoke Markdown Gates）**：
+     1. **Anti-Ad Gate（防广告横幅）**：简报开头与正文绝对严禁包含“新球会员”、“每天最低节省”、“下载App”等营销广告词（检出命中数 $\equiv 0$）；
+     2. **Anti-Collapse Gate（防表格炸裂）**：严禁出现多层嵌套 table 坍塌引发的数十乃至 130 列表格横向炸裂；任意一行文本中 `|` 字符数量必须 $\le 35$ 个；
+     3. **Anti-Placeholder Gate（防未渲染死占位符）**：往绩与交锋战绩必须由 `analy.json` 或微观结构化数组真实提炼渲染，严禁出现原站前端死模板 `近 0 场 主客相同` 等假空文字；若历史上确实无交锋记录，显式标注 `[历史无交锋记录]`；
+     4. **Anti-Omission 23 CIDs Gate（23家机构点亮）**：战区三欧指大表必须严格遍历 23 家做市商 CID 白名单，缺盘机构显式标注 `[官方未开盘]`；
+   - **行数与战区硬红线**：行数稳定在 **380~600 行纯净工整大表区间**，严禁生成 100~200 行的抽稀半成品，也严禁靠倾倒垃圾网页撑到 1600+ 行；
+   - **战区全覆盖**：必须 100% 包含全量 5 大战区（一·阵容伤停、二·基础战绩与积分、三·23家做市商欧指、四·21张变盘流水单表、五·Crown波胆与体彩实盘）；
+   - **21 张变盘流水单表点亮**：战区四中 7 大法定机构按亚盘、大小球、欧指各自建表（共 21 张表，倒序排列），抓取时强制下推 `css_selector="#table_odds"`，杜绝外层废表；
+   - **23 家做市商全景对比**：战区三必须工整呈现法定 23 家初即盘、初即返还率与凯利指数。
 
 ### 6.2 出厂交付标准零件托盘 1（模式一 & 模式二交付契约）
 

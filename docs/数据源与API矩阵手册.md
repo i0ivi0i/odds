@@ -22,7 +22,11 @@
 ### 1. 赔率时序与全盘指数（主源：titan007）
 - **特点**：球探页可免登录查看多家机构升降盘历史。当场覆盖以页面实际可见公司与行数为准，不是「全网唯一免费、14 家全覆盖、无频率限制」的保证。
 - **获取内容**：亚盘盘水变化表、大小球盘水变化表、欧赔逐笔时序、皇冠已有比分/半全场/总进球项目。固定比分范围不冒充全池。
-- **抓取通道**：100% 独家归属官方 Scrapling 原生流水线（Skill `/scrapling-official` ↔ MCP `scrapling`）。严禁调用外部独立浏览器，严禁编写临时 Python 脚本。
+- **抓取通道**：100% 独家归属工位 1（`skills/match-scraper`，内嵌 Scrapling 0.5 官方武器库 ↔ MCP `scrapling`）。严禁调用外部独立浏览器，严禁编写临时 Python 脚本。
+- **Scrapling 官方五大战区反污染装配机制**：
+  1. **纯数据流（Text Stream）**：`1x2d.js`（>300KB）、`analy.json`、`polymarket.json`，无损直出；
+  2. **叶子选择器原地下推（Leaf Markdown）**：21 张流水表强制下推 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，杜绝外层嵌套 table 引发的 130 列表格横向炸裂坍塌；
+  3. **人类简报五大组件装配**：`{matchId}.md` 严禁全页 HTML 裸转 Markdown（杜绝会员广告与死骨架），严格从结构化数据提炼五大战区（伤停、战绩、23家欧指大表、21张流水单表、波胆实盘），执行 Anti-Ad、Anti-Collapse、Anti-Placeholder、23 CIDs 四重品控门禁。
 
 ### 2. 主源失败怎么办
 - **线上不先跑脚本**：严禁自写任何临时抓取脚本。
