@@ -201,7 +201,7 @@ metadata:
      当复盘经验在步骤 4.6 满 5 场样本外前瞻检验且支持率 ≥ 70% 判定为「已采用（内化为本能）」后，自动化三层融合：
      1. **第一层：长期记忆中枢（`MEMORY.md` 永久上下文）**：待验证表中状态更新为「已采用（内化为本能）」，并入「关键教训」，AI 唤醒必读；
      2. **第二层：Graphify 知识图谱动态层（`graphify-out/` 动态认知覆盖层）**：通过多次 `--outcome useful` 累积互证（`graphify reflect` 默认 `--min-corroboration 2`），在 `LESSONS.md` 与 `.graphify_learning.json` 中赋予高置信度权重并与 God Node 骨干连接，赛前查阅 `LESSONS.md` 错题本秒级挂载；
-     3. **第三层：核心推演大脑（`skills/deep-analysis/SKILL.md` 认知心法）**：单场推演调用 Graphify 官方 MCP `query_graph` 靶向召回高置信战例，通用做市博弈心法经主人审批后精炼写入原则（恪守做减法与 1800 行封顶纪律）；
+     3. **第三层：核心推演大脑（`skills/deep-analysis/SKILL.md` 认知心法）**：单场推演调用 Graphify 官方 MCP `query_graph` 靶向召回高置信战例，通用做市博弈心法经主人审批后精炼写入原则（恪守做减法与 1200 行封顶纪律）；
    - ⑦ **极速赛果获取通道与直出 7 列表双对账铁律（Instant Outcome & 7-Column Dual Verification）**：
      - **Scrapling 官方原生采集中枢立宪与严禁外部浏览器与甩锅铁律（Scrapling-Only & Zero-Excuse Protocol）**：
        * 全系统（包含赛前抓赔率、阵容，以及赛后复盘抓完场比分）100% 独家归属 `Skill /scrapling-official` ↔ `MCP scrapling`（`https://github.com/D4Vinci/Scrapling`）。

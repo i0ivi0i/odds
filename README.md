@@ -72,24 +72,63 @@ flowchart LR
 
 ## 🛠️ 五大专业化生产车间工位矩阵
 
-系统解散历史单体冗余结构，解耦落地为五大独立、高内聚的原生 Skill 生产车间：
+系统解散历史单体冗余结构，解耦落地为五大独立、高内聚、零耦合的原生 Skill 生产车间，车间之间通过不可篡改的标准契约零件托盘（Parts Trays）交接：
+
+```mermaid
+flowchart LR
+    subgraph W1 ["工位1: 全权进货局 (match-scraper)"]
+        S1["Scrapling并发拉取<br/>26端点 + 防封控频"]
+    end
+    subgraph T1 ["零件托盘 1"]
+        D1["raw/{id}.json (SSOT)<br/>+ 人类可视化简报 (≥350行)"]
+    end
+    subgraph W2 ["工位2: 业务初筛局 (match-screening)"]
+        S2["输入路由 + 编号解析<br/>全量打标 + 开球拦截"]
+    end
+    subgraph T2 ["零件托盘 2"]
+        D2["标准推演工单序列<br/>[{matchId, kickoffTime, ...}]"]
+    end
+    subgraph W3 ["工位3: 推演大脑 (deep-analysis)"]
+        S3["纯逻辑推演 (≤1200行)<br/>EvoOntology视网膜 + Graphify"]
+    end
+    subgraph T3 ["零件托盘 3"]
+        D3["四维认知契约卡<br/>+ 胜负平/让球/去水点概率"]
+    end
+    subgraph W4 ["工位4: 战报交付局 (recommendation)"]
+        S4["Poka-Yoke Count≡N 门禁<br/>7列表格拼装 + 2串1"]
+    end
+    subgraph T4 ["零件托盘 4"]
+        D4["终端战报 + Polymarket 链接<br/>+ 🎯 精选 2 串 1 组合"]
+    end
+    subgraph W5 ["工位5: 复盘审计局 (post-review)"]
+        S5["真实赛果抓取 + 1:1对账<br/>无卡漏推报警 + 图谱自愈"]
+    end
+
+    W1 --> T1
+    W2 --> T2
+    T1 & T2 --> W3
+    W3 --> T3
+    T3 --> W4
+    W4 --> T4
+    T4 --> W5
+```
 
 ```
 skills/
 ├── match-scraper/      # 工位 1：全权数据进货局 (Scrapling MCP 官方原生流式并发)
-├── match-screening/    # 工位 2：业务初筛局 (6 阶段基本面与机构冷热漏斗)
-├── deep-analysis/      # 工位 3：推演大脑总装局 (EvoOntology 视网膜 + 10 步深度推演)
-├── recommendation/     # 工位 4：战报交付局 (工整标准 7 列表格 + 契约卡)
-└── post-review/        # 工位 5：复盘审计局 (赛后对账 + 认知自愈反思)
+├── match-screening/    # 工位 2：业务初筛局 (4 种输入路由 + 开球拦截 + 标准工单)
+├── deep-analysis/      # 工位 3：推演大脑总装局 (纯逻辑推演 ≤1200行 + 四维认知契约卡)
+├── recommendation/     # 工位 4：战报交付局 (Poka-Yoke 门禁 + 标准 7 列表格 + 2 串 1)
+└── post-review/        # 工位 5：复盘审计局 (双列 1:1 真实对账 + 认知图谱自愈)
 ```
 
-| 车间工位 | 核心职责 | 机械臂绑定与标准协议 | 交付产物 |
+| 车间工位 | 核心职责（高内聚） | 机械臂绑定与标准协议 | 工业标准出厂零件托盘（零耦合接口） |
 | :--- | :--- | :--- | :--- |
-| **工位 1：全权数据进货局**<br/>`skills/match-scraper` | 赛程索引抓取、26 底层端点长连接并发提取、23 家机构核销 | `scrapling` MCP (`bulk_get`, `stealthy_fetch`) 带 `impersonate="chrome"` 与选择器下推 | `data/{销售日}/meta.md`<br/>`raw/{id}.json` (SSOT)<br/>`data/{销售日}/{id}.md` (≥350行) |
-| **工位 2：业务初筛局**<br/>`skills/match-screening` | 联赛级别分级过滤、机构分歧度测算、多维度冷热扫描 | 纯逻辑初筛漏斗，严禁碰赔率时序细节与未解包报文 | `memory/{销售日}.md` 全量候选列表与优先级排序 |
-| **工位 3：推演大脑总装局**<br/>`skills/deep-analysis` | 真实伤停核查、去水点概率测算、Dixon-Coles 泊松分布、10 步庄家博弈破译 | `evo-semantic` MCP (`browse_semantics`, `resolve_semantics`)<br/>`sports-math` MCP (`devig_oo_epc`, `poisson_dixon_coles`)<br/>`graphify` 知识图谱 | 认知契约卡 (Cognitive Contract)<br/>10 步深度推演战报 |
-| **工位 4：战报交付局**<br/>`skills/recommendation` | 多场战报格式化装配、Polymarket 真实链接核验、去水点概率对账 | 格式校验闸门（绝不折行、字段强校验、链接真实性） | **标准 7 列表格** (胜负平/让球/去水概率/诱盘破译/真实链接) |
-| **工位 5：复盘审计局**<br/>`skills/post-review` | 赛果真实比对、净胜球核验、失误归因、战法库反思进化 | `graphify` 错题反思导览 + 长期记忆库 (`MEMORY.md`) | 每日复盘审计专报<br/>`足球庄家倍率精算师` 签名 |
+| **工位 1：全权数据进货局**<br/>`skills/match-scraper` | 赛程索引抓取、26 底层端点长连接并发提取、23 家机构核销、单 IP 防封控频 | `scrapling` MCP (`bulk_get`, `stealthy_fetch`) 带 `impersonate="chrome"` 与选择器下推 | **零件托盘 1**：`data/{销售日}/raw/{id}.json` (26 端点原生报文 SSOT) + `matchId.md` (人类简报 $\ge 350$ 行) |
+| **工位 2：业务初筛局**<br/>`skills/match-screening` | 方式 1~4 输入统一路由、竞彩编号转换、开球时间先验拦截、全量打标排队 | 纯直读 `meta.md` 赛程索引，**0 外部网络**，严禁按层级淘汰比赛 | **零件托盘 2**：标准推演工单序列 `work_orders: [{matchId, kickoffTime, league, homeTeam, awayTeam, ...}]` |
+| **工位 3：推演大脑总装局**<br/>`skills/deep-analysis` | 纯只读微观切片、去水点概率测算、Dixon-Coles 泊松分布、10 步庄家博弈破译（$\le 1200$ 行） | `evo-semantic` MCP (`browse_semantics`, `resolve_semantics`)<br/>`sports-math` MCP (`devig_oo_epc`, `poisson_dixon_coles`)<br/>`graphify` 知识图谱 | **零件托盘 3**：**四维不可篡改【认知契约卡】** + 纯推演单场结果（胜负平、让球、点概率、比分） |
+| **工位 4：战报交付局**<br/>`skills/recommendation` | Poka-Yoke `Count(契约卡) ≡ N` 门禁、7 列表格拼装、Polymarket 真实链接核验、文末 2 串 1 优选 | 格式校验闸门（绝不折行、字段强校验、链接真实性）、原子化前置写入 memory | **零件托盘 4**：终端交付物（标准 7 列表格 + 文末【🎯 2 串 1 组合推荐】 + memory 审计底账） |
+| **工位 5：复盘审计局**<br/>`skills/post-review` | 真实赛果抓取、1:1 胜负平+让球双列真实对账、赛前无卡漏推红线报警、战法库反思进化 | `graphify` 错题反思导览 + 长期记忆库 (`MEMORY.md`) | **零件托盘 5**：真实完场对账单（含 ✅/❌/走水） + `LESSONS.md` 经验图谱自愈 |
 
 ---
 
@@ -104,7 +143,7 @@ flowchart TD
     Z_GET["调度 Scrapling bulk_get(index.aspx)<br/>秒级拉取落盘 meta.md 并追加 memory (< 2秒)"]
     P1["【阶段 1：蜂群纯物理进货】<br/>派发专职搬运工 Subagent (Data Ingest Worker)<br/>1~3 场切片并发抓取全量 26 端点<br/>落盘 raw/{id}.json 与 matchId.md (≥350行)"]
     P1_GATE{"双重质检门禁核销<br/>23家做市商 + 26端点 Schema"}
-    P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1800行)<br/>EvoOntology 视网膜微观切片 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
+    P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1200行)<br/>EvoOntology 视网膜微观切片 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
     OUT["【阶段 3：交付与单写原子封存】<br/>写入 memory/{销售日}.md 深度分析摘要与契约卡<br/>交付标准 7 列表格 (含 Polymarket 真实链接)"]
 
     Z --> Z_NO

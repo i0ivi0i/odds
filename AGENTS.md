@@ -38,7 +38,7 @@
   - 5.2 成品仓储与每日 Memory 唯一单写原子封存规约（`memory/YYYY-MM-DD.md`）
   - 5.3 长期记忆中枢（`MEMORY.md`）与庄家操盘战法库六大经典分类
   - 5.4 待验证经验四态流水线流转规约（5 场前瞻验证 + 21 天日落）
-  - 5.5 Graphify 认知图谱联动与系统演化三阶总战略（做减法、微调、加法与 $\le 1800$ 行封顶）
+  - 5.5 Graphify 认知图谱联动与系统演化三阶总战略（做减法、微调、加法与 $\le 1200$ 行封顶）
 
 ---
 
@@ -134,7 +134,7 @@ flowchart TD
     Z_GET["调度 Scrapling bulk_get(index.aspx)<br/>秒级拉取落盘 meta.md 并追加 memory (< 2秒)"]
     P1["【阶段 1：蜂群纯物理进货】<br/>派发专职搬运工 Subagent (Data Ingest Worker)<br/>1~3 场切片并发抓取全量 26 端点<br/>落盘 raw/{id}.json 与 matchId.md (≥350行)"]
     P1_GATE{"双重质检门禁核销"}
-    P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1800行)<br/>EvoOntology 视网膜微观切片 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
+    P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1200行)<br/>EvoOntology 视网膜微观切片 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
     OUT["【阶段 3：交付与单写原子封存】<br/>写入 memory/{销售日}.md 深度分析摘要与契约卡<br/>交付标准 7 列表格 (含 Polymarket 真实链接)"]
 
     Z --> Z_NO
@@ -345,15 +345,56 @@ subagent：获取赛果 → 对比推荐（胜负平+让球双核对） → 计�
 
 ## 第三工段：五大专业化生产车间工位矩阵
 
-系统彻底解散单体大杂烩，由五大高内聚独立原生 Skill 分工治理。推演态 100% 对照五大 Skill 履行职责：
+系统深刻融入埃隆·马斯克关于“超级工厂（Gigafactory）”的分工智慧，彻底消除跨工位越权与散装胶水代码。推演态由五大高内聚原生车间与四组标准化不可篡改的零件托盘（T1~T4）刚性闭环：
 
 ```mermaid
 flowchart LR
-    S1["工位 1：数据进货局<br/>(match-scraper)<br/>独揽抓取/26端点/429退避"] --> S2["工位 2：业务初筛局<br/>(match-screening)<br/>0网络/meta.md/早晚盘截断"]
-    S2 --> S3["工位 3：推演大脑总装局<br/>(deep-analysis)<br/>0网络/≤1800行/EvoOntology视网膜"]
-    S3 --> S4["工位 4：战报交付局<br/>(recommendation)<br/>标准7列表/Polymarket链接/2串1"]
-    S4 --> S5["工位 5：复盘审计局<br/>(post-review)<br/>双列核销/认知归因/自愈反馈"]
+    subgraph W1 ["工位1: 全权进货局 (match-scraper)"]
+        S1["Scrapling并发拉取<br/>26端点 + 防封控频"]
+    end
+    subgraph T1 ["零件托盘 1"]
+        D1["raw/{id}.json (SSOT)<br/>+ 人类可视化简报"]
+    end
+    subgraph W2 ["工位2: 业务初筛局 (match-screening)"]
+        S2["输入路由 + 编号解析<br/>全量打标 + 开球拦截"]
+    end
+    subgraph T2 ["零件托盘 2"]
+        D2["标准推演工单序列<br/>[{matchId, kickoffTime, ...}]"]
+    end
+    subgraph W3 ["工位3: 推演大脑 (deep-analysis)"]
+        S3["纯逻辑推演 (≤1200行)<br/>EvoOntology视网膜 + Graphify"]
+    end
+    subgraph T3 ["零件托盘 3"]
+        D3["四维认知契约卡<br/>+ 胜负平/让球/去水点概率"]
+    end
+    subgraph W4 ["工位4: 战报交付局 (recommendation)"]
+        S4["Poka-Yoke Count≡N 门禁<br/>7列表格拼装 + 2串1"]
+    end
+    subgraph T4 ["零件托盘 4"]
+        D4["终端战报 + Polymarket 链接<br/>+ 🎯 精选 2 串 1 组合"]
+    end
+    subgraph W5 ["工位5: 复盘审计局 (post-review)"]
+        S5["真实赛果抓取 + 1:1对账<br/>无卡漏推报警 + 图谱自愈"]
+    end
+
+    W1 --> T1
+    W2 --> T2
+    T1 & T2 --> W3
+    W3 --> T3
+    T3 --> W4
+    W4 --> T4
+    T4 --> W5
 ```
+
+#### 车间工位与标准零件托盘矩阵（Workshop & Part Tray Matrix）
+
+| 车间工位 | 专属法定职责（高内聚） | 工业标准出厂零件托盘（零耦合接口） | 禁入红线（严防越权） |
+| :--- | :--- | :--- | :--- |
+| **工位 1：进货局**<br/>`skills/match-scraper` | 纯物理采掘、Scrapling 原生流水线、单 IP 防封控频、26 端点完整性过验 | **零件托盘 1**：`data/{销售日}/raw/{matchId}.json` (26 端点原生报文 SSOT) + `matchId.md` (人类简报 $\ge 350$ 行) | 严禁思考盘赔逻辑、严禁定性胜负、严禁猜想赛果 |
+| **工位 2：初筛局**<br/>`skills/match-screening` | 赛程时钟索引自检、方式 1~4 输入解析、竞彩编号转换、开球时间先验拦截、全量打标排队 | **零件托盘 2**：标准推演工单序列 `work_orders: [{matchId, kickoffTime, league, homeTeam, awayTeam, analysisUrl}]` | 严禁发起外部网络抓取（纯直读 meta.md）、严禁淘汰截断比赛 |
+| **工位 3：推演局**<br/>`skills/deep-analysis` | 纯只读消化微观切片、做市博弈反向推演、EvoOntology 视网膜导航、学术图谱反审、10 步深度推演（$\le 1200$ 行） | **零件托盘 3**：**四维不可篡改【认知契约卡】** + 纯推演三项值（胜负平、让球、OO-EPC 去水概率、比分） | 严禁外部网络请求、严禁排版 7 列表格、严禁算串关组合、严禁管理并发文件锁 |
+| **工位 4：交付局**<br/>`skills/recommendation` | 契约卡强断言核销 (`Count ≡ N`)、战报 7 列表格拼装、Polymarket 真实链接核验、文末 2 串 1 组合推荐 | **零件托盘 4**：终端交付物（标准 7 列表格 + 文末【🎯 2 串 1 组合推荐】 + 原子写入 memory） | 严禁篡改推演大脑首选/次选、严禁擅自删减推演行数 |
+| **工位 5：审计局**<br/>`skills/post-review` | 赛后真实赛果抓取、1:1 胜负平+让球双列真实对账、赛前无卡漏推红线报警、Graphify 经验回流 | 真实完场对账单（含 ✅/❌/走水） + LESSONS.md 经验图谱自愈 | 严禁反向脑补预测、严禁为漏推场次免责、严禁无卡冒领命中 |
 
 ### 3.1 工位 1：全权数据进货局（`skills/match-scraper`）
 
@@ -380,16 +421,21 @@ flowchart LR
 
 ### 3.2 工位 2：业务初筛局（`skills/match-screening`）
 
-- **工位定位**：纯业务初筛局，**0 网络请求**，只读 `data/{销售日}/meta.md`。
-- **工序逻辑**：
-  - 严格执行 6 阶段筛选流程（预处理 ➔ 联赛层级 ➔ 时间窗口 ➔ 战意动量 ➔ 数据完备度 ➔ 盘赔异常 ➔ 综合排序）；
-  - 自动识别早盘（$\le 22:00$）与晚盘（$> 22:00$）截断，响应主人四级指令范围；
+- **工位定位**：流水线工单分发中心与调度时钟，**0 网络请求**，只读 `data/{销售日}/meta.md`。
+- **工单生成与出厂标准零件托盘 2（Standard Parts Tray 2 Contract）**：
+  - **交付标准**：标准推演工单序列 `work_orders: [{matchId, kickoffTime, league, homeTeam, awayTeam, analysisUrl}]`；
+  - **输入模式 1~4 统一路由**：方式 1（全量初筛打标）、方式 2（比赛ID）、方式 3（分析页URL）、方式 4（竞彩编号解析如 010 从 meta.md 反查）；
+  - **开球时间先验拦截（Kickoff Prior Intercept）**：当前系统时间 $\ge$ 开球时间的场次在工单生成时打上 `already_started` 拦截标记，绝不流向下游推演大脑；
+  - **全量排队全覆盖纪律**：维持 `MAX_DAILY_ANALYSIS: ALL`，严格执行 6 阶段打标与排序，不以层级淘汰比赛；
   - 初筛通过 0 场时仍须生成对应窗口 `## 推荐`（内容为「本窗口无候选场次」）并推送，以便心跳识别流程闭环。
 
 ### 3.3 工位 3：推演大脑总装局（`skills/deep-analysis`）
 
-- **工位定位**：纯逻辑推演大脑，**0 网络请求**，严禁代码编写业务推演逻辑，行数严格遵守 **$\le 1800$ 行刚性封顶纪律**。
-- **输入物**：EvoOntology 视网膜微观切片（来自 `raw/{matchId}.json`）、Graphify 检索战法。
+- **工位定位**：纯逻辑推演大脑，**0 网络请求，0 页面排版**，严禁代码编写业务推演逻辑，行数严格遵守 **$\le 1200$ 行刚性封顶纪律**（已由 1705 行精简纯化至 1200 行内）。
+- **输入物**：标准零件托盘 1（EvoOntology 视网膜微观切片）、标准零件托盘 2（标准推演工单）、Graphify 检索战法。
+- **出厂标准零件托盘 3（Standard Parts Tray 3 Contract）**：
+  - **核心交付物**：**四维不可篡改【认知契约卡】** + 单场结构化评估结果（胜负平首选/次选、让球盘口、OO-EPC 去水概率、独立泊松比分 Top 4~6）；
+  - **职责边界**：推演大脑零网络抓取、零 7 列表格排版、零 2 串 1 串关计算、零并发文件锁管理，专注于纯逻辑博弈推演！
 - **十步推演与博弈第一性原理（大模型唯一推演主权）**：
   1. **庄家运作第一性原理**：庄家是自营博弈方而非抽水佣金中介（Levitt 2004），核心目标是极小化最大损失：
      $$\min_{\text{赔率}} \max_{\text{赛果}} \big(\text{净赔付} - \text{总注额}\big)$$
@@ -435,7 +481,11 @@ flowchart LR
 
 ### 3.5 工位 4：战报交付局（`skills/recommendation`）
 
-- **工位定位**：整批战报交付与汇总呈现局，负责标准 7 列表格输出、Polymarket 真实链接核验与胜负平 2 串 1 优选建议。
+- **工位定位**：整批战报交付与汇总呈现局，独家全权垄断战报排版、7 列表格输出、Polymarket 真实链接核验与胜负平 2 串 1 优选建议。
+- **出厂标准零件托盘 4（Standard Parts Tray 4 Contract）**：
+  - **终端战报交付物**：工整标准 7 列表格 + 文末【🎯 精选 2 串 1 组合推荐】；
+  - **底层审计底账**：`memory/{销售日}.md` 深度分析结构化摘要与四维认知契约卡原子封存；
+  - **Polymarket 交易链接**：独揽 Gamma/CLOB 挂单核验与真实事件链接呈现。
 - **交付表头 7 规范**：
   `【场次/时间 | 对阵双方 | 胜负平 | 让球 | 胜/平/负点概率（OO-EPC去水） | 庄家诱盘破译 | Polymarket 真实链接】`
   - 第 3 列标题必须叫「胜负平」（首选/次选不折行，如 `主胜（次选平局）`，严禁写成“终审人话指令”）；
@@ -448,6 +498,10 @@ flowchart LR
 ### 3.6 工位 5：复盘审计局（`skills/post-review`）
 
 - **工位定位**：赛后对账与自愈审计局，**0 临时脚本**，端到端执行赛果核对与经验流转。
+- **出厂标准零件托盘 5（Standard Parts Tray 5 Contract）**：
+  - **真实完场对账单**：工整标准 7 列表格，第 3 列【胜负平】与第 4 列【让球】双列打标（✅/❌/走水）；
+  - **学术概率分解报告**：Dimitriadis CORP 与布莱尔三项分解、独立泊松模型质量评估；
+  - **图谱自愈与战法沉淀**：更新 `graphify-out/reflections/LESSONS.md`，推进待验证经验四态流水线（5 场前瞻验证 + 21 天日落）闭环。
 - **审计规范**：
   - 严格输出标准 7 列表，第 3 列【胜负平】与第 4 列【让球】双列打标（✅/❌/走水）；
   - 执行 Dimitriadis CORP 布莱尔三项分解与泊松模型质量评估；
@@ -596,5 +650,5 @@ flowchart LR
   - **循环 3（赛后自愈归卷 · Reflect 经验自进化）**：每日赛后复盘时，通过 `graphify save-result` 对实战进行经验打标（官方 `--outcome` 支持 `useful` 命中加权、`corrected` 失误纠偏、`dead_end` 淘汰降权，对应假设四态流转：`useful` 验证中、`corrected` 纠偏、`dead_end` 流转为 `retired` 已淘汰、累计验证流转为 `adopted` 已采用），随后调用 `graphify reflect` 聚合并自动刷新 `graphify-out/reflections/LESSONS.md`，实现从实战对账到错题本自愈的闭环演进。
 - **系统演化三阶总战略（马斯克做减法 × 乔布斯极简原则 × 保魂去腐）**：
   - ① **主要优先做减法**；② **其次要做微调**；③ **最后在实在不得已的情况下才做加法**（想做加法必须先向主人请示报告）；
-  - `skills/deep-analysis/SKILL.md` 行数严格控制在 **$\le 1800$ 行**，避免无节制大幅膨胀或随意堆砌死板规则；
+  - `skills/deep-analysis/SKILL.md` 行数严格控制在 **$\le 1200$ 行**，避免无节制大幅膨胀或随意堆砌死板规则；
   - **保魂去腐底线**：做减法只准剔除形式主义冗余与死板表格约束；**绝对严禁大幅减少其中的博弈智慧、哲学思考、实战手感与习惯塑形**！核心心法与认知精髓寸步不让。

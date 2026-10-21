@@ -1,6 +1,6 @@
 ---
 name: match-scraper
-description: "从球探体育(titan007)抓取竞彩足球赛程数据与单场【推演源数据】。不仅在用户说「抓取赛程」「获取今日比赛」「进货」「拉取推演源数据」时使用，当任何 Agent / Subagent 在定时任务、自动化工作流、阶段零（赛程自检与索引初始化）或阶段一（推演源数据抓取与门禁质检）需要获取数据时也必须主动调用。"
+description: "全权数据进货局：从球探体育(titan007)并发拉取赛程索引与法定 26 个底层物理端点，独揽 Scrapling 协议流、单 IP 防封控频、阶梯式升阶重试与空骨架自愈，出厂交付标准零件托盘 1（raw/{id}.json 存证 SSOT 与人类简报）。在用户说「抓取赛程」「获取今日比赛」「进货」「拉取推演源数据」或阶段零、阶段一时使用。"
 metadata: { "emoji": "📆" }
 ---
 
@@ -310,12 +310,19 @@ metadata: { "emoji": "📆" }
 1. **主会话中心调度滑动排队（Central Scheduler Sliding Window）**：
    - 严禁一次性并发发射几十个 Worker（防止瞬间数百个连接将球探网 WAF 打爆并导致本机 IP 被封）；
    - 主会话充当调度器，严格实施 **最大 2~3 个活跃 Worker 滑动并发窗口（Sliding Window）** 排队推进，单秒活跃并发连接压制在 5~8 个以内，流量特征完全模拟真实人类多标签浏览；
-2. **单 IP 动态多浏览器指纹轮换（`impersonate=['chrome', 'firefox', 'safari']`）**：
+2. **抓取限流与控频策略（Frequency Control & Rate Limits）**：
+   - 待抓取场次 $\le 5$ 场时，每场/每页抓取间隔维持 1~2 秒；
+   - 待抓取场次 $> 5$ 场时，每抓取 5 场后额外主动暂停 2 秒，防止高频瞬态流量触发目标源站 WAF 封禁；
+3. **单 IP 动态多浏览器指纹轮换（`impersonate=['chrome', 'firefox', 'safari']`）**：
    - `bulk_get` 传参强制配置官方多指纹列表，底层 `curl_cffi` 在每次请求中自动随机混淆 TLS 指纹、ALPN 扩展与 Client Hints，消灭单一爬虫指纹特征；
-3. **阻断智能退避与自愈升阶（Auto-Backoff & Stealth Escalation）**：
-   - 遇到 `429 Too Many Requests` 时，配置 `retries=3, retry_delay=1` 自动退避 2 秒平稳重试；
-   - 遇到 `403 Forbidden` 或 Cloudflare/人机验证盾时，自动升阶至 `stealthy_fetch(solve_cloudflare=true)`，由本地真实无头 Chrome 解锁并继承 Cookie，零换 IP 亦可安全通行；
-4. **23 家做市商布尔核销与数据零缺失门禁**：
+4. **抓取异常与阶梯式自动升阶重试（Ingest Retry & Escalation Strategy）**：
+   - 遇到网络波动、DNS 超时，原地重试（最大重试 3 次，递增等待 1s, 2s, 3s）；
+   - 遇到 `429 Too Many Requests`，触发指数退避（等待 2~4 秒重试）；
+   - 遇到 `403 Forbidden`、`503 Service Unavailable` 或 Cloudflare Turnstile 挑战盾，立即自动升阶至 Level 2 `stealthy_fetch(solve_cloudflare=true)`，由本地真实无头 Chrome 接管解锁并继承 Cookie，零换 IP 亦可安全通行；
+   - 连续 3 次重试仍失败，立即置顶向总控台发出红色高危警报并记录失败上下文，严禁静默吞掉异常；
+5. **动态 DOM 渲染与空骨架自检自愈（Dynamic DOM Auto-Escalation & Empty Skeleton Repair）**：
+   - Level 1 `bulk_get` 提取的数据表格行数（`<tr>` 数量）$< 2$ 且页面包含动态加载脚本时，判定为空骨架，自动升阶至 `stealthy_fetch(network_idle=True)` 等待网络静默完成再抽取 DOM，彻底杜绝只抓残缺骨架；
+6. **23 家做市商布尔核销与数据零缺失门禁**：
    - `1x2d.js` 底层报文必须 100% 包含法定 23 家机构，遇缺失立即报警阻断，严禁产出抽稀残缺数据。
 
 ### 2. Scrapling 官方开箱即用闭环工单直达范式（Zero-Reading Work-Order Paradigm）
@@ -364,4 +371,18 @@ metadata: { "emoji": "📆" }
 
 ## 输出
 
-将完整的结构化赛程列表返回，供后续 match-screening 使用。
+### 出厂交付标准零件托盘 1（Standard Parts Tray 1 Contract）
+
+进货局作为流水线第一工位，出厂交付 100% 满配、零抽稀的标准零件托盘 1：
+
+1. **模式一交付（赛程索引与记忆）**：
+   - 赛程总览索引：`data/{销售日}/meta.md`
+   - 赛程记忆追加：`memory/{销售日}.md` 中的 `## 赛程抓取（HH:MM）` 章节
+
+2. **模式二交付（标准零件托盘 1）**：
+   - **零件托盘 1（唯一真实底层存证 SSOT）**：`data/{销售日}/raw/{matchId}.json`（必须包含全量 26 个底层物理端点原生报文，receipt.all_success == true，单场体积 $\ge 80\text{KB}$）
+   - **零件托盘 1 伴随视图（面向人类的可视化简报）**：`data/{销售日}/{matchId}.md`（行数必须 $\ge 350$ 行，100% 包含全量 5 大战区，21 张变盘流水表完整倒序点亮；专供人类复盘核验，推演大脑只读 raw JSON）
+
+3. **出厂放行断言与禁入红线**：
+   - 进货局专职物理采掘、协议网络流控与数据质检；
+   - **严禁思考盘赔逻辑、严禁定性胜负、严禁猜想赛果！**
