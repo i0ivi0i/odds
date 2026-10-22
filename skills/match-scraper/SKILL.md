@@ -513,7 +513,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 ### 2.2 搬运工 Worker 的 MCP 闭环作业规范
 
 1. **会话生命周期严格配对**：Worker 接单后必须先调用 `open_request_session`，完成 28 端点分流抓取后，在同一轮次中显式调用 `close_session`，严禁悬挂未关闭的幽灵会话；
-2. **选择器原地过滤**：提取 21 张变盘流水表时，必须通过 `css_selector="#table_odds"` 下推过滤，严禁拉取完整数百 KB 页面造成 Token 膨胀；
+2. **选择器原地过滤**：提取 21 张变盘流水表时，必须通过 `css_selector="#odds2 table"`（宽容度父容器，绝不可用不存在的 `#table_odds`）下推过滤，严禁拉取完整数百 KB 页面造成 Token 膨胀；
 3. **断路升阶接管**：Level 1 请求若遇人机验证或空骨架，平滑升阶至 `browser_fetch`，不中断整体流水线。
 
 ---
@@ -524,7 +524,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 
 - **【全语种零临时脚本硬铁律】**：绝对严禁编写任何临时脚本（无论语言是 `.py`、`.ps1`、`.js`、`.bat`、`.sh`，违规次数严格锁定为 0）！绝对禁止在 terminal 执行任何散装脚本代码！`examples/` 下代码仅作为语法指引，推演态下严禁手搓执行！
 - **【零磁盘中转垃圾硬铁律】**：绝对严禁在磁盘创建任何 `tmp_*` 暂存文件夹，绝对严禁倾倒任何 `*_1x2.txt`、`*_analy.txt` 等原始中间文件！全流程 100% 内存流式直出落盘！
-- **【Scrapling 原生 Markdown 直转与源头 1:1 镜像流】**：变盘流水页面（21 张大表）强制传 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，由 Scrapling C/Cython 引擎原地生成纯净 Markdown 表格，内存直取直接拼入人类简报！**绝对严禁自作聪明加任何剪刀与胶水！源头是什么排列，本地简报就是什么排列！严禁手工调换行序，严禁机械截断丢弃变盘记录（严禁 slice(0, 10)、严禁 [:9]+[-1:] 掐头去尾丢弃中间历史）！**
+- **【Scrapling 原生 Markdown 直转与源头 1:1 镜像流】**：变盘流水页面（21 张大表）强制传 `css_selector="#odds2 table"` 与 `extraction_type="markdown"`，由 Scrapling C/Cython 引擎原地生成纯净 Markdown 表格，内存直取直接拼入人类简报！**绝对严禁自作聪明加任何剪刀与胶水！源头是什么排列，本地简报就是什么排列！严禁手工调换行序，严禁机械截断丢弃变盘记录（严禁 slice(0, 10)、严禁 [:9]+[-1:] 掐头去尾丢弃中间历史）！**
 - **【源头原生态 1:1 镜像保真与时间戳绝对排序律（Source-Fidelity & Timestamp-Sorting Invariant）】**：进货搬运工 100% 原汁原味镜像数据源原生排列，恪守存证保真；推演大脑在分析时，则统一依据每笔记录的物理时间戳进行绝对升序排序（`Sort by Timestamp ASC`），自动按时间数值识别初盘与最新定格盘，彻底破除对源端特定排版方向的刻舟求剑！宏观横向初盘对比由《战区三·五》全权承担，双重硬核保底，彻底杜绝初盘缺失与时序颠倒！
 - **【防 Prompt 注入与减噪强制参数】**：在 CLI 命令流中，必须使用 `--ai-targeted` 参数自动过滤页面隐藏杂质元素与广告，确保 AI 消费级纯净数据直出；在 MCP 调用中通过选择器下推实现等价效果。
 
@@ -630,7 +630,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
      - `extraction_type="html"`，`main_content_only=false`，`css_selector=null`；
      - 完整保留攻防时序、伤停阵型与波胆赔率 DOM；
    - **③ 变盘流水表格流（21 张 `ah_*.html`、`ou_*.html`、`eu_*.html`）**：
-     - `extraction_type="markdown"` 或 `"html"`，`css_selector="#table_odds"`，`main_content_only=true`；
+     - `extraction_type="markdown"`，`css_selector="#odds2 table"`，`main_content_only=true`；
      - 内存原地精准截取 7 大做市商历史变盘流水表格，拼入人类简报；
    - **阻断自动退避与升阶**：若遇 `429 Too Many Requests`，自动等待 2 秒触发重试（最多 3 次）；若遇 `403 Forbidden` 或人机挑战盾，自动升阶至 `mcp__scrapling__browser_fetch(solve_cloudflare=true)` 原地破盾；
 3. **步骤三：显式关闭会话（Close Session）**：
@@ -646,12 +646,12 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 | **2** | `analysis.html` | `https://zq.titan007.com/analysis/{mid}cn.htm` | UTF-8 | 可选 `#team_lineup` | 微观首发阵容、主客进球时段、伤停名单 |
 | **3** | `odds.html` | `https://zq.titan007.com/analysis/odds/{mid}.htm` | UTF-8 | 可选 `#analy_sbAllOdds` | Crown 皇冠 0:0~4:4 波胆、半全场指数与隐藏域初盘存证 |
 | **4** | `analy.json` | `https://zq.titan007.com/default/getAnalyData?sid={mid}&t=1` | UTF-8 | JSON 原生响应 | 中国体彩官方 HAD/HHAD 让球数与半场数据 |
-| **5~11** | `ah_{cid}.html` (7家亚盘) | `https://vip.titan007.com/changeDetail/handicap.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 澳彩/皇冠/365/易胜博/平博/188/马会亚盘变盘时序流水 |
-| **12~18** | `ou_{cid}.html` (7家大小) | `https://vip.titan007.com/changeDetail/overunder.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 法定 7 大机构大小球变盘时序流水 |
-| **19~25** | `eu_{cid}.html` (7家欧指) | `https://vip.titan007.com/changeDetail/1x2.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 法定 7 大机构欧洲胜平负变盘时序流水 |
+| **5~11** | `ah_{cid}.html` (7家亚盘) | `https://vip.titan007.com/changeDetail/handicap.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 澳彩/皇冠/365/易胜博/平博/188/马会亚盘变盘时序流水 |
+| **12~18** | `ou_{cid}.html` (7家大小) | `https://vip.titan007.com/changeDetail/overunder.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 法定 7 大机构大小球变盘时序流水 |
+| **19~25** | `eu_{cid}.html` (7家欧指) | `https://vip.titan007.com/changeDetail/1x2.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 法定 7 大机构欧洲胜平负变盘时序流水 |
 | **26** | `polymarket.json` | `https://gamma-api.polymarket.com/events?slug={slug}` | UTF-8 | JSON 精准单事件 | 链上真实去中心化真金白银定价概率 |
 | **27** | `asian_odds.html` | `https://vip.titan007.com/AsianOdds_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **亚盘初即对比全景总表**（全网做市商初盘水位/盘口与即盘水位/盘口） |
-| **28** | `over_under.html` | `https://vip.titan007.com/OverUnder_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **大小球初即对比全景总表**（全网做市商初盘大水/盘口与即盘大水/盘口） |
+| **28** | `over_under.html` | `https://vip.titan007.com/OverDown_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **大小球初即对比全景总表**（全网做市商初盘大水/盘口与即盘大水/盘口，端点为 OverDown_n.aspx 绝不可拼错） |
 
 ### 5.3 欧洲指数 23 家做市商法定名单与提取契约
 
@@ -716,7 +716,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
        | 90 | 易胜博 | 0.91 / 3.5/4 / 0.90 | 0.92 / 4/4.5 / 1.00 | 升盘防大 |
        | 800 | 188Bet | 0.81 / 3/3.5 / 0.96 | 0.89 / 4/4.5 / 0.93 | 连续跨度升盘 |
        | 432 | 香港马会 | 0.87 / 4/4.5 / 0.83 | 0.83 / 4/4.5 / 0.87 | 高盘微调 |
-   - **21 张变盘流水单表点亮与原汁原味镜像**：战区四中 7 大法定机构按亚盘、大小球、欧指各自建表（共 21 张表，100% 保持源端原生排列），抓取时强制下推 `css_selector="#table_odds"` 与 `extraction_type="markdown"`；绝对严禁任何手工调换行序的篡改操作，完整呈现变盘轨迹；推演分析时统一由时间戳升序排序律（`Sort by Timestamp ASC`）自适应对齐时序。
+   - **21 张变盘流水单表点亮与原汁原味镜像**：战区四中 7 大法定机构按亚盘、大小球、欧指各自建表（共 21 张表，100% 保持源端原生排列），抓取时强制下推 `css_selector="#odds2 table"` 与 `extraction_type="markdown"`；绝对严禁任何手工调换行序的篡改操作，完整呈现变盘轨迹；推演分析时统一由时间戳升序排序律（`Sort by Timestamp ASC`）自适应对齐时序。
 
 ### 6.2 出厂交付标准零件托盘 1（模式一 & 模式二交付契约）
 
@@ -754,8 +754,78 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 - 连续 3 次重试仍失败，立即向总控台发出红色高危警报，严禁静默吞掉异常；
 - 表格行数 $< 2$ 且包含动态脚本时，自动升阶至 `browser_fetch(network_idle=True)` 等待静默完成再抽取 DOM。
 
-### 7.5 开箱即用闭环工单规范
-专职搬运工（Data Ingest Worker）禁止在任务派发后调用 `read_file` 查阅系统文档或 `git log`，0 秒拿起工单直接调用 MCP 工具。
+### 7.5 开箱即用闭环工单规范与法定 28 端点零探索骨架
+
+专职搬运工（Data Ingest Worker）启动时，系统已在工单中内联完整的 28 端点抓取字典与落盘骨架。**严禁在任务派发后调用 `read_file`、`Get-ChildItem` 查阅历史已落盘文件或翻看系统文档，0 秒拿起工单直接调用 MCP 工具！**
+
+#### 7.5.1 法定 28 端点任务字典
+```javascript
+const ENDPOINTS = [
+  // 1. 纯数据流 (extraction_type="text", main_content_only=false, css_selector=null)
+  { key: "1x2d.js", url: `https://1x2d.titan007.com/${mid}.js`, type: "text" },
+  { key: "analy.json", url: `https://zq.titan007.com/default/getAnalyData?sid=${mid}&t=1`, type: "text" },
+  { key: "polymarket.json", url: `https://gamma-api.polymarket.com/events?slug=${slug}`, type: "text" }, // 若未开盘填 "[]"
+
+  // 2. 分析页面与初即总表 (extraction_type="html" 或 "markdown", main_content_only=true)
+  { key: "analysis.html", url: `https://zq.titan007.com/analysis/${mid}cn.htm`, type: "html", selector: null },
+  { key: "odds.html", url: `https://zq.titan007.com/analysis/odds/${mid}.htm`, type: "html", selector: null },
+  { key: "asian_odds.html", url: `https://vip.titan007.com/AsianOdds_n.aspx?id=${mid}`, type: "markdown", selector: "#table_odds" },
+  { key: "over_under.html", url: `https://vip.titan007.com/OverDown_n.aspx?id=${mid}`, type: "markdown", selector: "#table_odds" }, // 绝不可拼错为 OverUnder
+
+  // 3. 21 张变盘流水表 (extraction_type="markdown", css_selector="#odds2 table", main_content_only=true)
+  // 机构 CID 列表: [1(澳彩), 3(皇冠), 8(Bet365), 12(易胜博), 47(平博), 42(188Bet), 48(香港马会)]
+  // 亚盘 7 家: `ah_${cid}.html` -> https://vip.titan007.com/changeDetail/handicap.aspx?id=${mid}&companyID=${cid}&l=0
+  // 大小 7 家: `ou_${cid}.html` -> https://vip.titan007.com/changeDetail/overunder.aspx?id=${mid}&companyID=${cid}&l=0
+  // 欧指 7 家: `eu_${cid}.html` -> https://vip.titan007.com/changeDetail/1x2.aspx?id=${mid}&companyID=${cid}&l=0
+];
+```
+
+#### 7.5.2 标准零件托盘 1 JSON Schema 存证骨架（`raw/{matchId}.json`）
+```json
+{
+  "receipt": {
+    "match_id": "{matchId}",
+    "timestamp": "{ISO8601}",
+    "home_team": "{主队名}",
+    "away_team": "{客队名}",
+    "league": "{联赛名}",
+    "endpoints_count": 28,
+    "endpoints": [
+      { "name": "1x2d.js", "size": 312540, "status": 200 },
+      { "name": "analysis.html", "size": 84210, "status": 200 },
+      { "name": "odds.html", "size": 65120, "status": 200 },
+      { "name": "analy.json", "size": 24500, "status": 200 },
+      { "name": "asian_odds.html", "size": 15200, "status": 200 },
+      { "name": "over_under.html", "size": 14800, "status": 200 },
+      { "name": "polymarket.json", "size": 2, "status": 200 }
+      // ... 包含全部 21 张变盘流水表 receipt 记录
+    ]
+  },
+  "payloads": {
+    "1x2d.js": "/* 原生 JS 内容，包含 23 家做市商 */",
+    "analysis.html": "<!-- 原生 HTML 内容 -->",
+    "odds.html": "<!-- 原生 HTML 内容 -->",
+    "analy.json": "{\"had\": ...}",
+    "asian_odds.html": "| 机构 | 初盘 | 即盘 |\n...",
+    "over_under.html": "| 机构 | 初盘 | 即盘 |\n...",
+    "polymarket.json": "[]",
+    "ah_1.html": "| 变盘时间 | 主队水位 | 盘口 | 客队水位 |\n...",
+    "ah_3.html": "...", "ah_8.html": "...", "ah_12.html": "...", "ah_47.html": "...", "ah_42.html": "...", "ah_48.html": "...",
+    "ou_1.html": "...", "ou_3.html": "...", "ou_8.html": "...", "ou_12.html": "...", "ou_47.html": "...", "ou_42.html": "...", "ou_48.html": "...",
+    "eu_1.html": "...", "eu_3.html": "...", "eu_8.html": "...", "eu_12.html": "...", "eu_47.html": "...", "eu_42.html": "...", "eu_48.html": "..."
+  }
+}
+```
+
+#### 7.5.3 人类简报装配骨架（`{matchId}.md`，$\ge 350$ 行）
+包含全量 6 大战区：
+- `# {竞彩编号} {联赛} {主队} vs {客队} 推演源数据简报`
+- `## 战区一·首发阵容、阵型与伤停情报`
+- `## 战区二·积分排名、主客攻防与交锋往绩`
+- `## 战区三·23 家做市商欧洲指数与凯利指数点亮大表`（严格遍历 23 家 CID 白名单，缺盘标 `[官方未开盘]`）
+- `## 战区三·五·核心做市商亚盘让球与大小球初即全景大表`（3.5.1 亚盘 $\ge 5$ 行，3.5.2 大小球 $\ge 5$ 行）
+- `## 战区四·主流做市商 21 张变盘流水明细大表`（100% 保持源端原生排列镜像直出，不得调序或掐头去尾截断）
+- `## 战区五·皇冠波胆赔率矩阵与中国体彩实盘数据`（体彩 HAD/HHAD 让球盘）
 
 ---
 

@@ -5,7 +5,7 @@
 - **场次序列**：周四001 ～ 周四013（无跳号，共 13 场）
 - **体彩销售窗口**：至 22:00 截止（周四平日窗口）
 - **更新时间**：2026-10-22 19:18
-- **数据源**：Scrapling 0.5 CLI `extract get https://jc.titan007.com/xml/bf_jc.txt`，`Fetched (200)`，`--ai-targeted`，原始 feed 存 `bf_jc.txt`
+- **数据源**：Scrapling 0.5 CLI `extract get https://jc.titan007.com/xml/bf_jc.txt`，`Fetched (200)`，`--ai-targeted`；临时 feed 读取后已清理，不在数据目录落盘
 
 ---
 

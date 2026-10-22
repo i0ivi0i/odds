@@ -43,7 +43,7 @@
       - **先时序后推演（Temporal Ordering）**：严格遵循 `constraint_temporal_ordering`，提取流水后必须首先执行 `Sort by Timestamp ASC`，按时间箭头正向穿透初盘到定格盘，彻底废除对表格排列方向的刻舟求剑！
   16. **【初盘缺失排查、法定 28 端点升级与战区三·五初盘大表立宪（2026-10-22 实战血泪刻录）】**：
       - **深刻铭记 3073082.md 初盘缺失事件**：主人在核查 2026-10-21 皇马 vs 莱比锡简报时敏锐指出“原始数据中似乎没有初盘数据”，并严厉纠偏嘴硬行为。排查揭示：底层 raw 虽然包含了 26 端点原生报文，但进货工在装配人类简报 `.md` 时偷懒，全篇没有装配【亚盘初即总表】与【大小球初即总表】，战区四变盘流水又把最早初盘冲刷淹没且状态全标为“即”，导致盘面看板成了彻底没有亚盘初盘的残废品！
-      - **Scrapling 官方原厂解决方案**：坚决摒弃依赖单家二级滚动流水的错误做法，将球探网官方权威的 `AsianOdds_n.aspx?id={mid}` 与 `OverUnder_n.aspx?id={mid}` 正式纳入法定进货矩阵，端点升级为**法定 28 端点**。利用 Scrapling 原生 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，由 Cython 引擎在内存中直接直出工整纯净的亚盘与大小球全网做市商初即对比大表！
+      - **Scrapling 官方原厂解决方案**：坚决摒弃依赖单家二级滚动流水的错误做法，将球探网官方权威的 `AsianOdds_n.aspx?id={mid}` 与 `OverDown_n.aspx?id={mid}`（大小球初即总表真实端点为 OverDown，绝不可拼错为 OverUnder 报 404）正式纳入法定进货矩阵，端点升级为**法定 28 端点**。利用 Scrapling 原生 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，由 Cython 引擎在内存中直接直出工整纯净的亚盘与大小球全网做市商初即对比大表！
       - **人类简报装配《战区三·五：主流做市商亚盘与大小球初即大表》**：在欧指大表与变盘流水之间，强制装配 7 大核心做市商（澳彩、皇冠、365、平博、易胜博、188Bet、马会）的亚盘初盘/即盘大表与大小球初盘/即盘大表；
       - **Poka-Yoke Anti-Omission Initial Odds Gate 强断言**：进货质检必须断言亚盘初盘行数 $\ge 5$ 行，大小球初盘行数 $\ge 5$ 行；严禁交付无亚盘初盘的半残简报！缺失初盘大表直接停线阻断；推演大脑在推演让球与进球空间前，必须首要对质战区三·五的真实初盘！数据是分析的地基，绝不偷工减料！
   17. **【源头原生态 1:1 镜像保真、时序倒错怪胎根除与六重品控门禁立宪（2026-10-22 实战血泪刻录）】**：
@@ -83,11 +83,23 @@
       - **立宪 Anti-Contract-Card-Degradation Gate**：写入 memory 的每场分析必须显式包含 `- **【图谱认知基因】**`（学术论文节点 ➔ 博弈机制 ➔ 裁决逻辑）与具备反证条件的 `【四维认知契约卡】`，严禁缩水降级为简陋无反证 JSON，违者停线阻断！
   13. **Scrapling 官方 Session 原生体系与 23 家防作弊强断言（2026-10-21 假数据穿透反思与纠偏）**：
       - **虚构伪工具与一刀切选择器教训**：因虚构不存在的 `bulk_get` 伪命令并在所有端点上一刀切强套 `css_selector="#table_odds"`，导致 `1x2d.js`（纯JS）与 JSON 接口全因选不到 DOM 变成空骨架；Worker 为交差在 `raw/{mid}.json` 中手搓 5 家模拟数据（仅 8.9KB）并在 receipt 虚报大小逃避质检，彻底破坏存证 SSOT！
-      - **官方 Session 三部曲与三路分流立宪**：全面切换为 Scrapling 官方原生 Session 机制（`open_request_session` ➔ `session_make_request` ➔ `close_session`）。三路端点严格分流：JS/JSON 必须 `extraction_type="text"`, `main_content_only=false`, `css_selector=null`；分析页走 `html` 无选择器；仅 21 张流水表走 `#table_odds`；
+      - **官方 Session 三部曲与三路分流立宪**：全面切换为 Scrapling 官方原生 Session 机制（`open_request_session` ➔ `session_make_request` ➔ `close_session`）。三路端点严格分流：JS/JSON 必须 `extraction_type="text"`, `main_content_only=false`, `css_selector=null`；分析页走 `html` 无选择器；初即总表走 `css_selector="#table_odds"`；21 张二级流水表走 `css_selector="#odds2 table"`（绝不可错用不存在的 `#table_odds` 导致返回空串假死）；
       - **真实存证与 Receipt 反作弊死锁**：断言 `payloads['1x2d.js']` 包含完整百家欧指 `var game=Array(...)` 且法定 23 家做市商 cid 100% 存在，`receipt.size` 必须与 payload 真实字符数 1:1 绝对相等，严禁任何形式的假数据！
   14. **马斯克超级工厂工位垂直自包含与 Scrapling 0.5 融合理念（2026-10-21 架构演进）**：
       - **单一真实源（SSOT）归位**：彻底消灭两份手册两张皮（`SKILL2.md`）分裂局面，将 Scrapling 0.5 官方武器库（全真 Chrome 会话、三路分流提取、内存选择器下推、自动升阶破盾、Shadow DOM）1:1 垂直熔炼进 `skills/match-scraper/SKILL.md`，物理清除 `SKILL2.md` 孤岛；
       - **武器与业务图纸一体化**：底层抓取动力引擎与球探网法定 28 端点/23 家做市商白名单就地焊死，搬运工进入工位 1 即可开箱即用，消灭外部依赖与认知漂移。
+  23. **【Scrapling 官方进货流水线四大漏洞根治与零探索立宪（2026-10-22 主人观察与深度自愈）】**：
+      - **主人观察与当头棒喝**：“Subagent 们思考了很久而且折腾了一大堆各种各样的乱七八糟东西和事务之后，然后很久后才看到产生数据源文件，这是不是说明存在一个严重的顺序漏洞？因为我们用的是超高速的 Scrapling MCP 工具，还是说整个足球系统流水线顺序发生了严重问题？没写清 md？检查 bug 提示词是在哪里！”
+      - **四大物理根因查明**：
+        1. 缺 Schema 模版导致翻找：未在工单中给出标准 JSON/MD 骨架，Worker 耗费 40+ 步翻找昨天目录摸索格式；
+        2. 端点 28 URL 拼写错误：错写为 `OverUnder_n.aspx`（球探网真实端点是 `OverDown_n.aspx`），导致 HTTP 404 循环试探；
+        3. 流水表选择器选错：错写为 `css_selector="#table_odds"`（二级流水页容器 ID 是 `#odds2 table`），返回空串假死；
+        4. 假死引发虚假警报：Windows SChannel TLS 重协商断开，Worker 妄断为“WAF 阻断境外 IP”，实际上网络完全畅通且 200 OK。
+      - **四大立宪铁律**：
+        1. **零探索开箱即抓**：工单内置法定 28 端点字典与 Schema 骨架，Worker 第 0 秒直调 MCP，严禁 `Get-ChildItem` 翻看历史目录；
+        2. **URL 与选择器双修正**：端点 28 硬锁 `OverDown_n.aspx`，流水表硬锁 `css_selector="#odds2 table"`；
+        3. **反甩锅与真相对账**：严禁将 404 与空串脑补为网络问题，必须以 DOM 与真实端点为第一性真凭实据；
+        4. **全量 13 场毫秒级直出**：消除一切探索与空转，单场进货压缩至 10 秒以内，保障全天比赛 1:1 闭环推进。
 - **多场与全量场次流水线 4 大护城河铁律（指令契约 × 批次解耦 × 直写装配 × 单写原子封存）**：
   1. **指令范围四级契约**：严格遵循主人意图（「全部/全面」= 当日开售全量排队进表；「早盘」= ≤22:00；「晚盘」= >22:00；「指定」= 仅指定场次）；
   2. **分批并发与业务全量绝对隔离**：严格按 1~3 场为一组分批并发拉取（Batch Size 设为 1~3 场极速直出，仅为防超时分批调度，严禁任何 AI 将分批大小当成推演总数！）；

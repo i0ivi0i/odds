@@ -159,7 +159,7 @@ flowchart TD
   ② **业务态与工程态分工**：推演态专注于业务流本身，数据规范以 `match-scraper` 与 `deep-analysis` 为准，Python 脚本通过 CLI 命令行高效运行。推演过程中无需分心研读内部代码实现；当任务是代码重构与维护时，再自然进入工程态。
 
 #### 阶段 1：Agents 蜂群纯物理进货与确定性装配（Phase 1 Ingest Gate）
-- 主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`），按 1~3 场分组调用 `match-scraper`（官方 Scrapling MCP Session 长连接并发拉取全量法定 28 端点，含亚盘与大小球全景初即总表）落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`（满配 28 payloads 原生报文 Schema），并同步组装落盘人类可视化简报 `data/{销售日}/{matchId}.md`（必须完整装配战区三·五主流做市商亚盘与大小球初即大表）。严禁搬运工思考盘赔逻辑或定性胜负！
+- 主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，立即派发专职搬运工 Subagent（Role: `Data Ingest Worker` / `Batch Ingest Worker`）。工单 Prompt 内置完整的 28 端点字典与落盘 Schema 骨架。Worker **严禁在抓取前探索磁盘，严禁使用 `Get-ChildItem` 或 `read_file` 翻看昨天历史文件摸索格式，严禁执行 `curl`/`openssl`/`powershell` 等终端命令**！收到工单第 0 秒必须且只能直接调用 `open_request_session`（官方 Scrapling MCP Session 长连接并发拉取全量法定 28 端点，含亚盘与大小球全景初即总表，端点 28 为 `OverDown_n.aspx`，流水表下推 `css_selector="#odds2 table"`）落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`（满配 28 payloads 原生报文 Schema），并同步组装落盘人类可视化简报 `data/{销售日}/{matchId}.md`（必须完整装配战区三·五主流做市商亚盘与大小球初即大表）。严禁搬运工思考盘赔逻辑或定性胜负！
 - **【初盘完整性强断言门禁（Anti-Omission Initial Odds Gate）】**：
   进货交付的人类可视化简报 `matchId.md` 必须通过初盘完整性断言：战区三·五中核心机构亚盘初盘行数 $\ge 5$ 行，大小球初盘行数 $\ge 5$ 行。绝对严禁交付没有亚盘/大小球初盘大表的半残简报！若初盘大表缺失或全为空白，立即触发 Poka-Yoke 停线阻断并原地重装，严禁将残次零件流入阶段二推演大脑！
 - **【源头原生态 1:1 镜像保真铁律（Source-Fidelity Invariant）】**：
@@ -234,7 +234,7 @@ flowchart TD
 #### 标准进货 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "【阶段一专职搬运工官方Session进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，严禁读取任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用），严禁执行代码与 git 探测！严格按官方 Session 三部曲秒级完成：①【会话建立与三路分流】：调用官方 Scrapling MCP open_request_session(session_id='ingest_{matchId}', impersonate='chrome') 建立全真指纹连接；通过 session_make_request 对法定 28 端点执行三路分流提取（1x2d.js/analy.json/polymarket.json 走 text、main_content_only=false、无 selector；analysis.html/odds.html/asian_odds.html/over_under.html 走 html、无 selector；21 张流水表走 css_selector='#table_odds'）；拉取完毕强制 close_session；若遇 429 自动延时重试，若遇 403/盾自动升阶 browser_fetch(solve_cloudflare=true)；②【原子落盘与23家核销硬断言】：核销 1x2d.js 包含法定 23 家做市商全部存在且非空，断言 receipt 记录大小与真实 payload 长度 1:1 绝对一致（严禁造假或虚报大小！），将真实报文直接写入底层存证 data/{销售日}/raw/{matchId}.json（满配 28 原生报文 SSOT）；由五大组件自底向上纯净装配面向人类简报 data/{销售日}/{matchId}.md（包含全量 5 大战区与战区三·五初即大表，21 张流水表原生态镜像呈现（推演统一由时间戳升序对齐时钟因果），严格执行六重品控门禁：零广告、零表格坍塌、零未渲染死模板、23家做市商点亮、初盘完整性强断言、时序保真断言）；③【立即回传】：确认各场真实落盘且 Schema 完备后立即 announce 回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
+  goal: "【阶段一专职搬运工官方Session进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，【零探索铁律】：严禁调用 Get-ChildItem 或 read_file 翻看昨天历史文件摸索格式，严禁执行 curl/openssl/powershell 等终端探测命令，严禁阅读任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用）！第 0 秒必须且只能直接调用官方 Scrapling MCP 工具执行进货。严格按官方 Session 三部曲秒级完成：①【会话建立与三路分流】：调用官方 Scrapling MCP open_request_session(session_id='ingest_{matchId}', impersonate='chrome') 建立全真指纹连接；通过 session_make_request 顺序抓取法定 28 端点：[1x2d.js, analy.json, polymarket.json 走 text、main_content_only=false；analysis.html, odds.html 走 html；asian_odds.html 走 https://vip.titan007.com/AsianOdds_n.aspx?id={mid} 且 css_selector='#table_odds'、markdown；over_under.html 走 https://vip.titan007.com/OverDown_n.aspx?id={mid} 且 css_selector='#table_odds'、markdown（绝不可拼错为 OverUnder）；21 张流水表（7家机构×亚/大/欧）统一走 https://vip.titan007.com/changeDetail/{handicap|overunder|1x2}.aspx?id={mid}&companyID={cid}&l=0 且 css_selector='#odds2 table'、markdown（容器ID为 #odds2 table，绝不可错写为 #table_odds）]；抓完后强制 close_session；若遇 429 自动退避 2s 重试，若遇 403/盾自动升阶 browser_fetch(solve_cloudflare=true)；②【原子落盘与23家核销硬断言】：核销 1x2d.js 包含法定 23 家做市商全部存在且非空，断言 receipt 记录大小与真实 payload 长度 1:1 绝对一致（严禁造假或虚报大小！），直接原子落盘底层存证 data/{销售日}/raw/{matchId}.json（满配 28 payloads 原生报文 SSOT）；由六大标准组件自底向上纯净装配面向人类简报 data/{销售日}/{matchId}.md（包含全量 6 大战区与战区三·五初即大表，21 张流水表原生态镜像呈现，严格执行六重品控门禁：零广告、零表格坍塌、零未渲染死模板、23家做市商点亮、初盘完整性强断言、时序保真断言）；③【立即回传】：确认各场真实落盘且 Schema 完备后立即 announce 回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
 ```
 
 #### 标准推演分析师 Worker 工单 Prompt 规范模板
@@ -600,7 +600,7 @@ flowchart LR
 - **全语种零临时脚本**：足球主仓库（当前工程根目录）内部严禁编写或残留任何临时脚本（无论语言是 `.py`、`.ps1`、`.js`、`.bat`、`.sh`），违规次数严格锁定为 0；
 - **零磁盘中转垃圾**：严禁在磁盘上建立 `tmp_*` 暂存目录或倾倒 `.txt` 中转文本，所有数据搬运在内存中流式直出；
 - **四层 MCP 架构全闭环**：
-  ① 数据搬运进货 100% 归属 `scrapling` MCP（HTML 变盘流水表传入 `css_selector="#table_odds"` 与 `extraction_type="markdown"` 原生流式直出）；
+  ① 数据搬运进货 100% 归属 `scrapling` MCP（HTML 变盘流水表传入 `css_selector="#odds2 table"` 与 `extraction_type="markdown"` 原生流式直出；亚盘初即总表走 `AsianOdds_n.aspx`，大小球初即总表走 `OverDown_n.aspx` 且下推 `css_selector="#table_odds"`）；
   ② 机器做市看数 100% 归属 `evo-semantic` MCP（`browse_semantics`, `resolve_semantics` 锁定全量结构化映射）；
   ③ 纯数学去水与比分算力 100% 归属宿主外部独立 `sports-math` MCP（`devig_oo_epc`, `poisson_dixon_coles`）；
   ④ 知识图谱与错题反思 100% 归属 `graphify` MCP（`query_graph`, `get_node`, `god_nodes`, `shortest_path`）；
@@ -629,7 +629,7 @@ flowchart LR
   - **`/ddd-hexagonal-architecture`（六边形端口与适配器架构）**：坚守领域层极致纯净，外部输入输出严格通过端口与适配器解耦，依赖永远向内指向领域核心；
   - **`/domain-driven-design`（领域驱动设计）**：以统一语言、限界上下文和聚合根建模业务，坚决消灭贫血模型与技术黑话，代码即模型、模型即代码。
 - **工程汇报规范**：通过 `ce-noslop` 技能输出汇报与交接文档，消除 AI 套话与冗余口水话。
-- **反逃避甩锅铁律**：严禁在遇到抓取波动或盘赔异常时擅自归咎为“源站坏了”或“模型有局限”，必须在系统规范内升阶自愈并如实向主人披露客观事实。
+- **反逃避甩锅与真相对账刚性铁律（Anti-Scapegoating & Truth Grounding）**：严禁在遇到抓取波动或盘赔异常时擅自归咎为“源站坏了”、“模型有局限”或“网络拦截”。**绝对严禁将 URL 拼写错误（如把 OverDown 拼成 OverUnder 报 404）或选择器选错（如把流水表写成 #table_odds 返回空串）导致的 404/空串妄断脑补为“源站 WAF 阻断境外 IP”或“网络坏了”**！必须先自查 URL 拼写与容器 DOM 结构，先拿真凭实据，再开口报告；系统规范内自动升阶自愈并如实向主人披露客观事实。
 
 ---
 

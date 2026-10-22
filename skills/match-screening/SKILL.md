@@ -338,6 +338,8 @@ work_orders:
     status: "scheduled" # scheduled | already_started
     priorityScore: 2.85
     contextSummary: "积分榜1、2名天王山对决，机构深度防守"
+    ingestSpec: "scrapling_session_28_endpoints" # 标定法定 28 端点（含 OverDown 大小球全景与 #odds2 table 流水表）
+    zeroExplorationRule: "strictly_enforced" # 严禁 Worker 在抓取前探索磁盘旧文件，第 0 秒直调 MCP
     evoontologyRetina: "required" # 强制下游工位 3 挂载 EvoOntology 视网膜 5 批次核销 23 家做市商
 ```
 
