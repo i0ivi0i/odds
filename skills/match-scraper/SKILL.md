@@ -747,12 +747,27 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 ### 7.3 动态多浏览器指纹轮换
 `open_request_session` 传参配置官方浏览器指纹，底层 `curl_cffi` 自动混淆 TLS 指纹、ALPN 扩展与 Client Hints，消灭爬虫特征。
 
-### 7.4 阶梯式自动升阶重试与空骨架自愈
-- 网络超时原地重试（最大 3 次，递增等待 1s, 2s, 3s）；
-- `429 Too Many Requests` 触发指数退避（等待 2~4 秒重试）；
-- `403 Forbidden`、`503` 或 Cloudflare 挑战盾，立即自动升阶至 Level 2 `browser_fetch(solve_cloudflare=true)`，由无头 Chrome 接管解锁；
-- 连续 3 次重试仍失败，立即向总控台发出红色高危警报，严禁静默吞掉异常；
-- 表格行数 $< 2$ 且包含动态脚本时，自动升阶至 `browser_fetch(network_idle=True)` 等待静默完成再抽取 DOM。
+### 7.4 阶梯式自动升阶重试与协议自适应降级自愈
+
+#### 7.4.1 协议自适应阶梯降级策略（Adaptive Protocol Fallback Invariant）
+- **高速通道优先**：所有数据采集请求默认优先发起现代 **HTTP/2** 连接，充分享受 HTTP/2 多路复用、头部压缩与现代 CDN / Nginx（如 `1x2d.titan007.com`）的高并发秒级传输优势，严禁死板全局硬锁 HTTP/1.1；
+- **自适应降级触发条件**：当目标域名/端点（如部署于旧版 Windows Server 2012 / IIS 8.5 环境的 `zq.titan007.com`、`vip.titan007.com` 等特定节点）发生协议栈重置或握手异常时，包括但不限于捕获到以下任一特征：
+  * `ERR_HTTP2_PROTOCOL_ERROR`
+  * `curl: (92) HTTP/2 stream 0 was not closed cleanly: PROTOCOL_ERROR`
+  * `curl: (56) Connection closed abruptly` 或 `RST_STREAM`
+  * Scrapling/httpx 底层抛出 `ProtocolError` 或连接重置
+- **自动降级自愈动作**：
+  1. 触发后无需人工干预，底层请求引擎自动将当前请求/会话降级至 **HTTP/1.1**（透传 `http_version=CurlHttpVersion.V1_1` 或回退至 HTTP/1.1 模式）就地秒级重试；
+  2. 针对同一任务生命周期，自适应记录该异常域名的降级状态，避免对已知旧版 IIS 域名重复经历 HTTP/2 握手失败，实现全流程透明自愈；
+  3. 支持现代 HTTP/2 的端点（如 1x2d 欧指大表）继续维持 HTTP/2 高速通道，互不干扰；
+- **防伪与断言铁律**：严禁将协议重置错误误报或脑补为“球探把数据藏起来了”或“网络故障”，必须由协议降级机制在 1 秒内无缝自愈！
+
+#### 7.4.2 阶梯式异常重试与渲染升阶
+- **网络超时原地重试**：网络超时原地重试（最大 3 次，递增等待 1s, 2s, 3s）；
+- **频率限制退避**：`429 Too Many Requests` 触发指数退避（等待 2~4 秒重试）；
+- **人机盾无缝接管**：`403 Forbidden`、`503` 或 Cloudflare 挑战盾，立即自动升阶至 Level 2 `browser_fetch(solve_cloudflare=true)`，由无头 Chrome 接管解锁；
+- **动态 DOM 等待**：表格行数 $< 2$ 且包含动态脚本时，自动升阶至 `browser_fetch(network_idle=True)` 等待静默完成再抽取 DOM；
+- **停线熔断报警**：连续 3 次重试（含协议降级后）仍失败，立即向总控台发出红色高危警报，严禁静默吞掉异常。
 
 ### 7.5 开箱即用闭环工单规范与法定 28 端点零探索骨架
 
