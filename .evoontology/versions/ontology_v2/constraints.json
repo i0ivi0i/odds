@@ -33,7 +33,7 @@
     "severity": "block",
     "scope": "global",
     "confidence": "high",
-    "description": "【亚盘脉冲假摔警报】中盘亚盘曾出现主动升盘并挂超满水（>=1.04）诱多，但在终盘2小时仓皇退回初盘门槛。此为机构心虚放弃设防的假摔现行，强制禁止将初即终盘同一浅盘误判为全程平稳设防！（硬性时序断言：流水表为源端倒序，状态机扫描必须自底行初始开盘t0向上演进扫描至顶行临盘t_final，严禁顺行从上往下看反而将退盘看成升盘！）",
+    "description": "【亚盘脉冲假摔警报】中盘亚盘曾出现主动升盘并挂超满水（>=1.04）诱多，但在终盘2小时仓皇退回初盘门槛。此为机构心虚放弃设防的假摔现行，强制禁止将初即终盘同一浅盘误判为全程平稳设防！（硬性时序断言：状态机扫描必须基于时间戳升序（Sort by Timestamp ASC）顺流推进，以最早时间戳 min(t) 为初盘起点演进至最新时间戳 max(t)，严禁将退盘错看成升盘！）",
     "evidence_refs": [
       "evidence_match_3019156"
     ],
@@ -258,6 +258,30 @@
     "scope": "global",
     "confidence": "high",
     "description": "【法定 23 家做市商显式 Gap 阻断警报】依据 EvoOntology 官方规范，法定 23 家做市商（澳彩、皇冠、Bet365、易胜博、平博、马会、188Bet、威廉希尔、立博、伟德、Interwetten、Bwin、SNAI、必发、利记、沙巴、Marathon、Betway、Unibet、Paddy Power、10Bet、中国体彩、Polymarket）必须逐项通过 resolve_semantics 进行语义对账并确保 status: 'supported'。除官方合法未开盘（体彩深盘关停HAD、次级联赛未开亚盘）放行外，若任一机构出现非预期 gap 或 unavailable，立即抛出 block 级硬阻断，严禁大模型主观脑补！",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active"
+  },
+  {
+    "id": "constraint_temporal_ordering",
+    "target": "term_temporal_ordering",
+    "constraint_type": "scope",
+    "trigger_keywords": [
+      "初盘",
+      "即时盘",
+      "最新盘",
+      "变盘",
+      "升盘",
+      "降水",
+      "时间顺序",
+      "时序",
+      "temporal"
+    ],
+    "severity": "block",
+    "scope": "global",
+    "confidence": "high",
+    "description": "【时序因果有效性硬阻断警报】依据 EvoOntology 官方规约与【先时序，后推演】铁律，推演大脑在进行任何数据剖析与胜负平/让球定性前，必须严格依据物理时间戳升序（Sort by Timestamp ASC）对齐变盘流水，由最早时间戳 min(t) 锁定初盘起点，由最新时间戳 max(t) 锁定临盘定格盘。凡未理清时间关系、混淆初即盘或逆向倒推者，直接触发 block 级强阻断！",
     "evidence_refs": [
       "evidence_match_3019156"
     ],

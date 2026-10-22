@@ -23,20 +23,20 @@
 ## 二、大模型调用工具保姆级指引
 
 ### 1. 工具路径与调用时机
-- **工具入口**：`算法/src/adapter/cli.py`
+- **工具入口**：官方 `sports-math` MCP 工具 `devig_oo_epc`
 - **调用时机**：在 `skills/deep-analysis/SKILL.md` 的**第 4 步（欧洲指数分析）**中，提取分析依据公司（欧洲赛事看威廉/立博/365/平博，亚洲赛事看澳彩/皇冠/易胜博）的初盘和即时盘后立即调用。
 
 ### 2. 命令行调用语法
 
 #### ① 标准三项欧指去水（获取结构化 JSON）
 ```bash
-python 算法/src/adapter/cli.py <主胜赔> <平局赔> <客胜赔> --json
+call_mcp_tool(ServerName='sports-math', ToolName='devig_oo_epc', Arguments={'home_odds': ..., 'draw_odds': ..., 'away_odds': ...})
 ```
 
 **实战范例**：
 对威廉希尔初盘 `2.10 / 3.40 / 3.55`：
 ```bash
-python 算法/src/adapter/cli.py 2.10 3.40 3.55 --json
+call_mcp_tool(ServerName='sports-math', ToolName='devig_oo_epc', Arguments={'home_odds': 2.10, 'draw_odds': 3.40, 'away_odds': 3.55})
 ```
 
 **程序标准输出**：
@@ -55,14 +55,14 @@ python 算法/src/adapter/cli.py 2.10 3.40 3.55 --json
 #### ② 两项盘去水（亚盘让球水位 / 大小球进球数水位）
 两项盘去水（如大小球大球水 1.95，小球水 1.95）：
 ```bash
-python 算法/src/adapter/cli.py 1.95 1.95 --json
+# 两项盘直接按比例归一：P_大 = (1/o_大) / (1/o_大 + 1/o_小)
 ```
 
 ---
 
 ## 三、大模型如何消化与解读计算结果（思维链教学）
 
-拿到 `cli.py` 返回的 JSON 之后，大模型必须按以下四步思维链进行深度博弈解读，不得停留在抄数字层面：
+拿到 `devig_oo_epc` 返回的结构化 JSON 之后，大模型必须按以下四步思维链进行深度博弈解读，不得停留在抄数字层面：
 
 ### 教学 1：解读 `margin`（庄家总水钱抽水）
 - **常规联赛公认水钱**：主流欧洲五大联赛欧指抽水一般在 `4.0% ~ 6.5%`（`margin` 介于 0.040 ~ 0.065）；
@@ -125,7 +125,7 @@ python 算法/src/adapter/cli.py 1.95 1.95 --json
 ## 五、检查清单（大模型自检）
 
 在完成推演生成报告前，大模型请在内心逐项自查：
-- [ ] 是否实际在终端运行了 `python 算法/src/adapter/cli.py ... --json`？（**绝对禁止心算**）
+- [ ] 是否实际调用了官方 `sports-math` MCP 工具 `devig_oo_epc` 获取真值？（**绝对禁止心算**）
 - [ ] 返回的概率和是否严格等于 1.000000？
 - [ ] 三项点概率是否与赔率大小呈现反向匹配？（高赔对应低概率，低赔对应高概率）
 - [ ] 是否在【认知契约卡】中引用了这组去水真实数据？

@@ -613,5 +613,27 @@
     ],
     "lifecycle_state": "active",
     "graphify_ref": "graphify://bookmaker/EighteenBet_Europe"
+  },
+  {
+    "id": "term_temporal_ordering",
+    "name": "Temporal_Ordering_Ascending",
+    "type": "metric",
+    "definition": "[EvoOntology 官方时序因果规约] 赔率变盘时钟的物理单调升序对齐。以最早时间戳 min(t) 为初盘起点，以最新时间戳 max(t) 为临盘定格终点。绝对严禁依赖网页或表格的正倒序排版位置刻舟求剑，唯有时间数值升序具有不可篡改的单调因果性。",
+    "scope": "global",
+    "aliases": [
+      "时间顺序",
+      "时序",
+      "升序排序",
+      "时间关系",
+      "时间戳",
+      "初盘即盘",
+      "变盘时间",
+      "temporal"
+    ],
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "graphify_ref": "graphify://paper/EvoOntology_Temporal_Ordering"
   }
 ]

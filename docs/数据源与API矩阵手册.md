@@ -26,7 +26,7 @@
 - **Scrapling 官方六大战区反污染装配机制**：
   1. **纯数据流（Text Stream）**：`1x2d.js`（百家欧指原始脚本）、`analy.json`、`polymarket.json`，无损直出；
   2. **双总表原生直转（Full Odds Markdown）**：亚盘总表 `AsianOdds_n.aspx` 与大小球总表 `OverUnder_n.aspx` 强制下推 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，将全网主流做市商初盘与即盘 100% 直出无杂质 Markdown；
-  3. **叶子选择器原地下推与源头 1:1 镜像流（Leaf Markdown & Source Fidelity）**：21 张流水表强制下推 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，杜绝外层嵌套 table 引发的 130 列表格横向炸裂坍塌；**100% 忠实镜像球探网源网页纯倒序排列（最新临盘在顶端第 1 行、时间顺流递减、最早开盘在底端最后一行），严禁任何中间层代码将底行初盘抠出插在顶端，严禁机械截断丢失变盘记录**；
+  3. **叶子选择器原地下推与源头 1:1 镜像流（Leaf Markdown & Source Fidelity）**：21 张流水表强制下推 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，杜绝外层嵌套 table 引发的 130 列表格横向炸裂坍塌；**100% 忠实镜像球探网源网页原生排列，严禁手工调换行序，严禁机械截断丢失变盘记录；推演分析时统一依据每笔记录物理时间戳升序对齐（Sort by Timestamp ASC）自适应展开时序**；
   4. **人类简报六大组件装配**：`{matchId}.md` 严禁全页 HTML 裸转 Markdown（杜绝会员广告与死骨架），严格从结构化数据提炼六大战区（伤停、战绩、23家欧指大表、主流做市商亚盘/大小初即大表、21张流水单表、波胆实盘），执行 Anti-Ad、Anti-Collapse、Anti-Placeholder、23 CIDs、Anti-Omission Initial Odds、Anti-Timeline-Distortion 六重品控防错门禁。
 
 ### 2. 主源失败怎么办

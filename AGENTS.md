@@ -163,23 +163,25 @@ flowchart TD
 - **【初盘完整性强断言门禁（Anti-Omission Initial Odds Gate）】**：
   进货交付的人类可视化简报 `matchId.md` 必须通过初盘完整性断言：战区三·五中核心机构亚盘初盘行数 $\ge 5$ 行，大小球初盘行数 $\ge 5$ 行。绝对严禁交付没有亚盘/大小球初盘大表的半残简报！若初盘大表缺失或全为空白，立即触发 Poka-Yoke 停线阻断并原地重装，严禁将残次零件流入阶段二推演大脑！
 - **【源头原生态 1:1 镜像保真铁律（Source-Fidelity Invariant）】**：
-  进货装配战区四 21 张变盘流水表时，**必须 100% 忠实镜像球探网源网页的物理排列顺序**（源端纯倒序：最新临盘在顶端第 1 行，时间单调递减，最早开盘记录在最底端最后一行）。**绝对严禁自作聪明加任何剪刀与胶水！绝对严禁将底行初盘抠出并插入到顶部第 1 行，绝对严禁机械截断变盘历史！** 开盘记录天然位于表格底端，宏观横向初盘对比 100% 由《战区三·五》全权承担！
+  进货装配战区四 21 张变盘流水表时，**必须 100% 忠实镜像球探网源网页的原生排列顺序**。**绝对严禁自作聪明加任何剪刀与胶水！绝对严禁手工抽取调换行序，绝对严禁机械截断变盘历史！** 进货局恪守存证保真；推演大脑分析时则统一依据每笔记录物理时间戳升序排序（`Sort by Timestamp ASC`），自动按时间数值识别初盘与最新盘，绝不依赖排版方向刻舟求剑！
 - **重新推演物理清空（Clean-Slate Re-ingest Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧快照文件】，全量调用 Scrapling MCP 并发抓取全量 28 端点从零装配全新落盘！**绝对严禁直接拿磁盘已有旧文件跳过抓取，更绝对严禁在旧快照上局部修改时间戳做伪装！**
 - **推演态全语种零临时脚本硬铁律（Zero-Script Invariant: All Languages）**：推演态、进货态与排错态中，**绝对严禁**编写任何临时脚本（无论是 `.py`、`.ps1`、`.js`、`.bat`、`.sh` 等全语种脚本），也绝对严禁在磁盘建立 `tmp_*` 暂存目录或倾倒 `.txt` 中间文件！所有数据进货一律调用官方 Scrapling MCP 原生流水线（带 `css_selector` 与 `extraction_type="markdown"`）内存流式直出落盘，零胶水代码，违规记录严格锁定为 0！
 - **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**机器推演的法定底层依据是 `data/{销售日}/raw/{matchId}.json` 经 EvoOntology 官方 MCP 直连提取的微观数据，`.md` 文件作为人类可视化复盘简报同步留存**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何测试或检查，直接进入抓取进货，杜绝空转！
 
 #### 阶段 2：纯逻辑首席分析师（Phase 2 Deduction Brain）
 - 确认底层物理源数据存在且新鲜（<30分钟）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 EvoOntology 官方 MCP（`browse_semantics`, `resolve_semantics`）与 Graphify 知识图谱，开展 10 步深度推演与冻结认知契约卡！未见底层物理源数据落盘，**绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
-- **【无视网膜工具调用熔断铁律】（Zero-Tool-Call Hard Circuit Breaker）**：
-  大模型思维链中**必须包含真实的 EvoOntology 官方 MCP 工具调用记录**（`mcp__evo-semantic__browse_semantics` ➔ `mcp__evo-semantic__resolve_semantics`）。凡未调用视网膜工具、企图直接通过上下文记忆、文件裸视或直觉推演出票者，直接判定为违规伪推演并强制熔断中止，严禁输出任何胜平负或让球定性！
-- **EvoOntology 官方 5 批次核销与白名单硬断言（_MAX_RESOLVE = 5 Invariant）**：
-  依循 EvoOntology 官方内核 `runtime.py` 与 `tools.py` 规约，`resolve_semantics` 每次请求最多支持 5 个 mentions（`_MAX_RESOLVE = 5`，超过 5 个会被官方底层截断到 `skipped` 并降级为 `partial`）。因此推演大脑**必须且只能以 5 个批次完整核销法定 23 家做市商**：
+- **【无视网膜工具调用熔断铁律与 Trajectory 轨迹验真】（Zero-Tool-Call Hard Circuit Breaker & Trajectory Provenance）**：
+  依据 EvoOntology 官方开源体系（https://github.com/ruc-datalab/EvoOntology）关于任务执行轨迹的硬规约（`record_ontology_task_event`: "Record an actual host tool call and result in execution order. Do not submit fabricated observations"），在宿主环境中，推演大脑思维链中**必须包含真实的 EvoOntology 官方 MCP 工具调用记录**（1 次 `mcp__evo-semantic__browse_semantics` ➔ 5 批次 `mcp__evo-semantic__resolve_semantics`）。底层不可篡改的宿主日志（`transcript.jsonl`）是防伪的唯一法定铁证！凡未调用视网膜工具、企图直接通过上下文记忆、文件裸视或直觉推演出票者，直接判定为违规伪推演并强制熔断中止，严禁输出任何胜平负或让球定性！
+- **EvoOntology 官方 5 批次核销与白名单硬断言（_MAX_RESOLVE = 5 & maxItems: 5 Invariant）**：
+  依循 EvoOntology 官方源码 `evoontology/runtime/tools.py` 第 63 行的 JSON Schema 严格定义：`"mentions": {"type": "array", "items": {"type": "string"}, "maxItems": 5}` 以及 `runtime.py` 中的 `_MAX_RESOLVE = 5`，官方底层单次请求硬限最多 5 个 mentions；超过 5 个会被官方底层静默截断至 `skipped` 并降级为 `partial`（单次传 23 家必被静默漏掉 18 家！）。因此推演大脑**必须且只能以 5 个原子批次完整核销法定 23 家做市商**：
   - 第 1 批：`["澳彩", "皇冠", "平博", "Bet365", "易胜博"]`
   - 第 2 批：`["香港马会", "188Bet", "威廉希尔", "立博", "伟德"]`
   - 第 3 批：`["Interwetten", "Bwin", "SNAI", "必发", "利记"]`
   - 第 4 批：`["沙巴", "Marathon", "Betway", "Unibet", "Paddy Power"]`
   - 第 5 批：`["10Bet", "中国体彩", "Polymarket"]`
-  必须断言 23 家全部返回 `coverage_status: "supported"`（或官方合法未开盘），遇非预期 `gap` 立即触发 Poka-Yoke 强阻断停线，严禁在残缺机位上强推！
+  **强断言门禁**：每批次返回必须严格断言 `skipped ≡ []`，且全部 23 家状态必须为 `coverage_status: "supported"`（未开盘则返回合法空字段）。若任一批次出现非空 `skipped` 或非预期的 `gap`，立即触发 Poka-Yoke 强阻断停线，严禁在残缺机位上强推！
+- **显式空状态与严禁造假铁律（Explicit Empty State Invariant）**：
+  依循 EvoOntology 官方规范：`Missing reports or executions remain explicit empty states. Never fabricate examples`。凡机构未开盘（如 Polymarket 返回空数组 `[]`、香港马会次级联赛未开亚盘），**必须且只能标注 `[官方未开盘]`**。绝对严禁在后台或前端硬编码伪造赔率（如伪造“60.5¢”挂单、伪造波胆或伪造伤停）。宁可报缺报阻，绝不造假脑补！
 - **EvoOntology 官方规范深度绑定（Auto-Lock & Read-Only Invariant）**：
   推演大脑必须动态定位当前工作区根目录下的 `.evoontology/` 容器（`workspace=path.join(CURRENT_WORKSPACE, ".evoontology")`，自适应任何磁盘与文件夹迁移，杜绝硬编码死路径）与 `version="active"`（生产版本 `ontology_v2`），恪守 100% 纯只读探测契约，绝不修改本体任何版本或状态；必须显式过验 `constraint_pinnacle_stability` 硬约束（平博稳定性出货判别律），并在契约卡中显式对质！
 - **知行合一看数分工与严禁新增中间文件（Clean-Data Grounding Invariant）**：
@@ -187,11 +189,14 @@ flowchart TD
   - ② **人类结构化可视化看板**：`data/{销售日}/{matchId}.md` 专供人类主人人工抽检与赛后复盘看板，推演大脑绝对严禁读取 `.md`，从物理根源上彻底杜绝因 `.md` 抽稀或格式塌陷导致的假数据与幻觉；
   - ③ **EvoOntology MCP 工具驱动与定向端点提取**：看数必须由 EvoOntology 官方 MCP 工具驱动（`browse_semantics` 发现机位 ➔ 5 批次 `resolve_semantics` 核销 23 家并输出权威 Mapping 路径与 `block` 级硬约束）。推演大脑在 Mapping 路径（`table`, `column`, `semantic_filter`）坐标锁定下，仅对特定原生端点进行全量结构化提取（1x2d 提纯 23 家欧指、analy 提纯伤停体彩、流水端点提纯变盘时序），严禁通篇裸读；
   - ④ **坚决不增设多余中间文件**：坚决禁止新增任何 `slices/*.json` 或派生目录，保持系统极简纯粹。
-- **倍率时序绝对时间箭头不变量（Arrow of Time Invariant）**：
-  推演大脑在依据 EvoOntology Mapping 消化变盘时序时，必须清醒区分源端两类截然不同的物理排布机制，绝对严禁看反：
-  - **百家欧指大表（1x2d.js）**：管道符数组正序排列，index[3..5] 为初盘、index[10..12] 为即盘（初盘在前、即盘在后）；
-  - **21 张变盘流水表（changeDetail/*.aspx）**：源端物理纯倒序，顶端第 1 行为最新临盘（$t_{\text{final}}$），最底端最后一行才是最早初始开盘（$t_0$）；
-  - **首尾时间戳双向核验门禁**：推演大脑在分析流水表前，必须提取顶行时间戳 $T_{\text{top}}$ 与底行时间戳 $T_{\text{bottom}}$，断言 $T_{\text{top}} > T_{\text{bottom}}$ 恒成立，时间箭头严格锁死为【自底行初盘 $t_0$ 向上演进扫描至顶行临盘 $t_{\text{final}}$】；严禁顺行从上往下看反！凡将顶端临盘当成初盘、导致做市商诱阻判断颠倒者，判定为 `REVERSAL_HALLUCINATION` 立即触发停线阻断！
+- **时间戳数值绝对排序不变量（Timestamp-Sorting Invariant，杜绝刻舟求剑）**：
+  严禁依赖任何行号、物理位置或正倒序排版假设（防止数据源未来改版、多源切换或异构排版导致失效）！推演大脑在消化变盘流水时，**必须且只能以每笔记录的物理时间戳进行绝对单调升序排序（`Sort by Timestamp ASC`）**：
+  - **初盘 $T_0$**：全序列中物理时间戳最早的一笔（$\min(t)$，开盘基准原点）；
+  - **中盘过程流水 $T_{\text{mid}}$**：时间序列中间所有的盘口跃迁与水位涨跌轨迹（无论状态标“早”或“即”，全部属于中盘博弈过程流水，绝非终盘！）；
+  - **最新定格盘 $T_{\text{latest}}$**：全序列中物理时间戳最新的一笔（$\max(t)$ 且 $< T_{\text{kickoff}}$），在提前分析业务切点下作为当前推演的有效终态；
+  - **自适应时间流断言**：无论数据源未来如何变换排版格式（正序、倒序或乱序），系统一律通过时间戳大小自动理顺时间箭头（$T_0 < T_{\text{mid}} < T_{\text{latest}} < T_{\text{kickoff}}$），实现跨数据源与改版的绝对鲁棒！
+- **【先时序，后推演】铁律（Timeline First, Deduction Second Invariant）**：
+  看数翻阅数据的绝对前置第一心法！在翻阅审视数据时，推演大脑**必须先理清倍率数据的时间关系与变盘时间先后顺序**（初盘开盘 $T_0$ ➔ 中盘变盘异动 $T_{\text{mid}}$ ➔ 临盘定格 $T_{\text{latest}}$ ➔ 比赛开球 $T_{\text{kickoff}}$）；**只有在倍率时序与变盘时间顺序彻底理清之后，才准正式开启数据剖析与 10 步深度比赛推演**！严禁跳过时间顺序梳理直接定性胜负！
 - **Graph-First 认知优先铁律（Graph-First Cognitive Invariant）**：
   推演态面临疑难盘口、做市博弈破译、多机构背离与战法匹配时，**必须且只能优先通过 Graphify MCP 机械臂检索 5.6MB 全息因果图谱与 345 篇官方 Wiki 词条**，严禁盲目裸搜源码、代码文件或凭空无根据猜想！
 - **Graphify 官方 MCP 机械臂标准契约（Strict MCP Tool Call Protocol）**：
@@ -229,7 +234,7 @@ flowchart TD
 #### 标准进货 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "【阶段一专职搬运工官方Session进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，严禁读取任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用），严禁执行代码与 git 探测！严格按官方 Session 三部曲秒级完成：①【会话建立与三路分流】：调用官方 Scrapling MCP open_request_session(session_id='ingest_{matchId}', impersonate='chrome') 建立全真指纹连接；通过 session_make_request 对法定 28 端点执行三路分流提取（1x2d.js/analy.json/polymarket.json 走 text、main_content_only=false、无 selector；analysis.html/odds.html/asian_odds.html/over_under.html 走 html、无 selector；21 张流水表走 css_selector='#table_odds'）；拉取完毕强制 close_session；若遇 429 自动延时重试，若遇 403/盾自动升阶 browser_fetch(solve_cloudflare=true)；②【原子落盘与23家核销硬断言】：核销 1x2d.js 包含法定 23 家做市商全部存在且非空，断言 receipt 记录大小与真实 payload 长度 1:1 绝对一致（严禁造假或虚报大小！），将真实报文直接写入底层存证 data/{销售日}/raw/{matchId}.json（满配 28 原生报文 SSOT）；由五大组件自底向上纯净装配面向人类简报 data/{销售日}/{matchId}.md（包含全量 5 大战区与战区三·五初即大表，21 张流水表原生态纯倒序呈现，严格执行六重品控门禁：零广告、零表格坍塌、零未渲染死模板、23家做市商点亮、初盘完整性强断言、时序保真断言）；③【立即回传】：确认各场真实落盘且 Schema 完备后立即 announce 回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
+  goal: "【阶段一专职搬运工官方Session进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，严禁读取任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用），严禁执行代码与 git 探测！严格按官方 Session 三部曲秒级完成：①【会话建立与三路分流】：调用官方 Scrapling MCP open_request_session(session_id='ingest_{matchId}', impersonate='chrome') 建立全真指纹连接；通过 session_make_request 对法定 28 端点执行三路分流提取（1x2d.js/analy.json/polymarket.json 走 text、main_content_only=false、无 selector；analysis.html/odds.html/asian_odds.html/over_under.html 走 html、无 selector；21 张流水表走 css_selector='#table_odds'）；拉取完毕强制 close_session；若遇 429 自动延时重试，若遇 403/盾自动升阶 browser_fetch(solve_cloudflare=true)；②【原子落盘与23家核销硬断言】：核销 1x2d.js 包含法定 23 家做市商全部存在且非空，断言 receipt 记录大小与真实 payload 长度 1:1 绝对一致（严禁造假或虚报大小！），将真实报文直接写入底层存证 data/{销售日}/raw/{matchId}.json（满配 28 原生报文 SSOT）；由五大组件自底向上纯净装配面向人类简报 data/{销售日}/{matchId}.md（包含全量 5 大战区与战区三·五初即大表，21 张流水表原生态镜像呈现（推演统一由时间戳升序对齐时钟因果），严格执行六重品控门禁：零广告、零表格坍塌、零未渲染死模板、23家做市商点亮、初盘完整性强断言、时序保真断言）；③【立即回传】：确认各场真实落盘且 Schema 完备后立即 announce 回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
 ```
 
 #### 标准推演分析师 Worker 工单 Prompt 规范模板
@@ -459,7 +464,7 @@ flowchart LR
   2. **庄家净赔付乘积真理立宪（Anti-Low-Odds-Fallacy）**：
      严守 $\text{净赔付}_i = V \cdot (O_i \cdot w_i - 1)$，做市商风险敞口由“赔率 $\times$ 筹码集中度”决定，绝非单看表面赔率高低！表面低赔热门若扎堆 90% 筹码即成穿仓死穴（大热必死）；而高赔冷门（如 3.80 冷平）因筹码真空（$w=5\%$），反而是做市商净赔付最小、通杀暴利的真正落点！推演必须审视大众扎堆热盘与高赔真空区，严禁将低赔等同于防守！
   3. **时序物理事实与数学位移绝对铁律（Anti-Temporal Inversion & Math Delta Law）**：
-     - ① 【推演源数据】欧指初即大表为横向初即对照，变盘时序流水表末行为初盘起点、首行为即时终盘；推演第一动作必须显式写出初终四则运算减法：$\Delta = \text{即时} - \text{初盘}$；
+     - ① 【推演源数据】无论源数据排版为何种格式，推演大脑必须以物理时间戳升序对齐时间轴（`Sort by Timestamp ASC`），自动以最早时间戳 $\min(t)$ 为初盘基准、最新时间戳 $\max(t)$ 为最新定格盘；推演第一动作必须显式写出初终四则运算减法：$\Delta = \text{最新定格盘} - \text{初盘}$；
      - ② 凡 $\Delta < 0$ 必判定为降赔设防、$\Delta > 0$ 必判定为升赔弃守；严禁只看欧指初即大表抄近道，必须穿透做市商变盘时序全量流水！结合 Goto 相对概率漂移与 Constantinou 跨市场几何张力综合判定；
      - ③ 【时间戳绝对真理与峰值暴跌假摔破译】：显式抄录第 1 列【变盘时间】和末列【状态】；识别**瞬态脉冲折返（中盘脉冲冲高诱空震仓、终盘断崖暴跌闭合回踩初盘防线真设防）**与**持久阶梯位移（中盘冲高后高位稳态定格、终盘未能回踩初盘防线，属于彻底弃守）**的本质边界！
   4. **大模型推演防作弊与防偷懒四大硬锁**：
@@ -528,13 +533,19 @@ flowchart LR
 
 ### 4.1 EvoOntology 官方双层看数视网膜与严禁造假立宪
 
-- **【无视网膜工具调用熔断铁律】（Zero-Tool-Call Hard Circuit Breaker）**：
-  大模型思维链中**必须包含真实的 EvoOntology 官方 MCP 工具调用记录**（`mcp__evo-semantic__browse_semantics` ➔ `mcp__evo-semantic__resolve_semantics`）。凡未调用工具、企图直接通过上下文记忆、文件裸视或直觉推演出票者，直接判定为违规伪推演并强制熔断中止，严禁输出任何胜平负或让球定性！
+- **【无视网膜工具调用熔断铁律与 Trajectory 轨迹验真】（Zero-Tool-Call Hard Circuit Breaker & Trajectory Provenance）**：
+  依据 EvoOntology 官方开源体系（https://github.com/ruc-datalab/EvoOntology）关于任务执行轨迹的硬规约（`record_ontology_task_event`: "Record an actual host tool call and result in execution order. Do not submit fabricated observations"），在宿主环境中，推演大脑思维链中**必须包含真实的 EvoOntology 官方 MCP 工具调用记录**（1 次 `mcp__evo-semantic__browse_semantics` ➔ 5 批次 `mcp__evo-semantic__resolve_semantics`）。底层不可篡改的宿主日志（`transcript.jsonl`）是防伪的唯一法定铁证！凡未调用视网膜工具、企图直接通过上下文记忆、文件裸视或直觉推演出票者，直接判定为违规伪推演并强制熔断中止，严禁输出任何胜平负或让球定性！
+- **EvoOntology 官方 5 批次核销与白名单硬断言（_MAX_RESOLVE = 5 & maxItems: 5 Invariant）**：
+  依循 EvoOntology 官方源码 `evoontology/runtime/tools.py` 第 63 行的 JSON Schema 严格定义（`"maxItems": 5`）与 `runtime.py` 中的 `_MAX_RESOLVE = 5`，官方底层单次请求硬限最多 5 个 mentions；超过 5 个会被官方底层静默截断至 `skipped` 并降级为 `partial`（单次传 23 家必被静默漏掉 18 家！）。因此推演大脑**必须且只能以 5 个原子批次完整核销法定 23 家做市商**，且每批次必须严格断言 `skipped ≡ []` 与 `coverage_status: "supported"`（未开盘则返回合法空字段）。遇非预期 `gap` 立即触发 Poka-Yoke 强阻断停线，严禁在残缺机位上强推！
+- **显式空状态与严禁造假铁律（Explicit Empty State Invariant）**：
+  依循 EvoOntology 官方规范：`Missing reports or executions remain explicit empty states. Never fabricate examples`。凡机构未开盘（如 Polymarket 返回空数组 `[]`、香港马会次级联赛未开亚盘），**必须且只能标注 `[官方未开盘]`**。绝对严禁在后台或前端硬编码伪造赔率（如伪造“60.5¢”挂单、伪造波胆或伪造伤停）。宁可报缺报阻，绝不造假脑补！
 - **绝对严禁大模型裸视海量数据**：严禁任何大模型、大脑、Agent 或 Subagent 直接使用 `view_file` 通读底层庞杂原始数据（如 `data/**/raw/*.json` 或全文 `.md` 表格）注入上下文！直接裸视极易诱发注意力隧道效应、信息严重漏读、张冠李戴与上下文爆炸。
 - **EvoOntology 官方双层看数视网膜（融合 explore-ontology 核心规约）**：全系统搜查、观看任何比赛数据，必须严格分为两层：
   1. **语义导航与探针层**：动态定位当前活跃工程容器 `workspace=path.join(CURRENT_WORKSPACE, ".evoontology")` 与 `version="active"`（自适应任何磁盘与文件夹迁移，纯只读，绝不修改本体状态）。会话开始时读取 `session-manifest`，通过 `browse_semantics` 检索概念，并通过 5 批次 `resolve_semantics`（每批 $\le 5$ 家）核销法定 23 家做市商状态并获取权威 Mapping 路径，遇未开盘外的异常 `gap` 立即触发 `block` 强阻断，防漏看防看错；
   2. **EvoOntology MCP 坐标锚定与定向端点提取层（绝不跳过工具裸读，绝对严禁看 .md）**：推演大脑绝不可误以为跳过工具“直接读 raw.json 即可”！必须在 EvoOntology Mapping 权威路径（`table`, `column`, `semantic_filter` 与 `aggregation_semantics`）坐标锁定下，仅针对 Mapping 锁定的特定原生端点（`payloads['1x2d.js']` 提纯的 23 家欧指、`payloads['analy.json']` 攻防伤停与体彩固定奖金、各变盘流水端点及 `polymarket.json`）进行受限定向提取并解析核心点位，由大模型专注执行 10 步博弈推理；严禁通篇裸读几千行原始混淆 JS，绝对严禁推演大脑看易被抽稀污染的 `{matchId}.md`（`.md` 仅为人类可视化看板，严禁机器推演看 .md）；
-  3. **硬约束强制对质律（Constraint Auto-Debate）**：必须显式过验 `constraint_pinnacle_stability` 硬约束（商业散户庄降水而尖锐平博逆市升水或纹丝不动 $\rightarrow$ 强制判定为虚假做热、掩护出货，严禁判为防守），契约卡必须显式留存对质记录；
+  3. **时序因果与硬约束强制对质律（Temporal Ordering & Constraint Auto-Debate）**：
+     - **时序硬约束（`constraint_temporal_ordering`）**：在提取变盘流水时，大模型必须严格遵循物理时间戳升序（`Sort by Timestamp ASC`）梳理时钟因果（$\min(t)$ 为初盘起点，$\max(t)$ 为最新定格终盘），凡跳过时序因果或颠倒初即直接推演者，触发 `block` 级硬阻断！
+     - **平博稳定性硬约束（`constraint_pinnacle_stability`）**：商业散户庄降水而尖锐平博逆市升水或纹丝不动 $\rightarrow$ 强制判定为虚假做热、掩护出货，严禁判为防守，契约卡必须显式留存对质记录；
   4. **零冗余文件铁律（Zero-Redundant-File Invariant）**：坚决禁止新增任何 `slices/*.json` 或派生目录，保持系统极简纯粹。
 - **严禁造假与真相对账铁律**：严禁在未开盘时（如 Polymarket 返回空数组 `[]`）编造虚假挂单或写死假赔率！未开盘必须实录 `[官方未开盘]`。绝对严禁在后台编写脚本伪造假装配，宁可报缺报阻，绝不造假脑补！
 - **法定 23 家全景做市机位视网膜与 Graphify 联动**：底层原始 JSON 承担 100% 物理无损存证职责，严禁任何截断或抽稀；EvoOntology 完整纳管法定 23 家做市商机位（涵盖英伦母盘、欧陆防守、商业做市、亚洲自营哨兵与学术共识样本）与做市博弈探针。大模型通过官方 MCP 工具实现概念与微观原始字段的精准绑定提取，并严格核验 23 家机构的 `status: "supported"`（遇非预期 `gap` 缺口立即阻断推演报警！）。凡触发阻断类机位特征，契约卡必须显式开设 `【EvoOntology机位阻断对质】` 并做博弈反向破译。本体层绝对严禁写死任何推演打分规则。
@@ -561,7 +572,7 @@ flowchart LR
      - 大小球：必须严格按照 `[大球水位, 盘口, 小球水位]` 排布，严禁大球水位与小球水位左右颠倒；
    - **初即列与变盘时序绝不错位（No Initial vs Live Displacement）**：
      - 战区三·五初即全景大表中，初盘列严格对应最早开盘记录，即盘列严格对应最新时序，严禁把即盘填入初盘列；
-     - 战区四 21 张变盘流水表中，100% 保持源网倒序排列（时间单调自上而下递减直通底端最早开盘记录），严禁将底端初盘移花接木插到顶部，严禁时钟倒流或数据穿越！
+     - 战区四 21 张变盘流水表中，100% 保持源网原生态镜像直出，绝对严禁手工调换行序或移花接木插拔初盘，严禁机械截断；推演分析时统一由时间戳升序排序律（`Sort by Timestamp ASC`）自适应梳理时钟因果！
    - **跨比赛绝对隔离（Match-Level Isolation）**：简报 `{matchId}.md` 和底层 `raw/{matchId}.json` 必须经过 `matchId` 一致性核验，严禁比赛 A 的表格被粘贴到比赛 B！
 
 #### 4.2.2 法定 28 端点与 23 家做市商底层存证质检标准（`raw/{matchId}.json` SSOT vs `.md`）
@@ -582,7 +593,7 @@ flowchart LR
   3. **Anti-Placeholder Gate（零死占位符）**：往绩必须由结构化 API 真实提炼，严禁出现原站未渲染前端模板 `近 0 场 主客相同` 等假空文字；
   4. **Full-Coverage Gate（23家全景大表与严禁伪上限）**：战区三欧指大表必须工整呈现 23 家做市商初即盘、返还率与凯利指数；简报行数由客观物理流水决定，彻底废除 420~650 行伪上限，严禁任何机械截断！
   5. **Anti-Omission Initial Odds Gate（初盘完整性强断言）**：战区三·五必须完整呈现主流机构亚盘与大小球初即大表，亚盘初盘行数 $\ge 5$ 行，大小球初盘行数 $\ge 5$ 行；严禁交付无亚盘初盘的残废品！缺失初盘大表直接停线阻断！
-  6. **Anti-Timeline-Distortion Gate（时序保真与初盘全量点亮断言）**：战区四流水表必须保持自然时间单向流动（即源端纯倒序：时间自上而下递减）。绝对严禁将原网页底行的初盘抠出并插入到顶部第 1 行！绝对严禁搞“头是初盘、脖子是终盘、身子往回流”的怪胎拼接，绝对严禁进行 `slice(0, 10)` 或 `[:9]+[-1:]` 截断丢弃变盘记录！流水表全量直通，最底端开盘初盘 100% 显式呈现！若检测到时间突兀跳回或截断，立即停线阻断并原地重装！
+  6. **Anti-Timeline-Distortion Gate（时序保真与全量变盘点亮门禁）**：战区四流水表进货时必须 100% 保持源端原貌直出，绝对严禁手工抽取调换行序，绝对严禁搞“头是初盘、脖子是终盘、身子往回流”的怪胎拼接，绝对严禁进行 `slice(0, 10)` 或 `[:9]+[-1:]` 截断丢弃变盘记录！流水表全量直通，开盘初盘 100% 显式呈现；推演分析时统一由时间戳升序排序律（`Sort by Timestamp ASC`）自适应对齐时序！若检测到变盘记录人为截断或拼接倒错，立即停线阻断并原地重装！
 
 ### 4.3 全语种零临时脚本硬铁律（Zero-Script Invariant: All Languages）
 
