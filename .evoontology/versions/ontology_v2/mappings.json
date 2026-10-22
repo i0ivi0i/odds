@@ -7,6 +7,7 @@
     "column": "平博",
     "semantic_filter": "pinnacle_euro_odds",
     "aggregation_semantics": "latest_value_vs_initial_value",
+    "timeline_orientation": "1x2d_js_array_initial_index3_5_vs_latest_index10_12",
     "grain": "match",
     "validation": "delta_check",
     "evidence_refs": [
@@ -22,7 +23,8 @@
     "table": "companyDetails",
     "column": "Bet365_ah / 皇冠_ah",
     "semantic_filter": "asian_handicap_full_timeline",
-    "aggregation_semantics": "pulse_rebound_state_machine",
+    "aggregation_semantics": "pulse_rebound_state_machine_bottom_t0_to_top_tfinal",
+    "timeline_orientation": "reverse_chronological_top_latest_bottom_initial",
     "grain": "match",
     "validation": "surge_and_retreat",
     "evidence_refs": [

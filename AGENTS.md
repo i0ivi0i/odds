@@ -187,6 +187,11 @@ flowchart TD
   - ② **人类结构化可视化看板**：`data/{销售日}/{matchId}.md` 专供人类主人人工抽检与赛后复盘看板，推演大脑绝对严禁读取 `.md`，从物理根源上彻底杜绝因 `.md` 抽稀或格式塌陷导致的假数据与幻觉；
   - ③ **EvoOntology MCP 工具驱动与定向端点提取**：看数必须由 EvoOntology 官方 MCP 工具驱动（`browse_semantics` 发现机位 ➔ 5 批次 `resolve_semantics` 核销 23 家并输出权威 Mapping 路径与 `block` 级硬约束）。推演大脑在 Mapping 路径（`table`, `column`, `semantic_filter`）坐标锁定下，仅对特定原生端点进行全量结构化提取（1x2d 提纯 23 家欧指、analy 提纯伤停体彩、流水端点提纯变盘时序），严禁通篇裸读；
   - ④ **坚决不增设多余中间文件**：坚决禁止新增任何 `slices/*.json` 或派生目录，保持系统极简纯粹。
+- **倍率时序绝对时间箭头不变量（Arrow of Time Invariant）**：
+  推演大脑在依据 EvoOntology Mapping 消化变盘时序时，必须清醒区分源端两类截然不同的物理排布机制，绝对严禁看反：
+  - **百家欧指大表（1x2d.js）**：管道符数组正序排列，index[3..5] 为初盘、index[10..12] 为即盘（初盘在前、即盘在后）；
+  - **21 张变盘流水表（changeDetail/*.aspx）**：源端物理纯倒序，顶端第 1 行为最新临盘（$t_{\text{final}}$），最底端最后一行才是最早初始开盘（$t_0$）；
+  - **首尾时间戳双向核验门禁**：推演大脑在分析流水表前，必须提取顶行时间戳 $T_{\text{top}}$ 与底行时间戳 $T_{\text{bottom}}$，断言 $T_{\text{top}} > T_{\text{bottom}}$ 恒成立，时间箭头严格锁死为【自底行初盘 $t_0$ 向上演进扫描至顶行临盘 $t_{\text{final}}$】；严禁顺行从上往下看反！凡将顶端临盘当成初盘、导致做市商诱阻判断颠倒者，判定为 `REVERSAL_HALLUCINATION` 立即触发停线阻断！
 - **Graph-First 认知优先铁律（Graph-First Cognitive Invariant）**：
   推演态面临疑难盘口、做市博弈破译、多机构背离与战法匹配时，**必须且只能优先通过 Graphify MCP 机械臂检索 5.6MB 全息因果图谱与 345 篇官方 Wiki 词条**，严禁盲目裸搜源码、代码文件或凭空无根据猜想！
 - **Graphify 官方 MCP 机械臂标准契约（Strict MCP Tool Call Protocol）**：
