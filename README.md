@@ -4,7 +4,7 @@
 ### 现代工业 4.0 足彩倍率分析推演智能工厂 · 乔布斯式乐团指挥家中央总控台 (Command & Dispatch NOC)
 
 [![Architecture](https://img.shields.io/badge/Architecture-Jobs_Conductor_NOC-0A84FF?style=for-the-badge&logo=diagram-next&logoColor=white)](AGENTS.md)
-[![Zero-Script](https://img.shields.io/badge/Zero--Script-100%25_MCP_Native-34C759?style=for-the-badge&logo=shield&logoColor=white)](AGENTS.md#第四工段流水线品控防错与工业安全断路器)
+[![Zero-Script](https://img.shields.io/badge/Zero--Script-100%25_Spider_Native-34C759?style=for-the-badge&logo=shield&logoColor=white)](AGENTS.md#第四工段流水线品控防错与工业安全断路器)
 [![Platform](https://img.shields.io/badge/Agentic-Antigravity_%7C_Hermes_%7C_Claude-AF52DE?style=for-the-badge&logo=probot&logoColor=white)](#多平台-ai-agent-原生适配)
 [![Data Pipeline](https://img.shields.io/badge/Data_Ingest-Scrapling_Official-FF9500?style=for-the-badge&logo=fastapi&logoColor=white)](https://github.com/D4Vinci/Scrapling)
 [![Semantic Retina](https://img.shields.io/badge/Retina-EvoOntology_23_Makers-5856D6?style=for-the-badge&logo=databricks&logoColor=white)](https://github.com/ruc-datalab/EvoOntology)
@@ -64,7 +64,7 @@ flowchart LR
 | 工段编号 | 核心职能 | 关键机制与工业标准 |
 | :---: | :--- | :--- |
 | **第一工段** | **工厂意志与精算师最高灵魂宪章** | 确立精算师六大核心特质、十六条做市博弈第一性原则、沟通风格与行为边界。 |
-| **第二工段** | **中央总控台调度系统与节拍器** | 会话启动三部曲、推演态三阶段硬死锁（阶段 0 ➔ 1 ➔ 2）、蜂群 Central Scheduler 滑动窗口流控。 |
+| **第二工段** | **中央总控台调度系统与节拍器** | 会话启动三部曲、推演态三阶段硬死锁（阶段 0 ➔ 1 ➔ 2）、蜂群 Central Scheduler 礼貌排队与单并发限流。 |
 | **第三工段** | **五大专业化生产车间工位矩阵** | 五大原生车间工位标准化契约、输入输出报文规范与十六大实操推演心法。 |
 | **第四工段** | **流水线品控防错与工业安全断路器** | EvoOntology 官方视网膜、法定 28 端点与 23 家机构机位核销、全语种零临时脚本铁律、源头 1:1 镜像保真铁律、人类简报六重品控防错门禁（Anti-Ad/Anti-Collapse/Anti-Placeholder/23CIDs/Anti-Omission Initial Odds/Anti-Timeline-Distortion）。 |
 | **第五工段** | **巡检自愈、成品仓储与系统演化中枢** | 赛前/临盘/赛后三大主动巡检、每日 `memory/YYYY-MM-DD.md` 唯一单写原子封存、Graphify 图谱演进。 |
@@ -78,7 +78,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     subgraph W1 ["工位1: 全权进货局 (match-scraper)"]
-        S1["Scrapling并发拉取<br/>28端点 + 防封控频"]
+        S1["Scrapling官方Spider<br/>AutoThrottle控频+双轨端点"]
     end
     subgraph T1 ["零件托盘 1"]
         D1["raw/{id}.json (SSOT)<br/>+ 纯净简报 (全量流水含战区三·五)"]
@@ -116,7 +116,7 @@ flowchart LR
 
 ```
 skills/
-├── match-scraper/      # 工位 1：全权数据进货局 (Scrapling MCP 官方原生流式并发)
+├── match-scraper/      # 工位 1：全权数据进货局 (Scrapling Spider 官方原生并发)
 ├── match-screening/    # 工位 2：业务初筛局 (4 种输入路由 + 开球拦截 + 标准工单)
 ├── deep-analysis/      # 工位 3：推演大脑总装局 (纯逻辑推演 ≤1200行 + 四维认知契约卡)
 ├── recommendation/     # 工位 4：战报交付局 (Poka-Yoke 门禁 + 标准 7 列表格 + 2 串 1)
@@ -125,7 +125,7 @@ skills/
 
 | 车间工位 | 核心职责（高内聚） | 机械臂绑定与标准协议 | 工业标准出厂零件托盘（零耦合接口） |
 | :--- | :--- | :--- | :--- |
-| **工位 1：全权数据进货局**<br/>`skills/match-scraper` | 赛程索引抓取、28 底层端点长连接并发提取、23 家机构核销、单 IP 防封控频 | `scrapling` MCP (`open_request_session`, `session_make_request`, `close_session`) 带 `impersonate="chrome"` 与三路分流提取 | **零件托盘 1**：`data/{销售日}/raw/{id}.json` (28 端点原生报文 SSOT) + `matchId.md` (人类简报 $\ge 350$ 行) |
+| **工位 1：全权数据进货局**<br/>`skills/match-scraper` | 赛程索引抓取、28 底层端点并发提取、23 家机构核销、单 IP 防封控频 | `Scrapling Spider` (`scripts/ingest_spider.py`) 按 `config/endpoints.json` 一次装配 28 端点 | **零件托盘 1**：`data/{销售日}/raw/{id}.json` (28 端点原生报文 SSOT) + `matchId.md` (人类简报，按源流水自然生成) |
 | **工位 2：业务初筛局**<br/>`skills/match-screening` | 方式 1~4 输入统一路由、竞彩编号转换、开球时间先验拦截、全量打标排队 | 纯直读 `meta.md` 赛程索引，**0 外部网络**，严禁按层级淘汰比赛 | **零件托盘 2**：标准推演工单序列 `work_orders: [{matchId, kickoffTime, league, homeTeam, awayTeam, ...}]` |
 | **工位 3：推演大脑总装局**<br/>`skills/deep-analysis` | 纯只读全量结构化数据、去水点概率测算、Dixon-Coles 泊松分布、10 步庄家博弈破译（$\le 1200$ 行刚性封顶） | `evo-semantic` MCP（`browse_semantics` ➔ `resolve_semantics` 双层看数视网膜，无工具调用熔断）<br/>`sports-math` MCP (`devig_oo_epc`, `poisson_dixon_coles`)<br/>`graphify` 知识图谱 | **零件托盘 3**：**四维不可篡改【认知契约卡】** + 纯推演单场结果（胜负平、让球、点概率、比分） |
 | **工位 4：战报交付局**<br/>`skills/recommendation` | Poka-Yoke `Count(契约卡) ≡ N` 门禁、7 列表格拼装、Polymarket 真实链接核验、文末 2 串 1 优选 | 格式校验闸门（绝不折行、字段强校验、链接真实性）、原子化前置写入 memory | **零件托盘 4**：终端交付物（标准 7 列表格 + 文末【🎯 2 串 1 组合推荐】 + memory 审计底账） |
@@ -141,8 +141,8 @@ skills/
 flowchart TD
     Z["【阶段 0：赛程索引自检】<br/>检查 data/{销售日}/meta.md 是否存在且新鲜 (< 2小时)"]
     Z_NO{"是否存在且新鲜?"}
-    Z_GET["调度 Scrapling make_request(index.aspx)<br/>秒级拉取落盘 meta.md 并追加 memory (< 2秒)"]
-    P1["【阶段 1：蜂群纯物理进货】<br/>派发专职搬运工 Subagent (Data Ingest Worker)<br/>1~3 场分批并发抓取全量 28 端点<br/>落盘 raw/{id}.json 与 matchId.md (≥350行)"]
+    Z_GET["调度 Scrapling make_request(bf_jc.txt)<br/>秒级解析并落盘 meta.md 与 memory (< 2秒)"]
+    P1["【阶段 1：蜂群纯物理进货】<br/>派发专职搬运工 Subagent (Data Ingest Worker)<br/>ingest_spider.py 一次抓取全量 28 端点<br/>落盘 raw/{id}.json 与 matchId.md（按源流水自然生成）"]
     P1_GATE{"双重质检门禁核销<br/>23家做市商 + 28端点 Schema"}
     P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1200行)<br/>EvoOntology 视网膜全量解析 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
     OUT["【阶段 3：交付与单写原子封存】<br/>写入 memory/{销售日}.md 深度分析摘要与契约卡<br/>交付标准 7 列表格 (含 Polymarket 真实链接)"]
@@ -160,11 +160,11 @@ flowchart TD
 
 ## 🔬 底层硬核技术基座与 MCP 机械臂矩阵
 
-系统采用“**零临时脚本纯知识库 + 宿主 MCP 机械臂**”顶级工程架构，六大核心工具链全量协同：
+系统采用“**零临时脚本纯知识库 + Scrapling Spider 主路径 + 宿主 MCP 机械臂**”顶级工程架构，六大核心工具链全量协同：
 
 | 工具服务 | 官方源 / 规范链接 | 工业定位 | 核心接口与技术规格 |
 | :--- | :--- | :--- | :--- |
-| **`scrapling`** | [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling) | 官方原生数据采集通道 | `open_request_session`, `session_make_request`, `close_session`, `browser_fetch`<br/>Level 1/2 协议流，支持 `impersonate="chrome"`、三路端点参数分流与 Markdown 原生直出 |
+| **`scrapling`** | [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling) | 官方原生数据采集通道 | Spider `scripts/ingest_spider.py`（28 端点主路径）<br/>MCP `open_request_session`/`session_make_request`/`close_session` 仅作单端点诊断降级；支持 `impersonate="chrome"`、三路端点参数分流与 Markdown 原生直出 |
 | **`evo-semantic`** | [ruc-datalab/EvoOntology](https://github.com/ruc-datalab/EvoOntology) | 专属双层做市看数视网膜与自进化状态机 | `browse_semantics`, `resolve_semantics`, `validate_semantics`, `evolution_status`, `confirm_trajectory_sources`<br/>5 批次核销法定 23 家做市商机位，Mapping 路径全量字段结构化提取与 Constraint 阻断对质，闭环 `TaskTrajectory` 自动进化 |
 | **`sports-math`** | [宿主独立微服务](file:///C:/Users/home/.gemini/services/sports-math) | 纯数学算力引擎 | `devig_oo_epc`, `poisson_dixon_coles`<br/>东京大学 Shota Goto (2026) 凸优化去水算法与 Dixon-Coles 修正泊松分布 |
 | **`graphify`** | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | 知识图谱与错题反思中枢 | `query_graph`, `get_node`, `shortest_path`, `god_nodes`, `get_community`, `get_neighbors`, `graph_stats`<br/>5.6MB 全息博弈图谱，支持三大战区调兵、疑难穿透、理论裁决与三重保鲜生命周期 |
@@ -248,7 +248,7 @@ flowchart TD
 ├── data/                    # 销售日推演原始报文与人类简报
 │   └── {销售日}/
 │       ├── meta.md          # 当日赛程全景索引
-│       ├── {matchId}.md     # 人类可视化推演快照 (≥350行)
+│       ├── {matchId}.md     # 人类可视化推演快照 (按源流水自然生成)
 │       └── raw/
 │           └── {matchId}.json # 法定 28 端点原生报文 SSOT 存证
 ├── docs/                    # 系统设计规范与工业演化文档

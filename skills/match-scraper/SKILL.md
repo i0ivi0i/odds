@@ -43,19 +43,19 @@ metadata:
   - [4.2 直接解析 Markdown 表格行并提取实体](#42-直接解析-markdown-表格行并提取实体)
   - [4.3 原子落盘 meta.md 与追加 memory.md](#43-原子落盘-metamd-与追加-memorymd)
 - [第五工段：模式二·单场【推演源数据】采集与 28 端点装配](#第五工段模式二单场推演源数据采集与-28-端点装配)
-  - [5.1 Scrapling 官方 Session 长连接三部曲](#51-scrapling-官方-session-长连接三部曲)
+  - [5.1 Scrapling 官方进货入口：Spider 主路径，MCP 降级](#51-scrapling-官方进货入口spider-主路径mcp-降级)
   - [5.2 单场法定 28 个底层端点全景映射表（含亚盘/大小全景总表与保真解码）](#52-单场法定-28-个底层端点全景映射表含亚盘大小全景总表与保真解码)
   - [5.3 欧洲指数 23 家做市商法定名单与提取契约](#53-欧洲指数-23-家做市商法定名单与提取契约)
-  - [5.4 Polymarket 链上预测市场进货标准（第 26 端点）](#54-polymarket-链上预测市场进货标准第-26-端点)
+  - [5.4 Polymarket 链上预测市场进货标准（Polymarket 端点）](#54-polymarket-链上预测市场进货标准polymarket-端点)
 - [第六工段：Poka-Yoke 双重物理质检门禁与标准零件托盘 1 交付](#第六工段poka-yoke-双重物理质检门禁与标准零件托盘-1-交付)
   - [6.1 双重物理质检门禁（底层存证 JSON 满配 vs 人类简报黄金装配）](#61-双重物理质检门禁底层存证-json-满配-vs-人类简报黄金装配)
   - [6.2 出厂交付标准零件托盘 1（模式一 & 模式二交付契约）](#62-出厂交付标准零件托盘-1模式一-模式二交付契约)
-- [第七工段：单 IP 本地海量防封流控宪法与工单规范](#第七工段单-ip-本地海量防封流控宪法与工单规范)
-  - [7.1 主会话滑动并发窗口调度（Sliding Window Dispatch）](#71-主会话滑动并发窗口调度sliding-window-dispatch)
-  - [7.2 阶梯抓取限流与控频策略](#72-阶梯抓取限流与控频策略)
-  - [7.3 动态多浏览器指纹轮换](#73-动态多浏览器指纹轮换)
-  - [7.4 阶梯式自动升阶重试与空骨架自愈](#74-阶梯式自动升阶重试与空骨架自愈)
-  - [7.5 开箱即用闭环工单规范](#75-开箱即用闭环工单规范)
+- [第七工段：单 IP 礼貌防封控频宪法与 ProxyRotator 代理集成规范](#第七工段单-ip-礼貌防封控频宪法与-proxyrotator-代理集成规范)
+  - [7.1 Scrapling 官方 AutoThrottle 自适应控频与单并发限流](#71-scrapling-官方-autothrottle-自适应控频与单并发限流)
+  - [7.2 协议自适应阶梯降级自愈（HTTP/2 ➔ HTTP/1.1）](#72-协议自适应阶梯降级自愈http2--http11)
+  - [7.3 TLS 指纹隐身伪装（Impersonate Chrome）](#73-tls-指纹隐身伪装impersonate-chrome)
+  - [7.4 ProxyRotator 弹性代理轮换与本地代理配置](#74-proxyrotator-弹性代理轮换与本地代理配置)
+  - [7.5 开箱即用闭环工单规范与双轨端点任务字典](#75-开箱即用闭环工单规范与双轨端点任务字典)
 - [第八工段：异常熔断与主备外部数据源矩阵](#第八工段异常熔断与主备外部数据源矩阵)
   - [8.1 异常停线熔断机制](#81-异常停线熔断机制)
   - [8.2 多数据源协同矩阵（titan007, FPL, Big Balls, Football-Data, Polymarket）](#82-多数据源协同矩阵titan007-fpl-big-balls-football-data-polymarket)
@@ -484,10 +484,18 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 2. **`references/`（深度知识外脑）**：为 Agent 在遭遇冷门加密、Shadow DOM 或特殊反爬时提供 18 篇即查即用官方方案；
 3. **`examples/`（架构形态蓝图）**：提供官方标准的会话管理与异常升阶代码范式，规范 MCP 交互行为。
 
-### 1.6 官方通用护栏（Official Guardrails）
+### 1.6 官方通用护栏与 AutoThrottle 控频算法（Official Guardrails & AutoThrottle）
 - Only scrape content you're authorized to access.
 - Respect robots.txt and ToS. Use `robots_txt_obey = True` on spiders to enforce this automatically.
-- Add delays (`download_delay`) for large crawls, or set `autothrottle_enabled = True` to let the spider pick the delay per domain and back off when the website starts blocking.
+- **Scrapling 官方 AutoThrottle 自适应机制**：
+  依据 Scrapling 0.5 官方架构（`scrapling/spiders/`）：
+  - 动态测算响应延迟：通过 `download_latency` 实时评估目标服务器负载；
+  - 自动调节请求间隔：`new_delay = max(min_delay, latency / target_concurrency)`；
+  - 遭遇 IIS 8.5 DIPR（连接掐断/429/403）时，触发指数退避算法（`2s -> 4s -> 8s -> 16s`，上限 `60s`），实现自适应减速避险，绝不暴力重试硬冲；
+- **单域名单并发硬铁律（Single Concurrency Per Domain）**：
+  在目标脆弱服务器环境（Windows Server 2012 / IIS 8.5）中，强制设置 `concurrent_requests_per_domain = 1`，严禁多 Worker 并发轰炸同一域名；
+- **慢即是快，礼貌爬虫（Polite Crawling）**：
+  以科学平缓的时钟节拍（`download_delay >= 2.0s`）替代暴力并发迸发，全天采集 0 封禁，综合吞吐率与系统稳定性显著优于频遭封禁被动停机的旧模式；
 - Don't bypass paywalls or authentication without permission.
 - Never scrape personal/sensitive data.
 
@@ -504,17 +512,17 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 | `open_request_session` | `session_id`: 字符串<br/>`impersonate`: `"chrome"`<br/>`stealthy_headers`: `true` | **开启全真长连接**：模拟 Chrome TLS/JA3 指纹与真实 Client Hints 标头，复用底座 TCP 连接池，消灭爬虫特征。 |
 | `session_make_request` | `session_id`: 对应会话<br/>`url`: 目标端点<br/>`css_selector`: 选择器<br/>`extraction_type`: `"text"` \| `"html"` \| `"markdown"`<br/>`main_content_only`: 布尔值 | **分流流式采掘**：复用同一个会话对 28 端点执行三路分流提取，单场比赛一气呵成。 |
 | `close_session` | `session_id`: 目标会话 | **会话终结释放**：文件落盘后强制显式关闭连接，释放网络句柄与系统内存，杜绝空闲孤儿会话。 |
-| `make_request` | `url`, `extraction_type`, `impersonate`, `stealthy_headers` | **极速一次性请求**：用于模式一赛程首页（`index.aspx`）秒级拉取落盘。 |
+| `make_request` | `url`, `extraction_type`, `impersonate`, `stealthy_headers` | **极速一次性请求**：用于模式一官方赛程 Feed（`xml/bf_jc.txt`）秒级拉取解析；`index.aspx` 仅人类浏览入口，不作数据源。 |
 | `browser_fetch` | `url`, `solve_cloudflare=true`, `network_idle=true`, `pierce_shadow=true` | **升阶破盾与动态等待**：遇 403/503 或空骨架（`<tr>` 数量 $< 2$）时自动升阶接管，等待网络静默或穿透人机挑战盾。 |
 | `browser_fetch_once` | 同上 | 一次性打开无头浏览器获取后立即安全销毁。 |
 | `browser_actions` | `session_id`, `actions`: 动作序列 | 针对复杂动态交互（点击、滚动、切换 Tab）。 |
 | `browser_extract` | `session_id`, `css_selector`, `extraction_type` | 在已渲染的浏览器 DOM 树中原地提取指定容器。 |
 
-### 2.2 搬运工 Worker 的 MCP 闭环作业规范
+### 2.2 搬运工 Worker 的 Spider 闭环作业规范
 
-1. **会话生命周期严格配对**：Worker 接单后必须先调用 `open_request_session`，完成 28 端点分流抓取后，在同一轮次中显式调用 `close_session`，严禁悬挂未关闭的幽灵会话；
-2. **选择器原地过滤**：提取 21 张变盘流水表时，必须通过 `css_selector="#odds2 table"`（宽容度父容器，绝不可用不存在的 `#table_odds`）下推过滤，严禁拉取完整数百 KB 页面造成 Token 膨胀；
-3. **断路升阶接管**：Level 1 请求若遇人机验证或空骨架，平滑升阶至 `browser_fetch`，不中断整体流水线。
+1. **单命令闭环**：Worker 接单后 0 秒直接运行 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队}`；脚本自带 28 端点、原子写与门禁，不需要先建 MCP 会话；
+2. **选择器与编码**：全部由 `config/endpoints.json` 提供，21 张变盘流水表 `css_selector="#odds2 table"`、两张全景总表 `css_selector="#table_odds"`；Worker 不得手写选择器；
+3. **断路升阶与阻断**：HTTP 失败可用 `--browser-fallback` 升阶 StealthyFetcher；若升阶后仍失败，脚本不写 JSON、exit 1 并打印具体端点错误，Worker 如实回传，不把失败写成“WAF”或成功。
 
 ---
 
@@ -533,7 +541,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 1. **DOM 特征拓扑自愈（官方设计本质）**：
    Scrapling 内置的自适应机制是将元素的 DOM 结构拓扑（标签名、class/id 属性、祖先路径、兄弟节点关系）持久化存储。当目标网站改版、混淆 class 或微调布局时，相似度算法会自动重定位目标节点，防止爬虫因单一 CSS 选择器失效而报错崩溃。
 2. **绝对禁止缓存赔率数值**：
-   **Adaptive 记忆的是网页骨架指纹，绝对不是赔率数字缓存！** 足球博弈赔率每时每刻都在发生真金白银的变动（即时活水），绝不能用历史记忆替代最新盘口，每次推演进货必须通过 Scrapling MCP 实时全量并发抓取最新盘面。
+   **Adaptive 记忆的是网页骨架指纹，绝对不是赔率数字缓存！** 足球博弈赔率每时每刻都在发生真金白银的变动（即时活水），绝不能用历史记忆替代最新盘口，每次推演进货必须通过官方 Scrapling Spider 实时全量抓取最新盘面。
 
 ### 3.3 数据地基三不铁律与四大原生护栏（Anti-Error, Anti-Fake, Anti-Misplacement Triad Invariant）
 
@@ -559,7 +567,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 ### 3.4 官方四大原生护栏执行细节（Anti-Mismatch、Anti-Omission 23家、In-Flight Selector Pushdown、Dynamic DOM Escalation）
 
 - **护栏一：Anti-Mismatch Guardrail（防错位防串号护栏）**：
-  - **URL 与实体显式绑定**：在并发抓取前显式建立端点字典（`ah_url`, `ou_url`, `eu_url`, `1x2d_url`），绝不依赖盲目的数组下标循环；
+  - **URL 与实体显式绑定**：在进货抓取前显式建立端点字典（`ah_url`, `ou_url`, `eu_url`, `1x2d_url`），绝不依赖盲目的数组下标循环；
   - **特征词双向断言**：处理批量返回时，必须校验专属特征词（亚盘验证 `Crown 亚让/让球`、欧指验证 `百家做市/返还率`、大小球验证 `高于/低于`），发现错位立即报警阻断，杜绝跨盘串号与数据张冠李戴；
   - **GB18030 二进制保真解码**：球探网二级变盘流水页面（`changeDetail/*.aspx`）必须基于原始 bytes 显式以 `gb18030` 解码，严禁外部默认 UTF-8 强解导致队名与盘口汉字乱码。
 - **护栏二：Anti-Omission 23 家法定白名单布尔断言（防漏 23 家做市商）**：
@@ -567,7 +575,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
   - **23 家白名单 Hash Map**：以法定 23 家权威 cid 集合构建 Hash Map 进行常数级精确提取；
   - **23 项布尔存在性核销**：组装简报时必须逐家执行布尔核对清单（Boolean Checklist），除体彩深盘不开单固、次级联赛香港马会未开亚盘外，所有法定做市商缺失立即判定为采集遗漏并物理阻断，缺失项必须显式标记「官方未开盘」，严禁静默漏报！
 - **护栏三：In-Flight Selector Pushdown & 28 端点 Schema 防伪（防虚标/防垃圾）**：
-  - **选择器底层下推（`css_selector`）**：抓取 HTML 页面时强制传递 `css_selector`（如 `css_selector="#team_lineup"` 或 `css_selector="#table_odds"`），由 Cython 引擎在内存中修剪 90%+ 无关 DOM；
+  - **选择器底层下推（`css_selector`）**：抓取 HTML 页面时强制传递精确选择器：21 张变盘流水表用 `css_selector="#odds2 table"`；亚盘/大小球全景总表用 `css_selector="#table_odds"`；分析页用完整 HTML（可选 `#porlet_*`）；波胆用 `#analy_sbAllOdds`；禁止再用已失效的 `#team_lineup`。
   - **28 端点 Schema 结构强断言**：底层存证 `raw/{matchId}.json` 必须包含 28 个特定 API 键（`1x2d.js`, `analysis.html`, `odds.html`, `analy.json`, `asian_odds.html`, `over_under.html`, 7家机构21张流水HTML与polymarket.json）。任何通过填充乱码、空白字符串或伪造文本虚标体积的行为，均会导致 JSON Schema 解析破裂与装配阶段直接抛出 KeyError，从物理根源杜绝 AI 作弊填充！
 - **护栏四：Dynamic DOM Escalation Guardrail（动态渲染升级护栏，防空壳抽稀）**：
   - **空骨架判定标准**：若 Level 1 请求提取到的数据表格行数（`<tr>` 数量）$< 2$ 且页面包含动态加载脚本，自动无缝升阶至 `mcp__scrapling__browser_fetch(network_idle=True)`，等待网络静默完成再抽取 DOM，彻底杜绝只抓 190 行残缺骨架！
@@ -578,26 +586,29 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 
 **模式一极速专注规约**：本模式唯一职责是秒级拉取并落盘赛程索引 `meta.md`（全程 < 2 秒）。推演心法留在阶段二进货过验后深度通读，模式一专注于快速建立赛程索引！
 
-### 4.1 协议流直取球探竞足页（Level 1 纯 HTTP 极速通道）
-首选调用 MCP `scrapling` 的 `make_request`（纯 HTTP 协议流，零浏览器开销）：
+### 4.1 协议流直取球探竞足官方文本 Feed（Level 1 纯 HTTP 极速通道）
+首选调用 MCP `scrapling` 的 `make_request`（纯 HTTP 协议流，零浏览器开销）直取官方赛程 Feed：
 ```json
 {
-  "url": "https://jc.titan007.com/index.aspx",
-  "extraction_type": "markdown",
+  "url": "https://jc.titan007.com/xml/bf_jc.txt?{timestamp}",
+  "extraction_type": "text",
   "impersonate": "chrome",
   "stealthy_headers": true
 }
 ```
-*注：若遭遇 403 或反爬盾，允许在 Scrapling 内部升阶至 Level 2（`fetch` 或 `stealthy_fetch`）。*  
-**若仍打不开，必须立即向主人置顶发出严重警报提示「🚨 球探赛程页无法打开，数据通道受阻！」**，同时记录工具错误、失败状态与恢复待办。严禁静默或掩盖。
+*注：`index.aspx` 只是人类浏览入口，静态页面没有比赛行，绝不可作为数据源；Feed 只读入内存解析，读完即弃，**严禁落盘 `data/{日期}/bf_jc.txt` 或任何 `.txt` 中间文件**。字段表与 0 基月份规则见 `references/schedule-feed.md`。若遭遇 403 或反爬盾，允许在 Scrapling 内部升阶至 Level 2（`fetch` 或 `stealthy_fetch`）。
+**若仍打不开，必须立即向主人置顶发出严重警报提示「🚨 球探赛程 Feed 无法打开，数据通道受阻！」**，同时记录工具错误、失败状态与恢复待办。严禁静默或掩盖。
 
-### 4.2 直接解析 Markdown 表格行并提取实体
-从返回的 Markdown 表格中逐行提取当日比赛（匹配 `| 周[一二三四五六日]\d{3} | ... |`）：
-- **竞彩编号**：`周*NNN`（如 `周三001`）
-- **联赛**：赛事名称（如 `日职联`、`欧冠杯`、`西甲`）
-- **开球时间**：`YYYY-MM-DD HH:MM`（页面跨日时间自动对齐）
-- **主队 vs 客队**：队名
-- **比赛 ID**：从分析页链接正则提取（`analysis/(\d+)cn` 或 `linkmatch/\d+/(\d+)`）
+### 4.2 解析 Feed 字段并提取实体
+Feed 以 `$` 分为前后两段：前段是联赛字典（`#` 分隔）；后段每条记录以 `!` 分隔、字段以 `^` 分隔：
+- **比赛 ID**：`[0]`
+- **开球时间**：`[1]` 为 `Y,M0,D,h,m,s`，**月份 0 基**（如 `2026,9,22,00,45,00` = 2026-10-22 00:45）
+- **状态**：`[3]`
+- **竞彩编号**：`[4]`（如 `周四001`）
+- **联赛 ID**：`[5]`，用前段字典映射联赛名
+- **主队 / 客队**：`[8]` / `[10]`
+- **比分**：`[11–16]`（赛前为空）
+- **解析纪律**：按 `周四` 或销售日过滤；跨日记录不可误算进当日；字段缺失时如实报错，不猜。
 
 ### 4.3 原子落盘 meta.md 与追加 memory.md
 1. 立即写入赛程索引总览：`data/{YYYY-MM-DD}/meta.md`；
@@ -608,9 +619,19 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 
 ## 第五工段：模式二·单场【推演源数据】采集与 28 端点装配
 
-底层源数据（`data/{销售日}/raw/{matchId}.json`）是 28 端点真实物理原材料的法律级存证 SSOT，推演看数强制由 EvoOntology 官方 MCP 视网膜工具链驱动，专供推演大脑在 Mapping 权威路径指引下全量提取结构化字段（严禁跳过工具全包裸读 raw.json，严禁看 .md）；`data/{销售日}/{matchId}.md` 同步生成仅作为面向人类人工复盘查验的可视化看板（推演大脑绝对严禁读取 .md 做推演，彻底消灭假数据与幻觉）。坚决禁止新增任何 `slices/*.json` 冗余中间文件！
+底层源数据（`data/{销售日}/raw/{matchId}.json`）是 28 端点真实物理原材料的法律级存证 SSOT，推演看数强制由 EvoOntology 官方 MCP 视网膜工具链驱动，专供推演大脑在 Mapping 权威路径指引下全量提取结构化字段（严禁跳过工具全包裸读 raw.json，严禁看 .md）；`data/{销售日}/{matchId}.md` 可选同步生成，仅作为面向人类人工复盘查验的可视化看板（推演大脑绝对严禁读取 .md 做推演，彻底消灭假数据与幻觉）。坚决禁止新增任何 `slices/*.json` 冗余中间文件！
 
-### 5.1 Scrapling 官方 Session 长连接三部曲
+### 5.1 Scrapling 官方进货入口：Spider 主路径，MCP 降级
+
+**主路径（批量、可原子装配）**：每场一次运行官方 `Spider` 常设工具：
+
+```text
+py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {YYYY-MM-DD} --home {主队} --away {客队} [--polymarket-slug {slug}]
+```
+
+它按 `config/endpoints.json` 发 28 个请求，逐端点过门禁，原子写 `data/{销售日}/raw/{matchId}.json`；`--verify` 只读复检，不写文件。**批量进货只走这条主路径。**
+
+**降级/诊断（单端点或工具不可用时）**：以下 MCP 三部曲只作单请求诊断与降级，不得用来冒充 28 端点原子装配。
 
 1. **步骤一：开辟全真会话（Open Session）**：
    调用 Scrapling MCP `mcp__scrapling__open_request_session`：
@@ -636,35 +657,34 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 3. **步骤三：显式关闭会话（Close Session）**：
    拉取完毕后立即调用 `mcp__scrapling__close_session(session_id=session_id)` 显式释放 TCP 连接与系统句柄。
 
-### 5.2 单场法定 28 个底层端点全景映射表（含亚盘/大小全景总表与保真解码）
+### 5.2 单场法定 28 个底层端点双轨全景映射表（含亚盘/大小全景总表与保真解码）
 
-单场比赛必须且只能全量并发拉取以下 **法定 28 个底层物理端点**，完整装配为 `raw/{matchId}.json`（严禁缺失任何端点）：
+单场比赛全量装配为底层存证 `raw/{matchId}.json`，确立 **Tier 1 聚合核心直达通道（高可用 CDN，永不封禁） + Tier 2 补充明细温和通道（单并发限流 2.0s，阻断自愈）** 双轨架构。**机器唯一契约是 `config/endpoints.json`；人类镜像见 `references/endpoint-manifest.md`；本表只是摘要。**
 
-| 序号 | Payload Key | 请求目标 URL 规范 | 编码 | 选择器下推 / 模式 | 业务作用与说明 |
-| :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | `1x2d.js` | `https://1x2d.titan007.com/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯23家) | 百家欧指初即盘、返还率、凯利及变盘流水（涵盖法定 23 家机构） |
-| **2** | `analysis.html` | `https://zq.titan007.com/analysis/{mid}cn.htm` | UTF-8 | 可选 `#team_lineup` | 微观首发阵容、主客进球时段、伤停名单 |
-| **3** | `odds.html` | `https://zq.titan007.com/analysis/odds/{mid}.htm` | UTF-8 | 可选 `#analy_sbAllOdds` | Crown 皇冠 0:0~4:4 波胆、半全场指数与隐藏域初盘存证 |
-| **4** | `analy.json` | `https://zq.titan007.com/default/getAnalyData?sid={mid}&t=1` | UTF-8 | JSON 原生响应 | 中国体彩官方 HAD/HHAD 让球数与半场数据 |
-| **5~11** | `ah_{cid}.html` (7家亚盘) | `https://vip.titan007.com/changeDetail/handicap.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 澳彩/皇冠/365/易胜博/平博/188/马会亚盘变盘时序流水 |
-| **12~18** | `ou_{cid}.html` (7家大小) | `https://vip.titan007.com/changeDetail/overunder.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 法定 7 大机构大小球变盘时序流水 |
-| **19~25** | `eu_{cid}.html` (7家欧指) | `https://vip.titan007.com/changeDetail/1x2.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 法定 7 大机构欧洲胜平负变盘时序流水 |
-| **26** | `polymarket.json` | `https://gamma-api.polymarket.com/events?slug={slug}` | UTF-8 | JSON 精准单事件 | 链上真实去中心化真金白银定价概率 |
-| **27** | `asian_odds.html` | `https://vip.titan007.com/AsianOdds_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **亚盘初即对比全景总表**（全网做市商初盘水位/盘口与即盘水位/盘口） |
-| **28** | `over_under.html` | `https://vip.titan007.com/OverDown_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **大小球初即对比全景总表**（全网做市商初盘大水/盘口与即盘大水/盘口，端点为 OverDown_n.aspx 绝不可拼错） |
+| 序号 | Payload Key | Tier | 请求目标 URL 规范 | 编码 | 选择器下推 / 模式 | 业务作用与说明 |
+| :---: | :--- | :---: | :--- | :--- | :--- | :--- |
+| **1** | `1x2d.js` | 1 | `https://1x2d.titan007.com/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯23家) | **欧指时序金矿**：一网打尽 23 家做市商初即盘、凯利及完整变盘流水 |
+| **2** | `analysis.html` | 1 | `https://zq.titan007.com/analysis/{mid}cn.htm` | UTF-8 | 完整 HTML（可选 `#porlet_*`） | 微观首发阵容、主客进球时段、伤停名单 |
+| **3** | `odds.html` | 1 | `https://zq.titan007.com/analysis/odds/{mid}.htm` | UTF-8 | 可选 `#analy_sbAllOdds` | Crown 皇冠 0:0~4:4 波胆、半全场指数与隐藏域初盘存证 |
+| **4** | `analy.json` | 1 | `https://zq.titan007.com/default/getAnalyData?sid={mid}&t=1` | UTF-8 | JSON 原生响应 | 中国体彩官方 HAD/HHAD 让球数与半场数据 |
+| **5~11** | `ah_{cid}.html` (7家亚盘) | 2 | `https://vip.titan007.com/changeDetail/handicap.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 澳彩/皇冠/365/易胜博/平博/188/马会亚盘变盘时序流水 |
+| **12~18** | `ou_{cid}.html` (7家大小) | 2 | `https://vip.titan007.com/changeDetail/overunder.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 法定 7 大机构大小球变盘时序流水 |
+| **19~25** | `eu_{cid}.html` (7家欧指) | 2 | `https://vip.titan007.com/changeDetail/1x2.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 法定 7 大机构欧洲胜平负变盘时序流水 |
+| **26** | `polymarket.json` | 1 | `https://gamma-api.polymarket.com/events?slug={slug}` | UTF-8 | JSON 精准单事件 | 链上真实去中心化真金白银定价概率 |
+| **27** | `asian_odds.html` | 2 | `https://vip.titan007.com/AsianOdds_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **亚盘初即对比全景总表**（全网做市商初盘水位/盘口与即盘水位/盘口） |
+| **28** | `over_under.html` | 2 | `https://vip.titan007.com/OverDown_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **大小球初即对比全景总表**（全网做市商初盘大水/盘口与即盘大水/盘口，端点为 OverDown_n.aspx 绝不可拼错） |
 
 ### 5.3 欧洲指数 23 家做市商法定名单与提取契约
 
-在 `1x2d.js` 的 `var game=Array(...)` 中以 `parts[0]`（cid）作为唯一匹配依据，严格 1:1 对齐 EvoOntology 语义本体的 23 家做市商：
-- **法定 23 家做市商 cid 与批次映射表（5 批次核销）**：
-  * **第 1 批**：`80 (澳彩/澳门)`, `386/3 (Crown/皇冠)`, `177/47 (Pinnacle/平博)`, `545/8 (Bet365)`, `90/12 (Easybet/易胜博)`
-  * **第 2 批**：`432/48 (香港马会/HKJC)`, `800/42 (188Bet)`, `115/9 (William Hill/威廉希尔)`, `82 (Ladbrokes/立博)`, `81 (BetVictor/伟德)`
-  * **第 3 批**：`104/19 (Interwetten)`, `255 (Bwin)`, `110 (SNAI)`, `281/2 (Betfair/必发)`, `499/474 (SBOBET/利记)`
-  * **第 4 批**：`374/1 (IBC/沙巴)`, `482 (Marathon/马拉松)`, `497 (Betway/必威)`, `474 (Unibet/优胜客)`, `236 (Paddy Power/帕迪鲍尔)`
-  * **第 5 批**：`649/16 (10Bet)`, `976/1129 (中国体彩/中国竞彩)`, `Polymarket (链上预测市场事件)`
+在 `1x2d.js` 的 `var game=Array(...)` 中以 `parts[0]`（cid）作为唯一匹配依据，严格 1:1 对齐 `config/datasources.json` 的 `tracked_bookmakers` 与 `references/bookmaker-roster.md`。**本技能不再复制完整 cid 表，避免三套名单漂移。**
+
+- **21 个 euro cid**：`80, 545, 281, 90, 177, 432, 115, 82, 81, 104, 255, 110, 2, 474, 649, 800, 482, 386, 826, 16, 1129`。
+- **188Bet**：`1x2d.js` 中不存在；只走 `changeDetail` 的 `change_cid=42`，以 `ah_42`、`ou_42` 非空和 `eu_42` 请求成功为证据，槽位标 `supported` + `route: changeDetail`。
+- **Polymarket**：两个 cid 都为空，只走 `polymarket.json`；`[]` 是合法 `not_offered`。
+- **5 批次核销名单**：第 1 批 `澳彩/皇冠/平博/Bet365/易胜博`；第 2 批 `香港马会/188Bet/威廉希尔/立博/伟德`；第 3 批 `Interwetten/Bwin/SNAI/必发/利记`；第 4 批 `沙巴/Marathon/Betway/Unibet/Paddy Power`；第 5 批 `10Bet/中国体彩/Polymarket`。名称以 roster 为准，cid 以 `config/endpoints.json` 为准。
 - **满格点亮断言（Anti-Omission 23 CIDs Gate）**：装配存证 JSON 与简报战区三时必须逐项布尔校验，23 家机构缺失立即判定为采集遗漏并物理阻断，官方未开盘项显式标记 `[官方未开盘]`。绝对严禁任何机构被静默丢弃！
 
-### 5.4 Polymarket 链上预测市场进货标准（第 26 端点）
+### 5.4 Polymarket 链上预测市场进货标准（Polymarket 端点）
 
 - **标准三步发现法**：
   1. 调用 `https://gamma-api.polymarket.com/sports` 获取赛事元数据（欧冠 UCL, 欧联 UEL, 西甲, 英超等）；
@@ -733,65 +753,57 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 
 ---
 
-## 第七工段：单 IP 本地海量防封流控宪法与工单规范
+## 第七工段：单 IP 礼貌防封控频宪法与 ProxyRotator 代理集成规范
 
-针对本机单一公网 IP、无外部代理池、但需推演全天数十至上百场比赛的现实场景：
+针对本机单一公网 IP 或云服务器直连、目标站点（球探网 Windows Server 2012 / IIS 8.5 DIPR）反爬严格的现实场景，工位 1 实施 Scrapling 官方礼貌控频与隐身防护体系：
 
-### 7.1 主会话滑动并发窗口调度（Sliding Window Dispatch）
-主会话充当调度器，严格实施 **最大 2~3 个活跃 Worker 滑动并发窗口** 排队推进，单秒活跃并发连接压制在 5~8 个以内，流量特征完全模拟真实人类多标签浏览。
+### 7.1 Scrapling 官方 AutoThrottle 自适应控频与单并发限流
+1. **单域名严格单并发（Concurrent Requests Per Domain = 1）**：
+   在面对易触发 DIPR 封禁的旧版 IIS 域名（如 `vip.titan007.com`）时，强制全局锁死单并发，严禁派发多个 Worker 并发请求同一目标域名，从根本上杜绝 TCP 连接风暴；
+2. **AutoThrottle 动态时钟调节**：
+   - 基础礼貌延迟：`download_delay = 2.0s`（单秒活跃请求 $\le 0.5$ 个，模拟人类真实慢速浏览）；
+   - 动态测速与退避：Scrapling 实时记录响应耗时；当遭遇 `429`、`403` 或 IIS DIPR 掐断时，延迟自适应指数翻倍（`2.0s ➔ 4.0s ➔ 8.0s ➔ 16.0s`，上限 `60.0s`），避开风控封锁峰值；
+   - 慢即是快心法：稳定的低频采集确保持续畅通，综合效率远胜于蛮力轰炸遭拉黑后的停机等待。
 
-### 7.2 阶梯抓取限流与控频策略
-- 待抓取场次 $\le 5$ 场时，每场抓取间隔维持 1~2 秒；
-- 待抓取场次 $> 5$ 场时，每抓取 5 场后额外主动暂停 2 秒，防止瞬态流量触发源站 WAF 封禁。
+### 7.2 协议自适应阶梯降级自愈（Adaptive Protocol Fallback Invariant）
+- **高速通道优先**：所有数据采集请求默认优先发起现代 **HTTP/2** 连接，充分享受 HTTP/2 多路复用与现代 CDN（如 `1x2d.titan007.com`）的高并发秒级传输优势；
+- **自适应降级触发条件**：当目标域名发生协议栈重置或握手异常（捕获到 `ERR_HTTP2_PROTOCOL_ERROR`、`curl: (56) Connection closed abruptly` 或 `RST_STREAM`）时；
+- **自动降级自愈动作**：底层请求引擎自动将当前请求/会话降级至 **HTTP/1.1**（透传 `http_version=CurlHttpVersion.V1_1`）秒级重试，并记录降级缓存，无需人工干预透明自愈。
 
-### 7.3 动态多浏览器指纹轮换
-`open_request_session` 传参配置官方浏览器指纹，底层 `curl_cffi` 自动混淆 TLS 指纹、ALPN 扩展与 Client Hints，消灭爬虫特征。
+### 7.3 TLS 指纹隐身伪装（Impersonate Chrome）
+- 必须开启 Scrapling 官方 TLS 指纹伪装：`impersonate="chrome"`，由底座 `curl_cffi` 完整模拟真实 Chrome 浏览器的 JA3/TLS 握手、ALPN 扩展与 Client Hints 标头；
+- 补全真实请求来源：携带 `Referer: https://info.titan007.com/analysis/{mid}cn.htm` 与合法浏览器 `User-Agent`，抹除一切 Python 爬虫指纹特征。
 
-### 7.4 阶梯式自动升阶重试与协议自适应降级自愈
+### 7.4 ProxyRotator 弹性代理轮换与本地代理配置
+当本机家庭宽带公网 IP 遭到目标防火墙临时拉黑（通常封锁 1~24 小时），或处于海外云服务器网络环境时，工位 1 支持一键无缝接入代理通道：
+1. **命令行参数支持**：
+   ```bash
+   py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --proxy http://127.0.0.1:10808
+   ```
+2. **环境变量自动继承**：
+   脚本自动检测系统环境变量 `ALL_PROXY`、`HTTPS_PROXY` 或 `HTTP_PROXY`，存在即自动配置为底层请求通道；
+3. **Scrapling ProxyRotator 接口标准**：
+   在多代理环境下支持轮换策略，自适应剔除失效节点，确保出口 IP 动态隐身漂移。
 
-#### 7.4.1 协议自适应阶梯降级策略（Adaptive Protocol Fallback Invariant）
-- **高速通道优先**：所有数据采集请求默认优先发起现代 **HTTP/2** 连接，充分享受 HTTP/2 多路复用、头部压缩与现代 CDN / Nginx（如 `1x2d.titan007.com`）的高并发秒级传输优势，严禁死板全局硬锁 HTTP/1.1；
-- **自适应降级触发条件**：当目标域名/端点（如部署于旧版 Windows Server 2012 / IIS 8.5 环境的 `zq.titan007.com`、`vip.titan007.com` 等特定节点）发生协议栈重置或握手异常时，包括但不限于捕获到以下任一特征：
-  * `ERR_HTTP2_PROTOCOL_ERROR`
-  * `curl: (92) HTTP/2 stream 0 was not closed cleanly: PROTOCOL_ERROR`
-  * `curl: (56) Connection closed abruptly` 或 `RST_STREAM`
-  * Scrapling/httpx 底层抛出 `ProtocolError` 或连接重置
-- **自动降级自愈动作**：
-  1. 触发后无需人工干预，底层请求引擎自动将当前请求/会话降级至 **HTTP/1.1**（透传 `http_version=CurlHttpVersion.V1_1` 或回退至 HTTP/1.1 模式）就地秒级重试；
-  2. 针对同一任务生命周期，自适应记录该异常域名的降级状态，避免对已知旧版 IIS 域名重复经历 HTTP/2 握手失败，实现全流程透明自愈；
-  3. 支持现代 HTTP/2 的端点（如 1x2d 欧指大表）继续维持 HTTP/2 高速通道，互不干扰；
-- **防伪与断言铁律**：严禁将协议重置错误误报或脑补为“球探把数据藏起来了”或“网络故障”，必须由协议降级机制在 1 秒内无缝自愈！
+### 7.5 开箱即用闭环工单规范与双轨端点任务字典
 
-#### 7.4.2 阶梯式异常重试与渲染升阶
-- **网络超时原地重试**：网络超时原地重试（最大 3 次，递增等待 1s, 2s, 3s）；
-- **频率限制退避**：`429 Too Many Requests` 触发指数退避（等待 2~4 秒重试）；
-- **人机盾无缝接管**：`403 Forbidden`、`503` 或 Cloudflare 挑战盾，立即自动升阶至 Level 2 `browser_fetch(solve_cloudflare=true)`，由无头 Chrome 接管解锁；
-- **动态 DOM 等待**：表格行数 $< 2$ 且包含动态脚本时，自动升阶至 `browser_fetch(network_idle=True)` 等待静默完成再抽取 DOM；
-- **停线熔断报警**：连续 3 次重试（含协议降级后）仍失败，立即向总控台发出红色高危警报，严禁静默吞掉异常。
+专职搬运工（Data Ingest Worker）启动时，系统已在工单中内联完整的 28 端点抓取字典与落盘骨架。**严禁在任务派发后调用 `read_file`、`Get-ChildItem` 查阅历史已落盘文件或翻看系统文档，0 秒拿起工单直接调用 Spider 工具！**
 
-### 7.5 开箱即用闭环工单规范与法定 28 端点零探索骨架
-
-专职搬运工（Data Ingest Worker）启动时，系统已在工单中内联完整的 28 端点抓取字典与落盘骨架。**严禁在任务派发后调用 `read_file`、`Get-ChildItem` 查阅历史已落盘文件或翻看系统文档，0 秒拿起工单直接调用 MCP 工具！**
-
-#### 7.5.1 法定 28 端点任务字典
+#### 7.5.1 双轨端点任务字典
 ```javascript
 const ENDPOINTS = [
-  // 1. 纯数据流 (extraction_type="text", main_content_only=false, css_selector=null)
-  { key: "1x2d.js", url: `https://1x2d.titan007.com/${mid}.js`, type: "text" },
-  { key: "analy.json", url: `https://zq.titan007.com/default/getAnalyData?sid=${mid}&t=1`, type: "text" },
-  { key: "polymarket.json", url: `https://gamma-api.polymarket.com/events?slug=${slug}`, type: "text" }, // 若未开盘填 "[]"
+  // 1. Tier 1 聚合核心端点 (高可用CDN秒出，从不封禁)
+  { key: "1x2d.js", url: `https://1x2d.titan007.com/${mid}.js`, tier: 1, type: "text" }, // 一网打尽 23 家欧指全量初即与历史变盘流水
+  { key: "analysis.html", url: `https://info.titan007.com/analysis/${mid}cn.htm`, tier: 1, type: "html", selector: null },
+  { key: "odds.html", url: `https://info.titan007.com/analysis/odds/${mid}.htm`, tier: 1, type: "html", selector: null },
+  { key: "analy.json", url: `https://info.titan007.com/default/getAnalyData?sid=${mid}&t=1`, tier: 1, type: "text" },
+  { key: "polymarket.json", url: `https://gamma-api.polymarket.com/events?slug=${slug}`, tier: 1, type: "text" },
 
-  // 2. 分析页面与初即总表 (extraction_type="html" 或 "markdown", main_content_only=true)
-  { key: "analysis.html", url: `https://zq.titan007.com/analysis/${mid}cn.htm`, type: "html", selector: null },
-  { key: "odds.html", url: `https://zq.titan007.com/analysis/odds/${mid}.htm`, type: "html", selector: null },
-  { key: "asian_odds.html", url: `https://vip.titan007.com/AsianOdds_n.aspx?id=${mid}`, type: "markdown", selector: "#table_odds" },
-  { key: "over_under.html", url: `https://vip.titan007.com/OverDown_n.aspx?id=${mid}`, type: "markdown", selector: "#table_odds" }, // 绝不可拼错为 OverUnder
-
-  // 3. 21 张变盘流水表 (extraction_type="markdown", css_selector="#odds2 table", main_content_only=true)
-  // 机构 CID 列表: [1(澳彩), 3(皇冠), 8(Bet365), 12(易胜博), 47(平博), 42(188Bet), 48(香港马会)]
-  // 亚盘 7 家: `ah_${cid}.html` -> https://vip.titan007.com/changeDetail/handicap.aspx?id=${mid}&companyID=${cid}&l=0
-  // 大小 7 家: `ou_${cid}.html` -> https://vip.titan007.com/changeDetail/overunder.aspx?id=${mid}&companyID=${cid}&l=0
-  // 欧指 7 家: `eu_${cid}.html` -> https://vip.titan007.com/changeDetail/1x2.aspx?id=${mid}&companyID=${cid}&l=0
+  // 2. Tier 2 补充明细端点 (温和单并发限流 2.0s，阻断平滑降级自愈)
+  { key: "asian_odds.html", url: `https://vip.titan007.com/AsianOdds_n.aspx?id=${mid}`, tier: 2, type: "markdown", selector: "#table_odds" },
+  { key: "over_under.html", url: `https://vip.titan007.com/OverDown_n.aspx?id=${mid}`, tier: 2, type: "markdown", selector: "#table_odds" },
+  // 7 家机构 21 张变盘流水表 (cid: 1, 3, 8, 12, 47, 42, 48)
+  // ah_*.html, ou_*.html, eu_*.html (css_selector="#odds2 table")
 ];
 ```
 
@@ -859,8 +871,8 @@ const ENDPOINTS = [
   - Football-Data.org（欧洲主要联赛赛程与交锋，凭证 `~/.gemini/config/football_data_tokens.json`）；
   - Polymarket 去中心化预测市场（Gamma/CLOB 链上交易概率，仅作公众情绪交叉验证）。
 
-### 8.3 赛后复盘赛果极速提取通道（赋能 post-review 的 Scrapling 选择器下推通道）
-- 赛后复盘获取已完场比分时，作为 `skills/post-review` 的底层数据通道，在 Session 会话中调用 `session_make_request` 批量拉取 `https://live.titan007.com/detail/{matchId}cn.htm`；
-- **强制配置选择器下推**：指定 `css_selector=".score, .analyhead, .team-name"` 仅提取比分与主客队名核心节点，彻底过滤百 KB 庞杂 HTML；
-- **百字节极速直出**：每场仅返回数十至百余字节的纯净文本直接作为技能输入送入模型上下文，由 `skills/post-review` 规约直接驱动对账与概率打分；
+### 8.3 赛后复盘赛果极速提取通道（赋能 post-review 的官方聚合直取通道）
+- 赛后复盘获取已完场比分时，作为 `skills/post-review` 的底层数据通道，恪守双轨高可用架构：
+  - **Tier 1 官方 Feed 聚合直通（首选推荐）**：调用 Scrapling `make_request(url="https://jc.titan007.com/xml/bf_jc.txt?{timestamp}", extraction_type="text")`。1 次毫秒级纯文本 GET 请求搞定全天全量完场比分（字段 `[11..14]` 即为主客全半场比分），请求量减少 99%，部署在高可用 CDN 上永不封锁；
+  - **Tier 2 单场单并发温和拉取（兜底通道）**：若有极个别冷门补赛不在 feed 中，在 Session 会话中调用 `session_make_request` 温和拉取 `https://live.titan007.com/detail/{matchId}cn.htm`（单域名单并发，`download_delay >= 2.0s`），并配合选择器下推 `css_selector=".score, .analyhead, .team-name"` 仅提取比分与队名核心节点；
 - **全流程严禁编写任何 `.py` 正则提取脚本、清洗脚本或中间统计代码！**

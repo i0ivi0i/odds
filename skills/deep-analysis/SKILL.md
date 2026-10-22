@@ -70,7 +70,7 @@ work_order:
 ### 步骤 1：EvoOntology 专属看数视网膜（全量字段接入、导航与硬核验）
 
 **⚠️ 数据更新原则：只要是“重新分析/刷新/从头开始”，每次均当首次处理（全量活水刷新）。**
-在“重新分析/刷新”模式下，必须重新调用阶段一 `match-scraper` 全量抓取最新实时活水推演源数据（`raw/{matchId}.json` 与人类简报 `{matchId}.md`），原地覆盖落盘并通过门禁，绝对禁止复用旧快照炒冷饭。仅当主人明确选择“看之前的分析报告”时，允许复读当日 memory 摘要。
+在“重新分析/刷新”模式下，必须重新调用阶段一 `match-scraper` 全量抓取最新实时活水推演源数据（只覆盖 `raw/{matchId}.json`；人类简报 `{matchId}.md` 可选同步重建，但绝不作推演输入），原地覆盖落盘并通过门禁，绝对禁止复用旧快照炒冷饭。仅当主人明确选择“看之前的分析报告”时，允许复读当日 memory 摘要。
 
 #### 1.1 官方 Explore-Ontology 英文原版核心规约（Official Native Specification）
 依循 EvoOntology 官方原生体系（`explore-ontology` 1:1 英文纯正规约，杜绝翻译降维）：
@@ -132,7 +132,7 @@ Render all ontology versions as one standalone, offline, single-file interactive
   4. 链上预测端点：依据 Mapping 路径从 `payloads['polymarket.json']` 提取真实点对点撮合概率；
 - **拒绝裸视无序乱码与拒绝冗余中间文件**：大脑在 EvoOntology Mapping 路径指引下定向读取特定键值，杜绝在思维链中漫无目的地裸读整篇未解包 JS；坚决禁止在磁盘生成任何 `slices/*.json` 冗余中间文件！
 - **工具职责四级分工界线（四位一体）**：
-  - 数据搬运：100% 独家归属工位 1 `match-scraper`（官方 Scrapling MCP 一枪并发秒取 28 端点，落盘 raw 与 md）；
+  - 数据搬运：100% 独家归属工位 1 `match-scraper`（Scrapling 官方 Spider 统一调度，内置 AutoThrottle 礼貌控频与单并发限流，优先直取 Tier 1 聚合核心端点，原子落盘 raw JSON SSOT；人类简报同步装配）；
   - 语义导航与防漏：100% 独家归属 `evo-semantic` MCP（5 批次 `resolve_semantics` 核销 23 家，遇 gap 强阻断）；
   - 事实全量提取：100% 独家归属推演大脑（在 EvoOntology MCP 坐标锁定下全量提取结构化字段，严禁跳过工具全包裸读 raw.json，0 幻觉、0 漏数）；
   - 精算去水与概率：100% 独家归属宿主独立 `sports-math` MCP（`devig_oo_epc` 与 `poisson_dixon_coles`）。
@@ -141,7 +141,7 @@ Render all ontology versions as one standalone, offline, single-file interactive
 #### 1.5 底层物理存证核验与门禁（Anti-Fabrication & Drop Verification）
 - **28 端点 Schema 强断言**：底层物理文件 `data/{销售日}/raw/{matchId}.json` 必须存在且新鲜（<30分钟），装载全量 28 端点原生报文（1x2d.js、analysis.html、odds.html、analy.json、7家机构21张流水HTML、polymarket.json，以及 asian_odds.html 与 over_under.html 双全景总表）。
 - **门禁物理阻断**：若底层文件不存在、payloads 键不全或反序列化失败，判定底层存证损坏，立即彻底物理熔断中止推演，严禁进入步骤 2 及后序分析，严禁输出任何预测表格，立即移交工位 1（`match-scraper`）全新抓取！
-- **初盘完整性强断言门禁（Anti-Omission Initial Odds Gate）**：面向人类简报 `data/{销售日}/{matchId}.md` 必须完整包含《战区三·五：主流做市商亚盘与大小球初即大表》，亚盘初盘行数 $\ge 5$ 行，大小球初盘行数 $\ge 5$ 行。缺失初盘大表直接判定为残次品停线阻断！
+- **初盘完整性门禁（Anti-Omission Initial Odds Gate）**：机器推演以 `raw/{matchId}.json` 的 receipt 与 `ah_*`/`ou_*` 端点为准：7 家核心亚盘、大小球流水端点必须存在且可解析；人类简报 `{matchId}.md` 若同步生成，则作为可选看板检查初盘大表，不作为推演输入或唯一门禁。
 - **开球时间先验拦截**：推演前再次复核开球时间，当前时间 $\ge$ 开球时间立即终止，不做赛前分析。
 - **数据全量吸收铁律（拒绝数据吃灰、严禁主观幻想）**：
   抓回来的数据绝不是摆设，推演不是脑补！推演大脑在 10 步推演中必须全量吸收、吃干榨净：
@@ -198,7 +198,7 @@ Render all ontology versions as one standalone, offline, single-file interactive
   - **数据安全规则**：赔率必须实时抓取，不复用旧盘口；只用开球前赛前赔率，严格过滤滚球；缺失不臆造；平博作为低抽水无偏做市商交叉验证，不单独用于决策依据。
   - 主看威廉 + 365 + 立博 + 伟德 + 平博 五大巨头交叉认证；重点参考 Bwin 与 Interwetten；意系赛事特看 SNAI；交易所对冲参考必发；亚洲联赛特看 澳彩、皇冠、365、易胜博、马会 5 家做市共识。
 
-数据由 Scrapling 并发直取法定 28 个底层端点落盘。若【推演源数据】缺字段或未过门禁：**立即彻底物理熔断中止，严禁输出任何推演结论与预测表格！绝对禁止在数据缺失或门禁未过时偷懒继续十步！**伤停空表不挡十步。
+数据由 Scrapling 官方 Spider 礼貌单并发控频落盘。若【推演源数据】缺字段或未过门禁：**立即彻底物理熔断中止，严禁输出任何推演结论与预测表格！绝对禁止在数据缺失或门禁未过时偷懒继续十步！**伤停空表不挡十步。
 
 #### 1.7 赔率数据归属与结构化字段
 
@@ -1192,7 +1192,6 @@ RLM 检测清单：
 - **23 家做市商非法 Gap / Block 阻断**：若 `resolve_semantics` 核销 23 家时触发非合法 `gap` 或 `severity: "block"` 约束，立即判定做市机位缺失，强制阻断推演并报告具体缺失机构。
 - **阵容情况缺失**：阵容伤停字段若为「暂无数据」标「伤停未核实」，置顶说明后允许继续十步、不等主人；禁止写成全主力出战。
 - **已开赛拦截**：开球时间判定为已开赛时，立即中止赛前分析，回传已开赛状态。
-
 ## 输出
 推演大脑专职返回单场比赛的**完整 10 步推演过程 + 综合评估对象 + 四维认知契约卡 + 结构化摘要**，供总控台调度器与工位 4（`skills/recommendation`）核销验收、原子化封存与 7 列表格装配：
 - `matchId`、`league`、`homeTeam`、`awayTeam`、`kickoffTime`
