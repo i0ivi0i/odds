@@ -1,6 +1,6 @@
 ---
 name: deep-analysis
-description: "对初筛通过的比赛进行深度分析：基于工位 1 进货落盘的【推演源数据】（26个底层端点过验）与工位 2 标准工单 → 10 步纯逻辑推演（基本面→伤停→泊松→欧指→亚盘→大小球→合理性→变动→关键点/疑点/矛盾→风险）→ 产出四维不可篡改认知契约卡与纯推演结论（交付工位 4 战报交付局）。分析依据法定 7 家亚盘/大小球与 23 家欧指做市共识。在用户说「深度分析」「分析这场比赛」「详细看看」或赛前流程中初筛之后使用。"
+description: "对初筛通过的比赛进行深度分析：基于工位 1 进货落盘的【推演源数据】（28个底层端点过验）与工位 2 标准工单 → 10 步纯逻辑推演（基本面→伤停→泊松→欧指→亚盘→大小球→合理性→变动→关键点/疑点/矛盾→风险）→ 产出四维不可篡改认知契约卡与纯推演结论（交付工位 4 战报交付局）。分析依据法定 7 家亚盘/大小球与 23 家欧指做市共识。在用户说「深度分析」「分析这场比赛」「详细看看」或赛前流程中初筛之后使用。"
 metadata: { "emoji": "📊" }
 ---
 
@@ -13,8 +13,16 @@ metadata: { "emoji": "📊" }
 - **推演态序贯硬死锁与纯分析师角色边界（纯只读与契约专注）**：本技能行数严格控制在不超过 1200 行；本技能为纯逻辑推演大脑，绝对强制仅在【阶段一底层源数据 `data/{销售日}/raw/{matchId}.json` 物理文件已由工位 1（`match-scraper`）落盘且 EvoOntology MCP 连通】后方准通过 `view_file` 深度全量通读并执行！在无物理数据落盘（阶段0与阶段1）前，主会话与各 Agent 绝对严禁提前阅读本技能，杜绝思维链超前空转堵车！未见底层源数据必须立即阻断移交工位 1 搬运工。
 - **大模型是唯一推演大脑（Skills 为认知中枢）**：严禁任何代码侵入业务推演。所有博弈破译、庄家第一性原理反向推演、诱盘阻盘定性与胜平负决策，100% 由大模型深度阅读本技能并结合 EvoOntology 官方 MCP 提取真实底层源数据思考完成。
 - **【无视网膜工具调用熔断铁律】（Zero-Tool-Call Hard Circuit Breaker）**：大模型思维链中**必须包含真实的 EvoOntology 官方 MCP 工具调用记录**（`mcp__evo-semantic__browse_semantics` ➔ `mcp__evo-semantic__resolve_semantics`）。凡未调用工具、企图直接通过上下文记忆、文件裸视或直觉推演出票者，直接判定为违规伪推演并强制熔断中止，严禁输出任何胜平负或让球定性！
-- **EvoOntology 官方双层看数视网膜（语义导航罗盘 + 原生定点微观切片）**：全流程绝对禁止大模型直接调用 `view_file` 通读庞杂 `raw/{matchId}.json` 或全文 `.md` 注入上下文！依循 EvoOntology 官方协议（`ruc-datalab/EvoOntology`，融合自 `explore-ontology` 核心规约），看数必须分为两层：① **语义导航层**：通过 EvoOntology 官方 MCP 工具（`browse_semantics` 发现做市机位 ➔ `resolve_semantics` 核查 23 家状态并获取权威 Mapping 路径，遇未开盘外的异常 `gap` 立即触发 `block` 强阻断，防漏看防看错）；② **原生切片层**：依据 Mapping 路径定点提取几十字节微观事实切片（初终盘、关键变盘极值、体彩实盘）注入推演大脑；`data/{销售日}/{matchId}.md` 作为人类可视化复盘简报同步留存。
-- **严禁数据伪造与假拼装铁律（Anti-Fabrication Invariant）**：严禁在任何脚本或组装逻辑中预埋写死的假赔率、假挂单、假阵容（如虚构未开盘的 Polymarket 挂单、写死 Crown 波胆）；未开盘必须且只能如实记录 `[官方未开盘]`。宁可报缺报阻，绝不造假脑补！
+- **EvoOntology 官方看数视网膜（看数只看源 .json 底层存证 SSOT，绝对严禁推演大脑看 .md）**：
+  必须严守主人至高命令——推演大脑**必须且只能读取源 `data/{销售日}/raw/{matchId}.json`（底层存证 SSOT）**！因为 `.md` 极易发生装配抽稀、广告污染、表格坍塌并诱发大模型假数据与幻想数据！`{matchId}.md` 仅作为人类人工复盘查验的可视化看板，**绝对禁止推演大脑以任何形式读取 `{matchId}.md`**！
+  依循 EvoOntology 官方协议（`ruc-datalab/EvoOntology`，融合自 `explore-ontology` 核心规约），看数严格按两步执行：
+  ① **语义导航与核销层**：通过 EvoOntology 官方 MCP 工具（`session-manifest` ➔ `browse_semantics` 发现做市机位 ➔ 5 批次 `resolve_semantics` 完整核销 23 家做市商状态并获取权威 Mapping 路径与 `block` 级硬约束，遇非未开盘的异常 `gap` 立即触发强阻断，防漏看防看错）；
+  ② **底层真实存证定点直读层**：推演大脑依据 Mapping 权威路径（`table`、`column`、`semantic_filter` 与 `aggregation_semantics`），直接定点读取解析 `data/{销售日}/raw/{matchId}.json` 中的原生数据（`payloads['1x2d.js']` 提纯的 23 家欧指、`payloads['analy.json']` 攻防与伤停、`payloads['polymarket.json']` 以及各变盘流水端点），提取关键数值与做市轨迹，大模型专注负责 10 步博弈推理！坚决不增设任何 `slices/*.json` 冗余中间文件！
+- **数据地基三不铁律约束（Anti-Error, Anti-Fake, Anti-Misplacement Triad Invariant）**：
+  推演大脑必须严守主人最高铁律（“要保证不会获取到错误数据，也不能写入假数据，数据也不能放错”）：
+  ① **绝不基于错误数据推演（Anti-Bad-Data）**：前置对质 `matchId` 与主客队名一致性，遇反爬盾、残缺断流或乱码页面立即触发阻断，严禁在损坏数据上强推；
+  ② **绝不基于假数据推演（Anti-Fake-Data）**：未开盘必须且只能如实记录 `[官方未开盘]`，严禁依据任何脑补、硬编码或编造的虚假赔率与阵容推演胜负！宁可报缺报阻，绝不造假脑补；
+  ③ **数据绝不错配放错（Anti-Misplacement）**：严格依循欧指 `[主胜, 平局, 客胜]`、亚盘 `[主队水位, 让球盘口, 客队水位]`、大小球 `[大球水位, 盘口, 小球水位]` 规范对质，主客水位与让球方向绝不颠倒；战区三·五初盘与即盘列严格区分，战区四 21 张变盘流水表遵循时间自然时钟自底（开盘初盘）向上（终盘）审视筹码换手，严禁将即盘错当成初盘推演！
 - **落盘验收门**（详见步骤 1.5 与 `match-scraper` 规约）：亚盘7家变盘全行、大小球7家变盘全行（澳彩/皇冠/365/易胜博/平博/188/香港马会）、欧指依据公司流水、主客场/近6进失球数字、真实性防克隆核验。**底层原始数据缺失：必须彻底物理熔断中止，严禁无米之炊硬推，严禁输出任何推演结论！**
 - EvoOntology 阵容伤停切片中若为「暂无数据」= 该侧未披露，**不是**没人受伤。置顶说明后**允许继续十步、不等主人**；禁止写成无伤停 / 全主力。只有数据明确返回「无伤停球员」等官方名单，才可写无人缺阵。
 - 确认开球时间，已开赛比赛由工位 2 前置拦截，不做赛前分析。
@@ -81,14 +89,22 @@ Render all ontology versions as one standalone, offline, single-file interactive
 - **足球工程实操物理绑定（Grounding in Football Project）**：
   - `workspace`: 动态锚定当前活跃工作区根目录下的 `.evoontology/` 容器路径（`path.join(CURRENT_WORKSPACE, ".evoontology")`，自适应任何磁盘与文件夹迁移，杜绝硬编码死路径）；
   - `version`: 默认锁死 `"active"`（由底层 `active.json` 动态解析至生产活跃版本，严格只读）；
-  - `Anti-Fabrication`: 恪守英文原版 `Never fabricate`，未开盘实录 `[官方未开盘]`，严禁大模型裸视原始数据，严禁偷看人类简报 `.md` 表格。
+  - `Anti-Fabrication`: 恪守英文原版 `Never fabricate`，未开盘实录 `[官方未开盘]`，严禁大模型裸视未解包原始代码，严禁在思维链中臆测编造。
 
-#### 1.2 官方 MCP 两步语义导航法（Two-Step Semantic Navigation）
+#### 1.2 官方 MCP 三步语义导航法（Three-Step Semantic Navigation）
 大模型在进入 10 步推演前，**绝对强制调用 EvoOntology 官方 MCP 工具**建立语义视网膜，思维链必须包含真实调用记录：
-1. **步骤 1.2.1（语义机位发现）**：调用 `browse_semantics(workspace="{CURRENT_WORKSPACE}/.evoontology", query="做市商")`（其中 `{CURRENT_WORKSPACE}` 动态取当前实际工作区绝对路径），召回当前激活本体中的做市商核心概念拓扑；
-2. **步骤 1.2.2（23 家机构核销与 Mapping 路径提取）**：调用 `resolve_semantics(workspace="{CURRENT_WORKSPACE}/.evoontology", mentions=["平博", "皇冠", "澳彩", "Bet365"])`；
-3. **核销判定**：核查 23 家做市商均为 `status: "supported"`。若出现非预期 `gap` 或返回 `unavailable`，或触发 `severity: "block"` 级约束，立即判定为做市机位遗漏并强制阻断推演！
-4. **获取字段 Mapping 权威规范**：从 `resolve_semantics` 的返回中提取各机构与各盘口的权威 Mapping 路径（如平博 cid=177、澳彩 cid=80、立博 cid=82 等精准数据字段定位），为定点微观切片提供物理坐标。
+1. **步骤 1.2.1（会话意图引导）**：读取 `session-manifest`（资源 `evo-semantic://session-manifest`），明确当前活跃版本 `ontology_v2` 与可用工具范围；
+2. **步骤 1.2.2（语义探针检索）**：调用 `browse_semantics(workspace="{CURRENT_WORKSPACE}/.evoontology", query="做市商 平博 澳彩")`，召回核心博弈概念拓扑；
+3. **步骤 1.2.3（23 家做市商 5 批次原子核销）**：
+   受官方内核 `_MAX_RESOLVE = 5` 硬限制（单次传入超过 5 家会被官方底层自动截断至 `skipped`），推演大脑**必须且只能以 5 个原子批次完整核销法定 23 家做市商**：
+   - 批次 1: `resolve_semantics(mentions=["澳彩", "皇冠", "平博", "Bet365", "易胜博"])`
+   - 批次 2: `resolve_semantics(mentions=["香港马会", "188Bet", "威廉希尔", "立博", "伟德"])`
+   - 批次 3: `resolve_semantics(mentions=["Interwetten", "Bwin", "SNAI", "必发", "利记"])`
+   - 批次 4: `resolve_semantics(mentions=["沙巴", "Marathon", "Betway", "Unibet", "Paddy Power"])`
+   - 批次 5: `resolve_semantics(mentions=["10Bet", "中国体彩", "Polymarket"])`
+4. **核销判定与 Gap 熔断断路器**：
+   核查上述 5 批次 23 家做市商全部返回 `coverage_status: "supported"`（或官方合法未开盘）。若出现非预期 `unresolved` 或返回 `unavailable`（异常 Gap），或触发 `severity: "block"` 级约束，立即判定为做市机位遗漏并强制阻断推演！
+5. **获取字段 Mapping 权威规范**：从 `resolve_semantics` 的返回中提取各机构与各盘口的权威 Mapping 路径（`table`、`column`、`semantic_filter` 与 `aggregation_semantics`），锁死字段语义定义。
 
 #### 1.3 核心约束强阻断与对质（Constraint Enforcement & Auto-Debate）
 对 `resolve_semantics` 返回的本体做市硬约束，推演大脑必须在思维链中逐条过验，并在契约卡中显式对质：
@@ -98,29 +114,31 @@ Render all ontology versions as one standalone, offline, single-file interactive
   做市商必须满足法定白名单完整性，不可将未经去水校准的百家算术均值作为做市基准；
 - **官方未开盘合法阻断**：若机构未开盘（如 Polymarket 返回空），必须标注 `[官方未开盘]`，严禁脑补或造假。
 
-#### 1.4 标准化微观定点切片机械臂契约（Native Micro-Slicing Protocol）
-依循 EvoOntology 官方机制 Principle 3：“两导航工具（browse/resolve）返回元数据和指导，微观数据查询归属原生工具”：
-- **严禁裸视原始报文与偷看人类简报**：全流程绝对禁止大模型直接调用 `view_file` 通读 1.2MB 庞杂 `raw/{matchId}.json`，**绝对禁止偷看面向人类的可视化 `{matchId}.md` 表格**！
-- **原生定点切片直读（Native Slicing）**：宿主原生只读工具严格按照步骤 1.2 获取的 Mapping 路径，直接对底层无损存证 `data/{销售日}/raw/{matchId}.json` 执行几十字节的定点切片提取：
-  1. 欧指机构即时与初盘切片（提取 23 家初盘/即盘胜平负）；
-  2. 亚盘做市变盘流水切片（提取 7 家做市商初终盘与关键异动行）；
-  3. 大小球与体彩实盘切片（提取 7 家进球数流水及体彩 `analy.json` HAD/HHAD 官方让球与固定奖金）；
-  4. 阵容伤停与技统微观切片（提取关键伤停名单与 `tactics` 压制力数据）；
+#### 1.4 标准化底层存证 JSON 定点直读契约（Raw JSON Grounding Protocol）
+依循 EvoOntology 官方机制 Principle 3：“两导航工具（browse/resolve）返回元数据和指导，数据查询归属宿主原生工具”：
+- **看数只看源 .json（底层存证 SSOT，绝对严禁看 .md）**：推演大脑**必须且只能以 `data/{销售日}/raw/{matchId}.json` 为唯一法定事实源**！绝对严禁推演大脑读取 `{matchId}.md`（`.md` 极易抽稀丢失数据并诱发大模型假数据与幻想数据，仅作为人类可视化对账看板）；
+- **依据 Mapping 路径定点直取底层 JSON 字段**：推演大脑以 EvoOntology 返回的 Mapping 权威路径（`table`、`column`、`semantic_filter` 与 `aggregation_semantics`）为精确瞄准坐标，直接从 `raw/{matchId}.json` 的对应原生端点提取数据进行解析：
+  1. 欧指做市端点：读取 `payloads['1x2d.js']` 提取法定 23 家做市商权威 cid 初即盘胜平负；
+  2. 攻防与体彩端点：读取 `payloads['analy.json']` 提取体彩 HAD/HHAD 官方让球与固定奖金、阵容真实伤停名单与技统压制力数据；
+  3. 变盘流水端点：读取 `payloads` 中的变盘流水端点，提取 7 家核心做市商初终盘与关键脉冲/阶梯异动时序；
+  4. 链上预测端点：读取 `payloads['polymarket.json']` 提取真实点对点撮合概率；
+- **拒绝裸视无序乱码与拒绝冗余中间文件**：大脑在 Mapping 路径指引下定向读取特定键值字段，杜绝在思维链中漫无目的地裸读整篇未解包 JS；坚决禁止在磁盘生成任何 `slices/*.json` 冗余中间文件！
 - **工具职责四级分工界线（四位一体）**：
-  - 数据搬运：100% 独家归属工位 1 `match-scraper`（官方 Scrapling MCP 一枪并发秒取 26 端点）；
-  - 语义导航与防漏：100% 独家归属 `evo-semantic` MCP（`browse_semantics` ➔ `resolve_semantics` 核销 23 家，遇 gap 强阻断）；
-  - 微观数据切片：100% 独家归属宿主原生只读工具（按 Mapping 路径直取微观数值，杜绝偷看 MD）；
+  - 数据搬运：100% 独家归属工位 1 `match-scraper`（官方 Scrapling MCP 一枪并发秒取 28 端点，落盘 raw 与 md）；
+  - 语义导航与防漏：100% 独家归属 `evo-semantic` MCP（5 批次 `resolve_semantics` 核销 23 家，遇 gap 强阻断）；
+  - 事实定点直读：100% 独家归属推演大脑（依据 Mapping 坐标穿透提取数值，0 幻觉、0 漏数）；
   - 精算去水与概率：100% 独家归属宿主独立 `sports-math` MCP（`devig_oo_epc` 与 `poisson_dixon_coles`）。
 - **任务轨迹闭环（可选）**：可通过 `start_ontology_task` 绑定推演工单，推演完成后调用 `finish_ontology_task` 固化做市证据轨迹，供赛后机器复盘对账。
 
 #### 1.5 底层物理存证核验与门禁（Anti-Fabrication & Drop Verification）
-- **26 端点 Schema 强断言**：底层物理文件 `data/{销售日}/raw/{matchId}.json` 必须存在且新鲜（<30分钟），装载全量 26 端点原生报文（1x2d.js、analysis.html、odds.html、analy.json、7家机构21张流水HTML与polymarket.json）。
+- **28 端点 Schema 强断言**：底层物理文件 `data/{销售日}/raw/{matchId}.json` 必须存在且新鲜（<30分钟），装载全量 28 端点原生报文（1x2d.js、analysis.html、odds.html、analy.json、7家机构21张流水HTML、polymarket.json，以及 asian_odds.html 与 over_under.html 双全景总表）。
 - **门禁物理阻断**：若底层文件不存在、payloads 键不全或反序列化失败，判定底层存证损坏，立即彻底物理熔断中止推演，严禁进入步骤 2 及后序分析，严禁输出任何预测表格，立即移交工位 1（`match-scraper`）全新抓取！
+- **初盘完整性强断言门禁（Anti-Omission Initial Odds Gate）**：面向人类简报 `data/{销售日}/{matchId}.md` 必须完整包含《战区三·五：主流做市商亚盘与大小球初即大表》，亚盘初盘行数 $\ge 5$ 行，大小球初盘行数 $\ge 5$ 行。缺失初盘大表直接判定为残次品停线阻断！
 - **开球时间先验拦截**：推演前再次复核开球时间，当前时间 $\ge$ 开球时间立即终止，不做赛前分析。
 - **数据全量吸收铁律（拒绝数据吃灰、严禁主观幻想）**：
   抓回来的数据绝不是摆设，推演不是脑补！推演大脑在 10 步推演中必须全量吸收、吃干榨净：
-  1. **盘口与水位全吸收（第 4、5、6 步）**：准确引用澳彩、皇冠等法定做市商初即盘与水位，对照欧亚折合盘门槛背离，严禁用模糊词糊弄；
-  2. **变盘流水全时序吸收（第 8 步）**：分析初盘骨架、早盘试水、中盘假摔震仓、临盘洗盘与终盘关门时序，逐段破译庄家诱盘意图；
+  1. **盘口与初盘水位全吸收（第 4、5、6 步）**：首要审读《战区三·五》，准确引用澳彩、皇冠、Bet365、平博等法定做市商的【亚盘初盘】（让球档位与主客水位）与【即盘】（让球档位与主客水位），严禁无初盘盲目猜胜负；
+  2. **变盘流水全时序吸收（第 8 步）**：结合战区四流水分析初盘骨架、早盘试水、中盘假摔震仓、临盘洗盘与终盘关门时序，逐段破译庄家诱盘意图；流水表天然 100% 倒序排列（顶端最新临盘 ➔ 底端最早开盘，零人为截断），必须从最底行（开盘初盘）自底向上追踪至顶行（临盘终盘），还原完整做市轨迹；严禁在无底端初盘时盲目推断时序！
   3. **Crown 皇冠波胆矩阵辅助对照（第 3 步）**：将 0:0~4:4 比分赔率与泊松期望概率对照，仅作参考，绝不作核心防守依据；
   4. **战术攻防压制力全吸收（`tactics`，第 1、3 步）**：显式提取控球率、射正数、得失球时段与赛程密度，修正泊松 $\lambda$ 参数；
   5. **操盘画像全吸收（`profiling`，第 1、7 步）**：提取相同初盘历史赛果概率、近 10 场盘路走势与半全场双盘背离，反审散户扎堆心理与庄家净赔付敞口；
@@ -169,7 +187,7 @@ Render all ontology versions as one standalone, offline, single-file interactive
   - **数据安全规则**：赔率必须实时抓取，不复用旧盘口；只用开球前赛前赔率，严格过滤滚球；缺失不臆造；平博作为低抽水无偏做市商交叉验证，不单独用于决策依据。
   - 主看威廉 + 365 + 立博 + 伟德 + 平博 五大巨头交叉认证；重点参考 Bwin 与 Interwetten；意系赛事特看 SNAI；交易所对冲参考必发；亚洲联赛特看 澳彩、皇冠、365、易胜博、马会 5 家做市共识。
 
-数据由 Scrapling 并发直取法定 26 个底层端点落盘。若【推演源数据】缺字段或未过门禁：**立即彻底物理熔断中止，严禁输出任何推演结论与预测表格！绝对禁止在数据缺失或门禁未过时偷懒继续十步！**伤停空表不挡十步。
+数据由 Scrapling 并发直取法定 28 个底层端点落盘。若【推演源数据】缺字段或未过门禁：**立即彻底物理熔断中止，严禁输出任何推演结论与预测表格！绝对禁止在数据缺失或门禁未过时偷懒继续十步！**伤停空表不挡十步。
 
 #### 1.7 赔率数据归属与结构化字段
 
@@ -556,8 +574,17 @@ call_mcp_tool(ServerName="sports-math", ToolName="poisson_dixon_coles", Argument
 - **亚洲联赛**：澳彩(1)、皇冠(3)、365(8)、易胜博(12)、马会(48) **5 家交叉认证**（4 家 + 马会）。
 
 数据来源与 EvoOntology 视网膜门禁：大模型严禁直接裸视底层原始报文！必须且只能通过 EvoOntology 官方 MCP 工具提取微观机位数据：
-1. **概念发现与提取（browse_semantics ➔ resolve_semantics）**：调用 `browse_semantics` 检索法定 23 家做市商机位，并通过 `resolve_semantics(mentions=["澳彩", "皇冠", "平博", ...])` 批量获取 `database_source: raw_json` 的微观字段切片与约束；
-2. **23 家机构防漏门禁（status: supported）**：核验返回结果中 23 家机构全部为 `supported`；若出现非预期的 `gap` 缺口，必须立即阻断推演报警，严禁在残缺数据上推演！
+1. **概念发现与 5 批次核销（browse_semantics ➔ 5 批次 resolve_semantics）**：
+   - 官方 MCP 存在单次最多解析 5 个的硬限制（`_MAX_RESOLVE = 5`，超过 5 个会被官方底层自动截断至 `skipped` 并静默丢弃后 18 家！）；
+   - 大脑**绝对严禁单次传入超过 5 家**，必须严格按照步骤 1.2.3 的 5 个批次逐批核销全部 23 家做市商：
+     * 第 1 批: `resolve_semantics(mentions=["澳彩", "皇冠", "平博", "Bet365", "易胜博"])`
+     * 第 2 批: `resolve_semantics(mentions=["香港马会", "188Bet", "威廉希尔", "立博", "伟德"])`
+     * 第 3 批: `resolve_semantics(mentions=["Interwetten", "Bwin", "SNAI", "必发", "利记"])`
+     * 第 4 批: `resolve_semantics(mentions=["沙巴", "Marathon", "Betway", "Unibet", "Paddy Power"])`
+     * 第 5 批: `resolve_semantics(mentions=["10Bet", "中国体彩", "Polymarket"])`
+2. **23 家机构防漏与零截断门禁（skipped ≡ [] 且 status: supported）**：
+   - 必须断言每个批次的 `skipped` 数组严格为空（`len(skipped) == 0`）；若出现任一机构被 `skipped`，立即判定为单批超限违规，停线阻断！
+   - 累计核验 5 个批次返回的 23 家做市商全部为 `coverage_status: "supported"`（或官方合法未开盘）；若出现非预期的 `gap` 缺口，必须立即阻断推演报警，严禁在残缺数据上推演！
 3. **做市阻断探针对质（severity: block）**：若返回的 `constraints` 中包含 `severity: "block"`（如平博定海神针、脉冲假摔、高平真空通杀），认知契约卡必须显式开设 `【EvoOntology机位阻断对质】` 区块进行反向博弈破译，无对质严禁下槌！
 
 **去水无偏概率工具与 Goto (2021) 概率定位解绑（强制调用）**：核算分析依据公司的真实无偏概率与抽水率时，必须调用官方 sports-math MCP 工具：`devig_oo_epc(home_odds=..., draw_odds=..., away_odds=...)` 获取客观标准点概率，严禁大模型主观心算或凭空捏造。
@@ -706,7 +733,10 @@ RLM 检测清单：
 
 **核心**：亚盘分析依据覆盖**法定 7 家全能做市商**——澳彩、皇冠、365、易胜博、平博、188、香港马会全量变盘流水交叉认证；**平博作为低抽水锐度锚点（Low-Margin Sharp Anchor）**，其盘口与水位变动直面聪明钱对冲，全权参与亚盘多维印证，用于刺破主流商业庄家的诱盘迷雾。
 
-数据来源：步骤 1/1.5 过验【推演源数据】的各公司亚盘变化。
+**数据双轨对质铁律（初即大表宏观基准 + 21 张流水微观轨迹）**：
+1. **宏观基准首审《战区三·五：主流做市商亚盘初即大表》**：分析师必须首先抄录皇冠、澳彩、Bet365、平博等机构的**初盘让球门槛与主客水位**（如：皇冠初盘 1.00 球半/两球 0.88 ➔ 即时 0.86 两球 1.03），计算盘口净位移 $\Delta_{\text{handicap}}$，作为全局做市防守底线的法定物理依据；严禁在无亚盘初盘数据时主观推演让球胜负！
+2. **微观轨迹穿透《战区四：变盘时序流水》**：战区四流水表为 100% 源网原汁原味倒序镜像（顶端第 1 行为最新临盘，最底端行为最早开盘记录）。分析师在推演变盘轨迹时，必须理解从底部的最早开盘向上演变为顶部的最新临盘（开盘 ➔ 试水 ➔ 震仓 ➔ 关门）；严禁误将顶部第 1 行当作初盘！结合二级流水观察中盘假摔（Head-Fake）、早盘试水与临盘洗盘，洞察资金冲击轨迹；
+3. **初盘让球防守底线优先律**：亚盘直面净胜球兑付风险，初盘门槛体现庄家未受注额扰动时的核心基准，初即盘位移体现庄家在筹码冲击下的真实设防或弃守。
 
 **执行顺序**：**先**用两队基本面与主流初盘做「从初盘分析盘口类型」→ **再**做「亚盘赔率变动轨迹分析」（时点表 + 每家意图 + 相同时点认证 + 一句话解读）→ **再**用「盘口与水位组合」及变动排查、RLM、主流做市商交叉认证对初盘→即时结论做系统梳理。
 
@@ -1171,7 +1201,7 @@ RLM 检测清单：
 ### 底层物理数据损坏或缺失阻断（推演硬门禁）
 
 - **底层物理存证不存在**：若 `data/{销售日}/raw/{matchId}.json` 物理文件不存在，推演进程必须立即物理阻断，严禁进入 10 步推演，严禁脑补盘口或编造赛果！立即向总控台报警并交由工位 1（`match-scraper`）进货。
-- **底层存证 Schema 损坏或键缺失**：若 `payloads` 数量不足 26 个或反序列化失败，判定为底层存证损坏，立即物理熔断中止，严禁无米之炊硬推。
+- **底层存证 Schema 损坏或键缺失**：若 `payloads` 数量不足 28 个或反序列化失败，判定为底层存证损坏，立即物理熔断中止，严禁无米之炊硬推。
 - **23 家做市商非法 Gap / Block 阻断**：若 `resolve_semantics` 核销 23 家时触发非合法 `gap` 或 `severity: "block"` 约束，立即判定做市机位缺失，强制阻断推演并报告具体缺失机构。
 - **阵容情况缺失**：阵容伤停切片若为「暂无数据」标「伤停未核实」，置顶说明后允许继续十步、不等主人；禁止写成全主力出战。
 - **已开赛拦截**：开球时间判定为已开赛时，立即中止赛前分析，回传已开赛状态。

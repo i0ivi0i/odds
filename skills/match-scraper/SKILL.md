@@ -1,6 +1,6 @@
 ---
 name: match-scraper
-description: "马斯克超级工厂工位 1（全权数据进货局）：垂直内嵌 Scrapling 0.5 官方全套武器库（HTTP协议流、无头浏览器自动化、防封绕盾、三路流式分拣、选择器下推、Shadow DOM、Spider 架构与高级解析导航）与球探体育(titan007)法定 26 个底层物理端点装配规约，独揽单 IP 防封控频与 23 家做市商布尔核销，出厂交付标准零件托盘 1（raw/{id}.json 存证 SSOT 与人类简报）。在用户说「抓取赛程」「获取今日比赛」「进货」「拉取推演源数据」或阶段零、阶段一时使用。"
+description: "马斯克超级工厂工位 1（全权数据进货局）：垂直内嵌 Scrapling 0.5 官方全套武器库（HTTP协议流、无头浏览器自动化、防封绕盾、三路流式分拣、选择器下推、Shadow DOM、Spider 架构与高级解析导航）与球探体育(titan007)法定 28 个底层物理端点装配规约（含亚盘与大小球全景初即总表），独揽单 IP 防封控频与 23 家做市商布尔核销，出厂交付标准零件托盘 1（raw/{id}.json 存证 SSOT 与人类简报）。在用户说「抓取赛程」「获取今日比赛」「进货」「拉取推演源数据」或阶段零、阶段一时使用。"
 version: "0.5"
 license: Complete terms in LICENSE.txt
 metadata:
@@ -42,9 +42,9 @@ metadata:
   - [4.1 协议流直取球探竞足页（Level 1 纯 HTTP 极速通道）](#41-协议流直取球探竞足页level-1-纯-http-极速通道)
   - [4.2 直接解析 Markdown 表格行并提取实体](#42-直接解析-markdown-表格行并提取实体)
   - [4.3 原子落盘 meta.md 与追加 memory.md](#43-原子落盘-metamd-与追加-memorymd)
-- [第五工段：模式二·单场【推演源数据】采集与 26 端点装配](#第五工段模式二单场推演源数据采集与-26-端点装配)
+- [第五工段：模式二·单场【推演源数据】采集与 28 端点装配](#第五工段模式二单场推演源数据采集与-28-端点装配)
   - [5.1 Scrapling 官方 Session 长连接三部曲](#51-scrapling-官方-session-长连接三部曲)
-  - [5.2 单场法定 26 个底层端点全景映射表（含 GB18030 二进制保真解码）](#52-单场法定-26-个底层端点全景映射表含-gb18030-二进制保真解码)
+  - [5.2 单场法定 28 个底层端点全景映射表（含亚盘/大小全景总表与保真解码）](#52-单场法定-28-个底层端点全景映射表含亚盘大小全景总表与保真解码)
   - [5.3 欧洲指数 23 家做市商法定名单与提取契约](#53-欧洲指数-23-家做市商法定名单与提取契约)
   - [5.4 Polymarket 链上预测市场进货标准（第 26 端点）](#54-polymarket-链上预测市场进货标准第-26-端点)
 - [第六工段：Poka-Yoke 双重物理质检门禁与标准零件托盘 1 交付](#第六工段poka-yoke-双重物理质检门禁与标准零件托盘-1-交付)
@@ -480,7 +480,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 - `examples/README.md` - 官方选型升阶阶梯指南（`FetcherSession ➔ StealthySession ➔ Spider`）
 
 #### 1.5.3 三维一体协同沟通关系
-1. **`SKILL.md`（生产总控中枢）**：承接总控台调度工单，将球探 26 端点业务需求与 Scrapling 规范焊合；
+1. **`SKILL.md`（生产总控中枢）**：承接总控台调度工单，将球探 28 端点业务需求与 Scrapling 规范焊合；
 2. **`references/`（深度知识外脑）**：为 Agent 在遭遇冷门加密、Shadow DOM 或特殊反爬时提供 18 篇即查即用官方方案；
 3. **`examples/`（架构形态蓝图）**：提供官方标准的会话管理与异常升阶代码范式，规范 MCP 交互行为。
 
@@ -502,7 +502,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 | MCP 工具名称 | 核心参数规范 | 适用业务场景与分工 |
 | :--- | :--- | :--- |
 | `open_request_session` | `session_id`: 字符串<br/>`impersonate`: `"chrome"`<br/>`stealthy_headers`: `true` | **开启全真长连接**：模拟 Chrome TLS/JA3 指纹与真实 Client Hints 标头，复用底座 TCP 连接池，消灭爬虫特征。 |
-| `session_make_request` | `session_id`: 对应会话<br/>`url`: 目标端点<br/>`css_selector`: 选择器<br/>`extraction_type`: `"text"` \| `"html"` \| `"markdown"`<br/>`main_content_only`: 布尔值 | **分流流式采掘**：复用同一个会话对 26 端点执行三路分流提取，单场比赛一气呵成。 |
+| `session_make_request` | `session_id`: 对应会话<br/>`url`: 目标端点<br/>`css_selector`: 选择器<br/>`extraction_type`: `"text"` \| `"html"` \| `"markdown"`<br/>`main_content_only`: 布尔值 | **分流流式采掘**：复用同一个会话对 28 端点执行三路分流提取，单场比赛一气呵成。 |
 | `close_session` | `session_id`: 目标会话 | **会话终结释放**：文件落盘后强制显式关闭连接，释放网络句柄与系统内存，杜绝空闲孤儿会话。 |
 | `make_request` | `url`, `extraction_type`, `impersonate`, `stealthy_headers` | **极速一次性请求**：用于模式一赛程首页（`index.aspx`）秒级拉取落盘。 |
 | `browser_fetch` | `url`, `solve_cloudflare=true`, `network_idle=true`, `pierce_shadow=true` | **升阶破盾与动态等待**：遇 403/503 或空骨架（`<tr>` 数量 $< 2$）时自动升阶接管，等待网络静默或穿透人机挑战盾。 |
@@ -512,7 +512,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 
 ### 2.2 搬运工 Worker 的 MCP 闭环作业规范
 
-1. **会话生命周期严格配对**：Worker 接单后必须先调用 `open_request_session`，完成 26 端点分流抓取后，在同一轮次中显式调用 `close_session`，严禁悬挂未关闭的幽灵会话；
+1. **会话生命周期严格配对**：Worker 接单后必须先调用 `open_request_session`，完成 28 端点分流抓取后，在同一轮次中显式调用 `close_session`，严禁悬挂未关闭的幽灵会话；
 2. **选择器原地过滤**：提取 21 张变盘流水表时，必须通过 `css_selector="#table_odds"` 下推过滤，严禁拉取完整数百 KB 页面造成 Token 膨胀；
 3. **断路升阶接管**：Level 1 请求若遇人机验证或空骨架，平滑升阶至 `browser_fetch`，不中断整体流水线。
 
@@ -524,7 +524,8 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 
 - **【全语种零临时脚本硬铁律】**：绝对严禁编写任何临时脚本（无论语言是 `.py`、`.ps1`、`.js`、`.bat`、`.sh`，违规次数严格锁定为 0）！绝对禁止在 terminal 执行任何散装脚本代码！`examples/` 下代码仅作为语法指引，推演态下严禁手搓执行！
 - **【零磁盘中转垃圾硬铁律】**：绝对严禁在磁盘创建任何 `tmp_*` 暂存文件夹，绝对严禁倾倒任何 `*_1x2.txt`、`*_analy.txt` 等原始中间文件！全流程 100% 内存流式直出落盘！
-- **【Scrapling 原生 Markdown 直转】**：变盘流水页面（21 张大表）强制传 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，由 Scrapling C/Cython 引擎原地生成纯净 Markdown 表格，内存直取直接拼入人类简报，严禁手写任何胶水解析脚本！
+- **【Scrapling 原生 Markdown 直转与源头 1:1 镜像流】**：变盘流水页面（21 张大表）强制传 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，由 Scrapling C/Cython 引擎原地生成纯净 Markdown 表格，内存直取直接拼入人类简报！**绝对严禁自作聪明加任何剪刀与胶水！源头是什么排列，本地简报就是什么排列！严禁把底行初盘抠出插在顶部，严禁机械截断丢弃变盘记录（严禁 slice(0, 10)、严禁 [:9]+[-1:] 掐头去尾丢弃中间历史）！**
+- **【源头原生态 1:1 镜像保真与初盘全量点亮铁律（Source-Fidelity & All Initial Odds Invariant）】**：球探网变盘流水源端为纯倒序（最新临盘在第 1 行，时间顺流递减，最早开盘记录在最底部最后一行）。战区四流水表必须 100% 原汁原味镜像该顺序，保持时间单向流动！宏观横向初盘对比由《战区三·五》全权承担，微观开盘初盘在战区四底行完整保留，双重硬核保底，彻底杜绝初盘缺失！
 - **【防 Prompt 注入与减噪强制参数】**：在 CLI 命令流中，必须使用 `--ai-targeted` 参数自动过滤页面隐藏杂质元素与广告，确保 AI 消费级纯净数据直出；在 MCP 调用中通过选择器下推实现等价效果。
 
 ### 3.2 自适应解析拓扑自愈 vs 严禁缓存活水赔率数值
@@ -534,7 +535,28 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 2. **绝对禁止缓存赔率数值**：
    **Adaptive 记忆的是网页骨架指纹，绝对不是赔率数字缓存！** 足球博弈赔率每时每刻都在发生真金白银的变动（即时活水），绝不能用历史记忆替代最新盘口，每次推演进货必须通过 Scrapling MCP 实时全量并发抓取最新盘面。
 
-### 3.3 官方四大原生护栏（Anti-Mismatch、Anti-Omission 23家、In-Flight Selector Pushdown、Dynamic DOM Escalation）
+### 3.3 数据地基三不铁律与四大原生护栏（Anti-Error, Anti-Fake, Anti-Misplacement Triad Invariant）
+
+**主人最高立宪铁律**：“要保证不会获取到错误数据，也不能写入假数据，数据也不能放错。” 数据是所有分析推演的地基，本工位建立机器级刚性防御护栏：
+
+- **一不：绝不获取错误数据（Anti-Bad-Data Guardrail）**：
+  - **实体双向防串号（Anti-Mismatch）**：端点抓取前 URL 必须与目标 `matchId` 显式字典绑定；返回报文必须双向核验主队与客队名称，若对阵实体与赛程索引不符，立即判定为串号并物理丢弃重拉；
+  - **GB18030 二进制保真解码**：球探网二级变盘流水页面（`changeDetail/*.aspx`）必须基于原始 bytes 显式以 `gb18030` 解码，严禁外部默认 UTF-8 强解导致队名与盘口汉字乱码；
+  - **拦截质询盾与残缺流**：严禁将 403/503 或 Cloudflare 挑战盾页面当作正常数据接收，遇反爬盾自动升阶 `stealthy_fetch(solve_cloudflare=true)`；`1x2d.js` 必须包含法定 23 家做市商 cid 原始行并能完整反序列化，杜绝因网络中断截断只收到残缺报文！
+- **二不：绝不写入假数据（Anti-Fake-Data Guardrail）**：
+  - **存证 100% 物理真实（SSOT Raw Invariant）**：`data/{销售日}/raw/{matchId}.json` 承载的 28 端点原生报文必须 100% 是网络真实活水响应，严禁任何 Agent 手工编造、硬编码 mock 数据或篡改报文；
+  - **未开盘严禁脑补（Zero Hallucinated Odds）**：凡机构未开盘（如香港马会次级联赛未开亚盘、体彩深盘未开单关）或 Polymarket 未开设当场预测合约，**必须且只能**如实标注 `[官方未开盘]`！绝对严禁在后台或前端硬编码伪造赔率（如伪造“60.5¢”挂单、伪造 Crown 波胆或伪造伤停）。宁可报缺报阻，绝不造假脑补！
+  - **真实体积与 Receipt 反作弊**：`receipt.endpoints[i].size` 必须与真实的 payload 字符长度 1:1 绝对相等，严禁虚报大小以逃避品控门禁；
+- **三不：数据绝不能放错（Anti-Misplacement & Strict Mapping Guardrail）**：
+  - **做市商 ID 字典级刚性锁死**：以法定 23 家权威 cid 集合构建 Hash Map 进行常数级精确提取，`parts[0]` 为机构 ID (`cid`)，**绝对严禁错用 `parts[1]`**！绝不把平博的数据填到皇冠，绝不把澳彩的水位错放进马会；
+  - **盘口赔率三要素槽位强断言**：
+    - 欧指：必须严格为 `[主胜, 平局, 客胜]` 三列，严禁主客倒置；
+    - 亚盘：必须严格为 `[主队水位, 让球盘口, 客队水位]`，且主队让球/受让方向绝对不能混淆；
+    - 大小球：必须严格为 `[大球水位, 盘口, 小球水位]`，严禁大球水位与小球水位左右颠倒；
+  - **初即列与变盘时序绝不错位**：战区三·五初盘列严格对应最早开盘记录，即盘列对应最新时序，严禁即盘填入初盘列；战区四 21 张变盘流水表 100% 保持源网倒序（时间单调自上而下递减直通底端最早开盘记录），严禁将底端初盘移花接木插到顶部！
+  - **跨比赛绝对隔离**：简报 `{matchId}.md` 和底层 `raw/{matchId}.json` 必须经过 `matchId` 一致性核验，严禁比赛 A 的表格被粘贴到比赛 B！
+
+### 3.4 官方四大原生护栏执行细节（Anti-Mismatch、Anti-Omission 23家、In-Flight Selector Pushdown、Dynamic DOM Escalation）
 
 - **护栏一：Anti-Mismatch Guardrail（防错位防串号护栏）**：
   - **URL 与实体显式绑定**：在并发抓取前显式建立端点字典（`ah_url`, `ou_url`, `eu_url`, `1x2d_url`），绝不依赖盲目的数组下标循环；
@@ -544,9 +566,9 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
   - **Cid 提取防偏规约**：在 `1x2d.js` 的 `var game=Array(...)` 中，竖线分割的第一项 `parts[0]` 为机构 ID (`cid`)。**绝对严禁错用 `parts[1]`**！
   - **23 家白名单 Hash Map**：以法定 23 家权威 cid 集合构建 Hash Map 进行常数级精确提取；
   - **23 项布尔存在性核销**：组装简报时必须逐家执行布尔核对清单（Boolean Checklist），除体彩深盘不开单固、次级联赛香港马会未开亚盘外，所有法定做市商缺失立即判定为采集遗漏并物理阻断，缺失项必须显式标记「官方未开盘」，严禁静默漏报！
-- **护栏三：In-Flight Selector Pushdown & 26 端点 Schema 防伪（防虚标/防垃圾）**：
+- **护栏三：In-Flight Selector Pushdown & 28 端点 Schema 防伪（防虚标/防垃圾）**：
   - **选择器底层下推（`css_selector`）**：抓取 HTML 页面时强制传递 `css_selector`（如 `css_selector="#team_lineup"` 或 `css_selector="#table_odds"`），由 Cython 引擎在内存中修剪 90%+ 无关 DOM；
-  - **26 端点 Schema 结构强断言**：底层存证 `raw/{matchId}.json` 必须包含 26 个特定 API 键（`1x2d.js`, `analysis.html`, `odds.html`, `analy.json`, 7家机构21张流水HTML与polymarket.json）。任何通过填充乱码、空白字符串或伪造文本虚标体积的行为，均会导致 JSON Schema 解析破裂与装配阶段直接抛出 KeyError，从物理根源杜绝 AI 作弊填充！
+  - **28 端点 Schema 结构强断言**：底层存证 `raw/{matchId}.json` 必须包含 28 个特定 API 键（`1x2d.js`, `analysis.html`, `odds.html`, `analy.json`, `asian_odds.html`, `over_under.html`, 7家机构21张流水HTML与polymarket.json）。任何通过填充乱码、空白字符串或伪造文本虚标体积的行为，均会导致 JSON Schema 解析破裂与装配阶段直接抛出 KeyError，从物理根源杜绝 AI 作弊填充！
 - **护栏四：Dynamic DOM Escalation Guardrail（动态渲染升级护栏，防空壳抽稀）**：
   - **空骨架判定标准**：若 Level 1 请求提取到的数据表格行数（`<tr>` 数量）$< 2$ 且页面包含动态加载脚本，自动无缝升阶至 `mcp__scrapling__browser_fetch(network_idle=True)`，等待网络静默完成再抽取 DOM，彻底杜绝只抓 190 行残缺骨架！
 
@@ -584,9 +606,9 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 
 ---
 
-## 第五工段：模式二·单场【推演源数据】采集与 26 端点装配
+## 第五工段：模式二·单场【推演源数据】采集与 28 端点装配
 
-底层源数据（`data/{销售日}/raw/{matchId}.json`）是 EvoOntology 官方 MCP 直连与推演大脑做深度推演的**唯一真实物理原材料**；`data/{销售日}/{matchId}.md` 同步生成作为面向人类的可视化复盘简报。
+底层源数据（`data/{销售日}/raw/{matchId}.json`）是 28 端点真实物理原材料的法律级存证 SSOT；`data/{销售日}/{matchId}.md` 同步生成作为面向人类与推演大脑依据 EvoOntology Mapping 穿透直读的结构化事实看板。坚决禁止新增任何 `slices/*.json` 冗余中间文件！
 
 ### 5.1 Scrapling 官方 Session 长连接三部曲
 
@@ -600,10 +622,10 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
    ```
    全真模拟 Chrome TLS/JA3 指纹与真实 Client Hints 标头，底层连接池持久复用，抹除爬虫特征；
 2. **步骤二：三路端点分流流式拉取（Three-Way Typed Stream Requests）**：
-   复用同一个 `session_id`，调用 `mcp__scrapling__session_make_request` 针对 26 端点执行**三路分流提取**，严禁一刀切选择器破坏：
+   复用同一个 `session_id`，调用 `mcp__scrapling__session_make_request` 针对 28 端点执行**三路分流提取**，严禁一刀切选择器破坏：
    - **① 纯数据与脚本流（`1x2d.js`、`analy.json`、`polymarket.json`）**：
      - `extraction_type="text"`，`main_content_only=false`，`css_selector=null`；
-     - 直出 100% 原始长串，`1x2d.js` 体积必须 $\ge 300\text{KB}$（涵盖全网 160+ 家机构完整欧指），绝不进行截断！
+     - 直出 100% 原始长串，`1x2d.js` 必须涵盖全网机构欧指且 23 家法定做市商 cid 完整存在，绝不进行截断！
    - **② 完整分析 DOM 流（`analysis.html`、`odds.html`）**：
      - `extraction_type="html"`，`main_content_only=false`，`css_selector=null`；
      - 完整保留攻防时序、伤停阵型与波胆赔率 DOM；
@@ -614,27 +636,33 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 3. **步骤三：显式关闭会话（Close Session）**：
    拉取完毕后立即调用 `mcp__scrapling__close_session(session_id=session_id)` 显式释放 TCP 连接与系统句柄。
 
-### 5.2 单场法定 26 个底层端点全景映射表（含 GB18030 二进制保真解码）
+### 5.2 单场法定 28 个底层端点全景映射表（含亚盘/大小全景总表与保真解码）
 
-单场比赛必须且只能全量并发拉取以下 **法定 26 个底层物理端点**，完整装配为 `raw/{matchId}.json`（严禁缺失任何端点）：
+单场比赛必须且只能全量并发拉取以下 **法定 28 个底层物理端点**，完整装配为 `raw/{matchId}.json`（严禁缺失任何端点）：
 
 | 序号 | Payload Key | 请求目标 URL 规范 | 编码 | 选择器下推 / 模式 | 业务作用与说明 |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | `1x2d.js` | `https://1x2d.titan007.com/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯23家) | 百家欧指初即盘、返还率、凯利及变盘流水（$\ge 300\text{KB}$） |
+| **1** | `1x2d.js` | `https://1x2d.titan007.com/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯23家) | 百家欧指初即盘、返还率、凯利及变盘流水（涵盖法定 23 家机构） |
 | **2** | `analysis.html` | `https://zq.titan007.com/analysis/{mid}cn.htm` | UTF-8 | 可选 `#team_lineup` | 微观首发阵容、主客进球时段、伤停名单 |
-| **3** | `odds.html` | `https://zq.titan007.com/analysis/odds/{mid}.htm` | UTF-8 | 可选 `#analy_sbAllOdds` | Crown 皇冠 0:0~4:4 波胆、半全场指数 |
+| **3** | `odds.html` | `https://zq.titan007.com/analysis/odds/{mid}.htm` | UTF-8 | 可选 `#analy_sbAllOdds` | Crown 皇冠 0:0~4:4 波胆、半全场指数与隐藏域初盘存证 |
 | **4** | `analy.json` | `https://zq.titan007.com/default/getAnalyData?sid={mid}&t=1` | UTF-8 | JSON 原生响应 | 中国体彩官方 HAD/HHAD 让球数与半场数据 |
-| **5~11** | `ah_{cid}.html` (7家亚盘) | `https://vip.titan007.com/changeDetail/handicap.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 澳彩/皇冠/365/易胜博/平博/188/马会亚盘变盘流水 |
+| **5~11** | `ah_{cid}.html` (7家亚盘) | `https://vip.titan007.com/changeDetail/handicap.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 澳彩/皇冠/365/易胜博/平博/188/马会亚盘变盘时序流水 |
 | **12~18** | `ou_{cid}.html` (7家大小) | `https://vip.titan007.com/changeDetail/overunder.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 法定 7 大机构大小球变盘时序流水 |
 | **19~25** | `eu_{cid}.html` (7家欧指) | `https://vip.titan007.com/changeDetail/1x2.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#table_odds"` | 法定 7 大机构欧洲胜平负变盘时序流水 |
 | **26** | `polymarket.json` | `https://gamma-api.polymarket.com/events?slug={slug}` | UTF-8 | JSON 精准单事件 | 链上真实去中心化真金白银定价概率 |
+| **27** | `asian_odds.html` | `https://vip.titan007.com/AsianOdds_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **亚盘初即对比全景总表**（全网做市商初盘水位/盘口与即盘水位/盘口） |
+| **28** | `over_under.html` | `https://vip.titan007.com/OverUnder_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **大小球初即对比全景总表**（全网做市商初盘大水/盘口与即盘大水/盘口） |
 
 ### 5.3 欧洲指数 23 家做市商法定名单与提取契约
 
-在 `1x2d.js` 的 `var game=Array(...)` 中以 `parts[0]`（cid）作为唯一匹配依据：
-- **法定 23 家做市商 cid 集合**：
-  `[80 (澳门), 545 (Bet365), 281 (Betfair), 90 (易胜博), 177 (Pinnacle/平博), 115 (威廉希尔), 82 (立博), 81 (伟德), 104 (Interwetten), 255 (Bwin), 110 (SNAI), 432 (香港马会), 976 (中国体彩), 2 (Coral), 474 (Unibet), 649 (10Bet), 800 (188Bet), 482 (Marathon/马拉松), 386 (Crown/皇冠), 826 (1xBet), 16 (Eurobet), 1129 (Sportingbet)]`
-- **满格点亮断言**：装配存证 JSON 时必须逐项布尔校验，主流机构缺失立即判定为采集遗漏并物理阻断，缺失项显式标记 `[官方未开盘]`。
+在 `1x2d.js` 的 `var game=Array(...)` 中以 `parts[0]`（cid）作为唯一匹配依据，严格 1:1 对齐 EvoOntology 语义本体的 23 家做市商：
+- **法定 23 家做市商 cid 与批次映射表（5 批次核销）**：
+  * **第 1 批**：`80 (澳彩/澳门)`, `386/3 (Crown/皇冠)`, `177/47 (Pinnacle/平博)`, `545/8 (Bet365)`, `90/12 (Easybet/易胜博)`
+  * **第 2 批**：`432/48 (香港马会/HKJC)`, `800/42 (188Bet)`, `115/9 (William Hill/威廉希尔)`, `82 (Ladbrokes/立博)`, `81 (BetVictor/伟德)`
+  * **第 3 批**：`104/19 (Interwetten)`, `255 (Bwin)`, `110 (SNAI)`, `281/2 (Betfair/必发)`, `499/474 (SBOBET/利记)`
+  * **第 4 批**：`374/1 (IBC/沙巴)`, `482 (Marathon/马拉松)`, `497 (Betway/必威)`, `474 (Unibet/优胜客)`, `236 (Paddy Power/帕迪鲍尔)`
+  * **第 5 批**：`649/16 (10Bet)`, `976/1129 (中国体彩/中国竞彩)`, `Polymarket (链上预测市场事件)`
+- **满格点亮断言（Anti-Omission 23 CIDs Gate）**：装配存证 JSON 与简报战区三时必须逐项布尔校验，23 家机构缺失立即判定为采集遗漏并物理阻断，官方未开盘项显式标记 `[官方未开盘]`。绝对严禁任何机构被静默丢弃！
 
 ### 5.4 Polymarket 链上预测市场进货标准（第 26 端点）
 
@@ -651,21 +679,44 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 ### 6.1 双重物理质检门禁（底层存证 JSON 满配 vs 人类简报黄金装配）
 
 1. **底层存证 JSON 满配门禁（`data/{销售日}/raw/{matchId}.json`）**：
-   - `payloads` 数量必须为 **26 个**，绝对严禁遗漏 21 张变盘流水表；
-   - 底层存证 Schema 门禁：`payloads` 必须包含全量 26 个端点键，且各键内容必须为有效字符串（可被 DOM/JSON 正常解析，绝非垃圾填充）；
-   - `payloads['1x2d.js']` 真实长度必须 $\ge 300\text{KB}$（确保 100+ 做市商无截断）；
+   - `payloads` 数量必须为 **28 个**，绝对严禁遗漏 21 张变盘流水表以及亚盘/大小球全景总表；
+   - 底层存证 Schema 门禁：`payloads` 必须包含全量 28 个端点键，且各键内容必须为有效字符串（可被 DOM/JSON 正常解析，绝非垃圾填充）；
+   - `payloads['1x2d.js']` 必须包含法定 23 家做市商 cid 记录且能完整反序列化，确保欧指无截断；
+   - `payloads['asian_odds.html']` 与 `payloads['over_under.html']` 必须包含各主流机构初盘与即盘原始报文；
    - 校验 `receipt.endpoints[i].size` 必须与 `payloads[name]` 真实字符数 1:1 精确匹配，虚报立即熔断报警。
 2. **人类可视化简报黄金装配门禁（`data/{销售日}/{matchId}.md`）**：
-   - **严禁全页裸拼（Zero Full-Page Dump Invariant）**：绝对严禁将 `analysis.html` 全文或未加选择器的 HTML 页面直接调用 `markdown()` 倾倒入 `.md` 简报！`.md` 文件必须由五大标准组件自底向上纯净构建；
-   - **四重品控防错门禁（Poka-Yoke Markdown Gates）**：
+   - **严禁全页裸拼（Zero Full-Page Dump Invariant）**：绝对严禁将 `analysis.html` 全文或未加选择器的 HTML 页面直接调用 `markdown()` 倾倒入 `.md` 简报！`.md` 文件必须由六大标准组件自底向上纯净构建；
+   - **六重品控防错门禁（Poka-Yoke Markdown Gates）**：
      1. **Anti-Ad Gate（防广告横幅）**：简报开头与正文绝对严禁包含“新球会员”、“每天最低节省”、“下载App”等营销广告词（检出命中数 $\equiv 0$）；
      2. **Anti-Collapse Gate（防表格炸裂）**：严禁出现多层嵌套 table 坍塌引发的数十乃至 130 列表格横向炸裂；任意一行文本中 `|` 字符数量必须 $\le 35$ 个；
      3. **Anti-Placeholder Gate（防未渲染死占位符）**：往绩与交锋战绩必须由 `analy.json` 或微观结构化数组真实提炼渲染，严禁出现原站前端死模板 `近 0 场 主客相同` 等假空文字；若历史上确实无交锋记录，显式标注 `[历史无交锋记录]`；
      4. **Anti-Omission 23 CIDs Gate（23家机构点亮）**：战区三欧指大表必须严格遍历 23 家做市商 CID 白名单，缺盘机构显式标注 `[官方未开盘]`；
-   - **行数与战区硬红线**：行数稳定在 **380~600 行纯净工整大表区间**，严禁生成 100~200 行的抽稀半成品，也严禁靠倾倒垃圾网页撑到 1600+ 行；
-   - **战区全覆盖**：必须 100% 包含全量 5 大战区（一·阵容伤停、二·基础战绩与积分、三·23家做市商欧指、四·21张变盘流水单表、五·Crown波胆与体彩实盘）；
-   - **21 张变盘流水单表点亮**：战区四中 7 大法定机构按亚盘、大小球、欧指各自建表（共 21 张表，倒序排列），抓取时强制下推 `css_selector="#table_odds"`，杜绝外层废表；
-   - **23 家做市商全景对比**：战区三必须工整呈现法定 23 家初即盘、初即返还率与凯利指数。
+     5. **Anti-Omission Initial Odds Gate（初盘完整性强断言门禁）**：战区三·五必须完整呈现主流机构亚盘与大小球初盘大表，亚盘初盘行数 $\ge 5$ 行，大小球初盘行数 $\ge 5$ 行，绝对严禁出现整篇简报无亚盘初盘的断代现象！缺失初盘大表直接判定为残次品并停线阻断！
+     6. **Anti-Timeline-Distortion Gate（防时序倒错怪胎门禁）**：战区四流水表必须保持自然时间单向流动（即源端纯倒序：时间自上而下递减）。绝对严禁将原网页底行的初盘抠出并插入到顶部第 1 行！绝对严禁搞“头是初盘、脖子是终盘、身子往回流”的怪胎拼接！初盘记录天然合法位于表格底端，宏观初盘对比 100% 由《战区三·五》全权承担！
+   - **真实行数与严禁伪上限红线（Anti-Truncation Invariant）**：彻底废除人为设定的 420~650 行伪上限！流水表真实行数完全由源网页变盘历史客观决定（行数通常在 350~2000 行区间，有多少行就诚实呈现多少行）。绝对严禁进行任何 `slice(0, 10)`、`[:9] + [-1:]` 等机械截断，最底端的开盘记录（初盘/早盘）与中间所有变盘记录必须 100% 满格点亮！严禁生成抽稀半成品，也严禁靠倾倒无关垃圾网页撑行数；
+   - **战区全覆盖**：必须 100% 包含全量 6 大战区（一·阵容伤停、二·基础战绩与积分、三·23家做市商欧指、三点五·主流机构亚盘与大小球初即大表、四·21张变盘流水单表、五·Crown波胆与体彩实盘）；
+   - **战区三·五黄金标准装配模板**：
+     - **3.5.1 核心做市商亚盘让球初即全景大表**：
+       | 机构ID | 做市商机构 | 初盘 (主水 / 盘口 / 客水) | 即盘 (主水 / 盘口 / 客水) | 盘口变动趋势 |
+       | :---: | :--- | :---: | :---: | :---: |
+       | 80 | 澳门 (Macauslot) | 0.85 / 球半/两球 / 0.99 | 0.82 / 两球 / 1.02 | 升两球·压低主水防范 |
+       | 545 | Crown (皇冠) | 1.00 / 球半/两球 / 0.88 | 0.86 / 两球 / 1.03 | 升两球·做市防守 |
+       | 281 | Bet 365 | 0.88 / 球半 / 0.98 | 0.85 / 两球 / 1.00 | 连续升盘连跨两级 |
+       | 177 | Pinnacle (平博) | 0.83 / 球半 / 1.00 | 0.89 / 两球 / 1.01 | 升两球·控赔 |
+       | 90 | 易胜博 | 0.97 / 球半/两球 / 0.86 | 0.88 / 两球 / 1.06 | 升两球 |
+       | 800 | 188Bet | 0.91 / 球半 / 0.85 | 0.89 / 两球 / 0.93 | 升两球 |
+       | 432 | 香港马会 | 0.88 / 两球 / 0.88 | 0.98 / 两球/两球半 / 0.82 | 深开顶高水阻买 |
+     - **3.5.2 核心做市商大小球初即全景大表**：
+       | 机构ID | 做市商机构 | 初盘 (大球 / 盘口 / 小球) | 即盘 (大球 / 盘口 / 小球) | 盘口变动趋势 |
+       | :---: | :--- | :---: | :---: | :---: |
+       | 80 | 澳门 (Macauslot) | 0.81 / 3.5/4 / 0.99 | 0.86 / 4/4.5 / 0.94 | 升盘防大 |
+       | 545 | Crown (皇冠) | 0.96 / 3.5/4 / 0.92 | 0.93 / 4/4.5 / 0.95 | 升盘防大 |
+       | 281 | Bet 365 | 0.90 / 3.5 / 0.95 | 0.88 / 4/4.5 / 0.98 | 升盘防大 |
+       | 177 | Pinnacle (平博) | 0.98 / 3.5/4 / 0.80 | 0.94 / 4/4.5 / 0.96 | 升盘防大 |
+       | 90 | 易胜博 | 0.91 / 3.5/4 / 0.90 | 0.92 / 4/4.5 / 1.00 | 升盘防大 |
+       | 800 | 188Bet | 0.81 / 3/3.5 / 0.96 | 0.89 / 4/4.5 / 0.93 | 连续跨度升盘 |
+       | 432 | 香港马会 | 0.87 / 4/4.5 / 0.83 | 0.83 / 4/4.5 / 0.87 | 高盘微调 |
+   - **21 张变盘流水单表点亮与原汁原味倒序镜像**：战区四中 7 大法定机构按亚盘、大小球、欧指各自建表（共 21 张表，100% 保持源端纯倒序原貌），抓取时强制下推 `css_selector="#table_odds"` 与 `extraction_type="markdown"`；绝对严禁任何抽取底行插入顶部的篡改操作！流水表天然以最新临盘在顶、最早开盘在底（状态为早/初），完整呈现变盘轨迹。
 
 ### 6.2 出厂交付标准零件托盘 1（模式一 & 模式二交付契约）
 
