@@ -52,7 +52,7 @@ metadata: { "emoji": "📋" }
 | --- | --- | --- |
 | Aiyer | | 过程与结果是否分开审了 |
 | Wheatcroft | | 有没有三个概率可打分 |
-| Hewamalage | | 有没有按场次代号事后切片 |
+| Hewamalage | | 有没有按场次代号事后选择性挑样 |
 | Dimitriadis | | 推平却分胜负时有没有当单场否决 |
 | Giacomini | | 有没有想改规矩 |
 | Choe | | 有没有拿单日情绪换方法 |

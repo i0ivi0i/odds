@@ -884,7 +884,7 @@ Nodes (6): sporttery-sniper, 使用方式, 抓取范围, 数据注意事项, 部
 
 ### Community 148 - "赛事初筛（match-screening）"
 Cohesion: 0.29
-Nodes (7): skills/match-screening/SKILL.md 比赛初筛与分批切片技能, 写入记忆, 初筛本意与分析逻辑, 赛事初筛（match-screening）, 输入, 输出, 输出格式
+Nodes (7): skills/match-screening/SKILL.md 比赛初筛与分批调度技能, 写入记忆, 初筛本意与分析逻辑, 赛事初筛（match-screening）, 输入, 输出, 输出格式
 
 ### Community 149 - "四、历史模拟示例（旧版留档，不作当前执行模板）"
 Cohesion: 0.33
