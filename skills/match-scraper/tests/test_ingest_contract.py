@@ -85,6 +85,28 @@ class IngestContractTest(unittest.TestCase):
         self.assertEqual(assess_payload(self.contract, "ah_1.html", table_payload()).state, "ok")
         self.assertEqual(assess_payload(self.contract, "asian_odds.html", table_payload()).state, "ok")
 
+    def test_mobile_handicap_json_and_anti_mismatch(self):
+        json_ok = json.dumps({
+            "scheduleId": 3073801,
+            "companies": [{"companyId": 1, "nameCn": "澳彩", "details": [{"firstHomeOdds": 1.0}]}]
+        })
+        self.assertEqual(
+            assess_payload(self.contract, "asian_odds.html", json_ok, match_id="3073801").state,
+            "ok",
+        )
+        # 实体 ID 不匹配断言拦截 (Anti-Mismatch)
+        res_mismatch = assess_payload(self.contract, "asian_odds.html", json_ok, match_id="9999999")
+        self.assertEqual(res_mismatch.state, "failed")
+        self.assertIn("schedule_id_mismatch", res_mismatch.errors)
+
+    def test_mobile_lineup_and_events_pass(self):
+        lineup_html = '<html><body><script>var lineupObj={"lineup":{"homeFormation":"4-2-3-1"}};</script></body></html>'
+        events_html = '<html><body><div>比赛事件 入球 15`</div></body></html>'
+        change_stream = '即 0.88 -0/0.5 1.01 10-23 00:44\n早 1.00 -0/0.5 0.82 10-16 19:35'
+        self.assertEqual(assess_payload(self.contract, "odds.html", lineup_html).state, "ok")
+        self.assertEqual(assess_payload(self.contract, "analy.json", events_html).state, "ok")
+        self.assertEqual(assess_payload(self.contract, "ah_3.html", change_stream).state, "ok")
+
     def test_build_and_validate_bundle(self):
         payloads = {
             "1x2d.js": js_payload(),

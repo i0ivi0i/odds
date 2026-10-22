@@ -9,11 +9,14 @@
       "base_urls": {
         "schedule": "https://jc.titan007.com/xml/bf_jc.txt",
         "detail": "https://live.titan007.com/detail",
-        "analysis": "https://info.titan007.com/analysis",
-        "europe_odds": "https://1x2d.titan007.com",
-        "asian_odds": "https://vip.titan007.com/changeDetail/handicap.aspx",
-        "over_under_odds": "https://vip.titan007.com/changeDetail/overunder.aspx",
-        "crown_full_index": "https://vip.titan007.com/Crown/FullIndex.aspx"
+        "analysis": "https://m.titan007.com/analy/Analysis",
+        "lineup": "https://m.titan007.com/analy/Lineup",
+        "shijian": "https://m.titan007.com/analy/shijian",
+        "europe_odds": "https://txt.titan007.com/1x2",
+        "asian_odds": "https://m.titan007.com/AsianDetail",
+        "over_under_odds": "https://m.titan007.com/OuDetail",
+        "compensate_detail": "https://m.titan007.com/CompensateDetail",
+        "handicap_data_interface": "https://m.titan007.com/HandicapDataInterface.ashx"
       },
       "endpoint_manifest": "config/endpoints.json",
       "non_roster_cids": [71, 370, 18, 517, 976],

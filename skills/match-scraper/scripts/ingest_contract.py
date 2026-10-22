@@ -262,10 +262,12 @@ def extract_euro_cids(text: str) -> tuple[list[int], list[int]]:
 
 def extract_entity(text: str) -> dict[str, str]:
     result: dict[str, str] = {}
-    for name in ("ScheduleID", "hometeam_cn", "guestteam_cn"):
-        match = re.search(rf'\b{name}\s*=\s*"?([^";\r\n]+)"?', text)
+    for name in ("ScheduleID", "scheduleId", "scheduleID", "hometeam_cn", "homeTeam", "guestteam_cn", "guestTeam"):
+        match = re.search(rf'\b{name}\s*=\s*"?([^";\r\n]+)"?', text, re.IGNORECASE)
         if match:
-            result[name] = match.group(1).strip()
+            clean_name = "ScheduleID" if "schedule" in name.lower() else ("hometeam_cn" if "home" in name.lower() else "guestteam_cn")
+            if clean_name not in result:
+                result[clean_name] = match.group(1).strip()
     return result
 
 
@@ -342,19 +344,30 @@ def assess_payload(
             errors.append("entity_mismatch")
 
     elif key == "analy.json":
-        try:
-            payload = json.loads(text)
-        except (json.JSONDecodeError, TypeError):
-            errors.append("json_invalid")
-            payload = None
-        if isinstance(payload, dict) and payload.get("had") is None:
+        stripped = text.strip()
+        if not stripped:
             state = "not_offered"
-        elif isinstance(payload, (dict, list)):
-            state = "ok"
+        elif stripped.startswith("{"):
+            try:
+                payload = json.loads(text)
+            except (json.JSONDecodeError, TypeError):
+                errors.append("json_invalid")
+                payload = None
+            if isinstance(payload, dict) and payload.get("had") is None:
+                state = "not_offered"
+            elif isinstance(payload, (dict, list)):
+                state = "ok"
+            else:
+                state = "failed"
+                if "json_invalid" not in errors:
+                    errors.append("json_shape_invalid")
         else:
-            state = "failed"
-            if "json_invalid" not in errors:
-                errors.append("json_shape_invalid")
+            # 移动端 shijian 页面或技术统计内容
+            if len(stripped) >= 50 or any(kw in text for kw in ("比赛事件", "技术统计", "暂无数据", "入球")):
+                state = "ok"
+            else:
+                errors.append("empty_required_endpoint")
+                state = "failed"
 
     elif key == "polymarket.json":
         try:
@@ -372,7 +385,8 @@ def assess_payload(
                 errors.append("json_shape_invalid")
 
     elif spec.group in TABLE_GROUPS:
-        if not text.strip():
+        stripped = text.strip()
+        if not stripped:
             if key == "eu_42.html":
                 state = "not_offered"
             else:
@@ -381,6 +395,9 @@ def assess_payload(
         elif not _has_table(text):
             if _has_no_open_marker(text):
                 state = "not_offered"
+            elif any(tag in text for tag in ("即", "早", "指数变化", "details", "odds")):
+                # 移动端 HTML 变盘流水流式列表
+                state = "ok"
             else:
                 errors.append("empty_required_endpoint")
                 state = "failed"
@@ -409,17 +426,31 @@ def assess_payload(
             state = "failed" if errors else "ok"
 
     elif key == "analysis.html":
-        if len(text.strip()) < 200 and "porlet_" not in text:
+        stripped = text.strip()
+        if len(stripped) < 200 and "porlet_" not in text and "Analysis" not in text and "jsonData" not in text:
             errors.append("empty_required_endpoint")
         state = "failed" if errors else "ok"
 
     elif key == "odds.html":
-        if len(text.strip()) < 200 and "analy_sbAllOdds" not in text:
+        stripped = text.strip()
+        if len(stripped) < 200 and "analy_sbAllOdds" not in text and "lineupObj" not in text:
             errors.append("empty_required_endpoint")
         state = "failed" if errors else "ok"
 
     elif spec.group == "panorama":
-        if not text.strip() or not _has_table(text):
+        stripped = text.strip()
+        if not stripped:
+            errors.append("empty_required_endpoint")
+        elif stripped.startswith("{") and "companies" in stripped:
+            try:
+                data = json.loads(text)
+                if match_id and str(data.get("scheduleId", "")) != str(match_id):
+                    errors.append("schedule_id_mismatch")
+                if not data.get("companies"):
+                    errors.append("empty_companies_list")
+            except (json.JSONDecodeError, TypeError):
+                errors.append("json_invalid")
+        elif not _has_table(text):
             errors.append("empty_required_endpoint")
         state = "failed" if errors else "ok"
 

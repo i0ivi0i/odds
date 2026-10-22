@@ -44,7 +44,7 @@ except ImportError:  # pragma: no cover - curl_cffi ships with Scrapling
     CurlHttpVersion = None
 
 ROOT = Path(__file__).resolve().parents[3]
-REFERER = "https://info.titan007.com/analysis/{match_id}cn.htm"
+REFERER = "https://m.titan007.com/analy/Analysis/{match_id}.htm"
 
 
 @dataclass(frozen=True)
@@ -71,7 +71,10 @@ def build_request_plan(contract, match_id: str, polymarket_slug: str | None) -> 
 
 def _session_kwargs(match_id: str) -> dict[str, Any]:
     kwargs: dict[str, Any] = {
-        "headers": {"Referer": REFERER.format(match_id=match_id)},
+        "headers": {
+            "Referer": REFERER.format(match_id=match_id),
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+        },
         "timeout": 30,
     }
     if CurlHttpVersion is not None:
@@ -81,14 +84,14 @@ def _session_kwargs(match_id: str) -> dict[str, Any]:
 
 class IngestSpider(Spider):
     name = "match-scraper-ingest"
-    # 球探旧 IIS 节点对并发极敏感：单并发 + 2.0s 礼貌间隔 + AutoThrottle 自适应退避。
+    # 移动端现代云高防 CDN 节点：单并发 + 1.0s 礼貌间隔 + AutoThrottle 自适应退避。
     concurrent_requests = 1
     concurrent_requests_per_domain = 1
-    download_delay = 2.0
+    download_delay = 1.0
     autothrottle_enabled = True
-    autothrottle_start_delay = 2.0
+    autothrottle_start_delay = 1.0
     autothrottle_target_concurrency = 1.0
-    autothrottle_max_delay = 30.0
+    autothrottle_max_delay = 15.0
     max_blocked_retries = 0
 
     def __init__(
@@ -163,12 +166,18 @@ class IngestSpider(Spider):
             return
         raw = response.body if isinstance(response.body, bytes) else str(response.body).encode()
         text = decode_body(raw, spec.encoding)
-        if spec.extraction_type == "markdown" and spec.css_selector:
-            try:
-                text = response.markdown(css_selector=spec.css_selector, main_content_only=True)
-            except Exception as exc:  # extraction failure must be visible, not silent
-                self.failures[key] = f"extract_error:{type(exc).__name__}:{exc}"
-                return
+        if spec.extraction_type == "markdown":
+            if spec.css_selector:
+                try:
+                    text = response.markdown(css_selector=spec.css_selector, main_content_only=True)
+                except Exception as exc:  # extraction failure must be visible, not silent
+                    self.failures[key] = f"extract_error:{type(exc).__name__}:{exc}"
+                    return
+            else:
+                try:
+                    text = response.markdown(main_content_only=False)
+                except Exception:
+                    text = decode_body(raw, spec.encoding)
 
         result = assess_payload(
             self.contract,

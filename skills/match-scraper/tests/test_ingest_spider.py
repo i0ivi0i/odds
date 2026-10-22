@@ -50,7 +50,7 @@ class IngestSpiderTest(unittest.TestCase):
         self.assertEqual(spider.proxy, "http://127.0.0.1:10808")
         self.assertEqual(spider.concurrent_requests, 1)
         self.assertEqual(spider.concurrent_requests_per_domain, 1)
-        self.assertEqual(spider.download_delay, 2.0)
+        self.assertEqual(spider.download_delay, 1.0)
         self.assertTrue(spider.autothrottle_enabled)
 
 

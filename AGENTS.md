@@ -161,18 +161,20 @@ flowchart TD
 #### 阶段 1：Scrapling 官方礼貌进货与双轨聚合装配（Phase 1 Ingest Gate）
 - 主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，调度专职搬运工（Role: `Data Ingest Worker`）。工单 Prompt 直接给出 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日}` 命令。Worker **严禁在抓取前探索磁盘，严禁使用 `Get-ChildItem` 或 `read_file` 翻看昨天历史文件摸索格式，严禁执行 `curl`/`openssl`/`powershell` 等终端命令**！收到工单第 0 秒必须且只能直接运行该 Spider 工具；
 - **【Scrapling 官方 AutoThrottle 礼貌控频铁律（Polite AutoThrottle & Anti-Ban Invariant）】**：
-  为彻底杜绝球探网旧 Windows Server 2012 / IIS 8.5 防火墙（DIPR 动态 IP 限制）触发 `Abort Connection`（断开连接），数据采集必须恪守 Scrapling 官方并发控制规约：
-  ① **单域名单并发**：`concurrent_requests_per_domain = 1`，严禁多 Worker 或多线程同时并发冲击同一球探 IP；
-  ② **基底延迟与自适应退避**：基底 `download_delay = 2.0s`，开启 `autothrottle_enabled = True`；一旦遭遇 429、403 或连接重置，延迟自动指数翻倍（2s -> 4s -> 8s），绝不硬冲！
+  为彻底告别老旧 PC 端 IP 封锁与连接重置，底层全面切换至移动端高防 CDN 与 API 架构，数据采集必须恪守 Scrapling 官方并发控制规约：
+  ① **单域名单并发**：`concurrent_requests_per_domain = 1`，严禁多 Worker 或多线程同时并发冲击同一域名；
+  ② **基底延迟与自适应退避**：基底 `download_delay = 1.0s`，开启 `autothrottle_enabled = True`；一旦遭遇 429、403 或网络抖动，延迟自动指数翻倍（1s -> 2s -> 4s），绝不硬冲！
   ③ **出口代理弹性集成**：原生支持 `--proxy` 参数与 Scrapling 内置 `ProxyRotator`，在本地家庭公网 IP 受限时一键切换出口，确保采集永不停线；
-- **【双轨端点架构与 23 家做市商 100% 零缺失不变量（Dual-Tier & 23-Bookmaker Invariant）】**：
-  彻底告别单场 28 次蛮力请求导致的 IP 封禁，确立高敏捷、抗封锁的双轨端点体系：
-  - **Tier 1 聚合核心（必须，CDN高速直通）**：
-    * `1x2d.js`：包含法定全部 23 家做市商完整初即赔率与时序变盘流水（单文件 460KB+，1 次请求完成原本 23 家流水采集，请求量骤降 85%！）；
-    * `odds_jc.txt`：体彩竞彩官方胜平负与让球盘即时赔率；
-    * `goallottery{cid}.txt`（澳彩 cid=1、皇冠 cid=3、Bet365 cid=8、威廉希尔 cid=9）：单文件毫秒级获取亚盘、大小球、欧指全维度初即盘；
-  - **Tier 2 补充明细（温和按需 / 阻断自愈）**：
-    * `vip.titan007.com` 的 21 张变盘流水表与 `analysis.html` 作为可选补充，以 2.5s 礼貌间隔温和拉取；若遭遇 IIS 防火墙阻断掐断，系统自动优雅降级为以 Tier 1 存证闭环，绝不阻断后续推演！
+- **【移动端 CDN 架构与 23 家做市商 100% 零缺失不变量（Mobile CDN & 23-Bookmaker Invariant）】**：
+  全面对齐 Scrapling 官方 API-First 架构，确立高敏捷、抗封锁的现代云端点体系：
+  - **Tier 1 移动端 CDN 核心大礼包（必须，高速直通秒级响应）**：
+    * `1x2d.js`：`https://txt.titan007.com/1x2/{mid}.js` 包含法定全部 23 家及 150+ 做市商完整初即盘与时序变盘流水（单文件 ~522KB，静态 CDN 毫秒级直出）；
+    * `asian_odds.json` 与 `over_under.json`：`https://m.titan007.com/HandicapDataInterface.ashx?oddskind=0/1` 纯 JSON 结构化直出所有做市商初即盘与走地盘；
+    * `Lineup/{mid}.htm`：首发阵型（`homeFormation`）、实时球员身价估值（`expectedValue`，万欧）与具体伤病医学原因（`injuryReason`，如十字韧带断裂）；
+    * `Analysis/{mid}.htm` 与 `shijian/{mid}.htm`：近战战绩盘路与完场 xG 预期进球技术统计；
+    * `polymarket.json`：`gamma-api.polymarket.com` 链上真实点对点撮合概率；
+  - **Tier 2 移动端时序变盘流水（按需轻量流）**：
+    * `AsianDetail/{cid}/{mid}.htm`、`OuDetail`、`CompensateDetail` 移动端 UTF-8 轻量变盘流水表，单场请求总数降低 80%，彻底告别旧版 PC 端封锁！
 - **【初盘完整性与 23 家机构核销强断言（Anti-Omission 23 Bookmakers Gate）】**：
   机器推演以 `raw/{matchId}.json` 的 `receipt` 与 `payloads` 为准：法定 23 家做市商覆盖率必须维持 100%（欧指初即、皇冠/澳彩/365亚盘与大小球初即完整解析落盘）；人类简报 `{matchId}.md` 同步装配点亮，仅作人类可视化查验看板，绝不作为机器推演输入。若 23 家核心盘口缺失，立即触发 Poka-Yoke 停线阻断并原地重装！
 - **【源头原生态 1:1 镜像保真铁律（Source-Fidelity Invariant）】**：
@@ -230,7 +232,7 @@ flowchart TD
 
 | 调度军规 | 规约内容与技术要求 |
 | :--- | :--- |
-| **军规一：中心调度礼貌排队与单并发限流**<br/>(Polite Queue & Single Concurrency) | 设待分析场数为 $N$。在目标站点（球探网 Windows Server 2012 / IIS 8.5 DIPR）环境下，**严禁多 Worker 并发轰炸同一目标域名**！主会话充当 Central Scheduler，实行 **单域名严格单并发（Concurrent Requests Per Domain = 1）** 串行推进；数据采集由 Scrapling 官方 Spider 统一调度，内置 `download_delay >= 2.0s` 与 `autothrottle_enabled = True`（自适应延迟退避，遇 429/403/掐断自动指数级拉大延迟），单秒活跃请求 $\le 0.5$ 个，从物理根源上彻底杜绝 IP 被标记与防火墙 TCP Abort 拦截！ |
+| **军规一：中心调度礼貌排队与单并发限流**<br/>(Polite Queue & Single Concurrency) | 设待分析场数为 $N$。为保证数据质量与网络稳定性，**严禁多 Worker 并发轰炸同一目标域名**！主会话充当 Central Scheduler，实行 **单域名严格单并发（Concurrent Requests Per Domain = 1）** 串行推进；数据采集由 Scrapling 官方 Spider 统一调度，内置 `download_delay = 1.0s` 与 `autothrottle_enabled = True`（自适应延迟退避，遇 429/403 自动指数级拉大延迟），单秒活跃请求 $\le 1.0$ 个，从物理根源上彻底杜绝 IP 被标记与连接被拒！ |
 | **军规二：无共享状态物理隔离**<br/>(Stateless Worker Isolation) | 各 Worker 承包的待抓取场次集合绝对互斥（Worker 1: 001~003, Worker 2: 004~006 ...）。数据仅写入各自的 `raw/{matchId}.json` 与 `data/{销售日}/{matchId}.md`，严禁跨 Worker 锁竞争。 |
 | **军规三：开箱即用闭环工单**<br/>(Self-Contained Work-Order) | 给 Worker 的 Prompt 必须短小精炼（≤ 2KB），直接给出 `scripts/ingest_spider.py` 命令与 `matchId`/`salesDate`；端点契约由 `config/endpoints.json` 内置。**严禁 Worker 调用 read_file 查阅磁盘规范/代码/git 文档**，0 秒拿起工单直接执行。 |
 | **军规四：响应式免轮询唤醒**<br/>(Reactive Wakeup & Zero Polling) | 主会话发射滑动窗口中的 Worker 后，**必须立即停止调用任何工具，严禁主动轮询/sleep**，依赖宿主系统 Reactive 自动唤醒并在 Worker 完工后滑动补充新批次。 |
@@ -594,8 +596,8 @@ flowchart LR
 - **存证与视图序贯优先级**：审视调阅数据必须严格遵循「最好先看源 `.json`（底层存证 SSOT），其次再看 `.md`（可视化视图校对），然后才是其他的（辅助资料）」刚性优先级！
 - **物理真实存证与 Receipt 反作弊双死锁（彻底废除固定字节数死尺子）**：
   1. **禁止刻舟求剑与死尺子**：文件实际大小完全由当场比赛客观包含的做市商数量与变盘记录自然决定（热门赛事做市商与变盘多则报文较长，冷门赛事较少则相对紧凑），严禁以硬编码的固定 KB/MB 死尺子去衡量活数据！
-  2. `payloads['1x2d.js']` 必须包含真实的百家欧指 `var game=Array(...)` 原生报文且法定 23 家做市商 cid 100% 存在，严禁人为截断为仅有几家机构的缩略模拟数据；
-  3. `payloads['asian_odds.html']` 与 `payloads['over_under.html']` 必须包含各主流机构初盘与即盘原始报文，真实反映全网初盘让球与大小球门槛；
+  2. `payloads['1x2d.js']`（移动端 CDN 核心）必须包含真实的百家欧指 `var game=Array(...)` 原生报文且法定 23 家做市商 cid 100% 存在，严禁人为截断为仅有几家机构的缩略模拟数据；
+  3. `payloads['asian_odds.json']`（或 `asian_odds.html`）与 `payloads['over_under.json']`（或 `over_under.html`）必须包含各主流做市商初盘与即盘结构化原始报文，真实反映全网初盘让球与大小球门槛；
   4. `receipt.endpoints[i].size` 必须与 `payloads[name]` 的实际字符长度 1:1 精确匹配，凡检测到 size 虚报或手搓占位假数据，立即判定为作弊违规并物理阻断；
   5. 质检门禁 100% 依据法定 28 端点 Schema 完整性、反序列化有效性与 23 家做市商布尔核销，守住第一性语义真相！
 - **法定 23 家权威做市商白名单核销**：

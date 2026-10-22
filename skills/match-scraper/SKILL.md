@@ -663,16 +663,16 @@ py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sa
 
 | 序号 | Payload Key | Tier | 请求目标 URL 规范 | 编码 | 选择器下推 / 模式 | 业务作用与说明 |
 | :---: | :--- | :---: | :--- | :--- | :--- | :--- |
-| **1** | `1x2d.js` | 1 | `https://1x2d.titan007.com/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯23家) | **欧指时序金矿**：一网打尽 23 家做市商初即盘、凯利及完整变盘流水 |
-| **2** | `analysis.html` | 1 | `https://zq.titan007.com/analysis/{mid}cn.htm` | UTF-8 | 完整 HTML（可选 `#porlet_*`） | 微观首发阵容、主客进球时段、伤停名单 |
-| **3** | `odds.html` | 1 | `https://zq.titan007.com/analysis/odds/{mid}.htm` | UTF-8 | 可选 `#analy_sbAllOdds` | Crown 皇冠 0:0~4:4 波胆、半全场指数与隐藏域初盘存证 |
-| **4** | `analy.json` | 1 | `https://zq.titan007.com/default/getAnalyData?sid={mid}&t=1` | UTF-8 | JSON 原生响应 | 中国体彩官方 HAD/HHAD 让球数与半场数据 |
-| **5~11** | `ah_{cid}.html` (7家亚盘) | 2 | `https://vip.titan007.com/changeDetail/handicap.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 澳彩/皇冠/365/易胜博/平博/188/马会亚盘变盘时序流水 |
-| **12~18** | `ou_{cid}.html` (7家大小) | 2 | `https://vip.titan007.com/changeDetail/overunder.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 法定 7 大机构大小球变盘时序流水 |
-| **19~25** | `eu_{cid}.html` (7家欧指) | 2 | `https://vip.titan007.com/changeDetail/1x2.aspx?id={mid}&companyID={cid}&l=0` *(cid: 1, 3, 8, 12, 47, 42, 48)* | GB18030 | `css_selector="#odds2 table"` | 法定 7 大机构欧洲胜平负变盘时序流水 |
+| **1** | `1x2d.js` | 1 | `https://txt.titan007.com/1x2/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯23家) | **欧指时序金矿**：高防静态 CDN 秒出，一网打尽 150+ 家做市商初即盘、凯利及完整变盘流水 |
+| **2** | `analysis.html` | 1 | `https://m.titan007.com/analy/Analysis/{mid}.htm` | UTF-8 | 完整 HTML / 纯净 DOM | 积分榜、联赛排名、近期战绩、让球大小盘路胜率 |
+| **3** | `odds.html` | 1 | `https://m.titan007.com/analy/Lineup/{mid}.htm` | UTF-8 | 完整 HTML (内嵌 lineupObj) | 首发阵型、球员身价估值(万欧)、伤病具体医学原因(十字韧带/耻骨炎等) |
+| **4** | `analy.json` | 1 | `https://m.titan007.com/analy/shijian/{mid}.htm` | UTF-8 | 完整 HTML / JSON 数据 | 比赛关键事件时序、即时射正/角球/危险进攻及 xG 预期进球 |
+| **5~11** | `ah_{cid}.html` (7家亚盘) | 2 | `https://m.titan007.com/AsianDetail/{cid}/{mid}.htm` *(cid: 1, 3, 8, 12, 47, 42, 48)* | UTF-8 | 移动端服务端原生直出 | 澳彩/皇冠/365/易胜博/平博/188/马会亚盘变盘时序流水 |
+| **12~18** | `ou_{cid}.html` (7家大小) | 2 | `https://m.titan007.com/OuDetail/{cid}/{mid}.htm` *(cid: 1, 3, 8, 12, 47, 42, 48)* | UTF-8 | 移动端服务端原生直出 | 法定 7 大机构大小球变盘时序流水 |
+| **19~25** | `eu_{cid}.html` (7家欧指) | 2 | `https://m.titan007.com/CompensateDetail/{cid}/{mid}.htm` *(cid: 1, 3, 8, 12, 47, 42, 48)* | UTF-8 | 移动端服务端原生直出 | 法定 7 大机构欧洲胜平负变盘时序流水 |
 | **26** | `polymarket.json` | 1 | `https://gamma-api.polymarket.com/events?slug={slug}` | UTF-8 | JSON 精准单事件 | 链上真实去中心化真金白银定价概率 |
-| **27** | `asian_odds.html` | 2 | `https://vip.titan007.com/AsianOdds_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **亚盘初即对比全景总表**（全网做市商初盘水位/盘口与即盘水位/盘口） |
-| **28** | `over_under.html` | 2 | `https://vip.titan007.com/OverDown_n.aspx?id={mid}` | GB18030 | `css_selector="#table_odds"` (Markdown直出) | **大小球初即对比全景总表**（全网做市商初盘大水/盘口与即盘大水/盘口，端点为 OverDown_n.aspx 绝不可拼错） |
+| **27** | `asian_odds.html` | 2 | `https://m.titan007.com/HandicapDataInterface.ashx?scheid={mid}&type=1&oddskind=0` | UTF-8 | 纯 JSON 结构化流 | **亚盘初即对比全景总表**（全网做市商初盘水位/盘口与即盘水位/盘口纯 JSON 直出） |
+| **28** | `over_under.html` | 2 | `https://m.titan007.com/HandicapDataInterface.ashx?scheid={mid}&type=1&oddskind=1` | UTF-8 | 纯 JSON 结构化流 | **大小球初即对比全景总表**（全网做市商初盘大水/盘口与即盘大水/盘口纯 JSON 直出） |
 
 ### 5.3 欧洲指数 23 家做市商法定名单与提取契约
 
@@ -831,10 +831,10 @@ const ENDPOINTS = [
   "payloads": {
     "1x2d.js": "/* 原生 JS 内容，包含 23 家做市商 */",
     "analysis.html": "<!-- 原生 HTML 内容 -->",
-    "odds.html": "<!-- 原生 HTML 内容 -->",
-    "analy.json": "{\"had\": ...}",
-    "asian_odds.html": "| 机构 | 初盘 | 即盘 |\n...",
-    "over_under.html": "| 机构 | 初盘 | 即盘 |\n...",
+    "odds.html": "<!-- 移动端 Lineup 页面，包含 var lineupObj 首发阵型、身价与医学伤停原因 -->",
+    "analy.json": "<!-- 移动端 shijian 页面或 JSON，包含比赛事件、攻防技统与 xG 预期进球 -->",
+    "asian_odds.html": "{\"scheduleId\": 3073801, \"companies\": [...]}",
+    "over_under.html": "{\"scheduleId\": 3073801, \"companies\": [...]}",
     "polymarket.json": "[]",
     "ah_1.html": "| 变盘时间 | 主队水位 | 盘口 | 客队水位 |\n...",
     "ah_3.html": "...", "ah_8.html": "...", "ah_12.html": "...", "ah_47.html": "...", "ah_42.html": "...", "ah_48.html": "...",
