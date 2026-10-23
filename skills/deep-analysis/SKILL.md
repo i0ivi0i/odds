@@ -13,8 +13,8 @@ metadata: { "emoji": "📊" }
 - **推演态序贯硬死锁与纯分析师角色边界（纯只读与契约专注）**：本技能行数严格控制在不超过 1200 行；本技能为纯逻辑推演大脑，绝对强制仅在【阶段一底层源数据 `data/{销售日}/raw/{matchId}.json` 物理文件已由工位 1（`match-scraper`）落盘且 EvoOntology MCP 连通】后方准通过 `view_file` 深度全量通读并执行！在无物理数据落盘（阶段0与阶段1）前，主会话与各 Agent 绝对严禁提前阅读本技能，杜绝思维链超前空转堵车！未见底层源数据必须立即阻断移交工位 1 搬运工。
 - **大模型是唯一推演大脑（Skills 为认知中枢）**：严禁任何代码侵入业务推演。所有博弈破译、庄家第一性原理反向推演、诱盘阻盘定性与胜平负决策，100% 由大模型深度阅读本技能并结合 EvoOntology 官方 MCP 提取真实底层源数据思考完成。
 - **【无视网膜工具调用熔断铁律】（Zero-Tool-Call Hard Circuit Breaker）**：大模型思维链中**必须包含真实的 EvoOntology 官方 MCP 工具调用记录**（`mcp__evo-semantic__browse_semantics` ➔ `mcp__evo-semantic__resolve_semantics`）。凡未调用工具、企图直接通过上下文记忆、文件裸视或直觉推演出票者，直接判定为违规伪推演并强制熔断中止，严禁输出任何胜平负或让球定性！
-- **EvoOntology 官方看数视网膜（MCP 工具驱动看数，绝不跳过工具直接读，绝对严禁看 .md）**：
-  必须严守主人至高命令——大模型推演**绝不能跳过工具去“直接裸读”文件，也绝对严禁读取容易引发假数据与幻觉的 `{matchId}.md`**！
+- **EvoOntology 官方看数视网膜（MCP 工具驱动看数，绝不跳过 EvoOntology 视网膜工具直接读，绝对严禁看 .md）**：
+  必须严守主人至高命令——大模型推演**绝不能跳过 EvoOntology 官方 MCP 视网膜工具链（`browse_semantics` 与 5 批次 `resolve_semantics`）去“直接裸读”文件，也绝对严禁读取容易引发假数据与幻觉的 `{matchId}.md`**！
   若大模型直接调用通用文件工具通篇裸读未解包的 `raw/{matchId}.json`，几千行原始混淆 JS 变量会瞬间灌满上下文引发严重幻觉！
   依循 EvoOntology 官方协议（`ruc-datalab/EvoOntology`），看数必须且只能由 EvoOntology 官方 MCP 工具驱动闭环：
   ① **语义导航与 23 家核销（MCP 必调）**：推演大脑必须首先调用 EvoOntology 官方 MCP 工具（`browse_semantics` 检索做市机位 ➔ 5 批次 `resolve_semantics` 完整核销 23 家做市商状态并获取权威 Mapping 路径与 `block` 级硬约束，遇非预期 `gap` 立即触发强阻断）；
@@ -124,17 +124,20 @@ Render all ontology versions as one standalone, offline, single-file interactive
 
 #### 1.4 标准化 EvoOntology 视网膜工具精准提取契约（Tool-Driven Semantic Grounding Protocol）
 依循 EvoOntology 官方机制 Principle 3：“两导航工具（browse/resolve）返回元数据和指导，数据查询归属宿主原生工具”：
-- **MCP 工具驱动事实绑定（绝不跳过工具裸读，绝对严禁看 .md）**：推演大脑**绝不能误以为跳过工具“直接读 raw.json 即可”**！若跳过工具裸读，几千行原始混淆 JS 会瞬间冲垮注意力引发严重幻觉！推演大脑看数必须 100% 依托 EvoOntology 官方 MCP 工具链路，绝对严禁推演大脑读取容易抽稀丢失数据的 `{matchId}.md`（`.md` 仅为人类可视化对账看板）；
+- **MCP 工具驱动事实绑定（绝不跳过 EvoOntology 官方视网膜工具裸读，绝对严禁看 .md）**：推演大脑**绝不能误以为跳过 EvoOntology 官方 MCP 工具链（`browse_semantics` ➔ 5 批次 `resolve_semantics`）“直接用 read_file 读 raw.json 即可”**！若跳过视网膜工具全包裸读，几千行原始混淆 JS 会瞬间冲垮注意力引发严重幻觉！推演大脑看数必须 100% 依托 EvoOntology 官方 MCP 工具链路获得 Mapping 坐标（端点名、cid 字典），再使用系统原生工具（指定精确 `StartLine` 与 `EndLine` 的 `read_file`）定向查验，绝对严禁推演大脑读取容易抽稀丢失数据的 `{matchId}.md`（`.md` 仅为人类可视化对账看板）；
 - **EvoOntology Mapping 坐标锚定与定向端点提取**：推演大脑必须在调用 `browse_semantics` ➔ 5 批次 `resolve_semantics` 获取 Mapping 权威路径（`table`、`column`、`semantic_filter` 与 `aggregation_semantics`）后，仅针对 Mapping 锁定的特定原生端点进行精准提取，严禁全量通读整个文件：
   1. 欧指做市端点：依据 Mapping 锁定的 23 家 cid 字典，仅从 `payloads['1x2d.js']` 提取法定 23 家权威做市商初即盘胜平负；
   2. 攻防与体彩端点：依据 Mapping 路径从 `payloads['analy.json']` 提取体彩 HAD/HHAD 官方让球与固定奖金、阵容真实伤停名单与技统压制力数据；
   3. 变盘流水端点：依据 Mapping 路径仅从变盘流水端点提取 7 家核心做市商初终盘与关键脉冲/阶梯异动时序；
   4. 链上预测端点：依据 Mapping 路径从 `payloads['polymarket.json']` 提取真实点对点撮合概率；
 - **拒绝裸视无序乱码与拒绝冗余中间文件**：大脑在 EvoOntology Mapping 路径指引下定向读取特定键值，杜绝在思维链中漫无目的地裸读整篇未解包 JS；坚决禁止在磁盘生成任何 `slices/*.json` 冗余中间文件！
+- **全语种零临时脚本硬铁律（Zero-Script Invariant: All Languages）**：推演大脑与各 Agent 绝对严禁编写任何全语种临时脚本（全禁 `.py/.ps1/.js/.sh`），绝对禁止在控制台敲 `python -c` 粗暴读数！违规记录严格锁定为 0！
+- **生产代码零修改铁律（Zero-Python-Code Invariant）**：依循 EvoOntology 官方哲学（智能在 Skill SOP，生产环境零侵入），绝对严禁推演大脑擅自创建、修改或 patch 任何生产与测试 Python 脚本！
+- **宿主 Trajectory 轨迹不可篡改验真铁律（Provable Tool Trace Invariant）**：推演大脑在给出任何定性、让球与胜平负结论前，宿主底层不可篡改的 `transcript.jsonl` 中必须存在真实的 EvoOntology 官方 MCP 调用记录（1次 `browse_semantics` + 5批次 `resolve_semantics`）。无工具调用记录严禁输出任何推演结论与预测表格！禁止虚构工具调用！
 - **工具职责四级分工界线（四位一体）**：
   - 数据搬运：100% 独家归属工位 1 `match-scraper`（Scrapling 官方 Spider 统一调度，内置 AutoThrottle 礼貌控频与单并发限流，优先直取 Tier 1 聚合核心端点，原子落盘 raw JSON SSOT；人类简报同步装配）；
   - 语义导航与防漏：100% 独家归属 `evo-semantic` MCP（5 批次 `resolve_semantics` 核销 23 家，遇 gap 强阻断）；
-  - 事实全量提取：100% 独家归属推演大脑（在 EvoOntology MCP 坐标锁定下全量提取结构化字段，严禁跳过工具全包裸读 raw.json，0 幻觉、0 漏数）；
+  - 事实全量提取：100% 独家归属推演大脑（在 EvoOntology MCP 坐标锁定下，使用带行号范围的原生工具定向提取结构化字段，严禁跳过 EvoOntology 视网膜工具全包裸读 raw.json，0 幻觉、0 漏数）；
   - 精算去水与概率：100% 独家归属宿主独立 `sports-math` MCP（`devig_oo_epc` 与 `poisson_dixon_coles`）。
 - **任务轨迹闭环（可选）**：可通过 `start_ontology_task` 绑定推演工单，推演完成后调用 `finish_ontology_task` 固化做市证据轨迹，供赛后机器复盘对账。
 
@@ -256,7 +259,7 @@ Render all ontology versions as one standalone, offline, single-file interactive
   - **共振设防算子**：面临利空题材，平博与皇冠同时深盘低水死守，马会/澳彩同步下调赔付 $\rightarrow$ 判定为【全流派共识设防】，正路打穿！
   - **内幕警报算子**：全网商业庄家跟随降平赔，唯独澳彩/立博锁死高平赔、而在让球端贴极限超低水，或体彩关闭单固 $\rightarrow$ 判定为【庄家暗度陈仓防让平/让负】，坚决不推表面平局！
   推演拍板必须至少包含 3 类不同流派机构的对账支撑，分析师通过 EvoOntology 官方 MCP（`resolve_semantics`）输入机构名称（如 `["威廉", "立博", "平博", "皇冠", "体彩"]`）提取全量结构化数据，推导链必须显式点名具体机构的对比分工！
-- **做市商全周期变盘时序**：由工位 1（`match-scraper`）拉取并存档至 `data/{销售日}/raw/{matchId}.json`。推演大脑强制由 EvoOntology 官方 MCP 视网膜工具链驱动，在 Mapping 路径指引下定向提取初终盘及关键异动行微观数值（严禁跳过工具全包裸读 raw.json，绝对严禁看 .md），用于第 4/5/6 步赔率变动轨迹分析与做市商意图破译。所有亚盘与大小球数据均为深层推演核心依据，绝非普通报道。
+- **做市商全周期变盘时序**：由工位 1（`match-scraper`）拉取并存档至 `data/{销售日}/raw/{matchId}.json`。推演大脑强制由 EvoOntology 官方 MCP 视网膜工具链驱动，在 Mapping 路径指引下定向提取初终盘及关键异动行微观数值（严禁跳过 EvoOntology 官方 MCP 视网膜工具链全包裸读 raw.json，绝对严禁看 .md），用于第 4/5/6 步赔率变动轨迹分析与做市商意图破译。所有亚盘与大小球数据均为深层推演核心依据，绝非普通报道。
 - **底层存证与人类简报归属**：原始数据抓取、gb18030解码、动态列自适应与 `data/{销售日}/{matchId}.md` 物理落盘 100% 独家归属工位 1（`match-scraper`）。推演大脑严禁越权抓取或重写数据文件。
 
 ### 步骤 2：历史记忆召回与方法校准
