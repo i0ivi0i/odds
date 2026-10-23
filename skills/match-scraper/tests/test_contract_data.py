@@ -64,10 +64,41 @@ class ContractDataTest(unittest.TestCase):
         self.assertIsNone(by_name["Polymarket"]["euro_cid"])
         self.assertIsNone(by_name["Polymarket"]["change_cid"])
 
+    def test_endpoint_semantics_match_the_real_pages(self):
+        by_key = {entry["key"]: entry for entry in self.endpoints["endpoints"]}
+        expected = {
+            "1x2d.js": "euro_market_history",
+            "analysis.html": "analysis_stats",
+            "odds.html": "lineup",
+            "analy.json": "events",
+        }
+        for key, label in expected.items():
+            self.assertEqual(by_key[key]["aggregation_source"], label, key)
+
+    def test_eu_urls_use_euro_cids_and_eu42_is_skipped(self):
+        by_key = {entry["key"]: entry for entry in self.endpoints["endpoints"]}
+        expected = {
+            "eu_1.html": "/80/",
+            "eu_3.html": "/545/",
+            "eu_8.html": "/281/",
+            "eu_12.html": "/90/",
+            "eu_47.html": "/177/",
+            "eu_48.html": "/432/",
+        }
+        for key, fragment in expected.items():
+            self.assertIn(fragment, by_key[key]["url"], key)
+        self.assertTrue(by_key["eu_42.html"].get("skip_request"), "eu_42 must not request 18Bet")
+
+    def test_188bet_has_forbidden_alias_and_sporttery_has_no_fake_analy_source(self):
+        by_name = {entry["official_name"]: entry for entry in self.roster}
+        self.assertIn("18Bet", by_name["188Bet"].get("forbidden_aliases", []))
+        self.assertNotIn("analy.json", by_name["中国体彩"]["required_endpoints"])
+        self.assertIn("1x2d.js", by_name["中国体彩"]["required_endpoints"])
+
     def test_roster_entries_are_four_tuple_shape(self):
         allowed = {
             "official_name", "aliases", "euro_cid", "change_cid",
-            "required_endpoints", "no_open_rule", "role",
+            "required_endpoints", "no_open_rule", "role", "forbidden_aliases",
         }
         for entry in self.roster:
             self.assertTrue(set(entry).issubset(allowed), entry)

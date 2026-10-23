@@ -58,6 +58,8 @@ def build_request_plan(contract, match_id: str, polymarket_slug: str | None) -> 
     tier1: list[RequestPlan] = []
     tier2: list[RequestPlan] = []
     for spec in contract.endpoints:
+        if spec.skip_request:
+            continue
         if spec.key == "polymarket.json" and not polymarket_slug:
             continue
         values = {"match_id": match_id, "polymarket_slug": polymarket_slug or ""}
@@ -250,6 +252,17 @@ class IngestSpider(Spider):
                     text="[]",
                     encoding="utf-8",
                     state="not_offered",
+                    attempts=0,
+                )
+                continue
+            spec = self.contract.endpoint(key)
+            if spec is not None and spec.skip_request:
+                self.results[key] = assess_payload(
+                    self.contract,
+                    key,
+                    "",
+                    status=200,
+                    url="",
                     attempts=0,
                 )
                 continue

@@ -67,6 +67,7 @@ class EndpointSpec:
     gate: str
     tier: int = 1
     aggregation_source: str = ""
+    skip_request: bool = False
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "EndpointSpec":
@@ -82,6 +83,7 @@ class EndpointSpec:
             gate=data["gate"],
             tier=int(data.get("tier", 1 if data.get("group") in ("core", "polymarket") else 2)),
             aggregation_source=data.get("aggregation_source", ""),
+            skip_request=bool(data.get("skip_request", False)),
         )
 
 
@@ -94,6 +96,7 @@ class Bookmaker:
     required_endpoints: tuple[str, ...]
     no_open_rule: str
     role: str = ""
+    forbidden_aliases: tuple[str, ...] = ()
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Bookmaker":
@@ -105,7 +108,18 @@ class Bookmaker:
             required_endpoints=tuple(data.get("required_endpoints", ())),
             no_open_rule=data.get("no_open_rule", ""),
             role=data.get("role", ""),
+            forbidden_aliases=tuple(data.get("forbidden_aliases", ())),
         )
+
+
+@dataclass(frozen=True)
+class EuroHistoryPoint:
+    home: float
+    draw: float
+    away: float
+    timestamp: datetime
+    return_rate: float
+    kelly: tuple[float, ...]
 
 
 @dataclass(frozen=True)
@@ -243,14 +257,34 @@ def decode_body(body: bytes | str, encoding: str) -> str:
     return body.decode(encoding, errors="replace")
 
 
+def _js_array_body(text: str, variable: str) -> str:
+    marker = f"var {variable}=Array("
+    start = text.find(marker)
+    if start < 0:
+        raise ValueError(f"{variable}_missing")
+    start += len(marker)
+    end = text.find(");", start)
+    if end < 0:
+        raise ValueError(f"{variable}_unterminated")
+    return text[start:end]
+
+
+def _parse_game_entries(text: str) -> list[tuple[int, int, str]]:
+    body = _js_array_body(text, "game")
+    entries: list[tuple[int, int, str]] = []
+    for match in re.finditer(r'"(\d+)\|(\d+)\|([^"|]+)', body):
+        entries.append((int(match.group(1)), int(match.group(2)), match.group(3).strip()))
+    if not entries:
+        raise ValueError("game_empty")
+    return entries
+
+
 def extract_euro_cids(text: str) -> tuple[list[int], list[int]]:
-    start = text.find("var game=Array(")
-    if start >= 0:
-        end = text.find(");", start)
-        segment = text[start:end] if end >= 0 else text[start:]
-    else:
-        segment = text
-    cids = [int(cid) for cid in re.findall(r'"(\d+)\|', segment)]
+    try:
+        entries = _parse_game_entries(text)
+    except ValueError:
+        return [], []
+    cids = [cid for cid, _odds_id, _name in entries]
     seen: set[int] = set()
     duplicates: list[int] = []
     for cid in cids:
@@ -258,6 +292,65 @@ def extract_euro_cids(text: str) -> tuple[list[int], list[int]]:
             duplicates.append(cid)
         seen.add(cid)
     return cids, duplicates
+
+
+def parse_euro_history(text: str) -> dict[int, tuple[EuroHistoryPoint, ...]]:
+    """Parse the 1x2d.js gameDetail history, grouped by euro cid.
+
+    The source format is:
+    ``var game=Array("cid|oddsId|name|...", ...);`` and
+    ``var gameDetail=Array("oddsId^home|draw|away|MM-DD HH:MM|return|kelly...|YYYY;...")``.
+    The year is stored at the end of each history point, so the timestamp is
+    assembled from the trailing year and the in-record date/time.
+    """
+    game_entries = _parse_game_entries(text)
+    odds_to_cid = {odds_id: cid for cid, odds_id, _name in game_entries}
+    detail_body = _js_array_body(text, "gameDetail")
+    detail_entries = re.findall(r'"(\d+)\^([^"]*)"', detail_body)
+    if not detail_entries:
+        raise ValueError("game_detail_invalid:empty")
+
+    histories: dict[int, list[EuroHistoryPoint]] = {}
+    for odds_id_text, body in detail_entries:
+        odds_id = int(odds_id_text)
+        cid = odds_to_cid.get(odds_id)
+        if cid is None:
+            continue
+        segments = [segment.strip() for segment in body.split(";") if segment.strip()]
+        if not segments:
+            raise ValueError(f"game_detail_invalid:{odds_id}")
+        points = histories.setdefault(cid, [])
+        for segment in segments:
+            parts = [part.strip() for part in segment.split("|")]
+            if len(parts) < 8:
+                raise ValueError(f"game_detail_invalid:{odds_id}")
+            try:
+                home = float(parts[0])
+                draw = float(parts[1])
+                away = float(parts[2])
+                return_rate = float(parts[4])
+                year = int(parts[-1])
+                timestamp = datetime.strptime(
+                    f"{year:04d}-{parts[3]}", "%Y-%m-%d %H:%M"
+                )
+                kelly = tuple(float(value) for value in parts[5:-1])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"game_detail_invalid:{odds_id}") from exc
+            points.append(
+                EuroHistoryPoint(
+                    home=home,
+                    draw=draw,
+                    away=away,
+                    timestamp=timestamp,
+                    return_rate=return_rate,
+                    kelly=kelly,
+                )
+            )
+    return {
+        cid: tuple(sorted(points, key=lambda point: point.timestamp))
+        for cid, points in histories.items()
+        if points
+    }
 
 
 def extract_entity(text: str) -> dict[str, str]:
@@ -276,21 +369,73 @@ def _has_no_open_marker(text: str) -> bool:
     return any(marker in lowered for marker in NO_OPEN_MARKERS)
 
 
+def _mobile_stream_rows(text: str) -> list[tuple[str, ...]]:
+    """Parse the mobile AsianDetail/OuDetail stream when markdown flattens rows.
+
+    The mobile pages often render one long markdown line containing repeated
+    ``即 | home | handicap | away | MM-DD HH:MM`` sequences.  Split those
+    sequences explicitly so a real stream is not mistaken for a header-only
+    table.
+    """
+    rows: list[tuple[str, ...]] = []
+    pattern = re.compile(
+        r"\|\s*(即|早)\s*\|\s*([0-9.]+)\s*\|\s*([^|]+?)\s*\|\s*([0-9.]+)\s*\|\s*(\d{2}-\d{2}\s+\d{2}:\d{2})\s*\|"
+    )
+    for match in pattern.finditer(text):
+        rows.append(tuple(part.strip() for part in match.groups()))
+    return rows
+
+
+def _duplicate_rows(rows: list[tuple[str, ...]]) -> list[str]:
+    result: list[str] = []
+    counts: dict[str, int] = {}
+    for row in rows:
+        joined = "|".join(row)
+        result.append(joined)
+        counts[joined] = counts.get(joined, 0) + 1
+    return [row for row in result if counts[row] > 1]
+
+
+def _table_data_rows(text: str) -> list[tuple[str, ...]]:
+    """Return real data rows, not header-only tables.
+
+    A row must have at least three populated cells and at least one numeric
+    cell.  Markdown separators and HTML header rows therefore cannot satisfy
+    the gate on their own.
+    """
+    rows: list[tuple[str, ...]] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|") or set(stripped) <= set("|-: "):
+            continue
+        cells = tuple(cell.strip() for cell in stripped.strip("|").split("|"))
+        if len(cells) < 3 or not any(cell for cell in cells):
+            continue
+        if not any(re.search(r"\d", cell) for cell in cells):
+            continue
+        rows.append(cells)
+
+    for table_row in re.findall(r"<tr\b[^>]*>(.*?)</tr>", text, flags=re.IGNORECASE | re.DOTALL):
+        cells = tuple(
+            re.sub(r"<[^>]+>", "", cell).strip()
+            for cell in re.findall(
+                r"<t[dh]\b[^>]*>(.*?)</t[dh]>", table_row, flags=re.IGNORECASE | re.DOTALL
+            )
+        )
+        if len(cells) < 3 or not any(cell for cell in cells):
+            continue
+        if not any(re.search(r"\d", cell) for cell in cells):
+            continue
+        rows.append(cells)
+    return rows
+
+
 def _has_table(text: str) -> bool:
-    return text.count("|") >= 4 or "<table" in text.lower()
+    return bool(_table_data_rows(text))
 
 
 def _duplicate_table_rows(text: str) -> list[str]:
-    rows = []
-    for line in text.splitlines():
-        line = line.strip()
-        if not line.startswith("|") or set(line) <= set("|-: "):
-            continue
-        rows.append(line)
-    counts: dict[str, int] = {}
-    for row in rows:
-        counts[row] = counts.get(row, 0) + 1
-    return [row for row, count in counts.items() if count > 1]
+    return _duplicate_rows(_table_data_rows(text))
 
 
 def assess_payload(
@@ -335,6 +480,14 @@ def assess_payload(
             errors.append("missing_euro_cid:" + ",".join(str(cid) for cid in missing))
         if duplicates:
             errors.append("duplicate_cid:" + ",".join(str(cid) for cid in duplicates))
+        try:
+            histories = parse_euro_history(text)
+        except ValueError as exc:
+            errors.append(str(exc))
+        else:
+            for cid in contract.euro_cids:
+                if cid not in histories:
+                    errors.append(f"missing_euro_history:{cid}")
         entity = extract_entity(text)
         if match_id and entity.get("ScheduleID") != str(match_id):
             errors.append("entity_mismatch")
@@ -386,23 +539,28 @@ def assess_payload(
 
     elif spec.group in TABLE_GROUPS:
         stripped = text.strip()
+        rows = _table_data_rows(text)
+        if len(rows) < 2:
+            mobile_rows = _mobile_stream_rows(text)
+            if mobile_rows:
+                rows = mobile_rows
         if not stripped:
-            if key == "eu_42.html":
+            if spec.group == "eu" or key in ("ah_42.html", "ou_42.html"):
                 state = "not_offered"
             else:
                 errors.append("empty_required_endpoint")
                 state = "failed"
-        elif not _has_table(text):
+        elif not rows:
             if _has_no_open_marker(text):
                 state = "not_offered"
-            elif any(tag in text for tag in ("即", "早", "指数变化", "details", "odds")):
+            elif key not in ("eu_42.html",) and any(tag in text for tag in ("即", "早", "指数变化", "details", "odds")):
                 # 移动端 HTML 变盘流水流式列表
                 state = "ok"
             else:
                 errors.append("empty_required_endpoint")
                 state = "failed"
         else:
-            duplicates = _duplicate_table_rows(text)
+            duplicates = _duplicate_rows(rows)
             if duplicates:
                 errors.append("duplicate_odds_triplet")
             if enforce_bookmaker_title:
@@ -416,6 +574,8 @@ def assess_payload(
                     None,
                 )
                 if bookmaker is not None:
+                    if any(alias.lower() in lowered for alias in bookmaker.forbidden_aliases):
+                        errors.append("identity_conflict:" + ",".join(bookmaker.forbidden_aliases))
                     found_aliases = [
                         item.official_name
                         for item in contract.bookmakers
@@ -547,17 +707,43 @@ def validate_bundle(bundle: dict[str, Any], contract: Contract) -> GateReport:
                 errors.append(f"slot_missing_endpoint:{name}:{endpoint_key}")
         if bookmaker.euro_cid is not None:
             slots[name] = "supported" if bookmaker.euro_cid in cids else "not_offered"
-        elif bookmaker.change_cid == 42:
-            required = ("ah_42.html", "ou_42.html")
-            if all(key in payloads and payloads[key].strip() for key in required):
+        elif name == "Polymarket":
+            if "polymarket.json" not in payloads:
+                slots[name] = "failed"
+                errors.append("slot_missing_polymarket")
+                continue
+            try:
+                polymarket_payload = json.loads(payloads["polymarket.json"])
+            except (json.JSONDecodeError, TypeError):
+                slots[name] = "failed"
+                errors.append("slot_invalid_polymarket")
+                continue
+            if polymarket_payload in ([], None):
+                slots[name] = "not_offered"
+            elif isinstance(polymarket_payload, (dict, list)):
                 slots[name] = "supported"
             else:
+                slots[name] = "failed"
+                errors.append("slot_invalid_polymarket_shape")
+        elif bookmaker.change_cid == 42:
+            required = ("ah_42.html", "ou_42.html")
+            if any(key not in payloads for key in required):
+                slots[name] = "failed"
+                continue
+            receipt_errors = [
+                error
+                for key in required
+                for error in endpoints.get(key, {}).get("errors", [])
+            ]
+            states = [endpoints.get(key, {}).get("state", "failed") for key in required]
+            if any(error.startswith("identity_conflict:") for error in receipt_errors):
+                slots[name] = "identity_conflict"
+            elif all(state == "ok" for state in states):
+                slots[name] = "supported"
+            elif any(state == "failed" for state in states):
+                slots[name] = "failed"
+            else:
                 slots[name] = "not_offered"
-                errors.append(f"slot_missing_change_evidence:{name}")
-        elif name == "Polymarket":
-            slots[name] = "supported" if "polymarket.json" in payloads else "not_offered"
-            if "polymarket.json" not in payloads:
-                errors.append("slot_missing_polymarket")
         else:
             slots[name] = "supported" if bookmaker.required_endpoints and all(
                 key in payloads for key in bookmaker.required_endpoints
@@ -567,6 +753,11 @@ def validate_bundle(bundle: dict[str, Any], contract: Contract) -> GateReport:
         "payload_keys": len(payloads),
         "bookmaker_slots": len(contract.bookmakers),
         "euro_cids": sum(1 for cid in contract.euro_cids if cid in cids),
-        "change_tables": sum(1 for endpoint in contract.endpoints if endpoint.group in TABLE_GROUPS),
+        "change_tables": sum(
+            1
+            for endpoint in contract.endpoints
+            if endpoint.group in TABLE_GROUPS
+            and endpoints.get(endpoint.key, {}).get("state") == "ok"
+        ),
     }
     return GateReport(ok=not errors, errors=errors, counts=counts, slots=slots)

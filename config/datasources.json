@@ -27,7 +27,7 @@
         { "official_name": "易胜博", "aliases": ["Easybets", "Easybet"], "euro_cid": 90, "change_cid": 12, "required_endpoints": ["1x2d.js", "ah_12.html", "ou_12.html", "eu_12.html"], "no_open_rule": "ah/ou/eu may be not_offered only with page evidence", "role": "核心做市 / 操盘激进" },
         { "official_name": "平博", "aliases": ["Pinnacle"], "euro_cid": 177, "change_cid": 47, "required_endpoints": ["1x2d.js", "ah_47.html", "ou_47.html", "eu_47.html"], "no_open_rule": "ah/ou/eu may be not_offered only with page evidence", "role": "欧陆防守 / 低抽水标杆" },
         { "official_name": "香港马会", "aliases": ["马会", "HKJC", "HK Jockey Club"], "euro_cid": 432, "change_cid": 48, "required_endpoints": ["1x2d.js", "ah_48.html", "ou_48.html", "eu_48.html"], "no_open_rule": "ah/ou may be not_offered for lower-tier fixtures; eu not_offered only with page evidence", "role": "亚洲防守哨兵" },
-        { "official_name": "188Bet", "aliases": ["188", "188bet"], "euro_cid": null, "change_cid": 42, "required_endpoints": ["ah_42.html", "ou_42.html", "eu_42.html"], "no_open_rule": "eu may be not_offered; ah/ou required", "role": "亚洲自营哨兵" },
+        { "official_name": "188Bet", "aliases": ["188", "188bet"], "forbidden_aliases": ["18Bet"], "euro_cid": null, "change_cid": 42, "required_endpoints": ["ah_42.html", "ou_42.html", "eu_42.html"], "no_open_rule": "eu may be not_offered; ah/ou required; 18Bet must never be mapped to 188Bet", "role": "亚洲自营哨兵" },
         { "official_name": "威廉希尔", "aliases": ["William Hill"], "euro_cid": 115, "change_cid": null, "required_endpoints": ["1x2d.js"], "no_open_rule": "not_offered if absent from 1x2d.js", "role": "英伦母盘 / 散户基准" },
         { "official_name": "立博", "aliases": ["Ladbrokes"], "euro_cid": 82, "change_cid": null, "required_endpoints": ["1x2d.js"], "no_open_rule": "not_offered if absent from 1x2d.js", "role": "英伦母盘 / 欧陆标杆" },
         { "official_name": "伟德", "aliases": ["Vcbet", "BetVictor"], "euro_cid": 81, "change_cid": null, "required_endpoints": ["1x2d.js"], "no_open_rule": "not_offered if absent from 1x2d.js", "role": "核心做市 / 初盘标杆" },
@@ -42,7 +42,7 @@
         { "official_name": "Unibet", "aliases": ["优胜客"], "euro_cid": 386, "change_cid": null, "required_endpoints": ["1x2d.js"], "no_open_rule": "not_offered if absent from 1x2d.js", "role": "学术论文样本 / 北欧权威" },
         { "official_name": "Paddy Power", "aliases": ["PaddyPower"], "euro_cid": 826, "change_cid": null, "required_endpoints": ["1x2d.js"], "no_open_rule": "not_offered if absent from 1x2d.js", "role": "学术论文样本 / 爱尔兰巨头" },
         { "official_name": "10Bet", "aliases": ["10BET"], "euro_cid": 16, "change_cid": null, "required_endpoints": ["1x2d.js"], "no_open_rule": "not_offered if absent from 1x2d.js", "role": "学术论文样本 / 辅助样本" },
-        { "official_name": "中国体彩", "aliases": ["Lottery Official", "体彩", "竞彩"], "euro_cid": 1129, "change_cid": null, "required_endpoints": ["1x2d.js", "analy.json"], "no_open_rule": "had:null is not_offered", "role": "终端履约 / 开售核验" },
+        { "official_name": "中国体彩", "aliases": ["Lottery Official", "体彩", "竞彩"], "euro_cid": 1129, "change_cid": null, "required_endpoints": ["1x2d.js"], "no_open_rule": "not_offered if cid 1129 is absent from 1x2d.js; HAD/HHAD require a separate verified source", "role": "终端履约 / 开售核验" },
         { "official_name": "Polymarket", "aliases": [], "euro_cid": null, "change_cid": null, "required_endpoints": ["polymarket.json"], "no_open_rule": "[] is not_offered", "role": "链上预测市场" }
       ]
     },
