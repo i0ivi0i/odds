@@ -132,7 +132,7 @@ flowchart TD
     Z["【阶段 0：赛程索引自检】<br/>检查 data/{销售日}/meta.md 是否存在且新鲜 (< 2小时)"]
     Z_NO{"是否存在且新鲜?"}
     Z_GET["调度 Scrapling make_request(bf_jc.txt)<br/>秒级解析并落盘 meta.md 与 memory (< 2秒)"]
-    P1["【阶段 1：Scrapling 官方礼貌进货】<br/>调度专职搬运工 (Data Ingest Worker)<br/>ingest_spider.py 官方 AutoThrottle 礼貌控频<br/>Tier 1 聚合核心优先直取 (23家欧指+亚盘+体彩)<br/>落盘 raw/{id}.json（人类简报同步装配）"]
+    P1["【阶段 1：Scrapling 官方礼貌进货】<br/>调度专职搬运工 (Data Ingest Worker)<br/>ingest_spider.py 官方 AutoThrottle 礼貌控频<br/>Tier 1 聚合核心优先直取 (21家欧指+亚盘+体彩)<br/>落盘 raw/{id}.json（人类简报同步装配）"]
     P1_GATE{"双重质检门禁核销"}
     P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1200行)<br/>EvoOntology 视网膜全量解析 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
     OUT["【阶段 3：交付与单写原子封存】<br/>写入 memory/{销售日}.md 深度分析摘要与契约卡<br/>交付标准 7 列表格 (含 Polymarket 真实链接)"]
@@ -168,13 +168,13 @@ flowchart TD
 - **【移动端 CDN 架构与 23 家做市商 100% 零缺失不变量（Mobile CDN & 23-Bookmaker Invariant）】**：
   全面对齐 Scrapling 官方 API-First 架构，确立高敏捷、抗封锁的现代云端点体系：
   - **Tier 1 移动端 CDN 核心大礼包（必须，高速直通秒级响应）**：
-    * `1x2d.js`：`https://txt.titan007.com/1x2/{mid}.js` 包含法定全部 23 家及 150+ 做市商完整初即盘与时序变盘流水（单文件 ~522KB，静态 CDN 毫秒级直出）；
+    * `1x2d.js`：`https://txt.titan007.com/1x2/{mid}.js` 包含 21 家法定欧指 cid（另含 150+ 家做市商）完整初即盘与时序变盘流水（单文件约 500KB，静态 CDN 毫秒级直出）；188Bet 与 Polymarket 的状态由各自证据槽位判定，不在此文件冒充欧指 cid；
     * `asian_odds.json` 与 `over_under.json`：`https://m.titan007.com/HandicapDataInterface.ashx?oddskind=0/1` 纯 JSON 结构化直出所有做市商初即盘与走地盘；
     * `Lineup/{mid}.htm`：首发阵型（`homeFormation`）、实时球员身价估值（`expectedValue`，万欧）与具体伤病医学原因（`injuryReason`，如十字韧带断裂）；
     * `Analysis/{mid}.htm` 与 `shijian/{mid}.htm`：近战战绩盘路与完场 xG 预期进球技术统计；
     * `polymarket.json`：`gamma-api.polymarket.com` 链上真实点对点撮合概率；
   - **Tier 2 移动端时序变盘流水（按需轻量流）**：
-    * `AsianDetail/{cid}/{mid}.htm`、`OuDetail`、`CompensateDetail` 移动端 UTF-8 轻量变盘流水表，单场请求总数降低 80%，彻底告别旧版 PC 端封锁！
+    * `AsianDetail/{cid}/{mid}.htm`、`OuDetail` 与 `CompensateDetail/{euro_cid}/{mid}.htm` 移动端 UTF-8 轻量变盘流水表；`CompensateDetail` 只作欧指次级交叉校验，使用 euro_cid（澳彩 80、皇冠 545、Bet365 281、易胜博 90、平博 177、马会 432）；`eu_42` 没有可确认的 euro_cid，显式跳过并标 `not_offered`，绝不请求 18Bet 冒充 188Bet；
 - **【初盘完整性与 23 家机构核销强断言（Anti-Omission 23 Bookmakers Gate）】**：
   机器推演以 `raw/{matchId}.json` 的 `receipt` 与 `payloads` 为准：法定 23 家做市商覆盖率必须维持 100%（欧指初即、皇冠/澳彩/365亚盘与大小球初即完整解析落盘）；人类简报 `{matchId}.md` 同步装配点亮，仅作人类可视化查验看板，绝不作为机器推演输入。若 23 家核心盘口缺失，立即触发 Poka-Yoke 停线阻断并原地重装！
 - **【源头原生态 1:1 镜像保真铁律（Source-Fidelity Invariant）】**：
@@ -194,7 +194,7 @@ flowchart TD
   - 第 3 批：`["Interwetten", "Bwin", "SNAI", "必发", "利记"]`
   - 第 4 批：`["沙巴", "Marathon", "Betway", "Unibet", "Paddy Power"]`
   - 第 5 批：`["10Bet", "中国体彩", "Polymarket"]`
-  **强断言门禁**：每批次返回必须严格断言 `skipped ≡ []`，且全部 23 家状态必须为 `coverage_status: "supported"`（未开盘则返回合法空字段）。若任一批次出现非空 `skipped` 或非预期的 `gap`，立即触发 Poka-Yoke 强阻断停线，严禁在残缺机位上强推！
+  **强断言门禁**：每批次返回必须严格断言 `skipped ≡ []`，且全部 23 家状态必须为 `coverage_status: "supported"` 或合法的 `not_offered`（官方未开盘、该槽位无此盘口、次级交叉校验为空）；`not_offered` 不得伪造为 `supported`。若任一批次出现非空 `skipped` 或非预期的 `gap`，立即触发 Poka-Yoke 强阻断停线，严禁在残缺机位上强推！
 - **显式空状态与严禁造假铁律（Explicit Empty State Invariant）**：
   依循 EvoOntology 官方规范：`Missing reports or executions remain explicit empty states. Never fabricate examples`。凡机构未开盘（如 Polymarket 返回空数组 `[]`、香港马会次级联赛未开亚盘），**必须且只能标注 `[官方未开盘]`**。绝对严禁在后台或前端硬编码伪造赔率（如伪造“60.5¢”挂单、伪造波胆或伪造伤停）。宁可报缺报阻，绝不造假脑补！
 - **EvoOntology 官方规范深度绑定（Auto-Lock & Read-Only Invariant）**：
@@ -250,13 +250,13 @@ flowchart TD
 #### 标准进货 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "【阶段一专职搬运工官方礼貌进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，【零探索铁律】：严禁调用 Get-ChildItem 或 read_file 翻看昨天历史文件摸索格式，严禁执行 curl/openssl/powershell 等终端探测命令，严禁阅读任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用）！第 0 秒必须且只能直接调用官方 Scrapling Spider 工具（`skills/match-scraper/scripts/ingest_spider.py`）执行进货。以 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队}`（可选 `--proxy` 通道兜底）一次运行完成双轨端点进货（Tier 1 聚合核心秒取 1x2d.js 23家时序+goallottery亚大小初即+odds_jc，Tier 2 补充明细礼貌温和限流 2.0s 并发=1，启用 AutoThrottle 自适应退避）；抓完由脚本原子落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`（满配 28 payloads 原生报文 SSOT）与人类简报 `data/{销售日}/{matchId}.md`（包含全量战区与 23 家做市商点亮）；【立即回传】：确认真实落盘且 Schema 完备后立即回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
+  goal: "【阶段一专职搬运工官方礼貌进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，【零探索铁律】：严禁调用 Get-ChildItem 或 read_file 翻看昨天历史文件摸索格式，严禁执行 curl/openssl/powershell 等终端探测命令，严禁阅读任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用）！第 0 秒必须且只能直接调用官方 Scrapling Spider 工具（`skills/match-scraper/scripts/ingest_spider.py`）执行进货。以 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队}`（可选 `--proxy` 通道兜底）一次运行完成双轨端点进货（Tier 1 聚合核心秒取 1x2d.js 21家欧指时序+goallottery亚大小初即+odds_jc，Tier 2 补充明细礼貌温和限流 2.0s 并发=1，启用 AutoThrottle 自适应退避）；抓完由脚本原子落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`（满配 28 payloads 原生报文 SSOT）与人类简报 `data/{销售日}/{matchId}.md`（包含全量战区与 23 家做市商点亮）；【立即回传】：确认真实落盘且 Schema 完备后立即回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
 ```
 
 #### 标准推演分析师 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。必须首先读取 MEMORY.md（装载《庄家操盘战法库》六大分类与《待验证表》）以及 skills/deep-analysis/SKILL.md。本场专属底层物理存证已在阶段一落盘至 data/{销售日}/raw/{matchId}.json。推演大脑【看数只看源 .json，绝对严禁机器推演读取容易抽稀和产生假数据的 {matchId}.md】！推演看数强制由 EvoOntology 官方 MCP 视网膜工具链驱动（session-manifest ➔ browse_semantics ➔ 5 批次 resolve_semantics 严格核销 23 家机构），依据返回的 Mapping 权威路径全量提取对应原生端点结构化字段（1x2d.js 提纯 23 家欧指、analy.json 提纯伤停与体彩奖金、流水端点与 polymarket.json，严禁跳过 EvoOntology 官方 MCP 视网膜工具链全包裸读 raw.json），严禁访问网络抓取或手搓临时脚本。依据 Graphify 官方高阶增智规约：分析师针对当场具体盘口疑难优先通过 Graphify MCP（query_graph/get_node/shortest_path，严禁裸写伪 CLI 脚本）调兵并查阅 graphify-out/wiki/ 词条靶向穿透关联理论与战例；从 EvoOntology 提取 tactics（真实压制力技统、进球时段、未来赛程）与 profiling（相同初盘画像、盘路走势、半场双盘），站在庄家第一性原理反向破译，推演主梁必须以「欧指 1X2 × 亚洲让球盘（AH）× 大小球（OU）」主力博弈为主线（大小球为决定总进球空间与净胜球门槛的核心支柱），Crown 波胆倍率仅作为边缘辅助参考，绝不能作为核心推演依据更严禁一票否决；绝不孤立单看一个盘口，且绝不单看单一机构（必须比对Sharp标杆平博、Retail商业庄皇冠/365与Sentinel防守哨兵澳彩/立博/马会的协同与背离），严格对照 MEMORY.md 战法库六大经典做市分类进行套路破译；严格按照模板执行完整10步分析与学术文献四大主动质问纠偏（Levitt净赔付审计/Tversky小数定律审计/Gilovich热手偏见审计/Constantinou跨市场均衡审计），欧指去水点概率必须调用官方 sports-math MCP 工具 devig_oo_epc 获取真值，严禁心算。直接继承源数据已包含的 Polymarket 真实链接（主流核心联赛必须为真实事件可点击链接形如 [{对阵}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})，严禁谎称未开盘或批量复制粘贴），小众联赛确实无标的方可标未开盘说明；先回传待验收结果与执行证据，不得自行对外发布。由主会话/编排验收后逐场推送。返回结构化综合评估结果（含 memory 摘要、认知契约卡与 Polymarket 真实直达链接）。"
+  goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。必须首先读取 MEMORY.md（装载《庄家操盘战法库》六大分类与《待验证表》）以及 skills/deep-analysis/SKILL.md。本场专属底层物理存证已在阶段一落盘至 data/{销售日}/raw/{matchId}.json。推演大脑【看数只看源 .json，绝对严禁机器推演读取容易抽稀和产生假数据的 {matchId}.md】！推演看数强制由 EvoOntology 官方 MCP 视网膜工具链驱动（session-manifest ➔ browse_semantics ➔ 5 批次 resolve_semantics 严格核销 23 家机构），依据返回的 Mapping 权威路径全量提取对应原生端点结构化字段（1x2d.js 提纯 21 家欧指、analy.json 提纯伤停与体彩奖金、流水端点与 polymarket.json，严禁跳过 EvoOntology 官方 MCP 视网膜工具链全包裸读 raw.json），严禁访问网络抓取或手搓临时脚本。依据 Graphify 官方高阶增智规约：分析师针对当场具体盘口疑难优先通过 Graphify MCP（query_graph/get_node/shortest_path，严禁裸写伪 CLI 脚本）调兵并查阅 graphify-out/wiki/ 词条靶向穿透关联理论与战例；从 EvoOntology 提取 tactics（真实压制力技统、进球时段、未来赛程）与 profiling（相同初盘画像、盘路走势、半场双盘），站在庄家第一性原理反向破译，推演主梁必须以「欧指 1X2 × 亚洲让球盘（AH）× 大小球（OU）」主力博弈为主线（大小球为决定总进球空间与净胜球门槛的核心支柱），Crown 波胆倍率仅作为边缘辅助参考，绝不能作为核心推演依据更严禁一票否决；绝不孤立单看一个盘口，且绝不单看单一机构（必须比对Sharp标杆平博、Retail商业庄皇冠/365与Sentinel防守哨兵澳彩/立博/马会的协同与背离），严格对照 MEMORY.md 战法库六大经典做市分类进行套路破译；严格按照模板执行完整10步分析与学术文献四大主动质问纠偏（Levitt净赔付审计/Tversky小数定律审计/Gilovich热手偏见审计/Constantinou跨市场均衡审计），欧指去水点概率必须调用官方 sports-math MCP 工具 devig_oo_epc 获取真值，严禁心算。直接继承源数据已包含的 Polymarket 真实链接（主流核心联赛必须为真实事件可点击链接形如 [{对阵}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})，严禁谎称未开盘或批量复制粘贴），小众联赛确实无标的方可标未开盘说明；先回传待验收结果与执行证据，不得自行对外发布。由主会话/编排验收后逐场推送。返回结构化综合评估结果（含 memory 摘要、认知契约卡与 Polymarket 真实直达链接）。"
 ```
 
 ### 2.4 流水线作业模式与全场景交互矩阵
@@ -351,7 +351,7 @@ subagent：获取赛果 → 对比推荐（胜负平+让球双核对） → 计�
 1. **第 0 秒进度透传与分批汇报（主会话）**：收到多场/全量指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动【全量 X 场】推演流水线，专职搬运工正在按 1~3 场分组分批进货中...`，杜绝黑盒盲等；
 2. **阶段一：纯物理礼貌进货（单域名单并发与确定性装配）**：
-   - **礼貌进货（Polite Ingest）**：由工位 1（`match-scraper`）常设官方 Spider 统一调度，单域名严格单并发（`concurrent_requests_per_domain = 1`），基础下载延迟 `download_delay = 2.0s` 且开启 AutoThrottle 自适应退避；优先秒取 Tier 1 聚合核心端点（`1x2d.js` 23家欧指时序 + `odds_jc` + `goallottery` 亚大小初即），严禁多 Worker 并发冲击目标域名！
+   - **礼貌进货（Polite Ingest）**：由工位 1（`match-scraper`）常设官方 Spider 统一调度，单域名严格单并发（`concurrent_requests_per_domain = 1`），基础下载延迟 `download_delay = 1.0s` 且开启 AutoThrottle 自适应退避；优先秒取 Tier 1 聚合核心端点（`1x2d.js` 21家欧指时序 + `odds_jc` + `goallottery` 亚大小初即），严禁多 Worker 并发冲击目标域名！
    - **装配落盘**：原子落盘存证至 `data/{销售日}/raw/{matchId}.json` 与人类简报 `{matchId}.md`，并自动更新同步 `data/{销售日}/meta.md`；
 3. **主会话中转放行反馈**：主会话确认物理文件就绪后，立即推送：
    `🛡️ 【全量 X 场】推演源数据已就绪，正在唤醒首席分析师队列进入阶段二深度推演...`；
@@ -558,7 +558,7 @@ flowchart LR
 - **绝对严禁大模型裸视海量数据**：严禁任何大模型、大脑、Agent 或 Subagent 直接使用 `view_file` 通读底层庞杂原始数据（如 `data/**/raw/*.json` 或全文 `.md` 表格）注入上下文！直接裸视极易诱发注意力隧道效应、信息严重漏读、张冠李戴与上下文爆炸。
 - **EvoOntology 官方双层看数视网膜（融合 explore-ontology 核心规约）**：全系统搜查、观看任何比赛数据，必须严格分为两层：
   1. **语义导航与探针层**：动态定位当前活跃工程容器 `workspace=path.join(CURRENT_WORKSPACE, ".evoontology")` 与 `version="active"`（自适应任何磁盘与文件夹迁移，纯只读，绝不修改本体状态）。会话开始时读取 `session-manifest`，通过 `browse_semantics` 检索概念，并通过 5 批次 `resolve_semantics`（每批 $\le 5$ 家）核销法定 23 家做市商状态并获取权威 Mapping 路径，遇未开盘外的异常 `gap` 立即触发 `block` 强阻断，防漏看防看错；
-  2. **EvoOntology MCP 坐标锚定与定向端点提取层（绝不跳过法定视网膜工具裸读，绝对严禁看 .md）**：推演大脑绝不可误以为跳过 EvoOntology 官方 MCP 视网膜工具（`browse_semantics` ➔ 5 批次 `resolve_semantics`）“直接用 read_file 读 raw.json 即可”！必须在 EvoOntology Mapping 权威路径（`table`, `column`, `semantic_filter` 与 `aggregation_semantics`）坐标锁定下，仅使用带精确行号范围的原生工具（带 `StartLine`/`EndLine` 的 `read_file`）针对 Mapping 锁定的特定原生端点（`payloads['1x2d.js']` 提纯的 23 家欧指、`payloads['analy.json']` 攻防伤停与体彩固定奖金、各变盘流水端点及 `polymarket.json`）进行受限定向提取并解析核心点位，由大模型专注执行 10 步博弈推理；严禁不加行号通篇全量裸读几千行原始混淆 JS，绝对严禁推演大脑看易被抽稀污染的 `{matchId}.md`（`.md` 仅为人类可视化看板，严禁机器推演看 .md）；
+  2. **EvoOntology MCP 坐标锚定与定向端点提取层（绝不跳过法定视网膜工具裸读，绝对严禁看 .md）**：推演大脑绝不可误以为跳过 EvoOntology 官方 MCP 视网膜工具（`browse_semantics` ➔ 5 批次 `resolve_semantics`）“直接用 read_file 读 raw.json 即可”！必须在 EvoOntology Mapping 权威路径（`table`, `column`, `semantic_filter` 与 `aggregation_semantics`）坐标锁定下，仅使用带精确行号范围的原生工具（带 `StartLine`/`EndLine` 的 `read_file`）针对 Mapping 锁定的特定原生端点（`payloads['1x2d.js']` 提纯的 21 家欧指、`payloads['analy.json']` 攻防伤停与体彩固定奖金、各变盘流水端点及 `polymarket.json`）进行受限定向提取并解析核心点位，由大模型专注执行 10 步博弈推理；严禁不加行号通篇全量裸读几千行原始混淆 JS，绝对严禁推演大脑看易被抽稀污染的 `{matchId}.md`（`.md` 仅为人类可视化看板，严禁机器推演看 .md）；
   3. **时序因果与硬约束强制对质律（Temporal Ordering & Constraint Auto-Debate）**：
      - **时序硬约束（`constraint_temporal_ordering`）**：在提取变盘流水时，大模型必须严格遵循物理时间戳升序（`Sort by Timestamp ASC`）梳理时钟因果（$\min(t)$ 为初盘起点，$\max(t)$ 为最新定格终盘），凡跳过时序因果或颠倒初即直接推演者，触发 `block` 级硬阻断！
      - **平博稳定性硬约束（`constraint_pinnacle_stability`）**：商业散户庄降水而尖锐平博逆市升水或纹丝不动 $\rightarrow$ 强制判定为虚假做热、掩护出货，严禁判为防守，契约卡必须显式留存对质记录；
@@ -575,13 +575,13 @@ flowchart LR
 1. **一不：绝不获取错误数据（Anti-Bad-Data Guardrail）**：
    - **实体双向防串号（Anti-Mismatch）**：端点抓取前 URL 必须与目标 `matchId` 显式字典绑定；返回报文必须双向核验主队与客队名称，若对阵实体与赛程索引不符，立即判定为串号并物理丢弃重拉；
    - **编码保真防乱码（Encoding Fidelity）**：球探网二级变盘页面（`changeDetail/*.aspx`）必须基于原始 bytes 显式以 `gb18030` 准确解码，严禁默认 UTF-8 强解导致队名与盘口变成乱码问号；
-   - **拦截质询盾与残缺流（WAF & Stream Completeness）**：严禁将 403/503 或 Cloudflare 挑战盾页面（HTML 包含 "Just a moment..." / "Cloudflare" / "Access Denied"）当作正常数据接收！遇到反爬盾自动升阶 `stealthy_fetch(solve_cloudflare=true)`；`1x2d.js` 必须包含完整的百家欧指 `var game=Array(...)` 且法定 23 家做市商 cid 齐全，杜绝因网络中断截断只收到几 KB 的半截残废报文或未解析错误！
+   - **拦截质询盾与残缺流（WAF & Stream Completeness）**：严禁将 403/503 或 Cloudflare 挑战盾页面（HTML 包含 "Just a moment..." / "Cloudflare" / "Access Denied"）当作正常数据接收！遇到反爬盾自动升阶 `stealthy_fetch(solve_cloudflare=true)`；`1x2d.js` 必须包含完整的百家欧指 `var game=Array(...)` 且法定 21 家欧指 cid 齐全（188Bet 与 Polymarket 不经由该文件的欧指 cid 冒充），杜绝因网络中断截断只收到几 KB 的半截残废报文或未解析错误！
 2. **二不：绝不写入假数据（Anti-Fake-Data Guardrail）**：
    - **存证 100% 物理真实（SSOT Raw Invariant）**：`data/{销售日}/raw/{matchId}.json` 承载的 28 端点原生报文必须 100% 是网络真实活水响应，严禁任何 Agent 手工编造、硬编码 mock 数据或篡改报文；
    - **未开盘严禁脑补（Zero Hallucinated Odds）**：凡机构未开盘（如香港马会次级联赛未开亚盘、体彩深盘未开单关）或 Polymarket 未开设当场预测合约，**必须且只能**如实标注 `[官方未开盘]`！绝对严禁在后台或前端硬编码伪造赔率（如伪造“60.5¢”挂单、伪造 Crown 波胆或伪造伤停）。宁可报缺报阻，绝不造假脑补！
    - **真实体积与 Receipt 反作弊（Receipt Anti-Tampering）**：`receipt.endpoints[i].size` 必须与真实的 payload 字符长度 1:1 绝对相等，严禁虚报大小以逃避品控门禁；
 3. **三不：数据绝不能放错（Anti-Misplacement & Strict Mapping Guardrail）**：
-   - **做市商 ID 字典级刚性锁死（No Bookmaker Swapping）**：澳彩 (cid=1/80)、皇冠 (cid=3/545)、Bet365 (cid=8/281)、易胜博 (cid=12/90)、平博 (cid=47/177)、188Bet (cid=42/800)、香港马会 (cid=48/432) 等，必须由 EvoOntology 语义罗盘与静态映射字典锁死机构 ID，绝对严禁将平博的数据填到皇冠的行，绝对严禁将澳彩的水位错放进马会；
+   - **做市商 ID 字典级刚性锁死（No Bookmaker Swapping）**：澳彩 (亚盘 1 / 欧指 80)、皇冠 (亚盘 3 / 欧指 545)、Bet365 (亚盘 8 / 欧指 281)、易胜博 (亚盘 12 / 欧指 90)、平博 (亚盘 47 / 欧指 177)、香港马会 (亚盘 48 / 欧指 432)、Marathon (欧指 800)；188Bet 只有亚盘 cid=42，没有可确认的 euro_cid，且 `42=18Bet`，严禁把 18Bet 数据冒充 188Bet。所有映射必须由 EvoOntology 语义罗盘与静态字典锁死，绝对严禁将平博的数据填到皇冠的行，绝对严禁将澳彩的水位错放进马会；
    - **盘口赔率三要素槽位强断言（Strict Column Orientation）**：
      - 欧指：必须严格按照 `[主胜, 平局, 客胜]` 三列排布，严禁主客倒置；
      - 亚盘：必须严格按照 `[主队水位, 让球盘口, 客队水位]` 排布，且主队让球/受让方向（让两球 vs 受让两球）绝对不能混淆；
@@ -597,12 +597,12 @@ flowchart LR
 - **存证与视图序贯优先级**：审视调阅数据必须严格遵循「最好先看源 `.json`（底层存证 SSOT），其次再看 `.md`（可视化视图校对），然后才是其他的（辅助资料）」刚性优先级！
 - **物理真实存证与 Receipt 反作弊双死锁（彻底废除固定字节数死尺子）**：
   1. **禁止刻舟求剑与死尺子**：文件实际大小完全由当场比赛客观包含的做市商数量与变盘记录自然决定（热门赛事做市商与变盘多则报文较长，冷门赛事较少则相对紧凑），严禁以硬编码的固定 KB/MB 死尺子去衡量活数据！
-  2. `payloads['1x2d.js']`（移动端 CDN 核心）必须包含真实的百家欧指 `var game=Array(...)` 原生报文且法定 23 家做市商 cid 100% 存在，严禁人为截断为仅有几家机构的缩略模拟数据；
+  2. `payloads['1x2d.js']`（移动端 CDN 核心）必须包含真实的百家欧指 `var game=Array(...)` 原生报文且法定 21 家欧指 cid 100% 存在，严禁人为截断为仅有几家机构的缩略模拟数据；
   3. `payloads['asian_odds.json']`（或 `asian_odds.html`）与 `payloads['over_under.json']`（或 `over_under.html`）必须包含各主流做市商初盘与即盘结构化原始报文，真实反映全网初盘让球与大小球门槛；
   4. `receipt.endpoints[i].size` 必须与 `payloads[name]` 的实际字符长度 1:1 精确匹配，凡检测到 size 虚报或手搓占位假数据，立即判定为作弊违规并物理阻断；
   5. 质检门禁 100% 依据法定 28 端点 Schema 完整性、反序列化有效性与 23 家做市商布尔核销，守住第一性语义真相！
 - **法定 23 家权威做市商白名单核销**：
-  澳彩、皇冠、Bet365、易胜博、平博、香港马会、188Bet、威廉希尔、立博、伟德、Interwetten、Bwin、SNAI、必发、利记、沙巴、Marathon、Betway、Unibet、Paddy Power、10Bet、中国体彩、Polymarket。完整 cid 与别名见 `skills/match-scraper/references/bookmaker-roster.md`；逐项布尔校验杜绝遗漏！
+  澳彩、皇冠、Bet365、易胜博、平博、香港马会、188Bet、威廉希尔、立博、伟德、Interwetten、Bwin、SNAI、必发、利记、沙巴、Marathon、Betway、Unibet、Paddy Power、10Bet、中国体彩，共 22 家博彩做市商；Polymarket 是第 23 个预测市场参考槽位，不是博彩公司。完整 cid 与别名见 `skills/match-scraper/references/bookmaker-roster.md`；逐项布尔校验杜绝遗漏！
 - **人类可视化简报六重品控防错门禁（Poka-Yoke Markdown Gates）**：
   1. **Anti-Ad Gate（零广告污染）**：简报文本内严格禁止出现“新球会员”、“每天最低节省”、“下载App”等营销广告词，违规命中数 $\equiv 0$；
   2. **Anti-Collapse Gate（零表格坍塌）**：禁止全页 HTML 裸转 Markdown；任意单行中 `|` 字符数量必须 $\le 35$ 个，严禁生成 130 列表格横向炸裂乱码；

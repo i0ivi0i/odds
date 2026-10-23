@@ -14,7 +14,7 @@
 | 4 | 易胜博 | Easybets, Easybet | 90 | 12 | `1x2d.js`, `ah_12`, `ou_12`, `eu_12` | AH/OU/EU 有未开盘证据才可空 |
 | 5 | 平博 | Pinnacle | 177 | 47 | `1x2d.js`, `ah_47`, `ou_47`, `eu_47` | AH/OU/EU 有未开盘证据才可空 |
 | 6 | 香港马会 | 马会, HKJC, HK Jockey Club | 432 | 48 | `1x2d.js`, `ah_48`, `ou_48`, `eu_48` | 次级联赛 AH/OU 可合法空；EU 需证据 |
-| 7 | 188Bet | 188, 188bet | — | 42 | `ah_42`, `ou_42`, `eu_42` | EU 可为空；AH/OU 必须非空 |
+| 7 | 188Bet | 188, 188bet | — | 42 | `ah_42`, `ou_42`, `eu_42` | `eu_42` 跳过并 `not_offered`；AH/OU 缺数据即 `not_offered`，绝不能用 18Bet 冒充 |
 | 8 | 威廉希尔 | William Hill | 115 | — | `1x2d.js` | 不在 `1x2d.js` 即 `not_offered` |
 | 9 | 立博 | Ladbrokes | 82 | — | `1x2d.js` | 不在 `1x2d.js` 即 `not_offered` |
 | 10 | 伟德 | Vcbet, BetVictor | 81 | — | `1x2d.js` | 不在 `1x2d.js` 即 `not_offered` |
@@ -29,7 +29,7 @@
 | 19 | Unibet | 优胜客 | 386 | — | `1x2d.js` | 不在 `1x2d.js` 即 `not_offered` |
 | 20 | Paddy Power | PaddyPower | 826 | — | `1x2d.js` | 不在 `1x2d.js` 即 `not_offered` |
 | 21 | 10Bet | 10BET | 16 | — | `1x2d.js` | 不在 `1x2d.js` 即 `not_offered` |
-| 22 | 中国体彩 | Lottery Official, 体彩, 竞彩 | 1129 | — | `1x2d.js`, `analy.json` | `had:null` 即 `not_offered` |
+| 22 | 中国体彩 | Lottery Official, 体彩, 竞彩 | 1129 | — | `1x2d.js` | 不在 `1x2d.js` 即 `not_offered`；HAD/HHAD 需独立核实 |
 | 23 | Polymarket | — | — | — | `polymarket.json` | `[]` 即 `not_offered` |
 
 ## 非名册机构（不得计入 23）

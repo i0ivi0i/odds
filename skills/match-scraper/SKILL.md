@@ -495,7 +495,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 - **单域名单并发硬铁律（Single Concurrency Per Domain）**：
   在目标脆弱服务器环境（Windows Server 2012 / IIS 8.5）中，强制设置 `concurrent_requests_per_domain = 1`，严禁多 Worker 并发轰炸同一域名；
 - **慢即是快，礼貌爬虫（Polite Crawling）**：
-  以科学平缓的时钟节拍（`download_delay >= 2.0s`）替代暴力并发迸发，全天采集 0 封禁，综合吞吐率与系统稳定性显著优于频遭封禁被动停机的旧模式；
+  以科学平缓的时钟节拍（`download_delay = 1.0s`，项目策略而非库默认值）替代暴力并发迸发，全天采集 0 封禁，综合吞吐率与系统稳定性显著优于频遭封禁被动停机的旧模式；
 - Don't bypass paywalls or authentication without permission.
 - Never scrape personal/sensitive data.
 
@@ -550,13 +550,13 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 - **一不：绝不获取错误数据（Anti-Bad-Data Guardrail）**：
   - **实体双向防串号（Anti-Mismatch）**：端点抓取前 URL 必须与目标 `matchId` 显式字典绑定；返回报文必须双向核验主队与客队名称，若对阵实体与赛程索引不符，立即判定为串号并物理丢弃重拉；
   - **GB18030 二进制保真解码**：球探网二级变盘流水页面（`changeDetail/*.aspx`）必须基于原始 bytes 显式以 `gb18030` 解码，严禁外部默认 UTF-8 强解导致队名与盘口汉字乱码；
-  - **拦截质询盾与残缺流**：严禁将 403/503 或 Cloudflare 挑战盾页面当作正常数据接收，遇反爬盾自动升阶 `stealthy_fetch(solve_cloudflare=true)`；`1x2d.js` 必须包含法定 23 家做市商 cid 原始行并能完整反序列化，杜绝因网络中断截断只收到残缺报文！
+  - **拦截质询盾与残缺流**：严禁将 403/503 或 Cloudflare 挑战盾页面当作正常数据接收，遇反爬盾自动升阶 `stealthy_fetch(solve_cloudflare=true)`；`1x2d.js` 必须包含法定 21 家欧指 cid 原始行并能完整反序列化，杜绝因网络中断截断只收到残缺报文！
 - **二不：绝不写入假数据（Anti-Fake-Data Guardrail）**：
   - **存证 100% 物理真实（SSOT Raw Invariant）**：`data/{销售日}/raw/{matchId}.json` 承载的 28 端点原生报文必须 100% 是网络真实活水响应，严禁任何 Agent 手工编造、硬编码 mock 数据或篡改报文；
   - **未开盘严禁脑补（Zero Hallucinated Odds）**：凡机构未开盘（如香港马会次级联赛未开亚盘、体彩深盘未开单关）或 Polymarket 未开设当场预测合约，**必须且只能**如实标注 `[官方未开盘]`！绝对严禁在后台或前端硬编码伪造赔率（如伪造“60.5¢”挂单、伪造 Crown 波胆或伪造伤停）。宁可报缺报阻，绝不造假脑补！
   - **真实体积与 Receipt 反作弊**：`receipt.endpoints[i].size` 必须与真实的 payload 字符长度 1:1 绝对相等，严禁虚报大小以逃避品控门禁；
 - **三不：数据绝不能放错（Anti-Misplacement & Strict Mapping Guardrail）**：
-  - **做市商 ID 字典级刚性锁死**：以法定 23 家权威 cid 集合构建 Hash Map 进行常数级精确提取，`parts[0]` 为机构 ID (`cid`)，**绝对严禁错用 `parts[1]`**！绝不把平博的数据填到皇冠，绝不把澳彩的水位错放进马会；
+  - **做市商 ID 字典级刚性锁死**：以 21 家欧指 cid 与 7 家亚盘/大小球 cid 两套字典构建 Hash Map 进行常数级精确提取，`parts[0]` 为机构 ID (`cid`)，**绝对严禁错用 `parts[1]`**！绝不把平博的数据填到皇冠，绝不把澳彩的水位错放进马会；188Bet 只有亚盘 cid=42，欧指无 cid，42=18Bet 严禁冒充；
   - **盘口赔率三要素槽位强断言**：
     - 欧指：必须严格为 `[主胜, 平局, 客胜]` 三列，严禁主客倒置；
     - 亚盘：必须严格为 `[主队水位, 让球盘口, 客队水位]`，且主队让球/受让方向绝对不能混淆；
@@ -572,7 +572,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
   - **GB18030 二进制保真解码**：球探网二级变盘流水页面（`changeDetail/*.aspx`）必须基于原始 bytes 显式以 `gb18030` 解码，严禁外部默认 UTF-8 强解导致队名与盘口汉字乱码。
 - **护栏二：Anti-Omission 23 家法定白名单布尔断言（防漏 23 家做市商）**：
   - **Cid 提取防偏规约**：在 `1x2d.js` 的 `var game=Array(...)` 中，竖线分割的第一项 `parts[0]` 为机构 ID (`cid`)。**绝对严禁错用 `parts[1]`**！
-  - **23 家白名单 Hash Map**：以法定 23 家权威 cid 集合构建 Hash Map 进行常数级精确提取；
+  - **21 家欧指白名单 Hash Map**：以法定 21 家欧指 cid 集合构建 Hash Map 进行常数级精确提取；188Bet 与 Polymarket 走各自槽位；
   - **23 项布尔存在性核销**：组装简报时必须逐家执行布尔核对清单（Boolean Checklist），除体彩深盘不开单固、次级联赛香港马会未开亚盘外，所有法定做市商缺失立即判定为采集遗漏并物理阻断，缺失项必须显式标记「官方未开盘」，严禁静默漏报！
 - **护栏三：In-Flight Selector Pushdown & 28 端点 Schema 防伪（防虚标/防垃圾）**：
   - **选择器底层下推（`css_selector`）**：抓取 HTML 页面时强制传递精确选择器：21 张变盘流水表用 `css_selector="#odds2 table"`；亚盘/大小球全景总表用 `css_selector="#table_odds"`；分析页用完整 HTML（可选 `#porlet_*`）；波胆用 `#analy_sbAllOdds`；禁止再用已失效的 `#team_lineup`。
@@ -646,7 +646,7 @@ py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sa
    复用同一个 `session_id`，调用 `mcp__scrapling__session_make_request` 针对 28 端点执行**三路分流提取**，严禁一刀切选择器破坏：
    - **① 纯数据与脚本流（`1x2d.js`、`analy.json`、`polymarket.json`）**：
      - `extraction_type="text"`，`main_content_only=false`，`css_selector=null`；
-     - 直出 100% 原始长串，`1x2d.js` 必须涵盖全网机构欧指且 23 家法定做市商 cid 完整存在，绝不进行截断！
+     - 直出 100% 原始长串，`1x2d.js` 必须涵盖全网机构欧指且 21 家法定欧指 cid 完整存在，绝不进行截断！
    - **② 完整分析 DOM 流（`analysis.html`、`odds.html`）**：
      - `extraction_type="html"`，`main_content_only=false`，`css_selector=null`；
      - 完整保留攻防时序、伤停阵型与波胆赔率 DOM；
@@ -663,7 +663,7 @@ py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sa
 
 | 序号 | Payload Key | Tier | 请求目标 URL 规范 | 编码 | 选择器下推 / 模式 | 业务作用与说明 |
 | :---: | :--- | :---: | :--- | :--- | :--- | :--- |
-| **1** | `1x2d.js` | 1 | `https://txt.titan007.com/1x2/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯23家) | **欧指时序金矿**：高防静态 CDN 秒出，一网打尽 150+ 家做市商初即盘、凯利及完整变盘流水 |
+| **1** | `1x2d.js` | 1 | `https://txt.titan007.com/1x2/{mid}.js` | UTF-8 | 纯文本直取 (内存提纯21家欧指) | **欧指时序金矿**：高防静态 CDN 秒出，一网打尽 150+ 家做市商初即盘、凯利及完整变盘流水 |
 | **2** | `analysis.html` | 1 | `https://m.titan007.com/analy/Analysis/{mid}.htm` | UTF-8 | 完整 HTML / 纯净 DOM | 积分榜、联赛排名、近期战绩、让球大小盘路胜率 |
 | **3** | `odds.html` | 1 | `https://m.titan007.com/analy/Lineup/{mid}.htm` | UTF-8 | 完整 HTML (内嵌 lineupObj) | 首发阵型、球员身价估值(万欧)、伤病具体医学原因(十字韧带/耻骨炎等) |
 | **4** | `analy.json` | 1 | `https://m.titan007.com/analy/shijian/{mid}.htm` | UTF-8 | 完整 HTML / JSON 数据 | 比赛关键事件时序、即时射正/角球/危险进攻及 xG 预期进球 |
@@ -701,7 +701,7 @@ py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sa
 1. **底层存证 JSON 满配门禁（`data/{销售日}/raw/{matchId}.json`）**：
    - `payloads` 数量必须为 **28 个**，绝对严禁遗漏 21 张变盘流水表以及亚盘/大小球全景总表；
    - 底层存证 Schema 门禁：`payloads` 必须包含全量 28 个端点键，且各键内容必须为有效字符串（可被 DOM/JSON 正常解析，绝非垃圾填充）；
-   - `payloads['1x2d.js']` 必须包含法定 23 家做市商 cid 记录且能完整反序列化，确保欧指无截断；
+   - `payloads['1x2d.js']` 必须包含法定 21 家欧指 cid 记录且能完整反序列化，确保欧指无截断；188Bet 与 Polymarket 走各自槽位；
    - `payloads['asian_odds.html']` 与 `payloads['over_under.html']` 必须包含各主流机构初盘与即盘原始报文；
    - 校验 `receipt.endpoints[i].size` 必须与 `payloads[name]` 真实字符数 1:1 精确匹配，虚报立即熔断报警。
 2. **人类可视化简报黄金装配门禁（`data/{销售日}/{matchId}.md`）**：
@@ -761,7 +761,7 @@ py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sa
 1. **单域名严格单并发（Concurrent Requests Per Domain = 1）**：
    在面对易触发 DIPR 封禁的旧版 IIS 域名（如 `vip.titan007.com`）时，强制全局锁死单并发，严禁派发多个 Worker 并发请求同一目标域名，从根本上杜绝 TCP 连接风暴；
 2. **AutoThrottle 动态时钟调节**：
-   - 基础礼貌延迟：`download_delay = 2.0s`（单秒活跃请求 $\le 0.5$ 个，模拟人类真实慢速浏览）；
+   - 基础礼貌延迟：`download_delay = 1.0s`（项目运营策略，单秒活跃请求 $\le 1.0$ 个）；
    - 动态测速与退避：Scrapling 实时记录响应耗时；当遭遇 `429`、`403` 或 IIS DIPR 掐断时，延迟自适应指数翻倍（`2.0s ➔ 4.0s ➔ 8.0s ➔ 16.0s`，上限 `60.0s`），避开风控封锁峰值；
    - 慢即是快心法：稳定的低频采集确保持续畅通，综合效率远胜于蛮力轰炸遭拉黑后的停机等待。
 
@@ -793,15 +793,15 @@ py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sa
 ```javascript
 const ENDPOINTS = [
   // 1. Tier 1 聚合核心端点 (高可用CDN秒出，从不封禁)
-  { key: "1x2d.js", url: `https://1x2d.titan007.com/${mid}.js`, tier: 1, type: "text" }, // 一网打尽 23 家欧指全量初即与历史变盘流水
-  { key: "analysis.html", url: `https://info.titan007.com/analysis/${mid}cn.htm`, tier: 1, type: "html", selector: null },
-  { key: "odds.html", url: `https://info.titan007.com/analysis/odds/${mid}.htm`, tier: 1, type: "html", selector: null },
-  { key: "analy.json", url: `https://info.titan007.com/default/getAnalyData?sid=${mid}&t=1`, tier: 1, type: "text" },
+  { key: "1x2d.js", url: `https://txt.titan007.com/1x2/${mid}.js`, tier: 1, type: "text" }, // 21 家法定欧指全量初即与历史变盘流水
+  { key: "analysis.html", url: `https://m.titan007.com/analy/Analysis/${mid}.htm`, tier: 1, type: "html", selector: null },
+  { key: "odds.html", url: `https://m.titan007.com/analy/Lineup/${mid}.htm`, tier: 1, type: "html", selector: null },
+  { key: "analy.json", url: `https://m.titan007.com/analy/shijian/${mid}.htm`, tier: 1, type: "text" },
   { key: "polymarket.json", url: `https://gamma-api.polymarket.com/events?slug=${slug}`, tier: 1, type: "text" },
 
-  // 2. Tier 2 补充明细端点 (温和单并发限流 2.0s，阻断平滑降级自愈)
-  { key: "asian_odds.html", url: `https://vip.titan007.com/AsianOdds_n.aspx?id=${mid}`, tier: 2, type: "markdown", selector: "#table_odds" },
-  { key: "over_under.html", url: `https://vip.titan007.com/OverDown_n.aspx?id=${mid}`, tier: 2, type: "markdown", selector: "#table_odds" },
+  // 2. Tier 2 补充明细端点 (温和单并发限流，阻断平滑降级自愈)
+  { key: "asian_odds.html", url: `https://m.titan007.com/HandicapDataInterface.ashx?scheid=${mid}&type=1&oddskind=0`, tier: 2, type: "text" },
+  { key: "over_under.html", url: `https://m.titan007.com/HandicapDataInterface.ashx?scheid=${mid}&type=1&oddskind=1`, tier: 2, type: "text" },
   // 7 家机构 21 张变盘流水表 (cid: 1, 3, 8, 12, 47, 42, 48)
   // ah_*.html, ou_*.html, eu_*.html (css_selector="#odds2 table")
 ];
@@ -829,7 +829,7 @@ const ENDPOINTS = [
     ]
   },
   "payloads": {
-    "1x2d.js": "/* 原生 JS 内容，包含 23 家做市商 */",
+    "1x2d.js": "/* 原生 JS 内容，包含 21 家法定欧指 cid；188Bet 与 Polymarket 另行判定 */",
     "analysis.html": "<!-- 原生 HTML 内容 -->",
     "odds.html": "<!-- 移动端 Lineup 页面，包含 var lineupObj 首发阵型、身价与医学伤停原因 -->",
     "analy.json": "<!-- 移动端 shijian 页面或 JSON，包含比赛事件、攻防技统与 xG 预期进球 -->",

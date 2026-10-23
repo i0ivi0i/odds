@@ -27,13 +27,13 @@
 | 16 | `ou_47.html` | OU | 2 | `https://m.titan007.com/OuDetail/47/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 平博大小球变盘流水 |
 | 17 | `ou_42.html` | OU | 2 | `https://m.titan007.com/OuDetail/42/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 188Bet 大小球变盘流水 |
 | 18 | `ou_48.html` | OU | 2 | `https://m.titan007.com/OuDetail/48/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 香港马会大小球变盘流水 |
-| 19 | `eu_1.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/1/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 澳彩欧指变盘流水 |
-| 20 | `eu_3.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/3/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 皇冠欧指变盘流水 |
-| 21 | `eu_8.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/8/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | Bet365欧指变盘流水 |
-| 22 | `eu_12.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/12/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 易胜博欧指变盘流水 |
-| 23 | `eu_47.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/47/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 平博欧指变盘流水 |
-| 24 | `eu_42.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/42/{match_id}.htm` | UTF-8 | markdown | 是 | `not_offered` 合法 | 188Bet 欧指可为空 |
-| 25 | `eu_48.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/48/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 香港马会欧指变盘流水 |
+| 19 | `eu_1.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/80/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 澳彩欧指变盘流水（euro_cid=80） |
+| 20 | `eu_3.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/545/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 皇冠欧指变盘流水（euro_cid=545） |
+| 21 | `eu_8.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/281/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | Bet365欧指变盘流水（euro_cid=281） |
+| 22 | `eu_12.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/90/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 易胜博欧指变盘流水（euro_cid=90） |
+| 23 | `eu_47.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/177/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 平博欧指变盘流水（euro_cid=177） |
+| 24 | `eu_42.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/42/{match_id}.htm` | UTF-8 | markdown | 是 | `not_offered` 合法 | 188Bet 无 euro_cid；`skip_request=true`，不请求 18Bet |
+| 25 | `eu_48.html` | EU | 2 | `https://m.titan007.com/CompensateDetail/432/{match_id}.htm` | UTF-8 | markdown | 是 | 有未开盘证据才可空 | 香港马会欧指变盘流水（euro_cid=432） |
 | 26 | `polymarket.json` | Polymarket | 1 | `https://gamma-api.polymarket.com/events?slug={polymarket_slug}` | UTF-8 | text | 是 | `[]` 合法 | JSON 可解析，链上胜平负概率 |
 | 27 | `asian_odds.html` | panorama | 2 | `https://m.titan007.com/HandicapDataInterface.ashx?scheid={match_id}&type=1&oddskind=0` | UTF-8 | text | 是 | 禁止空 | 全网主流做市商亚盘初即盘纯 JSON |
 | 28 | `over_under.html` | panorama | 2 | `https://m.titan007.com/HandicapDataInterface.ashx?scheid={match_id}&type=1&oddskind=1` | UTF-8 | text | 是 | 禁止空 | 全网主流做市商大小球初即盘纯 JSON |

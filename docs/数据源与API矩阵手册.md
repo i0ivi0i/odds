@@ -22,16 +22,16 @@
 ### 1. 赔率时序与全盘指数（主源：titan007）
 - **特点**：球探页可免登录查看多家机构升降盘历史。当场覆盖以页面实际可见公司与行数为准，不是「全网唯一免费、14 家全覆盖、无频率限制」的保证。
 - **获取内容**：亚盘盘水变化表、大小球盘水变化表、欧赔逐笔时序、皇冠已有比分/半全场/总进球项目。固定比分范围不冒充全池。
-- **抓取通道与防封控频**：100% 独家归属工位 1（`skills/match-scraper`，内嵌 Scrapling 0.5 官方武器库 ↔ MCP `scrapling`）。采用官方 Spider 架构，锁死单域名单并发（`concurrent_requests_per_domain = 1`），基础下载延迟 `download_delay = 2.0s` 并启用 AutoThrottle 自适应退避（遇限流指数拉大延迟），规避旧版 Windows Server 2012 / IIS 8.5 DIPR 防火墙封锁；严禁调用外部独立浏览器，严禁编写临时 Python 脚本。
+- **抓取通道与防封控频**：100% 独家归属工位 1（`skills/match-scraper`，内嵌 Scrapling 0.5 官方武器库 ↔ MCP `scrapling`）。采用官方 Spider 架构，锁死单域名单并发（`concurrent_requests_per_domain = 1`），基础下载延迟 `download_delay = 1.0s`（项目运营策略，非库默认值）并启用 AutoThrottle 自适应退避（遇限流指数拉大延迟，上限 15s），规避旧版 Windows Server 2012 / IIS 8.5 DIPR 防火墙封锁；严禁调用外部独立浏览器，严禁编写临时 Python 脚本。
 - **双轨端点做减法架构**：
-  1. **Tier 1 聚合核心通道（高可用 CDN，永不封锁）**：`1x2d.js`（一网打尽 23 家百家欧指初即盘与完整时序流水，460KB+ 毫秒级直出）、`analysis.html`、`odds.html`、`analy.json`、`polymarket.json`，单场核心请求压缩至 4 次以内，流量暴降 85%；
+  1. **Tier 1 聚合核心通道（高可用 CDN，永不封锁）**：`1x2d.js`（一网打尽 21 家法定欧指初即盘与完整时序流水，460KB+ 毫秒级直出；188Bet 与 Polymarket 另走槽位）、`analysis.html`、`odds.html`、`analy.json`、`polymarket.json`，单场核心请求压缩至 4 次以内，流量暴降 85%；
   2. **Tier 2 补充明细通道（温和单并发按需拉取）**：21 张流水表与两张全景表温和拉取，遭遇网络断开时平滑自愈；
   3. **ProxyRotator 弹性兜底**：CLI 原生支持 `--proxy http://127.0.0.1:10808` 参数，支持本地代理隧道一键隐身漂移。
 - **Scrapling 官方六大战区反污染装配机制**：
   1. **纯数据流（Text Stream）**：`1x2d.js`（百家欧指原始脚本）、`analy.json`、`polymarket.json`，无损直出；
-  2. **双总表原生直转（Full Odds Markdown）**：亚盘总表 `AsianOdds_n.aspx` 与大小球总表 `OverDown_n.aspx`（绝不可拼错为 OverUnder）强制下推 `css_selector="#table_odds"` 与 `extraction_type="markdown"`，将全网主流做市商初盘与即盘 100% 直出无杂质 Markdown；
+  2. **双总表原生直转（Full Odds JSON）**：亚盘总表 `HandicapDataInterface.ashx?scheid={mid}&type=1&oddskind=0` 与大小球总表 `HandicapDataInterface.ashx?scheid={mid}&type=1&oddskind=1` 强制 `extraction_type="text"`，将全网主流做市商初盘与即盘 100% 结构化直出；
   3. **叶子选择器原地下推与源头 1:1 镜像流（Leaf Markdown & Source Fidelity）**：21 张流水表强制下推 `css_selector="#odds2 table"` 与 `extraction_type="markdown"`，杜绝外层嵌套 table 引发的 130 列表格横向炸裂坍塌；**100% 忠实镜像球探网源网页原生排列，严禁手工调换行序，严禁机械截断丢失变盘记录；推演分析时统一依据每笔记录物理时间戳升序对齐（Sort by Timestamp ASC）自适应展开时序**；
-  4. **人类简报六大组件装配**：`{matchId}.md` 严禁全页 HTML 裸转 Markdown（杜绝会员广告与死骨架），严格从结构化数据提炼六大战区（伤停、战绩、23家欧指大表、主流做市商亚盘/大小初即大表、21张流水单表、波胆实盘），执行 Anti-Ad、Anti-Collapse、Anti-Placeholder、23 CIDs、Anti-Omission Initial Odds、Anti-Timeline-Distortion 六重品控防错门禁。
+  4. **人类简报六大组件装配**：`{matchId}.md` 严禁全页 HTML 裸转 Markdown（杜绝会员广告与死骨架），严格从结构化数据提炼六大战区（伤停、战绩、23 槽位欧指大表（21 家欧指 + 188Bet/Polymarket）、主流做市商亚盘/大小初即大表、21张流水单表、波胆实盘），执行 Anti-Ad、Anti-Collapse、Anti-Placeholder、23 CIDs、Anti-Omission Initial Odds、Anti-Timeline-Distortion 六重品控防错门禁。
 
 ### 2. 主源失败怎么办
 - **线上不先跑脚本**：严禁自写任何临时抓取脚本。
