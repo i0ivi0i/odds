@@ -632,7 +632,7 @@ ETLX="C:/Users/home/AppData/Local/etlx/1.156.1-linking/etlx-windows-linking-amd6
 "$ETLX" -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 ```
 
-`data/schema.sql` 只建 STRICT、主键、非空、`CHECK` 物理表，不再包含任何视图。`data/pipeline.md` 的全部 `ATTACH` 固定指向 `data/.staging/build.db`，换场不改 SQL；每次构建前必须重建空库。`MATCH_META` 只读 `data/{销售日}/meta.md`，把队名、联赛、竞彩编号、开球时间写入 `match_meta`；它不增加网络端点，也不改变 27 个分析端点的数量。第二阶段执行 `BUSINESS_TABLES` 生成四个中文业务表，再由 `VIEWS` 生成 13 个只读 `v_*` 视图；人、机器和 AI 先看 `球队基本情况`、`欧指`、`亚盘`、`大小球`，逐笔流水再下钻 `v_*_history`，不直接读原始 payload。若对旧库原地迁移，必须先 `DROP VIEW IF EXISTS` 四个中文业务视图，再执行 `BUSINESS_TABLES`；全新空库不需要。门禁 `violations=0` 且外部只读复核通过后，才可把 staging 改名为最终 `data/{销售日}/{matchId}.db`：
+`data/schema.sql` 只建 STRICT、主键、非空、`CHECK` 物理表，不再包含任何视图。`data/pipeline.md` 的全部 `ATTACH` 固定指向 `data/.staging/build.db`，换场不改 SQL；每次构建前必须重建空库。`MATCH_META` 只读 `data/{销售日}/meta.md`，把队名、联赛、竞彩编号、开球时间写入 `match_meta`；它不增加网络端点，也不改变 27 个分析端点的数量。第二阶段执行 `BUSINESS_TABLES` 生成四个中文入口表和 `欧指变盘` 明细，再由 `VIEWS` 生成 13 个只读 `v_*` 视图；人、机器和 AI 先看 `球队基本情况`、`欧指`、`亚盘`、`大小球`，欧指逐笔时序看 `欧指变盘`，其他逐笔流水再下钻 `v_*_history`，不直接读原始 payload。业务表只做原值直搬，禁止在表内做 MIN/MAX/COUNT/SUM/AVG、概率换算、缺失值填充或跨行聚合；统计和推演由 AI 读取原值后现场完成。若对旧库原地迁移，必须先 `DROP VIEW IF EXISTS` 四个中文业务视图，再执行 `BUSINESS_TABLES`；全新空库不需要。门禁 `violations=0` 且外部只读复核通过后，才可把 staging 改名为最终 `data/{销售日}/{matchId}.db`：
 
 ```bash
 # 保留上一份最终库，门禁通过后才替换
@@ -640,7 +640,7 @@ if [ -f "data/{销售日}/{matchId}.db" ]; then mv "data/{销售日}/{matchId}.d
 mv data/.staging/build.db "data/{销售日}/{matchId}.db"
 ```
 
-外部只读复核至少检查：`sqlite_master` 中四个业务表存在、13 个 `v_*` 视图存在、四表行数等于源表推导值、`v_bookmaker_slots=23`、`PRAGMA integrity_check=ok`、`PRAGMA foreign_key_check` 为空。失败时保留 staging 供检查，不动旧最终库。**批量进货只走这条主路径。** JSONL 是仓库外临时交接物，成功后删除。ETLX 若打印 `Error loading .env file` 但 exit 0 且行数正确，属非致命噪声；以 SQLite 只读复核为准，不能只看 ETLX 退出码。
+外部只读复核至少检查：`sqlite_master` 中四个入口表和 `欧指变盘` 存在、13 个 `v_*` 视图存在、四张入口表与 `欧指变盘` 行数等于源表推导值、`v_bookmaker_slots=23`、`PRAGMA integrity_check=ok`、`PRAGMA foreign_key_check` 为空。失败时保留 staging 供检查，不动旧最终库。**批量进货只走这条主路径。** JSONL 是仓库外临时交接物，成功后删除。ETLX 若打印 `Error loading .env file` 但 exit 0 且行数正确，属非致命噪声；以 SQLite 只读复核为准，不能只看 ETLX 退出码。
 
 **降级/诊断（单端点或工具不可用时）**：以下 MCP 三部曲只作单请求诊断与降级，不得用来冒充 28 端点原子装配。
 
@@ -756,7 +756,7 @@ mv data/.staging/build.db "data/{销售日}/{matchId}.db"
    - 赛程总览索引：`data/{销售日}/meta.md`
    - 赛程记忆追加：`memory/{销售日}.md` 中的 `## 赛程抓取（HH:MM）` 章节
 2. **模式二交付**：
-   - **零件托盘 1（唯一持久化存证 SSOT）**：`data/{销售日}/{matchId}.db`（27 个分析端点 `endpoint_payload` + 四个中文业务表 + 13 个只读 `v_*` 视图）
+   - **零件托盘 1（唯一持久化存证 SSOT）**：`data/{销售日}/{matchId}.db`（27 个分析端点 `endpoint_payload` + 四个中文入口表 + `欧指变盘` 明细 + 13 个只读 `v_*` 视图）
    - **交接物（仓库外临时）**：Scrapling 导出的 JSONL，ETLX 载入成功并删库后即删除
    - **零件托盘 1 伴随视图（面向人类的可选简报）**：`data/{销售日}/{matchId}.md`
 3. **出厂放行断言**：

@@ -252,7 +252,7 @@ flowchart TD
 #### 标准进货 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "【阶段一专职搬运工官方礼貌进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，【零探索铁律】：严禁调用 Get-ChildItem 或 read_file 翻看昨天历史文件摸索格式，严禁执行 curl/openssl/powershell 等终端探测命令，严禁阅读任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用）！第 0 秒必须且只能直接调用官方 Scrapling Spider 工具（`skills/match-scraper/scripts/ingest_spider.py`）执行进货。以 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队} --output <仓库外临时.jsonl>`（可选 `--proxy` 通道兜底）一次运行完成双轨端点进货（Tier 1 聚合核心秒取 1x2d.js 21家欧指时序+goallottery亚大小初即+odds_jc，Tier 2 补充明细礼貌温和限流 2.0s 并发=1，启用 AutoThrottle 自适应退避）；随后先执行 `mkdir -p data/.staging && rm -f data/.staging/build.db && py -3.13 -c \"import sqlite3,pathlib; c=sqlite3.connect('data/.staging/build.db'); c.executescript(pathlib.Path('data/schema.sql').read_text(encoding='utf-8')); c.close()\"` 建空 staging，再执行 `C:/Users/home/AppData/Local/etlx/1.156.1-linking/etlx-windows-linking-amd64.exe -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD` 与同 exe `-config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD`，由 ETLX 写入底层真实存证 `data/{销售日}/{matchId}.db`（27 个分析端点 + 四个中文业务表 + 13 个只读视图；Polymarket 不入分析库）；人类简报 `data/{销售日}/{matchId}.md` 仅为可选看板，若生成也不得替代 `.db`；【立即回传】：确认真实落盘且 Schema 完备后立即回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
+  goal: "【阶段一专职搬运工官方礼貌进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，【零探索铁律】：严禁调用 Get-ChildItem 或 read_file 翻看昨天历史文件摸索格式，严禁执行 curl/openssl/powershell 等终端探测命令，严禁阅读任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用）！第 0 秒必须且只能直接调用官方 Scrapling Spider 工具（`skills/match-scraper/scripts/ingest_spider.py`）执行进货。以 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队} --output <仓库外临时.jsonl>`（可选 `--proxy` 通道兜底）一次运行完成双轨端点进货（Tier 1 聚合核心秒取 1x2d.js 21家欧指时序+goallottery亚大小初即+odds_jc，Tier 2 补充明细礼貌温和限流 2.0s 并发=1，启用 AutoThrottle 自适应退避）；随后先执行 `mkdir -p data/.staging && rm -f data/.staging/build.db && py -3.13 -c \"import sqlite3,pathlib; c=sqlite3.connect('data/.staging/build.db'); c.executescript(pathlib.Path('data/schema.sql').read_text(encoding='utf-8')); c.close()\"` 建空 staging，再执行 `C:/Users/home/AppData/Local/etlx/1.156.1-linking/etlx-windows-linking-amd64.exe -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD` 与同 exe `-config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD`，由 ETLX 写入底层真实存证 `data/{销售日}/{matchId}.db`（27 个分析端点 + 四个中文入口表 + `欧指变盘` 明细 + 13 个只读视图；Polymarket 不入分析库）；人类简报 `data/{销售日}/{matchId}.md` 仅为可选看板，若生成也不得替代 `.db`；【立即回传】：确认真实落盘且 Schema 完备后立即回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
 ```
 
 #### 标准推演分析师 Worker 工单 Prompt 规范模板
@@ -593,7 +593,11 @@ flowchart LR
      - 战区四 21 张变盘流水表中，100% 保持源网原生态镜像直出，绝对严禁手工调换行序或移花接木插拔初盘，严禁机械截断；推演分析时统一由时间戳升序排序律（`Sort by Timestamp ASC`）自适应梳理时钟因果！
    - **跨比赛绝对隔离（Match-Level Isolation）**：简报 `{matchId}.md` 和底层 `data/{销售日}/{matchId}.db` 必须经过 `matchId` 一致性核验，严禁比赛 A 的表格被粘贴到比赛 B！
 
-#### 4.2.2 法定 27 个分析端点（Polymarket 仅交付）与 23 家做市商底层存证质检标准（`data/{销售日}/{matchId}.db` SSOT vs `.md`）
+#### 4.2.2 原值直搬与禁止私自计算铁律（Raw-Value Projection Invariant）
+
+业务表（`球队基本情况`、`欧指`、`欧指变盘`、`亚盘`、`大小球`）只允许把源表字段原值直搬并按业务键关联。**绝对禁止**在业务表中使用 `MIN/MAX/COUNT/SUM/AVG` 等聚合、概率换算、缺失值填充、跨行计算或事后估算；`机构` 中文名、列名翻译和排序只是显示层，不得改变任何数值。需要统计、比较或推演时，由 AI 在读取原始字段后现场计算，计算结果不得写回业务表冒充原始数据。原始层 `endpoint_payload` 与源表继续保持原样，不得篡改。
+
+#### 4.2.3 法定 27 个分析端点（Polymarket 仅交付）与 23 家做市商底层存证质检标准（`data/{销售日}/{matchId}.db` SSOT vs `.md`）
 
 机器推演的法定底层依据是 `data/{销售日}/{matchId}.db`（经 EvoOntology 直连提取），`.md` 文件仅作可选人类可视化复盘简报：
 - **存证与视图序贯优先级**：审视调阅数据必须严格遵循「先看 SQLite `.db`（底层存证 SSOT），其次再看 `.md`（可视化视图校对），然后才是其他的（辅助资料）」刚性优先级！

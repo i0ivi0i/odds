@@ -155,7 +155,7 @@ snapshots AS (
   WHERE (f[1])::INTEGER IN (80, 545, 281, 90, 177, 432, 115, 82, 81, 104, 255, 110, 2, 474, 649, 800, 482, 386, 826, 16, 1129)
 )
 INSERT INTO DB.euro_snapshot (
-  match_id, cid, bookmaker, record_id, hist_count,
+  match_id, cid, bookmaker, record_id,
   initial_home, initial_draw, initial_away,
   initial_prob_home, initial_prob_draw, initial_prob_away, initial_return,
   latest_home, latest_draw, latest_away,
@@ -163,7 +163,7 @@ INSERT INTO DB.euro_snapshot (
   source_time, alias
 )
 SELECT
-  match_id, cid, bookmaker, record_id, 0,
+  match_id, cid, bookmaker, record_id,
   initial_home, initial_draw, initial_away,
   initial_prob_home, initial_prob_draw, initial_prob_away, initial_return,
   latest_home, latest_draw, latest_away,
@@ -269,32 +269,6 @@ SELECT
   match_id, cid, record_id, source_index, ts_local, ts_iso, year,
   home, draw, away, kelly_home, kelly_draw, kelly_away
 FROM history;
-```
-
-## EURO_REFRESH
-
-```yaml
-name: EURO_REFRESH
-table: euro_snapshot
-load_conn: "duckdb:"
-load_before_sql:
-  - INSTALL sqlite
-  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
-load_sql: refresh_euro_counts
-load_after_sql: DETACH DB
-rows_sql: SELECT COUNT(*) AS nrows FROM DB.euro_snapshot WHERE hist_count > 0
-active: true
-```
-
-```sql
--- refresh_euro_counts
-UPDATE DB.euro_snapshot AS e
-SET hist_count = (
-  SELECT COUNT(*)
-  FROM DB.euro_history AS h
-  WHERE h.match_id = e.match_id
-    AND h.cid = e.cid
-);
 ```
 
 ## ASIAN_ODDS
@@ -1146,7 +1120,7 @@ FROM (
     CASE i.side WHEN 'home' THEN '主队' WHEN 'away' THEN '客队' ELSE '未知队伍' END,
     NULL,
     i.name,
-    COALESCE(NULLIF(TRIM(i.injury_reason), ''), '未说明'),
+    i.injury_reason,
     i.source_index
   FROM injury i
 ) x
@@ -1165,6 +1139,8 @@ ORDER BY
   END,
   x."排序";
 
+-- One row per bookmaker cid. Only direct source snapshot fields are exposed.
+-- No MIN/MAX/COUNT, no derived probability, no filled missing values.
 CREATE OR REPLACE TABLE "欧指" AS
 SELECT
   e.match_id AS "比赛ID",
@@ -1192,20 +1168,78 @@ SELECT
   e.initial_home AS "初盘主胜",
   e.initial_draw AS "初盘平局",
   e.initial_away AS "初盘客胜",
-  e.initial_return AS "初盘返还率",
+  e.initial_return AS "初盘返还率(%)",
   e.latest_home AS "最新主胜",
   e.latest_draw AS "最新平局",
   e.latest_away AS "最新客胜",
-  e.latest_return AS "最新返还率",
-  e.source_time AS "数据时间",
-  (SELECT COUNT(*) FROM euro_history h
-    WHERE h.match_id = e.match_id AND h.cid = e.cid) AS "变盘行数",
-  (SELECT MIN(h.ts_iso) FROM euro_history h
-    WHERE h.match_id = e.match_id AND h.cid = e.cid) AS "首笔时间",
-  (SELECT MAX(h.ts_iso) FROM euro_history h
-    WHERE h.match_id = e.match_id AND h.cid = e.cid) AS "末笔时间"
+  e.latest_return AS "最新返还率(%)"
 FROM euro_snapshot e
-ORDER BY e.cid;
+ORDER BY CASE e.cid
+  WHEN 80 THEN 1
+  WHEN 545 THEN 2
+  WHEN 281 THEN 3
+  WHEN 90 THEN 4
+  WHEN 177 THEN 5
+  WHEN 432 THEN 6
+  WHEN 115 THEN 7
+  WHEN 82 THEN 8
+  WHEN 81 THEN 9
+  WHEN 104 THEN 10
+  WHEN 255 THEN 11
+  WHEN 110 THEN 12
+  WHEN 2 THEN 13
+  WHEN 474 THEN 14
+  WHEN 649 THEN 15
+  WHEN 800 THEN 16
+  WHEN 482 THEN 17
+  WHEN 386 THEN 18
+  WHEN 826 THEN 19
+  WHEN 16 THEN 20
+  WHEN 1129 THEN 21
+  ELSE 99
+END, e.cid;
+
+-- Full euro time series: one row per source change. Never dedupe timestamps.
+-- Sort globally by time first so the whole table has one arrow of time;
+-- source_index keeps the original order and is latest-first.
+CREATE OR REPLACE TABLE "欧指变盘" AS
+SELECT
+  h.match_id AS "比赛ID",
+  h.cid AS "机构编号",
+  CASE h.cid
+    WHEN 80 THEN '澳彩'
+    WHEN 545 THEN '皇冠'
+    WHEN 281 THEN 'Bet365'
+    WHEN 90 THEN '易胜博'
+    WHEN 177 THEN '平博'
+    WHEN 432 THEN '香港马会'
+    WHEN 115 THEN '威廉希尔'
+    WHEN 82 THEN '立博'
+    WHEN 81 THEN '伟德'
+    WHEN 104 THEN 'Interwetten'
+    WHEN 255 THEN 'Bwin'
+    WHEN 110 THEN 'SNAI'
+    WHEN 2 THEN '必发'
+    WHEN 474 THEN '利记'
+    WHEN 649 THEN '沙巴'
+    WHEN 800 THEN '马拉松'
+    WHEN 482 THEN '必威'
+    WHEN 386 THEN '优胜客'
+    WHEN 826 THEN 'Paddy Power'
+    WHEN 16 THEN '10Bet'
+    WHEN 1129 THEN '中国体彩'
+    ELSE CAST(h.cid AS VARCHAR)
+  END AS "机构",
+  h.source_index AS "源序号",
+  h.ts_iso AS "变盘时间",
+  h.home AS "主胜赔率",
+  h.draw AS "平局赔率",
+  h.away AS "客胜赔率",
+  h.kelly_home AS "凯利主胜",
+  h.kelly_draw AS "凯利平局",
+  h.kelly_away AS "凯利客胜"
+FROM euro_history h
+ORDER BY h.ts_iso ASC, h.cid, h.source_index DESC;
 
 CREATE OR REPLACE TABLE "亚盘" AS
 SELECT
@@ -1218,13 +1252,7 @@ SELECT
   a.home AS "最新主水",
   a.line AS "最新盘口",
   a.away AS "最新客水",
-  a.modify_iso AS "更新时间",
-  (SELECT COUNT(*) FROM ah_history h
-    WHERE h.match_id = a.match_id AND h.company_id = a.company_id) AS "变盘行数",
-  (SELECT MIN(h.ts_iso) FROM ah_history h
-    WHERE h.match_id = a.match_id AND h.company_id = a.company_id) AS "首笔时间",
-  (SELECT MAX(h.ts_iso) FROM ah_history h
-    WHERE h.match_id = a.match_id AND h.company_id = a.company_id) AS "末笔时间"
+  a.modify_iso AS "更新时间"
 FROM asian_odds a
 ORDER BY a.company_id, a.odds_id;
 
@@ -1239,13 +1267,7 @@ SELECT
   o."over" AS "最新大球",
   o.line AS "最新盘口",
   o."under" AS "最新小球",
-  o.modify_iso AS "更新时间",
-  (SELECT COUNT(*) FROM ou_history h
-    WHERE h.match_id = o.match_id AND h.company_id = o.company_id) AS "变盘行数",
-  (SELECT MIN(h.ts_iso) FROM ou_history h
-    WHERE h.match_id = o.match_id AND h.company_id = o.company_id) AS "首笔时间",
-  (SELECT MAX(h.ts_iso) FROM ou_history h
-    WHERE h.match_id = o.match_id AND h.company_id = o.company_id) AS "末笔时间"
+  o.modify_iso AS "更新时间"
 FROM over_under o
 ORDER BY o.company_id, o.odds_id;
 ```
@@ -1278,7 +1300,7 @@ SELECT
   match_id, cid, record_id, source_index, ts_local, ts_iso, year,
   home, draw, away, kelly_home, kelly_draw, kelly_away
 FROM euro_history
-ORDER BY ts_iso ASC, source_index ASC;
+ORDER BY ts_iso ASC, source_index DESC;
 
 CREATE OR REPLACE VIEW "v_asian_odds" AS
 SELECT * FROM asian_odds;
@@ -1291,14 +1313,14 @@ SELECT
   match_id, endpoint_key, company_id, source_index,
   status, home, line_text, away, ts_local, ts_iso
 FROM ah_history
-ORDER BY ts_iso ASC, source_index ASC;
+ORDER BY ts_iso ASC, source_index DESC;
 
 CREATE OR REPLACE VIEW "v_ou_history" AS
 SELECT
   match_id, endpoint_key, company_id, source_index,
   status, "over", line_text, "under", ts_local, ts_iso
 FROM ou_history
-ORDER BY ts_iso ASC, source_index ASC;
+ORDER BY ts_iso ASC, source_index DESC;
 
 CREATE OR REPLACE VIEW "v_eu_detail_history" AS
 SELECT
@@ -1306,7 +1328,7 @@ SELECT
   home, draw, away, return_rate,
   kelly_home, kelly_draw, kelly_away, ts_local, ts_iso
 FROM eu_detail_history
-ORDER BY ts_iso ASC, source_index ASC;
+ORDER BY ts_iso ASC, source_index DESC;
 
 CREATE OR REPLACE VIEW "v_injury" AS
 SELECT * FROM injury;
@@ -1581,7 +1603,14 @@ WITH checks(gate, observed, expected) AS (
     CASE
       WHEN (SELECT COUNT(*) FROM main.sqlite_master
              WHERE type = 'table'
-               AND name IN ('球队基本情况', '欧指', '亚盘', '大小球')) = 4
+               AND name IN ('球队基本情况', '欧指', '欧指变盘', '亚盘', '大小球')) = 5
+      THEN 1 ELSE 0
+    END,
+    1
+  UNION ALL SELECT 'euro_detail_rows',
+    CASE
+      WHEN (SELECT COUNT(*) FROM DB."欧指变盘") =
+           (SELECT COUNT(*) FROM DB.euro_history)
       THEN 1 ELSE 0
     END,
     1

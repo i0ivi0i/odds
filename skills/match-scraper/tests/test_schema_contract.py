@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[3]
 SCHEMA = ROOT / "data" / "schema.sql"
 PIPELINE = ROOT / "data" / "pipeline.md"
 
-BUSINESS_NAMES = ("球队基本情况", "欧指", "亚盘", "大小球")
+BUSINESS_NAMES = ("球队基本情况", "欧指", "欧指变盘", "亚盘", "大小球")
 VIEW_NAMES = (
     "v_euro_snapshot",
     "v_euro_history",
@@ -125,21 +125,22 @@ class SchemaContractTest(unittest.TestCase):
             },
             "欧指": {
                 "比赛ID", "机构编号", "机构",
-                "初盘主胜", "初盘平局", "初盘客胜", "初盘返还率",
-                "最新主胜", "最新平局", "最新客胜", "最新返还率",
-                "数据时间", "变盘行数", "首笔时间", "末笔时间",
+                "初盘主胜", "初盘平局", "初盘客胜", "初盘返还率(%)",
+                "最新主胜", "最新平局", "最新客胜", "最新返还率(%)",
+            },
+            "欧指变盘": {
+                "比赛ID", "机构编号", "机构", "源序号", "变盘时间",
+                "主胜赔率", "平局赔率", "客胜赔率", "凯利主胜", "凯利平局", "凯利客胜",
             },
             "亚盘": {
                 "比赛ID", "机构编号", "机构",
                 "初盘主水", "初盘盘口", "初盘客水",
                 "最新主水", "最新盘口", "最新客水", "更新时间",
-                "变盘行数", "首笔时间", "末笔时间",
             },
             "大小球": {
                 "比赛ID", "机构编号", "机构",
                 "初盘大球", "初盘盘口", "初盘小球",
                 "最新大球", "最新盘口", "最新小球", "更新时间",
-                "变盘行数", "首笔时间", "末笔时间",
             },
         }
         forbidden = {
@@ -201,6 +202,10 @@ class SchemaContractTest(unittest.TestCase):
         self.assertIn(("伤停", None, None, None, "客队", None, "伤员甲", "肌肉拉伤"), rows)
         self.assertNotIn("技术统计", [row[0] for row in rows])
 
+    def test_business_tables_do_not_compute_new_values(self):
+        for token in ("MIN(", "MAX(", "COUNT(", "SUM(", "AVG(", "COALESCE("):
+            self.assertNotIn(token, self.business_sql.upper(), token)
+
     def test_business_tables_do_not_read_raw_payload(self):
         self.assertNotIn("endpoint_payload", self.business_sql.lower())
         self.assertNotIn("endpoint_parse_status", self.business_sql.lower())
@@ -213,14 +218,14 @@ class SchemaContractTest(unittest.TestCase):
         self.conn.execute(
             """
             INSERT INTO euro_snapshot (
-              match_id, cid, bookmaker, record_id, hist_count,
+              match_id, cid, bookmaker, record_id,
               initial_home, initial_draw, initial_away,
               initial_prob_home, initial_prob_draw, initial_prob_away, initial_return,
               latest_home, latest_draw, latest_away,
               latest_prob_home, latest_prob_draw, latest_prob_away, latest_return,
               source_time, alias
             ) VALUES (
-              '3018847', 80, '澳彩', 'r1', 2,
+              '3018847', 80, '澳彩', 'r1',
               2.00, 3.20, 3.60, 0.50, 0.31, 0.28, 0.94,
               2.10, 3.10, 3.50, 0.48, 0.32, 0.29, 0.93,
               '2026-10-24 21:00', '澳彩'

@@ -1,6 +1,6 @@
 -- Physical SQLite schema for one match database.
 -- This file owns STRICT tables, primary keys, NOT NULL, CHECK constraints, and foreign-key declarations.
--- Business cleaning, the four Chinese business tables, and all v_* read-only views live in data/pipeline.md.
+-- Business cleaning, the four Chinese entry tables plus 欧指变盘 detail, and all v_* read-only views live in data/pipeline.md.
 -- ETLX creates the business tables and views after the raw tables are loaded.
 CREATE TABLE endpoint_payload (
   match_id TEXT NOT NULL,
@@ -22,7 +22,6 @@ CREATE TABLE euro_snapshot (
   cid INTEGER NOT NULL,
   bookmaker TEXT NOT NULL,
   record_id TEXT NOT NULL,
-  hist_count INTEGER NOT NULL CHECK (hist_count >= 0),
   initial_home REAL NOT NULL CHECK (initial_home > 1.0),
   initial_draw REAL NOT NULL CHECK (initial_draw > 1.0),
   initial_away REAL NOT NULL CHECK (initial_away > 1.0),

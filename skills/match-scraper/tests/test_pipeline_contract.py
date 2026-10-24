@@ -60,7 +60,7 @@ class PipelineContractTest(unittest.TestCase):
         self.assertIn("name: BUSINESS_TABLES", self.text)
         self.assertIn("name: VIEWS", self.text)
         for name in (
-            "球队基本情况", "欧指", "亚盘", "大小球",
+            "球队基本情况", "欧指", "欧指变盘", "亚盘", "大小球",
             "v_euro_snapshot", "v_euro_history", "v_asian_odds",
             "v_over_under", "v_ah_history", "v_ou_history",
             "v_eu_detail_history", "v_injury", "v_lineup",
@@ -70,6 +70,22 @@ class PipelineContractTest(unittest.TestCase):
             self.assertIn(name, self.text)
         self.assertIn("CREATE OR REPLACE TABLE", self.text)
         self.assertIn("CREATE OR REPLACE VIEW", self.text)
+
+    def test_history_views_are_chronological_and_keep_latest_tie_last(self):
+        for view in (
+            "v_euro_history",
+            "v_ah_history",
+            "v_ou_history",
+            "v_eu_detail_history",
+        ):
+            block = self.text.split(f'CREATE OR REPLACE VIEW "{view}"', 1)[1].split(";", 1)[0]
+            self.assertIn("ORDER BY ts_iso ASC, source_index DESC", block, view)
+
+    def test_euro_detail_has_clear_odds_columns_and_chronological_order(self):
+        block = self.text.split('CREATE OR REPLACE TABLE "欧指变盘"', 1)[1].split(";", 1)[0]
+        for column in ("主胜赔率", "平局赔率", "客胜赔率"):
+            self.assertIn(column, block)
+        self.assertIn("ORDER BY h.ts_iso ASC, h.cid, h.source_index DESC", block)
 
     def test_gate_checks_match_meta_identity(self):
         gate = self.text.split("name: GATE_LIVE", 1)[1]
