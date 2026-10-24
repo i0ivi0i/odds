@@ -44,7 +44,6 @@
 - `forbidden`：不允许空；空即 `empty_required_endpoint`。
 - `duplicate_cid`：21 个 euro cid 有重复。
 - `duplicate_odds_triplet`：同一机构同一时间出现重复赔率三元组。
-- `bookmaker_mismatch`：表头机构与 key 不符。
 - `entity_mismatch`：`1x2d.js` 的 `ScheduleID` 或队名与目标不符。
 - `schedule_id_mismatch`：`HandicapDataInterface.ashx` 返回的 `scheduleId` 与工单不符。
 - `waf_blocked`：页面含 `Just a moment...`、`Cloudflare`、`Access Denied` 等盾标记。

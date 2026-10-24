@@ -1,6 +1,9 @@
+import io
+import json
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -12,8 +15,11 @@ from scrapling.spiders.result import ItemList  # noqa: E402
 from ingest_spider import (  # noqa: E402
     EndpointAssessment,
     IngestSpider,
+    _cached_capture_is_valid,
     build_request_plan,
+    content_type_for,
     load_contract,
+    main,
 )
 
 
@@ -59,7 +65,8 @@ class IngestSpiderTest(unittest.TestCase):
         self.assertEqual(spider.proxy, "http://127.0.0.1:10808")
         self.assertEqual(spider.concurrent_requests, 1)
         self.assertEqual(spider.concurrent_requests_per_domain, 1)
-        self.assertEqual(spider.download_delay, 1.0)
+        self.assertGreaterEqual(spider.download_delay, 1.0)
+        self.assertLessEqual(spider.download_delay, 2.0)
         self.assertTrue(spider.autothrottle_enabled)
 
     def _fake_results(self):
@@ -93,6 +100,13 @@ class IngestSpiderTest(unittest.TestCase):
         self.assertEqual(eu42["state"], "not_offered")
         self.assertEqual(eu42["content"], "")
 
+    def test_html_doctype_wins_over_json_suffix(self):
+        text = '<!DOCTYPE html><html><script>var jsonData = {"x": 1};</script></html>'
+        self.assertEqual(content_type_for("analy.json", text, "html"), "html")
+        self.assertEqual(content_type_for("analy.json", '\ufeff' + text, "html"), "html")
+        self.assertEqual(content_type_for("analy.json", '{"x": 1}', "json"), "json")
+        self.assertEqual(content_type_for("1x2d.js", "var game=[];", "javascript"), "javascript")
+
     def test_official_item_exporter_writes_27_jsonl_lines(self):
         spider = self._fake_results()
         items = spider.build_export_items()
@@ -102,6 +116,37 @@ class IngestSpiderTest(unittest.TestCase):
             lines = path.read_text(encoding="utf-8").splitlines()
         self.assertEqual(len(lines), 27)
         self.assertTrue(all(line.startswith("{") for line in lines))
+
+    def test_recent_valid_output_is_skipped_before_network(self):
+        rows = [
+            {"match_id": "3073801", "endpoint_key": f"endpoint_{i}", "state": "ok"}
+            for i in range(27)
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "capture.jsonl"
+            path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+            stream = io.StringIO()
+            with redirect_stdout(stream):
+                code = main([
+                    "--match-id", "3073801",
+                    "--sales-date", "2026-10-24",
+                    "--output", str(path),
+                ])
+        self.assertEqual(code, 0)
+        payload = json.loads(stream.getvalue())
+        self.assertIs(payload["ok"], False)
+        self.assertIs(payload["cached"], True)
+        self.assertEqual(payload["skipped"], "cooldown")
+
+    def test_invalid_or_foreign_output_is_not_a_cache_hit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "capture.jsonl"
+            path.write_text(
+                json.dumps({"match_id": "9999999", "endpoint_key": "endpoint_0", "state": "ok"}) + "\n",
+                encoding="utf-8",
+            )
+            self.assertFalse(_cached_capture_is_valid(path, "3073801"))
+            self.assertFalse(_cached_capture_is_valid(path, "9999999"))
 
     def test_adapter_has_no_sqlite_or_raw_write_path(self):
         source = (SCRIPTS / "ingest_spider.py").read_text(encoding="utf-8")

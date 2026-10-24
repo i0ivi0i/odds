@@ -1,10 +1,10 @@
-<!-- One-file ETLX pipeline for the live 3003920 build. The typed schema and read-only views come from data/schema.sql; this file lands the 27 analysis endpoints through the official ETLX -file handoff, then derives every analysis table from DB.endpoint_payload. A from-zero rebuild requires the schema bootstrap because ETLX's DuckDB SQLite attach cannot execute SQLite STRICT or foreign-key DDL. -->
+<!-- One-file ETLX pipeline for one match at a time. The typed schema and read-only views come from data/schema.sql; this file lands the 27 analysis endpoints through the official ETLX -file handoff into the fixed data/.staging/build.db, then derives every analysis table from DB.endpoint_payload. A from-zero rebuild requires the schema bootstrap because ETLX's DuckDB SQLite attach cannot execute SQLite STRICT or foreign-key DDL. -->
 
 # PIPELINE
 
 ```yaml
 name: PIPELINE
-description: Load the 3003920 build database from the official Scrapling JSONL; schema and views must already exist.
+description: Load one match into the fixed data/.staging/build.db from the official Scrapling JSONL; schema and views must already exist.
 runs_as: ELT
 active: true
 ```
@@ -17,7 +17,8 @@ table: endpoint_payload
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
+  - "DELETE FROM DB.endpoint_payload"
 load_sql: land_endpoint_payload
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.endpoint_payload
@@ -55,7 +56,7 @@ table: euro_snapshot
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_euro_snapshot
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.euro_snapshot
@@ -140,7 +141,7 @@ table: euro_history
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_euro_history
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.euro_history
@@ -239,7 +240,7 @@ table: euro_snapshot
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: refresh_euro_counts
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.euro_snapshot WHERE hist_count > 0
@@ -265,7 +266,7 @@ table: asian_odds
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_asian_odds
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.asian_odds
@@ -339,7 +340,7 @@ table: over_under
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_over_under
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.over_under
@@ -413,7 +414,7 @@ table: bookmaker_slots
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_bookmaker_slots
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.bookmaker_slots
@@ -516,7 +517,7 @@ table: ah_history
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_ah_history
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.ah_history
@@ -588,7 +589,7 @@ table: ou_history
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_ou_history
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.ou_history
@@ -660,7 +661,7 @@ table: eu_detail_history
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_eu_detail_history
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.eu_detail_history
@@ -738,7 +739,7 @@ table: injury
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_injury
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.injury
@@ -778,11 +779,11 @@ parsed AS (
     match_id,
     side,
     row_number() OVER (PARTITION BY side) - 1 AS source_index,
-    coalesce(player->>'number', '') AS number,
-    coalesce(player->>'name', '') AS name,
-    coalesce(player->>'Id', '') AS player_id,
-    coalesce(player->>'pos', '') AS position,
-    coalesce(player->>'injuryReson', '') AS injury_reason,
+    coalesce(trim(player->>'number', '"'), '') AS number,
+    coalesce(trim(player->>'name', '"'), '') AS name,
+    coalesce(trim(player->>'Id', '"'), '') AS player_id,
+    coalesce(trim(player->>'pos', '"'), '') AS position,
+    coalesce(trim(player->>'injuryReson', '"'), '') AS injury_reason,
     coalesce((player->>'captainType')::INTEGER, 0) AS captain_type,
     coalesce((player->>'playerKind')::INTEGER, 0) AS player_kind
   FROM injuries
@@ -797,6 +798,92 @@ SELECT
 FROM parsed;
 ```
 
+## LINEUP
+
+```yaml
+name: LINEUP
+table: lineup
+load_conn: "duckdb:"
+load_before_sql:
+  - INSTALL sqlite
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
+load_sql: land_lineup
+load_after_sql: DETACH DB
+rows_sql: SELECT COUNT(*) AS nrows FROM DB.lineup
+active: true
+```
+
+```sql
+-- land_lineup
+WITH raw AS (
+  SELECT
+    match_id,
+    content
+  FROM DB.endpoint_payload
+  WHERE endpoint_key = 'odds.html'
+),
+lineup_json AS (
+  SELECT
+    match_id,
+    try_cast(regexp_extract(content, '(?s)var lineupObj\s*=\s*(\{.*?\});', 1) AS JSON) AS lineup
+  FROM raw
+),
+rosters AS (
+  SELECT
+    match_id,
+    'home' AS side,
+    'starter' AS role,
+    unnest(json_extract(lineup, '$.lineup.homePlayerList[*]')) AS player,
+    coalesce(json_extract_string(lineup, '$.lineup.homeFormation'), '') AS formation
+  FROM lineup_json
+  UNION ALL
+  SELECT
+    match_id,
+    'home' AS side,
+    'bench' AS role,
+    unnest(json_extract(lineup, '$.lineup.homeBakPlayerList[*]')) AS player,
+    coalesce(json_extract_string(lineup, '$.lineup.homeFormation'), '') AS formation
+  FROM lineup_json
+  UNION ALL
+  SELECT
+    match_id,
+    'away' AS side,
+    'starter' AS role,
+    unnest(json_extract(lineup, '$.lineup.guestPlayerList[*]')) AS player,
+    coalesce(json_extract_string(lineup, '$.lineup.guestFormation'), '') AS formation
+  FROM lineup_json
+  UNION ALL
+  SELECT
+    match_id,
+    'away' AS side,
+    'bench' AS role,
+    unnest(json_extract(lineup, '$.lineup.guestBakPlayerList[*]')) AS player,
+    coalesce(json_extract_string(lineup, '$.lineup.guestFormation'), '') AS formation
+  FROM lineup_json
+),
+parsed AS (
+  SELECT
+    match_id,
+    side,
+    role,
+    row_number() OVER (PARTITION BY side, role) - 1 AS source_index,
+    coalesce(trim(player->>'number', '"'), '') AS number,
+    coalesce(trim(player->>'name', '"'), '') AS name,
+    coalesce(trim(player->>'Id', '"'), '') AS player_id,
+    coalesce(trim(player->>'pos', '"'), '') AS position,
+    formation
+  FROM rosters
+)
+INSERT INTO DB.lineup (
+  match_id, side, role, source_index, number, name, player_id,
+  position, formation, source_endpoint
+)
+SELECT
+  match_id, side, role, source_index, number, name, player_id,
+  position, formation, 'odds.html'
+FROM parsed;
+```
+
 ## TEAM_STATS
 
 ```yaml
@@ -805,7 +892,7 @@ table: team_stats
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_team_stats
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.team_stats
@@ -824,6 +911,17 @@ j AS (
   SELECT
     regexp_extract(content, '(?s)var jsonData\s*=\s*(\{.*?\});', 1) AS s
   FROM raw
+),
+raw_analy AS (
+  SELECT
+    content
+  FROM DB.endpoint_payload
+  WHERE endpoint_key = 'analy.json'
+),
+j_analy AS (
+  SELECT
+    regexp_extract(content, '(?s)var jsonData\s*=\s*(\{.*?\});', 1) AS s
+  FROM raw_analy
 ),
 points AS (
   SELECT
@@ -896,6 +994,37 @@ feature_rows AS (
   FROM features,
   json_each(feature) e
 ),
+xg_items AS (
+  SELECT
+    unnest(json_extract(s, '$.lastXgTechStat.itemList[*]')) AS item
+  FROM j_analy
+),
+xg_sides AS (
+  SELECT
+    item,
+    'home' AS side,
+    json_extract(item, '$.home') AS side_obj
+  FROM xg_items
+  WHERE json_extract(item, '$.home') IS NOT NULL
+  UNION ALL
+  SELECT
+    item,
+    'away' AS side,
+    json_extract(item, '$.away') AS side_obj
+  FROM xg_items
+  WHERE json_extract(item, '$.away') IS NOT NULL
+),
+xg_rows AS (
+  SELECT
+    'xg' AS section,
+    side,
+    row_number() OVER (PARTITION BY side) - 1 AS source_index,
+    coalesce(item->>'kind', 'xg') AS item,
+    'xg' AS metric,
+    try_cast(side_obj->>'text' AS DOUBLE) AS value,
+    nullif(trim(side_obj->>'text'), '') AS text_value
+  FROM xg_sides
+),
 all_rows AS (
   SELECT * FROM point_rows
   UNION ALL
@@ -903,9 +1032,7 @@ all_rows AS (
   UNION ALL
   SELECT * FROM feature_rows
   UNION ALL
-  SELECT 'xg', 'match', 0, 'xg_presence', 'presence', NULL::DOUBLE, 'not_present'
-  UNION ALL
-  SELECT 'events', 'match', 0, 'analy_json_presence', 'presence', NULL::DOUBLE, 'no_structured_event_rows'
+  SELECT * FROM xg_rows
 )
 INSERT INTO DB.team_stats (
   match_id, section, side, item, metric, value, text_value,
@@ -915,7 +1042,7 @@ SELECT
   (SELECT match_id FROM DB.endpoint_payload WHERE endpoint_key = 'analysis.html'),
   section, side, item, metric, value, text_value,
   source_index,
-  CASE WHEN section = 'events' THEN 'analy.json' ELSE 'analysis.html' END
+  CASE WHEN section = 'xg' THEN 'analy.json' ELSE 'analysis.html' END
 FROM all_rows;
 ```
 
@@ -927,7 +1054,7 @@ table: endpoint_parse_status
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_endpoint_status
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.endpoint_parse_status
@@ -947,6 +1074,7 @@ SELECT
       THEN (SELECT COUNT(*) FROM DB.team_stats t WHERE t.match_id = p.match_id AND t.source_endpoint = 'analysis.html')
     WHEN p.endpoint_key = 'odds.html'
       THEN (SELECT COUNT(*) FROM DB.injury i WHERE i.match_id = p.match_id)
+        + (SELECT COUNT(*) FROM DB.lineup l WHERE l.match_id = p.match_id)
     WHEN p.endpoint_key = 'analy.json'
       THEN (SELECT COUNT(*) FROM DB.team_stats t WHERE t.match_id = p.match_id AND t.source_endpoint = 'analy.json')
     WHEN p.endpoint_key LIKE 'ah_%'
@@ -964,6 +1092,9 @@ SELECT
   CASE
     WHEN p.state = 'failed' THEN 'unparsed'
     WHEN p.state = 'not_offered' THEN 'not_offered'
+    WHEN p.endpoint_key = 'analy.json'
+      AND (SELECT COUNT(*) FROM DB.team_stats t WHERE t.match_id = p.match_id AND t.source_endpoint = 'analy.json') > 0
+      THEN 'ok'
     WHEN p.endpoint_key = 'analy.json' THEN 'empty'
     WHEN p.content_type = 'empty' THEN 'empty'
     ELSE 'ok'
@@ -971,6 +1102,25 @@ SELECT
   CASE
     WHEN p.state = 'not_offered' THEN 'declared empty state'
     WHEN p.state = 'failed' THEN 'classification failed; build gate blocks'
+    WHEN p.endpoint_key = 'odds.html'
+      AND (SELECT COUNT(*) FROM DB.lineup l WHERE l.match_id = p.match_id) > 0
+      THEN 'lineup_published'
+    WHEN p.endpoint_key = 'odds.html' THEN 'lineup_not_published'
+    WHEN p.endpoint_key = 'analy.json'
+      AND (SELECT COUNT(*) FROM DB.team_stats t WHERE t.match_id = p.match_id AND t.source_endpoint = 'analy.json') > 0
+      THEN 'xg rows parsed'
+    WHEN p.endpoint_key = 'analy.json'
+      AND (SELECT
+             (COALESCE(json_array_length(json_extract(j, '$.lastXgTechStat.itemList')), 0) > 0)
+             OR (json_extract(j, '$.lastXgTechStat') IS NOT NULL
+                 AND json_extract(j, '$.lastXgTechStat.itemList') IS NULL)
+             FROM (SELECT TRY_CAST(regexp_extract(
+                     content, '(?s)var jsonData\s*=\s*(\{.*?\});', 1
+                   ) AS JSON) AS j
+                   FROM DB.endpoint_payload
+                   WHERE endpoint_key = 'analy.json') src)
+      THEN 'xg_parse_failed'
+    WHEN p.endpoint_key = 'analy.json' THEN 'xg_not_present'
     ELSE 'derived from typed tables'
   END AS note
 FROM DB.endpoint_payload p;
@@ -984,7 +1134,7 @@ table: build_manifest
 load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
-  - "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 load_sql: land_build_manifest
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.build_manifest
@@ -1036,7 +1186,7 @@ active: true
 name: GATE_LIVE
 description: "Check live row counts, payload coverage, hashes, and delivery-only exclusions."
 connection: "duckdb:"
-before_sql: "ATTACH 'data/2026-10-24/3003920.build.db' AS DB (TYPE SQLITE)"
+before_sql: "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
 query: gate_live
 column: violations
 after_sql: "DETACH DB"
@@ -1048,25 +1198,93 @@ active: true
 WITH checks(gate, observed, expected) AS (
   SELECT 'endpoint_payload_rows', (SELECT COUNT(*) FROM DB.endpoint_payload), 27
   UNION ALL SELECT 'endpoint_keys', (SELECT COUNT(DISTINCT endpoint_key) FROM DB.endpoint_payload), 27
-  UNION ALL SELECT 'polymarket_payload_rows', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE endpoint_key = 'polymarket.json'), 0
-  UNION ALL SELECT 'eu42_not_offered', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE endpoint_key = 'eu_42.html' AND content_type = 'empty' AND state = 'not_offered'), 1
+  UNION ALL SELECT 'single_match_id', (SELECT COUNT(DISTINCT match_id) FROM DB.endpoint_payload), 1
+  UNION ALL SELECT 'match_identity',
+    CASE
+      WHEN (SELECT COUNT(*) FROM DB.build_manifest WHERE match_id = (SELECT MIN(match_id) FROM DB.endpoint_payload)) = 1
+      THEN 1 ELSE 0
+    END,
+    1
   UNION ALL SELECT 'failed_payload_rows', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE state = 'failed'), 0
   UNION ALL SELECT 'content_hash_mismatches', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE lower(sha256) <> lower(sha256(content))), 0
-  UNION ALL SELECT 'bad_raw_hash_lengths', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE length(raw_sha256) <> 64), 0
-  UNION ALL SELECT 'euro_snapshot_rows', (SELECT COUNT(*) FROM DB.euro_snapshot), 21
-  UNION ALL SELECT 'euro_history_cids', (SELECT COUNT(DISTINCT cid) FROM DB.euro_history), 21
-  UNION ALL SELECT 'bookmaker_slots_rows', (SELECT COUNT(*) FROM DB.bookmaker_slots), 22
-  UNION ALL SELECT 'bookmaker_view_rows', (SELECT COUNT(*) FROM DB.v_bookmaker_slots), 23
-  UNION ALL SELECT 'endpoint_parse_status_rows', (SELECT COUNT(*) FROM DB.endpoint_parse_status), 27
-  UNION ALL SELECT 'build_manifest_rows', (SELECT COUNT(*) FROM DB.build_manifest), 1
-  UNION ALL SELECT 'euro_snapshot_floor', (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM DB.euro_snapshot), 1
-  UNION ALL SELECT 'euro_history_floor', (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM DB.euro_history), 1
-  UNION ALL SELECT 'asian_odds_floor', (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM DB.asian_odds), 1
-  UNION ALL SELECT 'over_under_floor', (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM DB.over_under), 1
-  UNION ALL SELECT 'ah_history_floor', (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM DB.ah_history), 1
-  UNION ALL SELECT 'ou_history_floor', (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM DB.ou_history), 1
-  UNION ALL SELECT 'eu_detail_floor', (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM DB.eu_detail_history), 1
-  UNION ALL SELECT 'team_stats_floor', (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM DB.team_stats), 1
+  UNION ALL SELECT 'payload_chars_mismatches', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE coalesce(chars, -1) <> length(content)), 0
+  UNION ALL SELECT 'raw_hash_lengths', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE length(coalesce(raw_sha256, '')) <> 64), 0
+  UNION ALL SELECT 'bookmaker_coverage',
+    CASE
+      WHEN (SELECT COUNT(*) FROM DB.euro_snapshot) = 21
+       AND (SELECT COUNT(DISTINCT cid) FROM DB.euro_history) = 21
+       AND (SELECT COUNT(*) FROM DB.bookmaker_slots) = 22
+       AND (SELECT COUNT(*) FROM DB.v_bookmaker_slots) = 23
+       AND (SELECT COUNT(*) FROM DB.endpoint_parse_status) = 27
+       AND (SELECT COUNT(*) FROM DB.bookmaker_slots
+             WHERE bookmaker IN ('澳彩', '皇冠', 'Bet365', '易胜博', '平博', '香港马会', '188Bet')
+               AND ah_status = 'supported' AND ou_status = 'supported') = 7
+       AND (SELECT COUNT(DISTINCT company_id) FROM DB.asian_odds) >= 7
+       AND (SELECT COUNT(DISTINCT company_id) FROM DB.over_under) >= 7
+       AND (SELECT COUNT(DISTINCT company_id) FROM DB.ah_history) >= 7
+       AND (SELECT COUNT(DISTINCT company_id) FROM DB.ou_history) >= 7
+       AND (SELECT COUNT(DISTINCT company_id) FROM DB.eu_detail_history) >= 6
+      THEN 1 ELSE 0
+    END,
+    1
+  UNION ALL SELECT 'core_tables_present',
+    CASE
+      WHEN (SELECT COUNT(*) FROM DB.euro_snapshot) > 0
+       AND (SELECT COUNT(*) FROM DB.euro_history) > 0
+       AND (SELECT COUNT(*) FROM DB.asian_odds) > 0
+       AND (SELECT COUNT(*) FROM DB.over_under) > 0
+       AND (SELECT COUNT(*) FROM DB.ah_history) > 0
+       AND (SELECT COUNT(*) FROM DB.ou_history) > 0
+       AND (SELECT COUNT(*) FROM DB.eu_detail_history) > 0
+       AND (SELECT COUNT(*) FROM DB.team_stats) > 0
+       AND (SELECT COUNT(*) FROM DB.team_stats WHERE source_endpoint = 'analysis.html') > 0
+      THEN 1 ELSE 0
+    END,
+    1
+  UNION ALL SELECT 'content_types',
+    CASE
+      WHEN (SELECT COUNT(*) FROM DB.endpoint_payload
+            WHERE (endpoint_key = 'analy.json' AND content_type = 'html')
+               OR (endpoint_key IN ('asian_odds.html', 'over_under.html') AND content_type = 'json')) = 3
+      THEN 1 ELSE 0
+    END,
+    1
+  UNION ALL SELECT 'capture_timestamp',
+    (SELECT COUNT(*) FROM DB.build_manifest WHERE fetched_at IS NOT NULL AND length(fetched_at) >= 19),
+    1
+  UNION ALL SELECT 'xg_state',
+    (SELECT COUNT(*) FROM DB.endpoint_parse_status
+      WHERE endpoint_key = 'analy.json' AND note IN ('xg rows parsed', 'xg_not_present')),
+    1
+  UNION ALL SELECT 'lineup_state', (SELECT COUNT(*) FROM DB.endpoint_parse_status WHERE endpoint_key = 'odds.html' AND note IN ('lineup_published', 'lineup_not_published')), 1
+  UNION ALL SELECT 'lineup_parse_consistency',
+    CASE
+      WHEN (SELECT COUNT(*) FROM DB.lineup WHERE role = 'starter') = 0
+        AND (
+          (SELECT content FROM DB.endpoint_payload WHERE endpoint_key = 'odds.html')
+            NOT LIKE '%"homePlayerList":[]%'
+          OR (SELECT content FROM DB.endpoint_payload WHERE endpoint_key = 'odds.html')
+            NOT LIKE '%"guestPlayerList":[]%'
+        )
+      THEN 1 ELSE 0
+    END,
+    0
+  UNION ALL SELECT 'lineup_count_matches',
+    CASE
+      WHEN (SELECT COUNT(*) FROM DB.lineup) =
+           (SELECT COALESCE(json_array_length(json_extract(j, '$.lineup.homePlayerList')), 0)
+                 + COALESCE(json_array_length(json_extract(j, '$.lineup.guestPlayerList')), 0)
+                 + COALESCE(json_array_length(json_extract(j, '$.lineup.homeBakPlayerList')), 0)
+                 + COALESCE(json_array_length(json_extract(j, '$.lineup.guestBakPlayerList')), 0)
+            FROM (SELECT TRY_CAST(regexp_extract(
+                    content, '(?s)var lineupObj\s*=\s*(\{.*?\});', 1
+                  ) AS JSON) AS j
+                  FROM DB.endpoint_payload
+                  WHERE endpoint_key = 'odds.html') src)
+      THEN 1 ELSE 0
+    END,
+    1
+  UNION ALL SELECT 'presence_rows', (SELECT COUNT(*) FROM DB.team_stats WHERE metric = 'presence'), 0
 )
 SELECT COALESCE(SUM(CASE WHEN observed = expected THEN 0 ELSE 1 END), 0) AS violations FROM checks;
 ```

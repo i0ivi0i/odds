@@ -13,7 +13,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import random
 import re
+import time
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
@@ -26,6 +28,7 @@ EURO_CIDS = (
 CHANGE_CIDS = (1, 3, 8, 12, 47, 42, 48)
 
 TABLE_GROUPS = frozenset({"ah", "ou", "eu"})
+CAPTURE_COOLDOWN_SECONDS = 600
 WAF_MARKERS = (
     "just a moment...",
     "cloudflare",
@@ -158,12 +161,6 @@ class Contract:
                 return endpoint
         return None
 
-    def bookmaker_for_euro_cid(self, cid: int) -> Bookmaker | None:
-        for bookmaker in self.bookmakers:
-            if bookmaker.euro_cid == cid:
-                return bookmaker
-        return None
-
 
 @dataclass
 class EndpointAssessment:
@@ -224,15 +221,22 @@ class EndpointAssessment:
 
 
 def content_type_for(key: str, text: str, extraction_type: str = "") -> str:
-    if not text.strip():
+    stripped = text.lstrip("\ufeff \t\r\n")
+    if not stripped:
         return "empty"
     if extraction_type == "markdown":
         return "markdown"
+    if stripped.startswith("<"):
+        return "html"
+    if stripped.startswith(("{", "[")):
+        try:
+            json.loads(text)
+            return "json"
+        except json.JSONDecodeError:
+            pass
     if key.endswith(".js"):
         return "javascript"
     if key.endswith(".json"):
-        return "json"
-    if text.lstrip().startswith(("{", "[")):
         return "json"
     return "html"
 
@@ -470,7 +474,6 @@ def assess_payload(
     raw_bytes: bytes | None = None,
     attempts: int = 1,
     fetched_at: str | None = None,
-    enforce_bookmaker_title: bool = False,
 ) -> EndpointAssessment:
     spec = contract.endpoint(key)
     if spec is None:
@@ -582,26 +585,6 @@ def assess_payload(
             duplicates = _duplicate_rows(rows)
             if duplicates:
                 errors.append("duplicate_odds_triplet")
-            if enforce_bookmaker_title:
-                cid_text = key.split("_", 1)[1].split(".", 1)[0]
-                try:
-                    cid = int(cid_text)
-                except ValueError:
-                    cid = -1
-                bookmaker = next(
-                    (item for item in contract.bookmakers if item.change_cid == cid),
-                    None,
-                )
-                if bookmaker is not None:
-                    if any(alias.lower() in lowered for alias in bookmaker.forbidden_aliases):
-                        errors.append("identity_conflict:" + ",".join(bookmaker.forbidden_aliases))
-                    found_aliases = [
-                        item.official_name
-                        for item in contract.bookmakers
-                        if any(alias.lower() in lowered for alias in (item.official_name, *item.aliases))
-                    ]
-                    if found_aliases and bookmaker.official_name not in found_aliases:
-                        errors.append("bookmaker_mismatch")
             state = "failed" if errors else "ok"
 
     elif key == "analysis.html":
@@ -714,15 +697,19 @@ def _session_kwargs(match_id: str) -> dict[str, Any]:
 
 class IngestSpider(Spider):
     name = "match-scraper-ingest"
-    # 单并发 + 1.0s 礼貌间隔 + AutoThrottle 自适应退避。
+    # 单并发 + 1.0~2.0s 礼貌抖动 + AutoThrottle 自适应退避。
     concurrent_requests = 1
     concurrent_requests_per_domain = 1
-    download_delay = 1.0
     autothrottle_enabled = True
     autothrottle_start_delay = 1.0
     autothrottle_target_concurrency = 1.0
     autothrottle_max_delay = 15.0
     max_blocked_retries = 0
+
+    @property
+    def download_delay(self) -> float:
+        """Base 1.0s plus 0-1s jitter so requests do not form a fixed rhythm."""
+        return random.uniform(1.0, 2.0)
 
     def __init__(
         self,
@@ -815,7 +802,6 @@ class IngestSpider(Spider):
             away=self.away or None,
             raw_bytes=raw,
             attempts=getattr(getattr(response, "request", None), "_retry_count", 0) + 1,
-            enforce_bookmaker_title=spec.group in {"ah", "ou", "eu"},
         )
         self.results[key] = result
         if result.errors:
@@ -932,12 +918,50 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--browser-fallback", action="store_true", help="HTTP 请求失败时用 StealthyFetcher 逐端点降级（慢）")
     p.add_argument("--proxy", default=None, help="代理通道 URL，例如 http://127.0.0.1:10808")
     p.add_argument("--output", default=None, help="临时 JSONL 路径；默认在系统临时目录生成")
+    p.add_argument("--force", action="store_true", help="跳过同一输出文件 10 分钟冷却；仅在主人明确要求重新分析时使用")
     p.add_argument("--root", default=str(ROOT), help=argparse.SUPPRESS)
     return p
 
 
+def _cached_capture_is_valid(path: Path, match_id: str) -> bool:
+    """A cached JSONL is reusable only when it is a complete, same-match capture."""
+    try:
+        lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        if len(lines) != 27:
+            return False
+        items = [json.loads(line) for line in lines]
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return False
+    keys = {str(item.get("endpoint_key", "")) for item in items}
+    return (
+        len(keys) == 27
+        and all(str(item.get("match_id")) == str(match_id) for item in items)
+        and all(str(item.get("state")) in {"ok", "not_offered"} for item in items)
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
+    output = Path(args.output) if args.output else None
+    if output and not args.force:
+        try:
+            age = time.time() - output.stat().st_mtime
+        except OSError:
+            age = None
+        if (
+            age is not None
+            and age < CAPTURE_COOLDOWN_SECONDS
+            and _cached_capture_is_valid(output, args.match_id)
+        ):
+            print(json.dumps({
+                "ok": False,
+                "cached": True,
+                "match_id": args.match_id,
+                "path": str(output),
+                "skipped": "cooldown",
+                "remaining_seconds": int(CAPTURE_COOLDOWN_SECONDS - age),
+            }, ensure_ascii=False))
+            return 0
     root = Path(args.root)
     spider = IngestSpider(
         match_id=args.match_id,
@@ -964,9 +988,7 @@ def main(argv: list[str] | None = None) -> int:
         if str(item.get("endpoint_key")) not in exported:
             result.items.append(item)
 
-    if args.output:
-        output = Path(args.output)
-    else:
+    if output is None:
         fd, name = tempfile.mkstemp(prefix=f"match-{spider.match_id}-", suffix=".jsonl")
         os.close(fd)
         output = Path(name)

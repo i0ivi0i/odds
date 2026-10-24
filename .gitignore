@@ -52,7 +52,8 @@ config/credentials.json
 *.pyc
 __pycache__/
 
-# data/已解除屏蔽，纳入 Git 版本管理
+# data/已解除屏蔽，纳入 Git 版本管理；staging 是临时构建库，不提交
+data/.staging/
 **/.quarantine/
 analysis/
 report/

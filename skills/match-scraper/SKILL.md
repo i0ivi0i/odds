@@ -487,7 +487,7 @@ Recorded responses belong to the whole browser session. `search()` and `get()` r
 - **单域名单并发硬铁律（Single Concurrency Per Domain）**：
   在目标脆弱服务器环境（Windows Server 2012 / IIS 8.5）中，强制设置 `concurrent_requests_per_domain = 1`，严禁多 Worker 并发轰炸同一域名；
 - **慢即是快，礼貌爬虫（Polite Crawling）**：
-  以科学平缓的时钟节拍（`download_delay = 1.0s`，项目策略而非库默认值）替代暴力并发迸发，全天采集 0 封禁，综合吞吐率与系统稳定性显著优于频遭封禁被动停机的旧模式；
+  以科学平缓的时钟节拍（`download_delay = 1.0~2.0s` 随机抖动，项目策略而非库默认值）替代暴力并发迸发，全天采集 0 封禁，综合吞吐率与系统稳定性显著优于频遭封禁被动停机的旧模式；
 - Don't bypass paywalls or authentication without permission.
 - Never scrape personal/sensitive data.
 
@@ -618,18 +618,26 @@ Feed 以 `$` 分为前后两段：前段是联赛字典（`#` 分隔）；后段
 **主路径（批量、可原子装配）**：每场一次运行官方 `Spider` 常设工具：
 
 ```text
-py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {YYYY-MM-DD} --home {主队} --away {客队} --output <仓库外临时.jsonl> [--polymarket-slug {slug}]
+py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {YYYY-MM-DD} --home {主队} --away {客队} --output <仓库外临时.jsonl> [--force] [--polymarket-slug {slug}]
 ```
 
-它按 `config/endpoints.json` 发 28 个请求，逐端点分类过门禁，由 Scrapling 官方 `ItemList.to_jsonl()` 导出 27 行分析端点 JSONL（`polymarket.json` 仅为交付，不入分析库），**不再写 raw JSON**。随后用 SQLite CLI 建空 build 库，再由 ETLX 官方两段式载入：
+它按 `config/endpoints.json` 发 28 个请求，逐端点分类过门禁，由 Scrapling 官方 `ItemList.to_jsonl()` 导出 27 行分析端点 JSONL（`polymarket.json` 仅为交付，不入分析库），**不再写 raw JSON**。同一输出文件 10 分钟内、且缓存是同一场比赛的完整 27 行时自动跳过（cooldown，输出 `ok:false` + `cached:true`）；主人明确说“重新分析”时才加 `--force`。随后用 SQLite CLI 建空 staging 库，再由 ETLX 官方两段式载入：
 
 ```bash
-sqlite3 data/{销售日}/{matchId}.build.db < data/schema.sql
+mkdir -p data/.staging
+rm -f data/.staging/build.db
+sqlite3 data/.staging/build.db < data/schema.sql
 etlx -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD
 etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 ```
 
-`data/pipeline.md` 的 build/final 路径按场配置；门禁 `violations=0` 后才可将 build 库提升为最终 `data/{销售日}/{matchId}.db`。**批量进货只走这条主路径。** JSONL 是仓库外临时交接物，成功后删除。ETLX 若打印 `Error loading .env file` 但 exit 0 且行数正确，属非致命噪声；以退出码与 SQLite 行数为准。
+`data/pipeline.md` 的全部 `ATTACH` 固定指向 `data/.staging/build.db`，换场不改 SQL；每次构建前必须重建空库。门禁 `violations=0` 后，才可把 staging 改名为最终 `data/{销售日}/{matchId}.db`：
+
+```bash
+mv data/.staging/build.db data/{销售日}/{matchId}.db
+```
+
+失败时保留 staging 供检查，不动旧最终库。**批量进货只走这条主路径。** JSONL 是仓库外临时交接物，成功后删除。ETLX 若打印 `Error loading .env file` 但 exit 0 且行数正确，属非致命噪声；以退出码与 SQLite 行数为准。
 
 **降级/诊断（单端点或工具不可用时）**：以下 MCP 三部曲只作单请求诊断与降级，不得用来冒充 28 端点原子装配。
 
@@ -704,7 +712,7 @@ etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
    - `1x2d.js` 行必须包含法定 21 家欧指 cid 记录且能完整反序列化，确保欧指无截断；188Bet 与 Polymarket 走各自槽位；
    - `asian_odds.html` 与 `over_under.html` 行必须包含各主流机构初盘与即盘原始报文；
    - `endpoint_payload.chars` 必须与 `content` 真实字符数 1:1 精确匹配，`sha256(content)` 必须等于 `sha256`；虚报立即熔断报警。
-2. **人类可视化简报黄金装配门禁（`data/{销售日}/{matchId}.md`）**：
+2. **人类可视化简报黄金装配门禁（可选看板 `data/{销售日}/{matchId}.md`；仅当生成时执行，不生成不影响 `.db` 与分析）**：
    - **严禁全页裸拼（Zero Full-Page Dump Invariant）**：绝对严禁将 `analysis.html` 全文或未加选择器的 HTML 页面直接调用 `markdown()` 倾倒入 `.md` 简报！`.md` 文件必须由六大标准组件自底向上纯净构建；
    - **六重品控防错门禁（Poka-Yoke Markdown Gates）**：
      1. **Anti-Ad Gate（防广告横幅）**：简报开头与正文绝对严禁包含“新球会员”、“每天最低节省”、“下载App”等营销广告词（检出命中数 $\equiv 0$）；
@@ -762,7 +770,7 @@ etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 1. **单域名严格单并发（Concurrent Requests Per Domain = 1）**：
    在面对易触发 DIPR 封禁的旧版 IIS 域名（如 `vip.titan007.com`）时，强制全局锁死单并发，严禁派发多个 Worker 并发请求同一目标域名，从根本上杜绝 TCP 连接风暴；
 2. **AutoThrottle 动态时钟调节**：
-   - 基础礼貌延迟：`download_delay = 1.0s`（项目运营策略，单秒活跃请求 $\le 1.0$ 个）；
+   - 基础礼貌延迟：`download_delay = 1.0~2.0s` 随机抖动（项目运营策略，单秒活跃请求 $\le 1.0$ 个）；
    - 动态测速与退避：Scrapling 实时记录响应耗时；当遭遇 `429`、`403` 或 IIS DIPR 掐断时，延迟自适应指数翻倍（`2.0s ➔ 4.0s ➔ 8.0s ➔ 16.0s`，上限 `60.0s`），避开风控封锁峰值；
    - 慢即是快心法：稳定的低频采集确保持续畅通，综合效率远胜于蛮力轰炸遭拉黑后的停机等待。
 
@@ -818,7 +826,7 @@ ETLX `ENDPOINT_PAYLOAD` 直接读取每行一个 JSON 对象，字段与 `endpoi
 
 `polymarket.json` 不进入该 JSONL；它只作为交付链接在工位 4 独立核验。JSONL 成功后删除，不得提交到仓库。
 
-#### 7.5.3 人类简报装配骨架（`{matchId}.md`，$\ge 350$ 行）
+#### 7.5.3 人类简报装配骨架（可选看板 `{matchId}.md`，建议 $\ge 350$ 行；不生成不影响 `.db` 与分析）
 包含全量 6 大战区：
 - `# {竞彩编号} {联赛} {主队} vs {客队} 推演源数据简报`
 - `## 战区一·首发阵容、阵型与伤停情报`
