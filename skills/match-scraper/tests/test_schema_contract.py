@@ -1,15 +1,54 @@
+import re
 import sqlite3
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 SCHEMA = ROOT / "data" / "schema.sql"
+PIPELINE = ROOT / "data" / "pipeline.md"
+
+BUSINESS_NAMES = ("球队基本情况", "欧指", "亚盘", "大小球")
+VIEW_NAMES = (
+    "v_euro_snapshot",
+    "v_euro_history",
+    "v_asian_odds",
+    "v_over_under",
+    "v_ah_history",
+    "v_ou_history",
+    "v_eu_detail_history",
+    "v_injury",
+    "v_lineup",
+    "v_team_stats",
+    "v_bookmaker_slots",
+    "v_payload_coverage",
+    "v_analysis_status",
+)
+
+
+def pipeline_sql_block(markdown: str, sql_name: str) -> str:
+    match = re.search(rf"-- {re.escape(sql_name)}\n(.*?)\n```", markdown, re.S)
+    if not match:
+        raise ValueError(f"missing SQL block: {sql_name}")
+    return match.group(1)
+
+
+def executable_sqlite_sql(sql: str) -> str:
+    return sql.replace("CREATE OR REPLACE TABLE", "CREATE TABLE").replace(
+        "CREATE OR REPLACE VIEW", "CREATE VIEW"
+    )
 
 
 class SchemaContractTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.schema = SCHEMA.read_text(encoding="utf-8")
+        cls.pipeline = PIPELINE.read_text(encoding="utf-8")
+        cls.business_sql = executable_sqlite_sql(
+            pipeline_sql_block(cls.pipeline, "land_business_tables")
+        )
+        cls.views_sql = executable_sqlite_sql(
+            pipeline_sql_block(cls.pipeline, "land_views")
+        )
 
     def setUp(self):
         self.conn = sqlite3.connect(":memory:")
@@ -17,6 +56,12 @@ class SchemaContractTest(unittest.TestCase):
 
     def tearDown(self):
         self.conn.close()
+
+    def _create_business_tables(self):
+        self.conn.executescript(self.business_sql)
+
+    def _create_views(self):
+        self.conn.executescript(self.views_sql)
 
     def test_match_meta_table_has_identity_columns(self):
         columns = {
@@ -54,18 +99,24 @@ class SchemaContractTest(unittest.TestCase):
         with self.assertRaises(sqlite3.IntegrityError):
             self.conn.execute(sql, tuple(["3018847", "2026-10-24", "周六011", "德甲", None, "埃弗斯堡", "2026-10-24 21:30", "x"]))
 
-    def test_four_entry_views_exist(self):
-        names = {
+    def test_schema_contains_no_views(self):
+        self.assertNotIn("CREATE VIEW", self.schema.upper())
+        views = self.conn.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'view'"
+        ).fetchall()
+        self.assertEqual(views, [])
+
+    def test_business_tables_are_owned_by_pipeline(self):
+        self._create_business_tables()
+        tables = {
             row[0]
             for row in self.conn.execute(
-                "SELECT name FROM sqlite_master WHERE type = 'view'"
+                "SELECT name FROM sqlite_master WHERE type = 'table'"
             )
         }
-        self.assertTrue(
-            {"球队基本情况", "欧指", "亚盘", "大小球"}.issubset(names)
-        )
+        self.assertTrue(set(BUSINESS_NAMES).issubset(tables))
 
-    def test_four_entry_views_have_stable_fact_columns(self):
+    def test_business_tables_have_stable_fact_columns(self):
         expected = {
             "球队基本情况": {
                 "比赛ID", "数据类型", "联赛", "主队", "客队",
@@ -95,15 +146,16 @@ class SchemaContractTest(unittest.TestCase):
             "prediction", "recommendation", "confidence", "verdict", "score",
             "预测", "推荐", "信心", "结论", "评分",
         }
-        for view, columns in expected.items():
+        self._create_business_tables()
+        for table, columns in expected.items():
             actual = {
                 row[1]
-                for row in self.conn.execute(f'PRAGMA table_info("{view}")')
+                for row in self.conn.execute(f'PRAGMA table_info("{table}")')
             }
-            self.assertEqual(actual, columns, view)
-            self.assertFalse(actual & forbidden, view)
+            self.assertEqual(actual, columns, table)
+            self.assertFalse(actual & forbidden, table)
 
-    def test_team_view_contains_match_lineup_and_injury_details(self):
+    def test_team_business_table_contains_match_lineup_and_injury_details(self):
         self.conn.execute(
             """
             INSERT INTO match_meta (
@@ -140,6 +192,7 @@ class SchemaContractTest(unittest.TestCase):
             """,
             ("3018847", "xg", "home", "xG", "xg", 1.75, None, 1, "analy.json"),
         )
+        self._create_business_tables()
         rows = self.conn.execute(
             'SELECT "数据类型", "联赛", "主队", "客队", "队伍", "身份", "姓名", "伤停原因" FROM "球队基本情况"'
         ).fetchall()
@@ -148,14 +201,13 @@ class SchemaContractTest(unittest.TestCase):
         self.assertIn(("伤停", None, None, None, "客队", None, "伤员甲", "肌肉拉伤"), rows)
         self.assertNotIn("技术统计", [row[0] for row in rows])
 
-    def test_four_entry_views_do_not_read_raw_payload(self):
-        for view in ("球队基本情况", "欧指", "亚盘", "大小球"):
-            sql = self.conn.execute(
-                "SELECT sql FROM sqlite_master WHERE type = 'view' AND name = ?",
-                (view,),
-            ).fetchone()[0]
-            self.assertNotIn("endpoint_payload", sql, view)
-            self.assertNotIn("endpoint_parse_status", sql, view)
+    def test_business_tables_do_not_read_raw_payload(self):
+        self.assertNotIn("endpoint_payload", self.business_sql.lower())
+        self.assertNotIn("endpoint_parse_status", self.business_sql.lower())
+
+    def test_views_are_defined_by_pipeline(self):
+        pipeline_views = set(re.findall(r'CREATE OR REPLACE VIEW "([^"]+)"', self.pipeline))
+        self.assertEqual(pipeline_views, set(VIEW_NAMES))
 
     def test_history_views_order_by_timestamp(self):
         self.conn.execute(
@@ -188,6 +240,7 @@ class SchemaContractTest(unittest.TestCase):
             """,
             rows,
         )
+        self._create_views()
         ordered = [
             row[0]
             for row in self.conn.execute("SELECT ts_iso FROM v_euro_history")

@@ -161,7 +161,7 @@ flowchart TD
   ② **业务态与工程态分工**：推演态专注于业务流本身，数据规范以 `match-scraper` 与 `deep-analysis` 为准，Python 脚本通过 CLI 命令行高效运行。推演过程中无需分心研读内部代码实现；当任务是代码重构与维护时，再自然进入工程态。
 
 #### 阶段 1：Scrapling 官方礼貌进货与双轨聚合装配（Phase 1 Ingest Gate）
-- 主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，调度专职搬运工（Role: `Data Ingest Worker`）。工单 Prompt 直接给出官方两阶段命令：`py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队} --output <仓库外临时.jsonl>` → `etlx -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD` → `etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD`。Worker **严禁在抓取前探索磁盘，严禁使用 `Get-ChildItem` 或 `read_file` 翻看昨天历史文件摸索格式，严禁执行 `curl`/`openssl`/`powershell` 等终端命令**！收到工单第 0 秒必须且只能按该命令块执行；
+- 主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，调度专职搬运工（Role: `Data Ingest Worker`）。工单 Prompt 直接给出官方三阶段命令：`py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队} --output <仓库外临时.jsonl>` → `mkdir -p data/.staging && rm -f data/.staging/build.db && py -3.13 -c "import sqlite3,pathlib; c=sqlite3.connect('data/.staging/build.db'); c.executescript(pathlib.Path('data/schema.sql').read_text(encoding='utf-8')); c.close()"` → `C:/Users/home/AppData/Local/etlx/1.156.1-linking/etlx-windows-linking-amd64.exe -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD` → 同 exe `-config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD`。Worker **严禁在抓取前探索磁盘，严禁使用 `Get-ChildItem` 或 `read_file` 翻看昨天历史文件摸索格式，严禁执行 `curl`/`openssl`/`powershell` 等终端命令**！收到工单第 0 秒必须且只能按该命令块执行；
 - **【Scrapling 官方 AutoThrottle 礼貌控频铁律（Polite AutoThrottle & Anti-Ban Invariant）】**：
   为彻底告别老旧 PC 端 IP 封锁与连接重置，底层全面切换至移动端高防 CDN 与 API 架构，数据采集必须恪守 Scrapling 官方并发控制规约：
   ① **单域名单并发**：`concurrent_requests_per_domain = 1`，严禁多 Worker 或多线程同时并发冲击同一域名；
@@ -181,7 +181,7 @@ flowchart TD
   机器推演以 `data/{销售日}/{matchId}.db` 的 `endpoint_payload`（27 个分析端点）与 `bookmaker_slots`/`v_bookmaker_slots`（22/23 个槽位）为准：法定 23 家做市商覆盖率必须维持 100%（欧指初即、皇冠/澳彩/365亚盘与大小球初即完整解析落盘）；人类简报 `{matchId}.md` 可选生成，仅作人类可视化查验看板，绝不作为机器推演输入。若 23 家核心盘口缺失，立即触发 Poka-Yoke 停线阻断并原地重装！
 - **【源头原生态 1:1 镜像保真铁律（Source-Fidelity Invariant）】**：
   进货装配变盘流水表时，**必须 100% 忠实镜像源端原生排列顺序**。**绝对严禁手工抽取调换行序，绝对严禁机械截断变盘历史！** 进货局恪守存证保真；推演大脑分析时则统一依据每笔记录物理时间戳升序排序（`Sort by Timestamp ASC`），自动按时间数值识别初盘与最新盘，绝不依赖排版方向刻舟求剑！
-- **重新推演物理清空（Clean-Slate Re-ingest Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧 `data/{销售日}/{matchId}.db` 与旧临时 JSONL】，随后由官方两阶段命令从零重抓重装！**绝对严禁直接拿磁盘已有旧 `.db` 跳过抓取，更绝对严禁在旧快照上局部修改时间戳做伪装！**
+- **重新推演物理清空（Clean-Slate Re-ingest Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧 `data/{销售日}/{matchId}.db` 与旧临时 JSONL】，随后由官方三阶段命令（schema 空库 → 两段 ETLX）从零重抓重装！**绝对严禁直接拿磁盘已有旧 `.db` 跳过抓取，更绝对严禁在旧快照上局部修改时间戳做伪装！**
 - **推演态全语种零临时脚本硬铁律（Zero-Script Invariant: All Languages）**：推演态、进货态与排错态中，**绝对严禁**编写任何临时脚本（无论是 `.py`、`.ps1`、`.js`、`.bat`、`.sh` 等全语种脚本），也绝对严禁在磁盘建立 `tmp_*` 暂存目录或倾倒 `.txt` 中间文件！所有数据进货一律调用常设官方 `Spider` 工具 `scripts/ingest_spider.py` 导出 JSONL，再由 ETLX 官方 `-file` 输入落库；零胶水代码，违规记录严格锁定为 0！
 - **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**机器推演的法定底层依据是 `data/{销售日}/{matchId}.db` 经 EvoOntology 官方 MCP 直连提取的微观数据，`.md` 文件仅作可选人类可视化简报**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何测试或检查，直接进入抓取进货，杜绝空转！
 
@@ -252,7 +252,7 @@ flowchart TD
 #### 标准进货 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "【阶段一专职搬运工官方礼貌进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，【零探索铁律】：严禁调用 Get-ChildItem 或 read_file 翻看昨天历史文件摸索格式，严禁执行 curl/openssl/powershell 等终端探测命令，严禁阅读任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用）！第 0 秒必须且只能直接调用官方 Scrapling Spider 工具（`skills/match-scraper/scripts/ingest_spider.py`）执行进货。以 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队} --output <仓库外临时.jsonl>`（可选 `--proxy` 通道兜底）一次运行完成双轨端点进货（Tier 1 聚合核心秒取 1x2d.js 21家欧指时序+goallottery亚大小初即+odds_jc，Tier 2 补充明细礼貌温和限流 2.0s 并发=1，启用 AutoThrottle 自适应退避）；随后执行 `etlx -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD` 与 `etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD`，由 ETLX 写入底层真实存证 `data/{销售日}/{matchId}.db`（27 个分析端点的 `endpoint_payload` 行；Polymarket 不入分析库）；人类简报 `data/{销售日}/{matchId}.md` 仅为可选看板，若生成也不得替代 `.db`；【立即回传】：确认真实落盘且 Schema 完备后立即回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
+  goal: "【阶段一专职搬运工官方礼貌进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，【零探索铁律】：严禁调用 Get-ChildItem 或 read_file 翻看昨天历史文件摸索格式，严禁执行 curl/openssl/powershell 等终端探测命令，严禁阅读任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用）！第 0 秒必须且只能直接调用官方 Scrapling Spider 工具（`skills/match-scraper/scripts/ingest_spider.py`）执行进货。以 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队} --output <仓库外临时.jsonl>`（可选 `--proxy` 通道兜底）一次运行完成双轨端点进货（Tier 1 聚合核心秒取 1x2d.js 21家欧指时序+goallottery亚大小初即+odds_jc，Tier 2 补充明细礼貌温和限流 2.0s 并发=1，启用 AutoThrottle 自适应退避）；随后先执行 `mkdir -p data/.staging && rm -f data/.staging/build.db && py -3.13 -c \"import sqlite3,pathlib; c=sqlite3.connect('data/.staging/build.db'); c.executescript(pathlib.Path('data/schema.sql').read_text(encoding='utf-8')); c.close()\"` 建空 staging，再执行 `C:/Users/home/AppData/Local/etlx/1.156.1-linking/etlx-windows-linking-amd64.exe -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD` 与同 exe `-config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD`，由 ETLX 写入底层真实存证 `data/{销售日}/{matchId}.db`（27 个分析端点 + 四个中文业务表 + 13 个只读视图；Polymarket 不入分析库）；人类简报 `data/{销售日}/{matchId}.md` 仅为可选看板，若生成也不得替代 `.db`；【立即回传】：确认真实落盘且 Schema 完备后立即回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
 ```
 
 #### 标准推演分析师 Worker 工单 Prompt 规范模板
@@ -342,7 +342,7 @@ subagent：获取赛果 → 对比推荐（胜负平+让球双核对） → 计�
 0. **第 0 步赛程索引自检（主会话）**：优先检查 `data/{销售日}/meta.md` 是否存在；若无立即调用 Scrapling `make_request(bf_jc.txt)` 极速生成 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，以支持编号（如 018）精准解析与全天对齐；
 1. **第 0 秒状态透传（主会话）**：收到单场指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动场次【{matchId} {对阵}】推演源数据抓取，专职搬运工进货中...`，杜绝黑盒盲等；
-2. **阶段一：派发专职搬运工 Subagent（纯物理进货）**：主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 运行官方两阶段命令（`ingest_spider.py --output <临时.jsonl>` → `etlx ... -only ENDPOINT_PAYLOAD` → `etlx ... -skip ENDPOINT_PAYLOAD`）➔ 原子落盘底层存证 `data/{销售日}/{matchId}.db` ➔ 确认数据库与门禁通过后立即 announce 回传主会话；
+2. **阶段一：派发专职搬运工 Subagent（纯物理进货）**：主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 运行官方三阶段命令（`ingest_spider.py --output <临时.jsonl>` → `schema.sql` 建空 staging → 两段 ETLX `-only ENDPOINT_PAYLOAD` / `-skip ENDPOINT_PAYLOAD`）➔ 原子落盘底层存证 `data/{销售日}/{matchId}.db` ➔ 确认数据库与门禁通过后立即 announce 回传主会话；
 3. **主会话中转放行反馈**：主会话收到搬运工 announce 的物理文件就绪报告后，立即推送：
    `🛡️ 【{matchId}】推演源数据已就绪，正在唤醒首席分析师进入阶段二深度推演...`；
 4. **阶段二：纯逻辑首席分析师（深度推演与交付）**：主会话切换或 spawn 分析师 Subagent（Role: `Chief Match Analyst`），通过 EvoOntology 官方 MCP 提取全量结构化字段（严禁大模型裸视海量原始报文） ➔ 通读 `skills/deep-analysis/SKILL.md` 心法 ➔ Graphify 三大战区检索 ➔ OO-EPC 算法去水 ➔ 10 步深度推演与四维认知契约卡 ➔ 原子化前置保存至 `memory/{销售日}.md` ➔ 交付标准 7 列表格至前台！

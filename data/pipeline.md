@@ -1,4 +1,4 @@
-<!-- One-file ETLX pipeline for one match at a time. The typed schema and read-only views come from data/schema.sql; this file lands the 27 analysis endpoints through the official ETLX -file handoff into the fixed data/.staging/build.db, then derives every analysis table from DB.endpoint_payload. A from-zero rebuild requires the schema bootstrap because ETLX's DuckDB SQLite attach cannot execute SQLite STRICT or foreign-key DDL. -->
+<!-- One-file ETLX pipeline for one match at a time. data/schema.sql creates the typed physical tables only; this file lands the 27 analysis endpoints through the official ETLX -file handoff into the fixed data/.staging/build.db, derives every analysis table from DB.endpoint_payload, builds the four Chinese business tables, and creates all 13 read-only v_* views. A from-zero rebuild requires the schema bootstrap because ETLX's DuckDB SQLite attach cannot execute SQLite STRICT or foreign-key DDL. -->
 
 # PIPELINE
 
@@ -18,7 +18,6 @@ load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
   - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
-  - "DELETE FROM DB.endpoint_payload"
 load_sql: land_endpoint_payload
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.endpoint_payload
@@ -57,7 +56,6 @@ load_conn: "duckdb:"
 load_before_sql:
   - INSTALL sqlite
   - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
-  - "DELETE FROM DB.match_meta"
 load_sql: land_match_meta
 load_after_sql: DETACH DB
 rows_sql: SELECT COUNT(*) AS nrows FROM DB.match_meta
@@ -1087,6 +1085,289 @@ SELECT
 FROM all_rows;
 ```
 
+## BUSINESS_TABLES
+
+```yaml
+name: BUSINESS_TABLES
+table: "球队基本情况"
+load_conn: "duckdb:"
+load_before_sql:
+  - INSTALL sqlite
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
+  - USE DB
+load_sql: land_business_tables
+load_after_sql:
+  - USE memory
+  - DETACH DB
+rows_sql: SELECT COUNT(*) AS nrows FROM DB."球队基本情况"
+active: true
+```
+
+```sql
+-- land_business_tables
+CREATE OR REPLACE TABLE "球队基本情况" AS
+SELECT
+  x."比赛ID",
+  x."数据类型",
+  x."联赛",
+  x."主队",
+  x."客队",
+  x."开球时间",
+  x."竞彩编号",
+  x."销售日",
+  x."队伍",
+  x."身份",
+  x."姓名",
+  x."伤停原因"
+FROM (
+  SELECT
+    m.match_id AS "比赛ID", '比赛信息' AS "数据类型",
+    m.league AS "联赛", m.home_team AS "主队", m.away_team AS "客队",
+    m.kickoff_at AS "开球时间", m.match_no AS "竞彩编号", m.sales_date AS "销售日",
+    '比赛' AS "队伍", NULL AS "身份", NULL AS "姓名",
+    NULL AS "伤停原因", 0 AS "排序"
+  FROM match_meta m
+  UNION ALL
+  SELECT
+    l.match_id,
+    '阵容',
+    NULL, NULL, NULL, NULL, NULL, NULL,
+    CASE l.side WHEN 'home' THEN '主队' WHEN 'away' THEN '客队' ELSE '未知队伍' END,
+    CASE l.role WHEN 'starter' THEN '首发' WHEN 'bench' THEN '替补' ELSE '其他身份' END,
+    l.name,
+    NULL,
+    CASE l.role WHEN 'starter' THEN 0 ELSE 10000 END + l.source_index
+  FROM lineup l
+  UNION ALL
+  SELECT
+    i.match_id,
+    '伤停',
+    NULL, NULL, NULL, NULL, NULL, NULL,
+    CASE i.side WHEN 'home' THEN '主队' WHEN 'away' THEN '客队' ELSE '未知队伍' END,
+    NULL,
+    i.name,
+    COALESCE(NULLIF(TRIM(i.injury_reason), ''), '未说明'),
+    i.source_index
+  FROM injury i
+) x
+ORDER BY
+  CASE x."数据类型"
+    WHEN '比赛信息' THEN 1
+    WHEN '阵容' THEN 2
+    WHEN '伤停' THEN 3
+    ELSE 4
+  END,
+  CASE x."队伍"
+    WHEN '比赛' THEN 0
+    WHEN '主队' THEN 1
+    WHEN '客队' THEN 2
+    ELSE 3
+  END,
+  x."排序";
+
+CREATE OR REPLACE TABLE "欧指" AS
+SELECT
+  e.match_id AS "比赛ID",
+  e.cid AS "机构编号",
+  CASE e.bookmaker
+    WHEN 'Macauslot' THEN '澳彩'
+    WHEN 'Crown' THEN '皇冠'
+    WHEN 'Bet 365' THEN 'Bet365'
+    WHEN 'Easybets' THEN '易胜博'
+    WHEN 'Pinnacle' THEN '平博'
+    WHEN 'HK Jockey Club' THEN '香港马会'
+    WHEN 'Sbobet' THEN '利记'
+    WHEN 'IBCBET' THEN '沙巴'
+    WHEN 'Lottery Official' THEN '中国体彩'
+    WHEN 'William Hill' THEN '威廉希尔'
+    WHEN 'Ladbrokes' THEN '立博'
+    WHEN 'Vcbet' THEN '伟德'
+    WHEN 'Betfair' THEN '必发'
+    WHEN '10BET' THEN '10Bet'
+    WHEN 'Unibet' THEN '优胜客'
+    WHEN 'Marathon' THEN '马拉松'
+    WHEN 'Betway' THEN '必威'
+    ELSE e.bookmaker
+  END AS "机构",
+  e.initial_home AS "初盘主胜",
+  e.initial_draw AS "初盘平局",
+  e.initial_away AS "初盘客胜",
+  e.initial_return AS "初盘返还率",
+  e.latest_home AS "最新主胜",
+  e.latest_draw AS "最新平局",
+  e.latest_away AS "最新客胜",
+  e.latest_return AS "最新返还率",
+  e.source_time AS "数据时间",
+  (SELECT COUNT(*) FROM euro_history h
+    WHERE h.match_id = e.match_id AND h.cid = e.cid) AS "变盘行数",
+  (SELECT MIN(h.ts_iso) FROM euro_history h
+    WHERE h.match_id = e.match_id AND h.cid = e.cid) AS "首笔时间",
+  (SELECT MAX(h.ts_iso) FROM euro_history h
+    WHERE h.match_id = e.match_id AND h.cid = e.cid) AS "末笔时间"
+FROM euro_snapshot e
+ORDER BY e.cid;
+
+CREATE OR REPLACE TABLE "亚盘" AS
+SELECT
+  a.match_id AS "比赛ID",
+  a.company_id AS "机构编号",
+  a.bookmaker AS "机构",
+  a.first_home AS "初盘主水",
+  a.first_line AS "初盘盘口",
+  a.first_away AS "初盘客水",
+  a.home AS "最新主水",
+  a.line AS "最新盘口",
+  a.away AS "最新客水",
+  a.modify_iso AS "更新时间",
+  (SELECT COUNT(*) FROM ah_history h
+    WHERE h.match_id = a.match_id AND h.company_id = a.company_id) AS "变盘行数",
+  (SELECT MIN(h.ts_iso) FROM ah_history h
+    WHERE h.match_id = a.match_id AND h.company_id = a.company_id) AS "首笔时间",
+  (SELECT MAX(h.ts_iso) FROM ah_history h
+    WHERE h.match_id = a.match_id AND h.company_id = a.company_id) AS "末笔时间"
+FROM asian_odds a
+ORDER BY a.company_id, a.odds_id;
+
+CREATE OR REPLACE TABLE "大小球" AS
+SELECT
+  o.match_id AS "比赛ID",
+  o.company_id AS "机构编号",
+  o.bookmaker AS "机构",
+  o.first_over AS "初盘大球",
+  o.first_line AS "初盘盘口",
+  o.first_under AS "初盘小球",
+  o."over" AS "最新大球",
+  o.line AS "最新盘口",
+  o."under" AS "最新小球",
+  o.modify_iso AS "更新时间",
+  (SELECT COUNT(*) FROM ou_history h
+    WHERE h.match_id = o.match_id AND h.company_id = o.company_id) AS "变盘行数",
+  (SELECT MIN(h.ts_iso) FROM ou_history h
+    WHERE h.match_id = o.match_id AND h.company_id = o.company_id) AS "首笔时间",
+  (SELECT MAX(h.ts_iso) FROM ou_history h
+    WHERE h.match_id = o.match_id AND h.company_id = o.company_id) AS "末笔时间"
+FROM over_under o
+ORDER BY o.company_id, o.odds_id;
+```
+
+## VIEWS
+
+```yaml
+name: VIEWS
+table: "v_euro_snapshot"
+load_conn: "duckdb:"
+load_before_sql:
+  - INSTALL sqlite
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
+  - USE DB
+load_sql: land_views
+load_after_sql:
+  - USE memory
+  - DETACH DB
+rows_sql: SELECT COUNT(*) AS nrows FROM DB.main.sqlite_master WHERE type = 'view' AND name LIKE 'v_%'
+active: true
+```
+
+```sql
+-- land_views
+CREATE OR REPLACE VIEW "v_euro_snapshot" AS
+SELECT * FROM euro_snapshot;
+
+CREATE OR REPLACE VIEW "v_euro_history" AS
+SELECT
+  match_id, cid, record_id, source_index, ts_local, ts_iso, year,
+  home, draw, away, kelly_home, kelly_draw, kelly_away
+FROM euro_history
+ORDER BY ts_iso ASC, source_index ASC;
+
+CREATE OR REPLACE VIEW "v_asian_odds" AS
+SELECT * FROM asian_odds;
+
+CREATE OR REPLACE VIEW "v_over_under" AS
+SELECT * FROM over_under;
+
+CREATE OR REPLACE VIEW "v_ah_history" AS
+SELECT
+  match_id, endpoint_key, company_id, source_index,
+  status, home, line_text, away, ts_local, ts_iso
+FROM ah_history
+ORDER BY ts_iso ASC, source_index ASC;
+
+CREATE OR REPLACE VIEW "v_ou_history" AS
+SELECT
+  match_id, endpoint_key, company_id, source_index,
+  status, "over", line_text, "under", ts_local, ts_iso
+FROM ou_history
+ORDER BY ts_iso ASC, source_index ASC;
+
+CREATE OR REPLACE VIEW "v_eu_detail_history" AS
+SELECT
+  match_id, endpoint_key, company_id, source_index,
+  home, draw, away, return_rate,
+  kelly_home, kelly_draw, kelly_away, ts_local, ts_iso
+FROM eu_detail_history
+ORDER BY ts_iso ASC, source_index ASC;
+
+CREATE OR REPLACE VIEW "v_injury" AS
+SELECT * FROM injury;
+
+CREATE OR REPLACE VIEW "v_lineup" AS
+SELECT * FROM lineup;
+
+CREATE OR REPLACE VIEW "v_team_stats" AS
+SELECT * FROM team_stats;
+
+-- ETLX's SQLite writer rejects parenthesized compound SELECTs in views;
+-- build the 22 raw slots plus the Polymarket delivery slot from a VALUES spine.
+CREATE OR REPLACE VIEW "v_bookmaker_slots" AS
+WITH nums(rn) AS (
+  VALUES (1), (2), (3), (4), (5), (6), (7), (8), (9), (10),
+         (11), (12), (13), (14), (15), (16), (17), (18), (19), (20),
+         (21), (22), (23)
+),
+ranked AS (
+  SELECT
+    match_id, bookmaker, euro_cid, ah_cid, ou_cid,
+    ah_status, ou_status, eu_status, source_label, evidence,
+    row_number() OVER (ORDER BY bookmaker) AS rn
+  FROM bookmaker_slots
+)
+SELECT
+  COALESCE(r.match_id, (SELECT MIN(match_id) FROM bookmaker_slots)) AS match_id,
+  COALESCE(r.bookmaker, 'Polymarket') AS bookmaker,
+  r.euro_cid, r.ah_cid, r.ou_cid,
+  COALESCE(r.ah_status, 'delivery_only') AS ah_status,
+  COALESCE(r.ou_status, 'delivery_only') AS ou_status,
+  COALESCE(r.eu_status, 'delivery_only') AS eu_status,
+  COALESCE(r.source_label, 'Polymarket') AS source_label,
+  COALESCE(r.evidence, 'delivery-only link, no payload') AS evidence,
+  CASE WHEN r.rn IS NULL THEN 'delivery_only' ELSE 'database' END AS slot_kind
+FROM nums n
+LEFT JOIN ranked r ON r.rn = n.rn
+WHERE (SELECT COUNT(match_id) FROM bookmaker_slots) = 22
+   OR r.rn IS NOT NULL
+ORDER BY n.rn;
+
+-- COUNT(match_id) avoids DuckDB's count_star() leaking into the SQLite view.
+CREATE OR REPLACE VIEW "v_payload_coverage" AS
+SELECT
+  match_id,
+  COUNT(match_id) AS payload_rows,
+  COUNT(DISTINCT endpoint_key) AS endpoint_keys,
+  SUM(CASE WHEN content_type = 'empty' THEN 1 ELSE 0 END) AS empty_payloads,
+  SUM(CASE WHEN content_type = 'json' THEN 1 ELSE 0 END) AS json_payloads,
+  SUM(CASE WHEN content_type = 'html' THEN 1 ELSE 0 END) AS html_payloads,
+  SUM(CASE WHEN content_type = 'markdown' THEN 1 ELSE 0 END) AS markdown_payloads,
+  SUM(CASE WHEN content_type = 'javascript' THEN 1 ELSE 0 END) AS javascript_payloads
+FROM endpoint_payload
+GROUP BY match_id;
+
+CREATE OR REPLACE VIEW "v_analysis_status" AS
+SELECT *
+FROM endpoint_parse_status
+WHERE endpoint_key IN ('analysis.html', 'odds.html', 'analy.json');
+```
+
 ## ENDPOINT_STATUS
 
 ```yaml
@@ -1207,8 +1488,8 @@ SELECT
   (SELECT COUNT(*) FROM DB.injury),
   (SELECT COUNT(*) FROM DB.lineup),
   (SELECT COUNT(*) FROM DB.team_stats),
-  'ok',
-  'official Scrapling JSONL -> ETLX; final promotion gate required';
+  'not_checked_in_pipeline',
+  'official Scrapling JSONL -> ETLX; external SQLite gate required';
 ```
 
 
@@ -1268,7 +1549,7 @@ WITH checks(gate, observed, expected) AS (
       WHEN (SELECT COUNT(*) FROM DB.euro_snapshot) = 21
        AND (SELECT COUNT(DISTINCT cid) FROM DB.euro_history) = 21
        AND (SELECT COUNT(*) FROM DB.bookmaker_slots) = 22
-       AND (SELECT COUNT(*) FROM DB.v_bookmaker_slots) = 23
+       AND (SELECT COUNT(DISTINCT match_id) FROM DB.bookmaker_slots) = 1
        AND (SELECT COUNT(*) FROM DB.endpoint_parse_status) = 27
        AND (SELECT COUNT(*) FROM DB.bookmaker_slots
              WHERE bookmaker IN ('澳彩', '皇冠', 'Bet365', '易胜博', '平博', '香港马会', '188Bet')
@@ -1293,6 +1574,36 @@ WITH checks(gate, observed, expected) AS (
        AND (SELECT COUNT(*) FROM DB.eu_detail_history) > 0
        AND (SELECT COUNT(*) FROM DB.team_stats) > 0
        AND (SELECT COUNT(*) FROM DB.team_stats WHERE source_endpoint = 'analysis.html') > 0
+      THEN 1 ELSE 0
+    END,
+    1
+  UNION ALL SELECT 'business_tables_present',
+    CASE
+      WHEN (SELECT COUNT(*) FROM main.sqlite_master
+             WHERE type = 'table'
+               AND name IN ('球队基本情况', '欧指', '亚盘', '大小球')) = 4
+      THEN 1 ELSE 0
+    END,
+    1
+  UNION ALL SELECT 'read_views_present',
+    CASE
+      WHEN (SELECT COUNT(*) FROM main.sqlite_master
+             WHERE type = 'view'
+               AND name IN (
+                 'v_euro_snapshot', 'v_euro_history', 'v_asian_odds',
+                 'v_over_under', 'v_ah_history', 'v_ou_history',
+                 'v_eu_detail_history', 'v_injury', 'v_lineup',
+                 'v_team_stats', 'v_bookmaker_slots',
+                 'v_payload_coverage', 'v_analysis_status'
+               )) = 13
+      THEN 1 ELSE 0
+    END,
+    1
+  UNION ALL SELECT 'manifest_payload_binding',
+    CASE
+      WHEN (SELECT COUNT(*) FROM DB.build_manifest
+             WHERE fetched_at = (SELECT MAX(fetched_at) FROM DB.endpoint_payload)
+               AND match_id = (SELECT MIN(match_id) FROM DB.endpoint_payload)) = 1
       THEN 1 ELSE 0
     END,
     1

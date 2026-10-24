@@ -50,10 +50,26 @@ class PipelineContractTest(unittest.TestCase):
     def test_match_meta_reads_schedule_index_without_new_payload_endpoint(self):
         match_meta = self.text.split("name: MATCH_META", 1)[1].split("name: EURO_SNAPSHOT", 1)[0]
         self.assertIn("read_text('data/{YYYY-MM-DD}/meta.md')", match_meta)
-        self.assertIn("DELETE FROM DB.match_meta", match_meta)
+        self.assertNotIn("DELETE FROM DB.match_meta", match_meta)
         self.assertIn("trim(f[2]) = (SELECT match_id FROM DB.endpoint_payload LIMIT 1)", match_meta)
         endpoint_payload = self.text.split("name: ENDPOINT_PAYLOAD", 1)[1].split("name: MATCH_META", 1)[0]
         self.assertNotIn("match_meta", endpoint_payload)
+        self.assertNotIn("DELETE FROM DB.endpoint_payload", endpoint_payload)
+
+    def test_business_tables_and_views_are_pipeline_owned(self):
+        self.assertIn("name: BUSINESS_TABLES", self.text)
+        self.assertIn("name: VIEWS", self.text)
+        for name in (
+            "球队基本情况", "欧指", "亚盘", "大小球",
+            "v_euro_snapshot", "v_euro_history", "v_asian_odds",
+            "v_over_under", "v_ah_history", "v_ou_history",
+            "v_eu_detail_history", "v_injury", "v_lineup",
+            "v_team_stats", "v_bookmaker_slots", "v_payload_coverage",
+            "v_analysis_status",
+        ):
+            self.assertIn(name, self.text)
+        self.assertIn("CREATE OR REPLACE TABLE", self.text)
+        self.assertIn("CREATE OR REPLACE VIEW", self.text)
 
     def test_gate_checks_match_meta_identity(self):
         gate = self.text.split("name: GATE_LIVE", 1)[1]
@@ -77,6 +93,11 @@ class PipelineContractTest(unittest.TestCase):
         self.assertIn("content_types", gate)
         self.assertIn("capture_timestamp", gate)
         self.assertIn("xg_state", gate)
+        self.assertIn("business_tables_present", gate)
+        self.assertIn("read_views_present", gate)
+        self.assertIn("manifest_payload_binding", gate)
+        self.assertIn("main.sqlite_master", gate)
+        self.assertNotIn("DB.v_bookmaker_slots", gate)
 
 
 if __name__ == "__main__":

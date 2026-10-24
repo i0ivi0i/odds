@@ -5,12 +5,15 @@
 ## 1. 装配顺序
 
 ```bash
-sqlite3 data/{销售日}/{matchId}.build.db < data/schema.sql
-etlx -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD
-etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
+mkdir -p data/.staging
+rm -f data/.staging/build.db
+py -3.13 -c "import sqlite3,pathlib; c=sqlite3.connect('data/.staging/build.db'); c.executescript(pathlib.Path('data/schema.sql').read_text(encoding='utf-8')); c.close()"
+ETLX="C:/Users/home/AppData/Local/etlx/1.156.1-linking/etlx-windows-linking-amd64.exe"
+"$ETLX" -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD
+"$ETLX" -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 ```
 
-门禁 `violations=0` 后，用 SQLite `.backup` 将 build 库提升为 `data/{销售日}/{matchId}.db`。
+`data/schema.sql` 只建 STRICT、主键、非空、`CHECK` 物理表，不包含视图。第二阶段 `BUSINESS_TABLES` 生成四个中文业务表，`VIEWS` 生成 13 个只读 `v_*` 视图。门禁 `violations=0` 且外部只读复核通过后，才可把 staging 提升为 `data/{销售日}/{matchId}.db`。
 
 ## 2. `endpoint_payload`（唯一原始存证表）
 
@@ -52,13 +55,13 @@ etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 - `bookmaker_slots`：22 家博彩做市商槽位；`v_bookmaker_slots` 另映射 Polymarket 参考槽位，共 23 家。
 - `endpoint_parse_status` / `build_manifest`：端点解析状态与构建清单。
 
-## 5. 只读视图
+## 5. 业务表与只读视图
 
 ### 5.1 四个业务入口（人、机器、AI 共用）
 
-第一屏只看四张视图。它们只放事实，不放预测、推荐、信心、评分或胜负判断。
+第一屏只看四张业务表。它们只放事实，不放预测、推荐、信心、评分或胜负判断。
 
-| 入口视图 | 一行代表 | 主要列 |
+| 入口表 | 一行代表 | 主要列 |
 | :--- | :--- | :--- |
 | `球队基本情况` | 比赛信息一行、首发/替补、伤停 | `数据类型`、`联赛`、`主队`、`客队`、`开球时间`、`竞彩编号`、`销售日`、`队伍`、`身份`、`姓名`、`伤停原因` |
 | `欧指` | 一家机构的欧指当前盘 | 初盘主平客、最新主平客、返还率、历史行数、首末时间 |
@@ -66,6 +69,8 @@ etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 | `大小球` | 一家机构的大小球当前盘 | 初盘大球/盘口/小球、最新大球/盘口/小球、历史行数 |
 
 `球队基本情况` 不是一行摘要；它用 1 条比赛信息、40 条阵容、9 条伤停按“数据类型”展开，共 50 行。每行只代表一个实体：比赛、球员或伤员。位置、阵型、胜率、胜平负、联赛积分、预期进球等统计不进入这个抽屉。
+
+四张业务表由 `data/pipeline.md` 的 `BUSINESS_TABLES` 生成，不是 SQLite 视图；13 个 `v_*` 明细视图由 `VIEWS` 生成。
 
 ### 5.2 下钻与原始层
 
@@ -78,7 +83,7 @@ etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 
 历史视图按 `ts_iso` 升序：初盘最早，变盘在中间，最新盘是最后一笔。不要用 `source_index` 代替时间。
 
-原始证据层（`endpoint_payload`、`endpoint_parse_status`、`build_manifest`）只给审计和排错；四入口视图和 EvoOntology 都不读原始层。
+原始证据层（`endpoint_payload`、`endpoint_parse_status`、`build_manifest`）只给审计和排错；四业务表和 EvoOntology 都不读原始层。
 
 ### 5.3 EvoOntology 的边界
 
@@ -110,7 +115,7 @@ WHERE endpoint_key = 'polymarket.json';
 SELECT COUNT(*) FROM match_meta;
 -- 期望 1
 
-SELECT '球队基本情况' AS 视图, COUNT(*) FROM "球队基本情况"
+SELECT '球队基本情况' AS 业务表, COUNT(*) FROM "球队基本情况"
 UNION ALL SELECT '欧指', COUNT(*) FROM "欧指"
 UNION ALL SELECT '亚盘', COUNT(*) FROM "亚盘"
 UNION ALL SELECT '大小球', COUNT(*) FROM "大小球";
