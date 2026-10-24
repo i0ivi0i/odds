@@ -1,0 +1,266 @@
+{
+  "task_id": "task_1808c65184f44a3892ca022e51d304e9",
+  "question_id": "q_3003920_v5_live_read_path",
+  "question": "对 v5 活跃本体执行 3003920 实盘只读验收：平博 cid=177、皇冠 545、Bet365 281、澳彩 80、香港马会 432 的 latest_home 是否可从 v_euro_snapshot 读取，并核对 27 个分析端点与 23 个机构槽位。",
+  "data_source": "D:/100-工作/200-交易/倍率分析推演/data/2026-10-24/3003920.db",
+  "origin": "user",
+  "topics": [
+    "sqlite",
+    "v5",
+    "live-read"
+  ],
+  "ontology_version": "ontology_v5",
+  "batch_id": "",
+  "split": "construction",
+  "task_status": "completed",
+  "started_at": "2026-10-24T05:15:55.535543+00:00",
+  "events": [
+    {
+      "event_id": "semantic_85aa8cf79ea745b18d11500906a73065",
+      "tool": "resolve_semantics",
+      "input": {
+        "mentions": [
+          "平博",
+          "皇冠",
+          "Bet365",
+          "澳彩",
+          "香港马会"
+        ],
+        "context": "v5 活跃本体在 3003920 实盘数据库上的只读验收"
+      },
+      "result": "{'status': 'ok', 'results': [{'query': '平博', 'query_type': 'mention', 'status': 'resolved', 'match_rationale': \"exact alias match: term 'Pinnacle_Anchor'\", 'term': {'id': 'term_pinnacle_anchor', 'type': 'metric', 'name': 'Pinnacle_Anchor', 'aliases': ['平博', '平博标杆', '做市锚点', '测谎仪', 'pinnacle'], 'definition': '[Graphify 溯源: graphify://paper/Constantinou_2022_Sharp_Benchmark] 平博作为全球唯一大资金真金白银做市标杆。其赔率反映庄家真实风控底线与客观物理期望，而非散户情绪引流工具。', 'scope': 'global', 'evidence_refs': []}, 'mappings': [{'id': 'mapping_pinnacle_odds', 'term_id': 'term_pinnacle_anchor', 'table': 'v_euro_snapshot', 'column': 'latest_home', 'semantic_filter': 'cid = 177', 'aggregation_semantics': 'latest_home, latest_draw, latest_away and initial_* from the Pinnacle row; compare latest against initial', 'grain': 'match', 'evidence_refs': ['evidence_match_3003920_live']}], 'relations': [{'id': 'rel_benchmark_vs_retail', 'relation_type': 'association', 'source': 'term_pinnacle_anchor', 'target': 'term_headfake_surge', 'connection_condition': 'pinnacle_flat_and_retail_dropped', 'evidence_refs': []}, {'id': 'rel_crossmarket_vs_pinnacle', 'relation_type': 'association', 'source': 'term_constantinou_crossmarket', 'target': 'term_pinnacle_anchor', 'connection_condition': 'crossmarket_gap_exceeds_threshold', 'evidence_refs': []}, {'id': 'rel_british_vs_pinnacle', 'relation_type': 'association', 'source': 'term_william_hill', 'target': 'term_pinnacle_anchor', 'connection_condition': 'william_hill_draw_anchor_vs_pinnacle_sharp', 'evidence_refs': []}], 'constraints': [{'id': 'constraint_pinnacle_stability', 'severity': 'block', 'description': '【标杆定海神针警报】商业庄与体彩单边剧烈降赔（>=0.15），但风控标杆平博变动绝对值<=0.03（几乎纹丝不动）。此为典型商业庄顺应散户偏见出货引流形态，强制禁止将商业庄降赔直接等同于机构防守，大模型必须在认知契约卡中显式对质平博未动原因！', 'evidence_refs': []}, {'id': 'constraint_payload_integrity', 'severity': 'block', 'description': '【底层物理存证 Schema 完整性警报】v_payload_coverage 必须覆盖 27 个数据端点（28 个采集端点中排除 Polymarket 交付链接），payload_rows 必须为 27，endpoint_keys 必须为 27，且允许 eu_42.html 的 not_offered 空态。所有键内容必",
+      "result_truncated": true,
+      "result_summary": "1 lines, 9942 chars; preview shows first 20 lines / 2000 chars.",
+      "error": false
+    },
+    {
+      "event_id": "v5-3003920-read-1",
+      "tool": "sqlite_query",
+      "input": {
+        "query": "SELECT cid, bookmaker, latest_home, latest_draw, latest_away, initial_home, initial_draw, initial_away FROM v_euro_snapshot WHERE cid IN (80,177,281,432,545) ORDER BY cid;"
+      },
+      "result": {
+        "columns": [
+          "cid",
+          "bookmaker",
+          "latest_home",
+          "latest_draw",
+          "latest_away",
+          "initial_home",
+          "initial_draw",
+          "initial_away"
+        ],
+        "rows": [
+          [
+            80,
+            "Macauslot",
+            4.45,
+            4.35,
+            1.52,
+            4.1,
+            4.2,
+            1.58
+          ],
+          [
+            177,
+            "Pinnacle",
+            5.01,
+            4.54,
+            1.62,
+            4.17,
+            4.02,
+            1.74
+          ],
+          [
+            281,
+            "Bet 365",
+            4.75,
+            4.5,
+            1.6,
+            4.33,
+            3.8,
+            1.73
+          ],
+          [
+            432,
+            "HK Jockey Club",
+            4.8,
+            4.2,
+            1.46,
+            4.45,
+            4.05,
+            1.52
+          ],
+          [
+            545,
+            "Crown",
+            4.9,
+            4.5,
+            1.62,
+            4.6,
+            4.35,
+            1.68
+          ]
+        ],
+        "truncated": false
+      },
+      "result_truncated": false,
+      "result_summary": "{'columns': ['cid', 'bookmaker', 'latest_home', 'latest_draw', 'latest_away', 'initial_home', 'initial_draw', 'initial_away'], 'rows': [[80, 'Macauslot', 4.45, 4.35, 1.52, 4.1, 4.2, 1.58], [177, 'Pinnacle', 5.01, 4.54, 1.62, 4.17, 4.02, 1.74], [281, 'Bet 365', 4.75, 4.5, 1.6, 4.33, 3.8, 1.73], [432, 'HK Jockey Club', 4.8, 4.2, 1.46, 4.45, 4.05, 1.52], [545, 'Crown', 4.9, 4.5, 1.62, 4.6, 4.35, 1.68]], 'truncated': False}",
+      "error": false
+    },
+    {
+      "event_id": "v5-3003920-read-2",
+      "tool": "sqlite_query",
+      "input": {
+        "query": "SELECT (SELECT COUNT(*) FROM endpoint_payload) AS payload_rows, (SELECT COUNT(DISTINCT endpoint_key) FROM endpoint_payload) AS endpoint_keys, (SELECT COUNT(*) FROM v_bookmaker_slots) AS view_slots, (SELECT COUNT(*) FROM euro_snapshot) AS euro_rows;"
+      },
+      "result": {
+        "columns": [
+          "payload_rows",
+          "endpoint_keys",
+          "view_slots",
+          "euro_rows"
+        ],
+        "rows": [
+          [
+            27,
+            27,
+            23,
+            21
+          ]
+        ],
+        "truncated": false
+      },
+      "result_truncated": false,
+      "result_summary": "{'columns': ['payload_rows', 'endpoint_keys', 'view_slots', 'euro_rows'], 'rows': [[27, 27, 23, 21]], 'truncated': False}",
+      "error": false
+    }
+  ],
+  "semantic_calls": [
+    {
+      "event_id": "semantic_85aa8cf79ea745b18d11500906a73065",
+      "tool": "resolve_semantics",
+      "input": {
+        "mentions": [
+          "平博",
+          "皇冠",
+          "Bet365",
+          "澳彩",
+          "香港马会"
+        ],
+        "context": "v5 活跃本体在 3003920 实盘数据库上的只读验收"
+      },
+      "result": "{'status': 'ok', 'results': [{'query': '平博', 'query_type': 'mention', 'status': 'resolved', 'match_rationale': \"exact alias match: term 'Pinnacle_Anchor'\", 'term': {'id': 'term_pinnacle_anchor', 'type': 'metric', 'name': 'Pinnacle_Anchor', 'aliases': ['平博', '平博标杆', '做市锚点', '测谎仪', 'pinnacle'], 'definition': '[Graphify 溯源: graphify://paper/Constantinou_2022_Sharp_Benchmark] 平博作为全球唯一大资金真金白银做市标杆。其赔率反映庄家真实风控底线与客观物理期望，而非散户情绪引流工具。', 'scope': 'global', 'evidence_refs': []}, 'mappings': [{'id': 'mapping_pinnacle_odds', 'term_id': 'term_pinnacle_anchor', 'table': 'v_euro_snapshot', 'column': 'latest_home', 'semantic_filter': 'cid = 177', 'aggregation_semantics': 'latest_home, latest_draw, latest_away and initial_* from the Pinnacle row; compare latest against initial', 'grain': 'match', 'evidence_refs': ['evidence_match_3003920_live']}], 'relations': [{'id': 'rel_benchmark_vs_retail', 'relation_type': 'association', 'source': 'term_pinnacle_anchor', 'target': 'term_headfake_surge', 'connection_condition': 'pinnacle_flat_and_retail_dropped', 'evidence_refs': []}, {'id': 'rel_crossmarket_vs_pinnacle', 'relation_type': 'association', 'source': 'term_constantinou_crossmarket', 'target': 'term_pinnacle_anchor', 'connection_condition': 'crossmarket_gap_exceeds_threshold', 'evidence_refs': []}, {'id': 'rel_british_vs_pinnacle', 'relation_type': 'association', 'source': 'term_william_hill', 'target': 'term_pinnacle_anchor', 'connection_condition': 'william_hill_draw_anchor_vs_pinnacle_sharp', 'evidence_refs': []}], 'constraints': [{'id': 'constraint_pinnacle_stability', 'severity': 'block', 'description': '【标杆定海神针警报】商业庄与体彩单边剧烈降赔（>=0.15），但风控标杆平博变动绝对值<=0.03（几乎纹丝不动）。此为典型商业庄顺应散户偏见出货引流形态，强制禁止将商业庄降赔直接等同于机构防守，大模型必须在认知契约卡中显式对质平博未动原因！', 'evidence_refs': []}, {'id': 'constraint_payload_integrity', 'severity': 'block', 'description': '【底层物理存证 Schema 完整性警报】v_payload_coverage 必须覆盖 27 个数据端点（28 个采集端点中排除 Polymarket 交付链接），payload_rows 必须为 27，endpoint_keys 必须为 27，且允许 eu_42.html 的 not_offered 空态。所有键内容必",
+      "result_truncated": true,
+      "result_summary": "1 lines, 9942 chars; preview shows first 20 lines / 2000 chars.",
+      "error": false
+    }
+  ],
+  "native_tool_calls": [
+    {
+      "event_id": "v5-3003920-read-1",
+      "tool": "sqlite_query",
+      "input": {
+        "query": "SELECT cid, bookmaker, latest_home, latest_draw, latest_away, initial_home, initial_draw, initial_away FROM v_euro_snapshot WHERE cid IN (80,177,281,432,545) ORDER BY cid;"
+      },
+      "result": {
+        "columns": [
+          "cid",
+          "bookmaker",
+          "latest_home",
+          "latest_draw",
+          "latest_away",
+          "initial_home",
+          "initial_draw",
+          "initial_away"
+        ],
+        "rows": [
+          [
+            80,
+            "Macauslot",
+            4.45,
+            4.35,
+            1.52,
+            4.1,
+            4.2,
+            1.58
+          ],
+          [
+            177,
+            "Pinnacle",
+            5.01,
+            4.54,
+            1.62,
+            4.17,
+            4.02,
+            1.74
+          ],
+          [
+            281,
+            "Bet 365",
+            4.75,
+            4.5,
+            1.6,
+            4.33,
+            3.8,
+            1.73
+          ],
+          [
+            432,
+            "HK Jockey Club",
+            4.8,
+            4.2,
+            1.46,
+            4.45,
+            4.05,
+            1.52
+          ],
+          [
+            545,
+            "Crown",
+            4.9,
+            4.5,
+            1.62,
+            4.6,
+            4.35,
+            1.68
+          ]
+        ],
+        "truncated": false
+      },
+      "result_truncated": false,
+      "result_summary": "{'columns': ['cid', 'bookmaker', 'latest_home', 'latest_draw', 'latest_away', 'initial_home', 'initial_draw', 'initial_away'], 'rows': [[80, 'Macauslot', 4.45, 4.35, 1.52, 4.1, 4.2, 1.58], [177, 'Pinnacle', 5.01, 4.54, 1.62, 4.17, 4.02, 1.74], [281, 'Bet 365', 4.75, 4.5, 1.6, 4.33, 3.8, 1.73], [432, 'HK Jockey Club', 4.8, 4.2, 1.46, 4.45, 4.05, 1.52], [545, 'Crown', 4.9, 4.5, 1.62, 4.6, 4.35, 1.68]], 'truncated': False}",
+      "error": false
+    },
+    {
+      "event_id": "v5-3003920-read-2",
+      "tool": "sqlite_query",
+      "input": {
+        "query": "SELECT (SELECT COUNT(*) FROM endpoint_payload) AS payload_rows, (SELECT COUNT(DISTINCT endpoint_key) FROM endpoint_payload) AS endpoint_keys, (SELECT COUNT(*) FROM v_bookmaker_slots) AS view_slots, (SELECT COUNT(*) FROM euro_snapshot) AS euro_rows;"
+      },
+      "result": {
+        "columns": [
+          "payload_rows",
+          "endpoint_keys",
+          "view_slots",
+          "euro_rows"
+        ],
+        "rows": [
+          [
+            27,
+            27,
+            23,
+            21
+          ]
+        ],
+        "truncated": false
+      },
+      "result_truncated": false,
+      "result_summary": "{'columns': ['payload_rows', 'endpoint_keys', 'view_slots', 'euro_rows'], 'rows': [[27, 27, 23, 21]], 'truncated': False}",
+      "error": false
+    }
+  ],
+  "errors": [],
+  "final_answer": "v5 在 3003920 实盘库只读验收通过：27 个 payload、27 个 endpoint key、21 家欧指、23 个视图机构槽位。平博 cid=177 返回 latest 5.01/4.54/1.62（initial 4.17/4.02/1.74），皇冠 4.90/4.50/1.62，Bet365 4.75/4.50/1.60，澳彩 4.45/4.35/1.52，香港马会 4.80/4.20/1.46。",
+  "recorded_at": "2026-10-24T05:16:00.923364+00:00"
+}

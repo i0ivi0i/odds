@@ -66,7 +66,7 @@ flowchart LR
 | **第一工段** | **工厂意志与精算师最高灵魂宪章** | 确立精算师六大核心特质、十六条做市博弈第一性原则、沟通风格与行为边界。 |
 | **第二工段** | **中央总控台调度系统与节拍器** | 会话启动三部曲、推演态三阶段硬死锁（阶段 0 ➔ 1 ➔ 2）、蜂群 Central Scheduler 礼貌排队与单并发限流。 |
 | **第三工段** | **五大专业化生产车间工位矩阵** | 五大原生车间工位标准化契约、输入输出报文规范与十六大实操推演心法。 |
-| **第四工段** | **流水线品控防错与工业安全断路器** | EvoOntology 官方视网膜、法定 28 端点与 23 家机构机位核销、全语种零临时脚本铁律、源头 1:1 镜像保真铁律、人类简报六重品控防错门禁（Anti-Ad/Anti-Collapse/Anti-Placeholder/23CIDs/Anti-Omission Initial Odds/Anti-Timeline-Distortion）。 |
+| **第四工段** | **流水线品控防错与工业安全断路器** | EvoOntology 官方视网膜、28 个采集端点（27 分析 + 1 交付）与 23 家机构机位核销、全语种零临时脚本铁律、源头 1:1 镜像保真铁律、人类简报六重品控防错门禁（Anti-Ad/Anti-Collapse/Anti-Placeholder/23CIDs/Anti-Omission Initial Odds/Anti-Timeline-Distortion）。 |
 | **第五工段** | **巡检自愈、成品仓储与系统演化中枢** | 赛前/临盘/赛后三大主动巡检、每日 `memory/YYYY-MM-DD.md` 唯一单写原子封存、Graphify 图谱演进。 |
 
 ---
@@ -81,7 +81,7 @@ flowchart LR
         S1["Scrapling官方Spider<br/>AutoThrottle控频+双轨端点"]
     end
     subgraph T1 ["零件托盘 1"]
-        D1["raw/{id}.json (SSOT)<br/>+ 纯净简报 (全量流水含战区三·五)"]
+        D1["data/{销售日}/{id}.db (SQLite SSOT)<br/>+ 可选纯净简报"]
     end
     subgraph W2 ["工位2: 业务初筛局 (match-screening)"]
         S2["输入路由 + 编号解析<br/>全量打标 + 开球拦截"]
@@ -125,7 +125,7 @@ skills/
 
 | 车间工位 | 核心职责（高内聚） | 机械臂绑定与标准协议 | 工业标准出厂零件托盘（零耦合接口） |
 | :--- | :--- | :--- | :--- |
-| **工位 1：全权数据进货局**<br/>`skills/match-scraper` | 赛程索引抓取、28 底层端点并发提取、23 家机构核销、单 IP 防封控频 | `Scrapling Spider` (`scripts/ingest_spider.py`) 按 `config/endpoints.json` 一次装配 28 端点 | **零件托盘 1**：`data/{销售日}/raw/{id}.json` (28 端点原生报文 SSOT) + `matchId.md` (人类简报，按源流水自然生成) |
+| **工位 1：全权数据进货局**<br/>`skills/match-scraper` | 赛程索引抓取、28 个采集端点（27 分析 + 1 交付）提取、23 家机构核销、单 IP 防封控频 | `Scrapling Spider` (`scripts/ingest_spider.py`) 导出 JSONL + `ETLX` 官方 `-file` 载入 | **零件托盘 1**：`data/{销售日}/{id}.db`（27 个分析端点 `endpoint_payload` 与 SQLite 视图）+ 可选 `matchId.md` 人类简报 |
 | **工位 2：业务初筛局**<br/>`skills/match-screening` | 方式 1~4 输入统一路由、竞彩编号转换、开球时间先验拦截、全量打标排队 | 纯直读 `meta.md` 赛程索引，**0 外部网络**，严禁按层级淘汰比赛 | **零件托盘 2**：标准推演工单序列 `work_orders: [{matchId, kickoffTime, league, homeTeam, awayTeam, ...}]` |
 | **工位 3：推演大脑总装局**<br/>`skills/deep-analysis` | 纯只读全量结构化数据、去水点概率测算、Dixon-Coles 泊松分布、10 步庄家博弈破译（$\le 1200$ 行刚性封顶） | `evo-semantic` MCP（`browse_semantics` ➔ `resolve_semantics` 双层看数视网膜，无工具调用熔断）<br/>`sports-math` MCP (`devig_oo_epc`, `poisson_dixon_coles`)<br/>`graphify` 知识图谱 | **零件托盘 3**：**四维不可篡改【认知契约卡】** + 纯推演单场结果（胜负平、让球、点概率、比分） |
 | **工位 4：战报交付局**<br/>`skills/recommendation` | Poka-Yoke `Count(契约卡) ≡ N` 门禁、7 列表格拼装、Polymarket 真实链接核验、文末 2 串 1 优选 | 格式校验闸门（绝不折行、字段强校验、链接真实性）、原子化前置写入 memory | **零件托盘 4**：终端交付物（标准 7 列表格 + 文末【🎯 2 串 1 组合推荐】 + memory 审计底账） |
@@ -142,8 +142,8 @@ flowchart TD
     Z["【阶段 0：赛程索引自检】<br/>检查 data/{销售日}/meta.md 是否存在且新鲜 (< 2小时)"]
     Z_NO{"是否存在且新鲜?"}
     Z_GET["调度 Scrapling make_request(bf_jc.txt)<br/>秒级解析并落盘 meta.md 与 memory (< 2秒)"]
-    P1["【阶段 1：蜂群纯物理进货】<br/>派发专职搬运工 Subagent (Data Ingest Worker)<br/>ingest_spider.py 一次抓取全量 28 端点<br/>落盘 raw/{id}.json 与 matchId.md（按源流水自然生成）"]
-    P1_GATE{"双重质检门禁核销<br/>23家做市商 + 28端点 Schema"}
+    P1["【阶段 1：蜂群纯物理进货】<br/>派发专职搬运工 Subagent (Data Ingest Worker)<br/>ingest_spider.py 一次抓取 28 个采集端点并导出 JSONL<br/>27 个分析端点经 ETLX 入库，Polymarket 仅交付<br/>落盘 {id}.db（简报可选）"]
+    P1_GATE{"双重质检门禁核销<br/>23家做市商 + 27端点分析Schema"}
     P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1200行)<br/>EvoOntology 视网膜全量解析 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
     OUT["【阶段 3：交付与单写原子封存】<br/>写入 memory/{销售日}.md 深度分析摘要与契约卡<br/>交付标准 7 列表格 (含 Polymarket 真实链接)"]
 
@@ -164,7 +164,7 @@ flowchart TD
 
 | 工具服务 | 官方源 / 规范链接 | 工业定位 | 核心接口与技术规格 |
 | :--- | :--- | :--- | :--- |
-| **`scrapling`** | [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling) | 官方原生数据采集通道 | Spider `scripts/ingest_spider.py`（28 端点主路径）<br/>MCP `open_request_session`/`session_make_request`/`close_session` 仅作单端点诊断降级；支持 `impersonate="chrome"`、三路端点参数分流与 Markdown 原生直出 |
+| **`scrapling`** | [D4Vinci/Scrapling](https://github.com/D4Vinci/Scrapling) | 官方原生数据采集通道 | Spider `scripts/ingest_spider.py`（28 个采集端点主路径；分析只取 27 个；官方 `ItemList.to_jsonl()` 导出）<br/>MCP 仅作单端点诊断降级；支持 `impersonate="chrome"`、三路端点参数分流与 Markdown 原生直出 |
 | **`evo-semantic`** | [ruc-datalab/EvoOntology](https://github.com/ruc-datalab/EvoOntology) | 专属双层做市看数视网膜与自进化状态机 | `browse_semantics`, `resolve_semantics`, `validate_semantics`, `evolution_status`, `confirm_trajectory_sources`<br/>5 批次核销法定 23 家做市商机位，Mapping 路径全量字段结构化提取与 Constraint 阻断对质，闭环 `TaskTrajectory` 自动进化 |
 | **`sports-math`** | [宿主独立微服务](file:///C:/Users/home/.gemini/services/sports-math) | 纯数学算力引擎 | `devig_oo_epc`, `poisson_dixon_coles`<br/>东京大学 Shota Goto (2026) 凸优化去水算法与 Dixon-Coles 修正泊松分布 |
 | **`graphify`** | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | 知识图谱与错题反思中枢 | `query_graph`, `get_node`, `shortest_path`, `god_nodes`, `get_community`, `get_neighbors`, `graph_stats`<br/>5.6MB 全息博弈图谱，支持三大战区调兵、疑难穿透、理论裁决与三重保鲜生命周期 |
@@ -248,9 +248,8 @@ flowchart TD
 ├── data/                    # 销售日推演原始报文与人类简报
 │   └── {销售日}/
 │       ├── meta.md          # 当日赛程全景索引
-│       ├── {matchId}.md     # 人类可视化推演快照 (按源流水自然生成)
-│       └── raw/
-│           └── {matchId}.json # 法定 28 端点原生报文 SSOT 存证
+│       ├── {matchId}.md     # 可选人类可视化推演快照
+│       └── {matchId}.db     # SQLite 唯一持久化真相（27 个分析端点）
 ├── docs/                    # 系统设计规范与工业演化文档
 ├── graphify-out/            # Graphify 5.6MB 全息博弈知识图谱与反思词条
 ├── memory/                  # 每日记忆流水线唯一单写原子落盘
@@ -272,7 +271,7 @@ flowchart TD
 ## 🛡️ 工业安全生产守则与红线规约
 
 1. **全语种零临时脚本铁律**：严禁在运行中编写或执行任何 `.py/.ps1/.js/.bat/.sh` 临时脚本，严禁在磁盘建立 `tmp_*` 暂存文件夹或倾倒 `.txt` 中转文件！
-2. **EvoOntology 官方 5 批次核销与 Trajectory 防伪**：依据官方 `tools.py` 源码 `maxItems: 5` 约束，查看做市赔率必须 100% 依托 EvoOntology 视网膜以 5 批次核销 23 家做市商，断言 `skipped ≡ []`；以 `transcript.jsonl` 工具轨迹为唯一防伪铁证；严禁大模型通篇裸读 `raw.json` 混淆 JS，绝对禁止推演看 `.md`；未开盘如实标记 `[官方未开盘]`。
+2. **EvoOntology 官方 5 批次核销与 Trajectory 防伪**：依据官方 `tools.py` 源码 `maxItems: 5` 约束，查看做市赔率必须 100% 依托 EvoOntology 视网膜以 5 批次核销 23 家做市商，断言 `skipped ≡ []`；以 `transcript.jsonl` 工具轨迹为唯一防伪铁证；严禁大模型通篇裸读混淆 payload，绝对禁止推演看 `.md`；未开盘如实标记 `[官方未开盘]`。
 3. **真实伤停与物理体能前置**：推演胜负前必须查明双方球员微观伤停与双赛体能负荷断崖，未见物理数据前严禁主观盲猜。
 4. **标准 7 列表格交付规范**：交付格式绝对锁定为标准 7 列表格，第 7 列不可遗漏 Polymarket 真实链接或官方未开盘说明。
 5. **单一主分支与原子 Git 提交**：全系统严格基于 `main` 单一分支推进，严禁未经主人明确授权私自创建临时分支或私自执行破坏性 Git 动作。

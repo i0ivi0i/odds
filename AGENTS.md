@@ -2,6 +2,8 @@
 
 > **现代工业 4.0 智能工厂定位**：本文件是足彩倍率分析推演系统的**中央总控台（Command & Dispatch NOC）**与最高行为宪章。本系统深刻融入马克思唯物主义关于“高度专业化分工、科学流水线生产节拍器、神经中枢与执行车间相统一”的现代工业智慧，将赛程同步、原材料进货、业务初筛、纯逻辑推演大脑、战报交付、复盘审计与知识仓储解耦为五大高内聚自动化车间。由中央总调度室统一协调，恪守流水线时钟节拍与品控防错闸门（Poka-Yoke），实现全系统**更快、更准、更智能**的自驱推演与自愈进化闭环。
 
+> **【当前数据路径（2026-10-24 起，最高优先）】**：比赛数据的唯一持久化真相是 `data/{销售日}/{matchId}.db`（SQLite）。采集链路固定为：Scrapling 官方 Spider 适配器导出临时 JSONL（仓库外）→ ETLX 官方 `-file` 载入 `endpoint_payload` → 其余 ETLX 步骤只读 `DB.endpoint_payload` → 数据门禁 → 提升为最终 `.db`。raw JSON 已退出 active 分析路径；`{matchId}.md` 仅为可选人类看板。`v5` 已作为 SQLite 迁移快照激活（`.evoontology/active.json`），其映射已通过 `validate_semantics` 与真实库只读查询；官方 30 条轨迹进化评估尚未完成，因此不得宣称 `v5` 已通过官方进化评估。历史 raw 段落只作回溯教训，不再作为当前操作指令。
+
 ---
 
 ## 目录索引（NOC Index）
@@ -28,7 +30,7 @@
   - 3.6 工位 5：复盘审计局（`skills/post-review`）
 - **[第四工段：流水线品控防错与工业安全断路器](#第四工段流水线品控防错与工业安全断路器)**
   - 4.1 EvoOntology 官方双层看数视网膜与严禁造假立宪
-  - 4.2 法定 28 端点与 23 家做市商底层存证质检标准（`raw/{matchId}.json` SSOT vs `.md`）
+  - 4.2 法定 27 个分析端点（Polymarket 仅交付）与 23 家做市商底层存证质检标准（`data/{销售日}/{matchId}.db` SSOT vs `.md`）
   - 4.3 全语种零临时脚本硬铁律（Zero-Script Invariant: All Languages）
   - 4.4 工具定位专属于 Agent 机械臂宪法（Zero-Human-CLI 绝对铁律）
   - 4.5 分层校验与真相对账宪法（Layered Grounding & Anti-False-Positive Invariant）
@@ -132,7 +134,7 @@ flowchart TD
     Z["【阶段 0：赛程索引自检】<br/>检查 data/{销售日}/meta.md 是否存在且新鲜 (< 2小时)"]
     Z_NO{"是否存在且新鲜?"}
     Z_GET["调度 Scrapling make_request(bf_jc.txt)<br/>秒级解析并落盘 meta.md 与 memory (< 2秒)"]
-    P1["【阶段 1：Scrapling 官方礼貌进货】<br/>调度专职搬运工 (Data Ingest Worker)<br/>ingest_spider.py 官方 AutoThrottle 礼貌控频<br/>Tier 1 聚合核心优先直取 (21家欧指+亚盘+体彩)<br/>落盘 raw/{id}.json（人类简报同步装配）"]
+    P1["【阶段 1：Scrapling 官方礼貌进货】<br/>调度专职搬运工 (Data Ingest Worker)<br/>ingest_spider.py 官方 AutoThrottle 礼貌控频<br/>Tier 1 聚合核心优先直取 (21家欧指+亚盘+体彩)<br/>导出临时 JSONL → ETLX 写 {matchId}.db（简报可选）"]
     P1_GATE{"双重质检门禁核销"}
     P2["【阶段 2：纯逻辑首席分析师】<br/>唤醒 Chief Match Analyst<br/>通读 deep-analysis 心法 (≤1200行)<br/>EvoOntology 视网膜全量解析 + Graphify 检索<br/>sports-math 算法去水 + 10 步深度推演"]
     OUT["【阶段 3：交付与单写原子封存】<br/>写入 memory/{销售日}.md 深度分析摘要与契约卡<br/>交付标准 7 列表格 (含 Polymarket 真实链接)"]
@@ -159,7 +161,7 @@ flowchart TD
   ② **业务态与工程态分工**：推演态专注于业务流本身，数据规范以 `match-scraper` 与 `deep-analysis` 为准，Python 脚本通过 CLI 命令行高效运行。推演过程中无需分心研读内部代码实现；当任务是代码重构与维护时，再自然进入工程态。
 
 #### 阶段 1：Scrapling 官方礼貌进货与双轨聚合装配（Phase 1 Ingest Gate）
-- 主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，调度专职搬运工（Role: `Data Ingest Worker`）。工单 Prompt 直接给出 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日}` 命令。Worker **严禁在抓取前探索磁盘，严禁使用 `Get-ChildItem` 或 `read_file` 翻看昨天历史文件摸索格式，严禁执行 `curl`/`openssl`/`powershell` 等终端命令**！收到工单第 0 秒必须且只能直接运行该 Spider 工具；
+- 主会话确认 `meta.md` 完备后，第 0 秒推送进货进度通知，调度专职搬运工（Role: `Data Ingest Worker`）。工单 Prompt 直接给出官方两阶段命令：`py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队} --output <仓库外临时.jsonl>` → `etlx -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD` → `etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD`。Worker **严禁在抓取前探索磁盘，严禁使用 `Get-ChildItem` 或 `read_file` 翻看昨天历史文件摸索格式，严禁执行 `curl`/`openssl`/`powershell` 等终端命令**！收到工单第 0 秒必须且只能按该命令块执行；
 - **【Scrapling 官方 AutoThrottle 礼貌控频铁律（Polite AutoThrottle & Anti-Ban Invariant）】**：
   为彻底告别老旧 PC 端 IP 封锁与连接重置，底层全面切换至移动端高防 CDN 与 API 架构，数据采集必须恪守 Scrapling 官方并发控制规约：
   ① **单域名单并发**：`concurrent_requests_per_domain = 1`，严禁多 Worker 或多线程同时并发冲击同一域名；
@@ -176,15 +178,15 @@ flowchart TD
   - **Tier 2 移动端时序变盘流水（按需轻量流）**：
     * `AsianDetail/{cid}/{mid}.htm`、`OuDetail` 与 `CompensateDetail/{euro_cid}/{mid}.htm` 移动端 UTF-8 轻量变盘流水表；`CompensateDetail` 只作欧指次级交叉校验，使用 euro_cid（澳彩 80、皇冠 545、Bet365 281、易胜博 90、平博 177、马会 432）；`eu_42` 没有可确认的 euro_cid，显式跳过并标 `not_offered`，绝不请求 18Bet 冒充 188Bet；
 - **【初盘完整性与 23 家机构核销强断言（Anti-Omission 23 Bookmakers Gate）】**：
-  机器推演以 `raw/{matchId}.json` 的 `receipt` 与 `payloads` 为准：法定 23 家做市商覆盖率必须维持 100%（欧指初即、皇冠/澳彩/365亚盘与大小球初即完整解析落盘）；人类简报 `{matchId}.md` 同步装配点亮，仅作人类可视化查验看板，绝不作为机器推演输入。若 23 家核心盘口缺失，立即触发 Poka-Yoke 停线阻断并原地重装！
+  机器推演以 `data/{销售日}/{matchId}.db` 的 `endpoint_payload`（27 个分析端点）与 `bookmaker_slots`/`v_bookmaker_slots`（22/23 个槽位）为准：法定 23 家做市商覆盖率必须维持 100%（欧指初即、皇冠/澳彩/365亚盘与大小球初即完整解析落盘）；人类简报 `{matchId}.md` 可选生成，仅作人类可视化查验看板，绝不作为机器推演输入。若 23 家核心盘口缺失，立即触发 Poka-Yoke 停线阻断并原地重装！
 - **【源头原生态 1:1 镜像保真铁律（Source-Fidelity Invariant）】**：
   进货装配变盘流水表时，**必须 100% 忠实镜像源端原生排列顺序**。**绝对严禁手工抽取调换行序，绝对严禁机械截断变盘历史！** 进货局恪守存证保真；推演大脑分析时则统一依据每笔记录物理时间戳升序排序（`Sort by Timestamp ASC`），自动按时间数值识别初盘与最新盘，绝不依赖排版方向刻舟求剑！
-- **重新推演物理清空（Clean-Slate Re-ingest Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧快照文件】，随后由 `scripts/ingest_spider.py` 全量重抓从零装配全新落盘！**绝对严禁直接拿磁盘已有旧文件跳过抓取，更绝对严禁在旧快照上局部修改时间戳做伪装！**
-- **推演态全语种零临时脚本硬铁律（Zero-Script Invariant: All Languages）**：推演态、进货态与排错态中，**绝对严禁**编写任何临时脚本（无论是 `.py`、`.ps1`、`.js`、`.bat`、`.sh` 等全语种脚本），也绝对严禁在磁盘建立 `tmp_*` 暂存目录或倾倒 `.txt` 中间文件！所有数据进货一律调用常设官方 `Spider` 工具 `scripts/ingest_spider.py`（端点契约由 `config/endpoints.json` 提供，带 `css_selector` 与 `extraction_type`）内存流式直出落盘，零胶水代码，违规记录严格锁定为 0！
-- **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**机器推演的法定底层依据是 `data/{销售日}/raw/{matchId}.json` 经 EvoOntology 官方 MCP 直连提取的微观数据，`.md` 文件作为人类可视化复盘简报同步留存**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何测试或检查，直接进入抓取进货，杜绝空转！
+- **重新推演物理清空（Clean-Slate Re-ingest Rule）**：凡主人下达“重新分析/重新推演/从头开始/全面推演”或待分析场次距上次抓取 > 30 分钟，必须且只能先【物理删除或清空旧 `data/{销售日}/{matchId}.db` 与旧临时 JSONL】，随后由官方两阶段命令从零重抓重装！**绝对严禁直接拿磁盘已有旧 `.db` 跳过抓取，更绝对严禁在旧快照上局部修改时间戳做伪装！**
+- **推演态全语种零临时脚本硬铁律（Zero-Script Invariant: All Languages）**：推演态、进货态与排错态中，**绝对严禁**编写任何临时脚本（无论是 `.py`、`.ps1`、`.js`、`.bat`、`.sh` 等全语种脚本），也绝对严禁在磁盘建立 `tmp_*` 暂存目录或倾倒 `.txt` 中间文件！所有数据进货一律调用常设官方 `Spider` 工具 `scripts/ingest_spider.py` 导出 JSONL，再由 ETLX 官方 `-file` 输入落库；零胶水代码，违规记录严格锁定为 0！
+- **推演证据界定与避免测试空转（Zero Pre-flight Thrashing）**：全局规则中“先自查、先拿证据再开口”，在足球业务推演中**机器推演的法定底层依据是 `data/{销售日}/{matchId}.db` 经 EvoOntology 官方 MCP 直连提取的微观数据，`.md` 文件仅作可选人类可视化简报**！严禁将“拿证据”偷换概念为“运行本地单元测试或代码检查”；在无代码改动时，无需执行任何测试或检查，直接进入抓取进货，杜绝空转！
 
 #### 阶段 2：纯逻辑首席分析师（Phase 2 Deduction Brain）
-- 确认底层物理源数据存在且新鲜（<30分钟）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，调用 EvoOntology 官方 MCP（`browse_semantics`, `resolve_semantics`）与 Graphify 知识图谱，开展 10 步深度推演与冻结认知契约卡！未见底层物理源数据落盘，**绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
+- 确认底层物理源数据存在且新鲜（<30分钟）后，方准切换为首席分析师身份（Role: `Chief Match Analyst`）。**此时且仅在此阶段方准读取《skills/deep-analysis/SKILL.md》**，通过 EvoOntology 官方 MCP（`browse_semantics`, `resolve_semantics`）从 `data/{销售日}/{matchId}.db` 的 SQLite 视图提取数据，并调用 Graphify 知识图谱，开展 10 步深度推演与冻结认知契约卡！未见底层物理源数据落盘，**绝对禁止在大脑思维链中构思任何盘口优劣或比赛胜负**！
 - **【无视网膜工具调用熔断铁律与 Trajectory 轨迹验真】（Zero-Tool-Call Hard Circuit Breaker & Trajectory Provenance）**：
   依据 EvoOntology 官方开源体系（https://github.com/ruc-datalab/EvoOntology）关于任务执行轨迹的硬规约（`record_ontology_task_event`: "Record an actual host tool call and result in execution order. Do not submit fabricated observations"），在宿主环境中，推演大脑思维链中**必须包含真实的 EvoOntology 官方 MCP 工具调用记录**（1 次 `mcp__evo-semantic__browse_semantics` ➔ 5 批次 `mcp__evo-semantic__resolve_semantics`）。底层不可篡改的宿主日志（`transcript.jsonl`）是防伪的唯一法定铁证！凡未调用视网膜工具、企图直接通过上下文记忆、文件裸视、控制台随手敲代码或直觉推演出票者，直接判定为违规伪推演并强制熔断中止，严禁输出任何胜平负或让球定性！
 - **EvoOntology 官方 5 批次核销与白名单硬断言（_MAX_RESOLVE = 5 & maxItems: 5 Invariant）**：
@@ -193,16 +195,16 @@ flowchart TD
   - 第 2 批：`["香港马会", "188Bet", "威廉希尔", "立博", "伟德"]`
   - 第 3 批：`["Interwetten", "Bwin", "SNAI", "必发", "利记"]`
   - 第 4 批：`["沙巴", "Marathon", "Betway", "Unibet", "Paddy Power"]`
-  - 第 5 批：`["10Bet", "中国体彩", "Polymarket"]`
+  - 第 5 批：`["10Bet", "中国体彩", "Polymarket"]`（Polymarket 仅核销 `delivery_only`，不提取赔率、不参与推演）
   **强断言门禁**：每批次返回必须严格断言 `skipped ≡ []`，且全部 23 家状态必须为 `coverage_status: "supported"` 或合法的 `not_offered`（官方未开盘、该槽位无此盘口、次级交叉校验为空）；`not_offered` 不得伪造为 `supported`。若任一批次出现非空 `skipped` 或非预期的 `gap`，立即触发 Poka-Yoke 强阻断停线，严禁在残缺机位上强推！
 - **显式空状态与严禁造假铁律（Explicit Empty State Invariant）**：
   依循 EvoOntology 官方规范：`Missing reports or executions remain explicit empty states. Never fabricate examples`。凡机构未开盘（如 Polymarket 返回空数组 `[]`、香港马会次级联赛未开亚盘），**必须且只能标注 `[官方未开盘]`**。绝对严禁在后台或前端硬编码伪造赔率（如伪造“60.5¢”挂单、伪造波胆或伪造伤停）。宁可报缺报阻，绝不造假脑补！
 - **EvoOntology 官方规范深度绑定（Auto-Lock & Read-Only Invariant）**：
-  推演大脑必须动态定位当前工作区根目录下的 `.evoontology/` 容器（`workspace=path.join(CURRENT_WORKSPACE, ".evoontology")`，自适应任何磁盘与文件夹迁移，杜绝硬编码死路径）与 `version="active"`（生产版本 `ontology_v2`），恪守 100% 纯只读探测契约，绝不修改本体任何版本或状态；必须显式过验 `constraint_pinnacle_stability` 硬约束（平博稳定性出货判别律），并在契约卡中显式对质！
+  推演大脑必须动态定位当前工作区根目录下的 `.evoontology/` 容器（`workspace=path.join(CURRENT_WORKSPACE, ".evoontology")`，自适应任何磁盘与文件夹迁移，杜绝硬编码死路径）与 `version="active"`（当前生产版本以 `.evoontology/active.json` 为准；当前为 SQLite 迁移快照 `v5`，官方 30 条轨迹进化评估尚未完成），恪守 100% 纯只读探测契约，绝不修改本体任何版本或状态；必须显式过验 `constraint_pinnacle_stability` 硬约束（平博稳定性出货判别律），并在契约卡中显式对质！
 - **EvoOntology MCP 定向看数与严禁终端临时脚本裸看（Tool-Driven Grounding & Anti-Raw-Read Invariant）**：
-  - ① **底层物理存证（SSOT）**：`data/{销售日}/raw/{matchId}.json` 承载 28 端点原生报文，作为推演的唯一法定事实底牌；推演大脑绝对严禁跳过法定视网膜工具（即 EvoOntology 官方 MCP 工具链：1 次 `browse_semantics` + 5 批次 `resolve_semantics`），也绝对严禁使用任何工具不加行号限制通篇全量裸读未解包的几千行混乱 JS 报文；
+  - ① **底层物理存证（SSOT）**：`data/{销售日}/{matchId}.db` 的 27 个 `endpoint_payload` 行与 SQLite 视图承载 27 个分析端点，是推演的唯一法定事实底牌；Polymarket 仅作交付链接，不进入分析库、不参与推演；推演大脑绝对严禁跳过法定视网膜工具（即 EvoOntology 官方 MCP 工具链：1 次 `browse_semantics` + 5 批次 `resolve_semantics`），也绝对严禁使用任何工具不加限制通篇全量裸读未解包的几千行混乱 JS 报文；
   - ② **人类结构化可视化看板**：`data/{销售日}/{matchId}.md` 专供人类主人人工抽检与赛后复盘看板，推演大脑绝对严禁读取 `.md`，从物理根源上彻底杜绝因 `.md` 抽稀或格式塌陷导致的假数据与幻觉；
-  - ③ **EvoOntology 坐标锚定与受限定向看数通道**：看数必须首先调用 EvoOntology 官方 MCP 工具（`browse_semantics` ➔ 5 批次 `resolve_semantics`）获取权威 Mapping 坐标（`table`, `column`, `semantic_filter` 与法定 23 家 cid 字典）后，再使用宿主合规的原生文件读取工具（指定精确行数范围 `StartLine` 与 `EndLine` 的 `read_file`）定向查验目标端点对应做市商行，严禁无行号范围全量裸读；
+  - ③ **EvoOntology 坐标锚定与受限定向看数通道**：看数必须首先调用 EvoOntology 官方 MCP 工具（`browse_semantics` ➔ 5 批次 `resolve_semantics`）获取权威 Mapping 坐标（`table`, `column`, `semantic_filter` 与法定 23 家 cid 字典）后，再使用宿主合规的只读 SQL（`execute_ontology_query`）或原生文件读取工具定向查验目标字段，严禁无范围全量裸读；
   - ④ **全语种零临时脚本绝不妥协**：绝对严禁在终端手搓 `py -3.13 -c "import json..."` 脚本切片打印看数！违规记录严格锁定为 0！
   - ⑤ **坚决不增设多余中间文件**：坚决禁止新增任何 `slices/*.json` 或派生目录，保持系统极简纯粹。
 - **时间戳数值绝对排序不变量（Timestamp-Sorting Invariant，杜绝刻舟求剑）**：
@@ -234,7 +236,7 @@ flowchart TD
 | 调度军规 | 规约内容与技术要求 |
 | :--- | :--- |
 | **军规一：中心调度礼貌排队与单并发限流**<br/>(Polite Queue & Single Concurrency) | 设待分析场数为 $N$。为保证数据质量与网络稳定性，**严禁多 Worker 并发轰炸同一目标域名**！主会话充当 Central Scheduler，实行 **单域名严格单并发（Concurrent Requests Per Domain = 1）** 串行推进；数据采集由 Scrapling 官方 Spider 统一调度，内置 `download_delay = 1.0s` 与 `autothrottle_enabled = True`（自适应延迟退避，遇 429/403 自动指数级拉大延迟），单秒活跃请求 $\le 1.0$ 个，从物理根源上彻底杜绝 IP 被标记与连接被拒！ |
-| **军规二：无共享状态物理隔离**<br/>(Stateless Worker Isolation) | 各 Worker 承包的待抓取场次集合绝对互斥（Worker 1: 001~003, Worker 2: 004~006 ...）。数据仅写入各自的 `raw/{matchId}.json` 与 `data/{销售日}/{matchId}.md`，严禁跨 Worker 锁竞争。 |
+| **军规二：无共享状态物理隔离**<br/>(Stateless Worker Isolation) | 各 Worker 承包的待抓取场次集合绝对互斥（Worker 1: 001~003, Worker 2: 004~006 ...）。数据仅写入各自的 `data/{销售日}/{matchId}.db`，严禁跨 Worker 锁竞争。 |
 | **军规三：开箱即用闭环工单**<br/>(Self-Contained Work-Order) | 给 Worker 的 Prompt 必须短小精炼（≤ 2KB），直接给出 `scripts/ingest_spider.py` 命令与 `matchId`/`salesDate`；端点契约由 `config/endpoints.json` 内置。**严禁 Worker 调用 read_file 查阅磁盘规范/代码/git 文档**，0 秒拿起工单直接执行。 |
 | **军规四：响应式免轮询唤醒**<br/>(Reactive Wakeup & Zero Polling) | 主会话发射滑动窗口中的 Worker 后，**必须立即停止调用任何工具，严禁主动轮询/sleep**，依赖宿主系统 Reactive 自动唤醒并在 Worker 完工后滑动补充新批次。 |
 | **Worker 行为封印三禁** | ① 严禁 Worker 在终端或主会话执行 `git log`、`git status`、`codebase inspection` 等代码工程探测；<br/>② 严禁 Worker 思考盘赔逻辑、构思分析思路或下达胜负预测；<br/>③ 严禁 Worker 自行重写、修改或 patch 系统代码；<br/>④ 严禁编写任何全语种临时脚本（.py/.ps1/.js/.bat/.sh）与倾倒磁盘 tmp 中转文件；<br/>⑤ 严禁调用平台工具 `execute_code` 执行任何抓取、清洗或对账代码！数据采集 100% 依托 Scrapling Spider（MCP 仅诊断降级），推演查看 100% 依托 EvoOntology MCP！ |
@@ -250,13 +252,13 @@ flowchart TD
 #### 标准进货 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "【阶段一专职搬运工官方礼貌进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，【零探索铁律】：严禁调用 Get-ChildItem 或 read_file 翻看昨天历史文件摸索格式，严禁执行 curl/openssl/powershell 等终端探测命令，严禁阅读任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用）！第 0 秒必须且只能直接调用官方 Scrapling Spider 工具（`skills/match-scraper/scripts/ingest_spider.py`）执行进货。以 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队}`（可选 `--proxy` 通道兜底）一次运行完成双轨端点进货（Tier 1 聚合核心秒取 1x2d.js 21家欧指时序+goallottery亚大小初即+odds_jc，Tier 2 补充明细礼貌温和限流 2.0s 并发=1，启用 AutoThrottle 自适应退避）；抓完由脚本原子落盘底层真实存证 `data/{销售日}/raw/{matchId}.json`（满配 28 payloads 原生报文 SSOT）与人类简报 `data/{销售日}/{matchId}.md`（包含全量战区与 23 家做市商点亮）；【立即回传】：确认真实落盘且 Schema 完备后立即回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
+  goal: "【阶段一专职搬运工官方礼貌进货工单】承包场次：{matchIds}，销售日：{销售日}。你拥有最高执行权限，【零探索铁律】：严禁调用 Get-ChildItem 或 read_file 翻看昨天历史文件摸索格式，严禁执行 curl/openssl/powershell 等终端探测命令，严禁阅读任何磁盘 .md/.py/.git 规范文档（无需翻书，开箱即用）！第 0 秒必须且只能直接调用官方 Scrapling Spider 工具（`skills/match-scraper/scripts/ingest_spider.py`）执行进货。以 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日} --home {主队} --away {客队} --output <仓库外临时.jsonl>`（可选 `--proxy` 通道兜底）一次运行完成双轨端点进货（Tier 1 聚合核心秒取 1x2d.js 21家欧指时序+goallottery亚大小初即+odds_jc，Tier 2 补充明细礼貌温和限流 2.0s 并发=1，启用 AutoThrottle 自适应退避）；随后执行 `etlx -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPOINT_PAYLOAD` 与 `etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD`，由 ETLX 写入底层真实存证 `data/{销售日}/{matchId}.db`（27 个分析端点的 `endpoint_payload` 行；Polymarket 不入分析库）；人类简报 `data/{销售日}/{matchId}.md` 仅为可选看板，若生成也不得替代 `.db`；【立即回传】：确认真实落盘且 Schema 完备后立即回传「{matchIds} 进货完成」！【防手搓最高铁律】：绝对禁止编写或生成任何全语种（.py/.ps1/.js/.bat/.sh）临时脚本！绝对禁止在磁盘建立 tmp_* 暂存文件夹或倾倒 .txt 中转文件！绝对禁止思考盘赔逻辑或定性胜负！"
 ```
 
 #### 标准推演分析师 Worker 工单 Prompt 规范模板
 ```yaml
 task:
-  goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。必须首先读取 MEMORY.md（装载《庄家操盘战法库》六大分类与《待验证表》）以及 skills/deep-analysis/SKILL.md。本场专属底层物理存证已在阶段一落盘至 data/{销售日}/raw/{matchId}.json。推演大脑【看数只看源 .json，绝对严禁机器推演读取容易抽稀和产生假数据的 {matchId}.md】！推演看数强制由 EvoOntology 官方 MCP 视网膜工具链驱动（session-manifest ➔ browse_semantics ➔ 5 批次 resolve_semantics 严格核销 23 家机构），依据返回的 Mapping 权威路径全量提取对应原生端点结构化字段（1x2d.js 提纯 21 家欧指、analy.json 提纯伤停与体彩奖金、流水端点与 polymarket.json，严禁跳过 EvoOntology 官方 MCP 视网膜工具链全包裸读 raw.json），严禁访问网络抓取或手搓临时脚本。依据 Graphify 官方高阶增智规约：分析师针对当场具体盘口疑难优先通过 Graphify MCP（query_graph/get_node/shortest_path，严禁裸写伪 CLI 脚本）调兵并查阅 graphify-out/wiki/ 词条靶向穿透关联理论与战例；从 EvoOntology 提取 tactics（真实压制力技统、进球时段、未来赛程）与 profiling（相同初盘画像、盘路走势、半场双盘），站在庄家第一性原理反向破译，推演主梁必须以「欧指 1X2 × 亚洲让球盘（AH）× 大小球（OU）」主力博弈为主线（大小球为决定总进球空间与净胜球门槛的核心支柱），Crown 波胆倍率仅作为边缘辅助参考，绝不能作为核心推演依据更严禁一票否决；绝不孤立单看一个盘口，且绝不单看单一机构（必须比对Sharp标杆平博、Retail商业庄皇冠/365与Sentinel防守哨兵澳彩/立博/马会的协同与背离），严格对照 MEMORY.md 战法库六大经典做市分类进行套路破译；严格按照模板执行完整10步分析与学术文献四大主动质问纠偏（Levitt净赔付审计/Tversky小数定律审计/Gilovich热手偏见审计/Constantinou跨市场均衡审计），欧指去水点概率必须调用官方 sports-math MCP 工具 devig_oo_epc 获取真值，严禁心算。直接继承源数据已包含的 Polymarket 真实链接（主流核心联赛必须为真实事件可点击链接形如 [{对阵}（{价}¢/{倍}倍）](https://polymarket.com/event/{slug})，严禁谎称未开盘或批量复制粘贴），小众联赛确实无标的方可标未开盘说明；先回传待验收结果与执行证据，不得自行对外发布。由主会话/编排验收后逐场推送。返回结构化综合评估结果（含 memory 摘要、认知契约卡与 Polymarket 真实直达链接）。"
+  goal: "深度分析 [{联赛}] {主队} vs {客队}（ID: {matchId}）。本批共 N 场，你不要写入 memory，只通过回传返回包含 memory 摘要的结构化结果。必须首先读取 MEMORY.md（装载《庄家操盘战法库》六大分类与《待验证表》）以及 skills/deep-analysis/SKILL.md。本场专属底层物理存证已在阶段一落盘至 data/{销售日}/{matchId}.db。推演大脑【看数只经 SQLite 视图与 EvoOntology Mapping，绝对严禁机器推演读取容易抽稀和产生假数据的 {matchId}.md】！推演看数强制由 EvoOntology 官方 MCP 视网膜工具链驱动（session-manifest ➔ browse_semantics ➔ 5 批次 resolve_semantics 严格核销 23 家机构），依据返回的 Mapping 权威路径全量提取对应原生端点结构化字段（1x2d.js 提纯 21 家欧指、analy.json 提纯伤停与体彩奖金、流水端点（Polymarket 仅核销 delivery_only，不提取、不参与推演），严禁跳过 EvoOntology 官方 MCP 视网膜工具链全包裸读 SQLite 原始 payload），严禁访问网络抓取或手搓临时脚本。依据 Graphify 官方高阶增智规约：分析师针对当场具体盘口疑难优先通过 Graphify MCP（query_graph/get_node/shortest_path，严禁裸写伪 CLI 脚本）调兵并查阅 graphify-out/wiki/ 词条靶向穿透关联理论与战例；从 EvoOntology 提取 tactics（真实压制力技统、进球时段、未来赛程）与 profiling（相同初盘画像、盘路走势、半场双盘），站在庄家第一性原理反向破译，推演主梁必须以「欧指 1X2 × 亚洲让球盘（AH）× 大小球（OU）」主力博弈为主线（大小球为决定总进球空间与净胜球门槛的核心支柱），Crown 波胆倍率仅作为边缘辅助参考，绝不能作为核心推演依据更严禁一票否决；绝不孤立单看一个盘口，且绝不单看单一机构（必须比对Sharp标杆平博、Retail商业庄皇冠/365与Sentinel防守哨兵澳彩/立博/马会的协同与背离），严格对照 MEMORY.md 战法库六大经典做市分类进行套路破译；严格按照模板执行完整10步分析与学术文献四大主动质问纠偏（Levitt净赔付审计/Tversky小数定律审计/Gilovich热手偏见审计/Constantinou跨市场均衡审计），欧指去水点概率必须调用官方 sports-math MCP 工具 devig_oo_epc 获取真值，严禁心算。Polymarket 真实链接由工位 4 在交付阶段独立调用 Gamma/CLOB 检索验真，不得从分析源数据继承，也不得把 `polymarket.json` 作为推演输入；先回传待验收结果与执行证据，不得自行对外发布。由主会话/编排验收后逐场推送。返回结构化综合评估结果（含 memory 摘要与认知契约卡；Polymarket 链接由交付工位另行补挂）。"
 ```
 
 ### 2.4 流水线作业模式与全场景交互矩阵
@@ -340,7 +342,7 @@ subagent：获取赛果 → 对比推荐（胜负平+让球双核对） → 计�
 0. **第 0 步赛程索引自检（主会话）**：优先检查 `data/{销售日}/meta.md` 是否存在；若无立即调用 Scrapling `make_request(bf_jc.txt)` 极速生成 `meta.md` 与追加 `memory/{销售日}.md` (< 2秒)，以支持编号（如 018）精准解析与全天对齐；
 1. **第 0 秒状态透传（主会话）**：收到单场指令的第 0 秒，首个动作必须立即向主人推送启动状态：
    `⚡ 已启动场次【{matchId} {对阵}】推演源数据抓取，专职搬运工进货中...`，杜绝黑盒盲等；
-2. **阶段一：派发专职搬运工 Subagent（纯物理进货）**：主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 直接运行 `py -3.13 skills/match-scraper/scripts/ingest_spider.py --match-id {matchId} --sales-date {销售日}`（官方 Scrapling Spider，全量 28 端点）➔ 原子落盘底层存证 `raw/{matchId}.json` ➔ 确认物理文件生成且门禁通过后立即 announce 回传主会话；
+2. **阶段一：派发专职搬运工 Subagent（纯物理进货）**：主会话立即 spawn 专职搬运工 Subagent（Role: `Data Ingest Worker`），该 Subagent 运行官方两阶段命令（`ingest_spider.py --output <临时.jsonl>` → `etlx ... -only ENDPOINT_PAYLOAD` → `etlx ... -skip ENDPOINT_PAYLOAD`）➔ 原子落盘底层存证 `data/{销售日}/{matchId}.db` ➔ 确认数据库与门禁通过后立即 announce 回传主会话；
 3. **主会话中转放行反馈**：主会话收到搬运工 announce 的物理文件就绪报告后，立即推送：
    `🛡️ 【{matchId}】推演源数据已就绪，正在唤醒首席分析师进入阶段二深度推演...`；
 4. **阶段二：纯逻辑首席分析师（深度推演与交付）**：主会话切换或 spawn 分析师 Subagent（Role: `Chief Match Analyst`），通过 EvoOntology 官方 MCP 提取全量结构化字段（严禁大模型裸视海量原始报文） ➔ 通读 `skills/deep-analysis/SKILL.md` 心法 ➔ Graphify 三大战区检索 ➔ OO-EPC 算法去水 ➔ 10 步深度推演与四维认知契约卡 ➔ 原子化前置保存至 `memory/{销售日}.md` ➔ 交付标准 7 列表格至前台！
@@ -352,7 +354,7 @@ subagent：获取赛果 → 对比推荐（胜负平+让球双核对） → 计�
    `⚡ 已启动【全量 X 场】推演流水线，专职搬运工正在按 1~3 场分组分批进货中...`，杜绝黑盒盲等；
 2. **阶段一：纯物理礼貌进货（单域名单并发与确定性装配）**：
    - **礼貌进货（Polite Ingest）**：由工位 1（`match-scraper`）常设官方 Spider 统一调度，单域名严格单并发（`concurrent_requests_per_domain = 1`），基础下载延迟 `download_delay = 1.0s` 且开启 AutoThrottle 自适应退避；优先秒取 Tier 1 聚合核心端点（`1x2d.js` 21家欧指时序 + `odds_jc` + `goallottery` 亚大小初即），严禁多 Worker 并发冲击目标域名！
-   - **装配落盘**：原子落盘存证至 `data/{销售日}/raw/{matchId}.json` 与人类简报 `{matchId}.md`，并自动更新同步 `data/{销售日}/meta.md`；
+   - **装配落盘**：ETLX 载入 JSONL 后写入 `data/{销售日}/{matchId}.db`，并自动更新同步 `data/{销售日}/meta.md`；人类简报可选生成；
 3. **主会话中转放行反馈**：主会话确认物理文件就绪后，立即推送：
    `🛡️ 【全量 X 场】推演源数据已就绪，正在唤醒首席分析师队列进入阶段二深度推演...`；
 4. **阶段二：纯逻辑首席分析师（排队推演池）**：
@@ -401,7 +403,7 @@ flowchart LR
         S1["Scrapling官方Spider<br/>AutoThrottle控频+双轨端点"]
     end
     subgraph T1 ["零件托盘 1"]
-        D1["raw/{id}.json (SSOT)<br/>+ 人类可视化简报"]
+        D1["data/{销售日}/{id}.db (SQLite SSOT)<br/>+ 可选人类可视化简报"]
     end
     subgraph W2 ["工位2: 业务初筛局 (match-screening)"]
         S2["输入路由 + 编号解析<br/>全量打标 + 开球拦截"]
@@ -438,7 +440,7 @@ flowchart LR
 
 | 车间工位 | 专属法定职责（高内聚） | 工业标准出厂零件托盘（零耦合接口） | 禁入红线（严防越权） |
 | :--- | :--- | :--- | :--- |
-| **工位 1：进货局**<br/>`skills/match-scraper` | 纯物理采掘、Scrapling 原生流水线、单 IP 防封控频、28 端点完整性过验 | **零件托盘 1**：`data/{销售日}/raw/{matchId}.json` (28 端点原生报文 SSOT) + `matchId.md` (人类简报 $\ge 420$ 行，含战区三·五初即大表) | 严禁思考盘赔逻辑、严禁定性胜负、严禁猜想赛果 |
+| **工位 1：进货局**<br/>`skills/match-scraper` | 纯物理采掘、Scrapling 原生流水线、单 IP 防封控频、27 个分析端点完整入库（Polymarket 仅交付） | **零件托盘 1**：`data/{销售日}/{matchId}.db`（27 个分析端点的 `endpoint_payload` 与 SQLite 视图）+ 可选 `matchId.md` 人类简报 | 严禁思考盘赔逻辑、严禁定性胜负、严禁猜想赛果 |
 | **工位 2：初筛局**<br/>`skills/match-screening` | 赛程时钟索引自检、方式 1~4 输入解析、竞彩编号转换、开球时间先验拦截、全量打标排队 | **零件托盘 2**：标准推演工单序列 `work_orders: [{matchId, kickoffTime, league, homeTeam, awayTeam, analysisUrl}]` | 严禁发起外部网络抓取（纯直读 meta.md）、严禁淘汰截断比赛 |
 | **工位 3：推演局**<br/>`skills/deep-analysis` | 纯只读消化全量结构化数据、做市博弈反向推演、EvoOntology 视网膜导航、学术图谱反审、10 步深度推演（$\le 1200$ 行） | **零件托盘 3**：**四维不可篡改【认知契约卡】** + 纯推演三项值（胜负平、让球、OO-EPC 去水概率、比分） | 严禁外部网络请求、严禁排版 7 列表格、严禁算串关组合、严禁管理并发文件锁 |
 | **工位 4：交付局**<br/>`skills/recommendation` | 契约卡强断言核销 (`Count ≡ N`)、战报 7 列表格拼装、Polymarket 真实链接核验、文末 2 串 1 组合推荐 | **零件托盘 4**：终端交付物（标准 7 列表格 + 文末【🎯 2 串 1 组合推荐】 + 原子写入 memory） | 严禁篡改推演大脑首选/次选、严禁擅自删减推演行数 |
@@ -449,12 +451,12 @@ flowchart LR
 - **指挥定位**：系统唯一全权网络进货局，独揽全网抓取、赛程同步、双轨端点礼貌直取（Tier 1 聚合核心秒取 23 家时序 + Tier 2 补充明细单并发限流 2.0s）、AutoThrottle 自适应退避与 403 自愈破盾。其余 4 个 Skill 绝对 0 网络！
 - **输入物**：赛事 ID、销售日、目标 URL 矩阵。
 - **出厂标准零件托盘 1（Standard Parts Tray 1 Contract）**：
-  1. **底层真实存证 SSOT**：`data/{销售日}/raw/{matchId}.json`（满配 28 payloads 原生报文 Schema，带 SHA256 与 sealedAt 密封时间戳，严禁漏建 raw 目录！）；
-  2. **人类可视化简报（可选）**：`data/{销售日}/{matchId}.md` 如同步生成，行数由源网页客观流水决定（常见 350~2000 行，严禁 420~650 伪上限），并包含《战区三·五》初即大表与 21 张变盘流水；不生成也不影响 raw SSOT 与推演；
-  3. **初盘硬断言门禁**：通过 `Anti-Omission Initial Odds Gate`，以 `raw/{matchId}.json` 的 7 家核心亚盘/大小球端点为准；人类简报如生成则同时检查其初盘大表；缺失立即停线整改；
+  1. **底层真实存证 SSOT**：`data/{销售日}/{matchId}.db`（27 个分析端点的 `endpoint_payload` 行；Polymarket 不入分析库；每行带 `sha256` 与 `raw_sha256` 哈希；ETLX 门禁 `violations=0` 才算完成！）；
+  2. **人类可视化简报（可选）**：`data/{销售日}/{matchId}.md` 如同步生成，行数由源网页客观流水决定（常见 350~2000 行，严禁 420~650 伪上限），并包含《战区三·五》初即大表与 21 张变盘流水；不生成也不影响 `.db` SSOT 与推演；
+  3. **初盘硬断言门禁**：通过 `Anti-Omission Initial Odds Gate`，以 `.db` 的 7 家核心亚盘/大小球端点与 `v_bookmaker_slots` 为准；人类简报如生成则同时检查其初盘大表；缺失立即停线整改；
   4. **禁入红线**：严禁思考盘赔逻辑、严禁定性胜负、严禁在磁盘根目录倾倒任何 `*.txt` 散落中间文件（违规立即自动清除）。
 - **指挥指针**：
-  👉 **【进货车间采掘协议、28 端点标准与单 IP 防封流控详见 [skills/match-scraper/SKILL.md](skills/match-scraper/SKILL.md)】**
+  👉 **【进货车间采掘协议、28 个采集端点标准（27 分析 + 1 交付）与单 IP 防封流控详见 [skills/match-scraper/SKILL.md](skills/match-scraper/SKILL.md)】**
 
 ### 3.2 工位 2：业务初筛局（`skills/match-screening`）
 
@@ -555,16 +557,16 @@ flowchart LR
   依循 EvoOntology 官方源码 `evoontology/runtime/tools.py` 第 63 行的 JSON Schema 严格定义（`"maxItems": 5`）与 `runtime.py` 中的 `_MAX_RESOLVE = 5`，官方底层单次请求硬限最多 5 个 mentions；超过 5 个会被官方底层静默截断至 `skipped` 并降级为 `partial`（单次传 23 家必被静默漏掉 18 家！）。因此推演大脑**必须且只能以 5 个原子批次完整核销法定 23 家做市商**，且每批次必须严格断言 `skipped ≡ []` 与 `coverage_status: "supported"`（未开盘则返回合法空字段）。遇非预期 `gap` 立即触发 Poka-Yoke 强阻断停线，严禁在残缺机位上强推！
 - **显式空状态与严禁造假铁律（Explicit Empty State Invariant）**：
   依循 EvoOntology 官方规范：`Missing reports or executions remain explicit empty states. Never fabricate examples`。凡机构未开盘（如 Polymarket 返回空数组 `[]`、香港马会次级联赛未开亚盘），**必须且只能标注 `[官方未开盘]`**。绝对严禁在后台或前端硬编码伪造赔率（如伪造“60.5¢”挂单、伪造波胆或伪造伤停）。宁可报缺报阻，绝不造假脑补！
-- **绝对严禁大模型裸视海量数据**：严禁任何大模型、大脑、Agent 或 Subagent 直接使用 `view_file` 通读底层庞杂原始数据（如 `data/**/raw/*.json` 或全文 `.md` 表格）注入上下文！直接裸视极易诱发注意力隧道效应、信息严重漏读、张冠李戴与上下文爆炸。
+- **绝对严禁大模型裸视海量数据**：严禁任何大模型、大脑、Agent 或 Subagent 直接使用 `view_file` 通读底层庞杂原始数据（如 `data/**/*.db` 的未解包 payload 或全文 `.md` 表格）注入上下文！直接裸视极易诱发注意力隧道效应、信息严重漏读、张冠李戴与上下文爆炸。
 - **EvoOntology 官方双层看数视网膜（融合 explore-ontology 核心规约）**：全系统搜查、观看任何比赛数据，必须严格分为两层：
   1. **语义导航与探针层**：动态定位当前活跃工程容器 `workspace=path.join(CURRENT_WORKSPACE, ".evoontology")` 与 `version="active"`（自适应任何磁盘与文件夹迁移，纯只读，绝不修改本体状态）。会话开始时读取 `session-manifest`，通过 `browse_semantics` 检索概念，并通过 5 批次 `resolve_semantics`（每批 $\le 5$ 家）核销法定 23 家做市商状态并获取权威 Mapping 路径，遇未开盘外的异常 `gap` 立即触发 `block` 强阻断，防漏看防看错；
-  2. **EvoOntology MCP 坐标锚定与定向端点提取层（绝不跳过法定视网膜工具裸读，绝对严禁看 .md）**：推演大脑绝不可误以为跳过 EvoOntology 官方 MCP 视网膜工具（`browse_semantics` ➔ 5 批次 `resolve_semantics`）“直接用 read_file 读 raw.json 即可”！必须在 EvoOntology Mapping 权威路径（`table`, `column`, `semantic_filter` 与 `aggregation_semantics`）坐标锁定下，仅使用带精确行号范围的原生工具（带 `StartLine`/`EndLine` 的 `read_file`）针对 Mapping 锁定的特定原生端点（`payloads['1x2d.js']` 提纯的 21 家欧指、`payloads['analy.json']` 攻防伤停与体彩固定奖金、各变盘流水端点及 `polymarket.json`）进行受限定向提取并解析核心点位，由大模型专注执行 10 步博弈推理；严禁不加行号通篇全量裸读几千行原始混淆 JS，绝对严禁推演大脑看易被抽稀污染的 `{matchId}.md`（`.md` 仅为人类可视化看板，严禁机器推演看 .md）；
+  2. **EvoOntology MCP 坐标锚定与定向端点提取层（绝不跳过法定视网膜工具裸读，绝对严禁看 .md）**：推演大脑绝不可误以为跳过 EvoOntology 官方 MCP 视网膜工具（`browse_semantics` ➔ 5 批次 `resolve_semantics`）“直接用 read_file 读原始 payload 即可”！必须在 EvoOntology Mapping 权威路径（`table`, `column`, `semantic_filter` 与 `aggregation_semantics`）坐标锁定下，仅使用 `execute_ontology_query` 或带精确范围的只读工具，针对 Mapping 锁定的 SQLite 视图（`v_euro_snapshot` 的 21 家欧指、`v_team_stats` 的攻防伤停、`v_ah_history`/`v_ou_history`/`v_eu_detail_history` 变盘流水）进行受限定向提取并解析核心点位，由大模型专注执行 10 步博弈推理；严禁无范围通篇全量裸读几千行原始混淆 JS，绝对严禁推演大脑看易被抽稀污染的 `{matchId}.md`（`.md` 仅为人类可视化看板，严禁机器推演看 .md）；
   3. **时序因果与硬约束强制对质律（Temporal Ordering & Constraint Auto-Debate）**：
      - **时序硬约束（`constraint_temporal_ordering`）**：在提取变盘流水时，大模型必须严格遵循物理时间戳升序（`Sort by Timestamp ASC`）梳理时钟因果（$\min(t)$ 为初盘起点，$\max(t)$ 为最新定格终盘），凡跳过时序因果或颠倒初即直接推演者，触发 `block` 级硬阻断！
      - **平博稳定性硬约束（`constraint_pinnacle_stability`）**：商业散户庄降水而尖锐平博逆市升水或纹丝不动 $\rightarrow$ 强制判定为虚假做热、掩护出货，严禁判为防守，契约卡必须显式留存对质记录；
   4. **零冗余文件铁律（Zero-Redundant-File Invariant）**：坚决禁止新增任何 `slices/*.json` 或派生目录，保持系统极简纯粹。
 - **严禁造假与真相对账铁律**：严禁在未开盘时（如 Polymarket 返回空数组 `[]`）编造虚假挂单或写死假赔率！未开盘必须实录 `[官方未开盘]`。绝对严禁在后台编写脚本伪造假装配，宁可报缺报阻，绝不造假脑补！
-- **法定 23 家全景做市机位视网膜与 Graphify 联动**：底层原始 JSON 承担 100% 物理无损存证职责，严禁任何截断或抽稀；EvoOntology 完整纳管法定 23 家做市商机位（涵盖英伦母盘、欧陆防守、商业做市、亚洲自营哨兵与学术共识样本）与做市博弈探针。大模型通过官方 MCP 工具实现概念与微观原始字段的精准绑定提取，并严格核验 23 家机构的 `status: "supported"`（遇非预期 `gap` 缺口立即阻断推演报警！）。凡触发阻断类机位特征，契约卡必须显式开设 `【EvoOntology机位阻断对质】` 并做博弈反向破译。本体层绝对严禁写死任何推演打分规则。
+- **法定 23 家全景做市机位视网膜与 Graphify 联动**：SQLite 数据库承担 100% 物理无损存证职责，严禁任何截断或抽稀；EvoOntology 完整纳管法定 23 家做市商机位（涵盖英伦母盘、欧陆防守、商业做市、亚洲自营哨兵与学术共识样本）与做市博弈探针。大模型通过官方 MCP 工具实现概念与 SQLite 字段的精准绑定提取，并严格核验 23 家机构的 `status: "supported"`（遇非预期 `gap` 缺口立即阻断推演报警！）。凡触发阻断类机位特征，契约卡必须显式开设 `【EvoOntology机位阻断对质】` 并做博弈反向破译。本体层绝对严禁写死任何推演打分规则。
 - **EvoOntology 进化纯净宪法（只纳规律、严拒噪音）**：主人最高原则——“喜欢进化，只要进化就是好事，但是绝对不能把噪音也进化进去”。严禁将单场偶发事件（如红牌罚下、意外折射、单次失误、孤立异常数字）误当作操盘规律；提出的 Candidate 探针必须具备普遍的做市博弈因果逻辑，且必须在历史快照池上通过严格回测对质，确保无负面回归与误报警，宁缺毋滥，保持本体 100% 纯净度。
 
 ### 4.2 数据地基三不铁律与底层存证质检标准（Anti-Error, Anti-Fake, Anti-Misplacement Triad Invariant）
@@ -577,9 +579,9 @@ flowchart LR
    - **编码保真防乱码（Encoding Fidelity）**：球探网二级变盘页面（`changeDetail/*.aspx`）必须基于原始 bytes 显式以 `gb18030` 准确解码，严禁默认 UTF-8 强解导致队名与盘口变成乱码问号；
    - **拦截质询盾与残缺流（WAF & Stream Completeness）**：严禁将 403/503 或 Cloudflare 挑战盾页面（HTML 包含 "Just a moment..." / "Cloudflare" / "Access Denied"）当作正常数据接收！遇到反爬盾自动升阶 `stealthy_fetch(solve_cloudflare=true)`；`1x2d.js` 必须包含完整的百家欧指 `var game=Array(...)` 且法定 21 家欧指 cid 齐全（188Bet 与 Polymarket 不经由该文件的欧指 cid 冒充），杜绝因网络中断截断只收到几 KB 的半截残废报文或未解析错误！
 2. **二不：绝不写入假数据（Anti-Fake-Data Guardrail）**：
-   - **存证 100% 物理真实（SSOT Raw Invariant）**：`data/{销售日}/raw/{matchId}.json` 承载的 28 端点原生报文必须 100% 是网络真实活水响应，严禁任何 Agent 手工编造、硬编码 mock 数据或篡改报文；
+   - **存证 100% 物理真实（SQLite SSOT Invariant）**：`data/{销售日}/{matchId}.db` 的 27 个分析端点 `endpoint_payload` 必须 100% 是网络真实活水响应经官方 JSONL 载入；Polymarket 仅交付、不入分析库；严禁任何 Agent 手工编造、硬编码 mock 数据或篡改内容与哈希；
    - **未开盘严禁脑补（Zero Hallucinated Odds）**：凡机构未开盘（如香港马会次级联赛未开亚盘、体彩深盘未开单关）或 Polymarket 未开设当场预测合约，**必须且只能**如实标注 `[官方未开盘]`！绝对严禁在后台或前端硬编码伪造赔率（如伪造“60.5¢”挂单、伪造 Crown 波胆或伪造伤停）。宁可报缺报阻，绝不造假脑补！
-   - **真实体积与 Receipt 反作弊（Receipt Anti-Tampering）**：`receipt.endpoints[i].size` 必须与真实的 payload 字符长度 1:1 绝对相等，严禁虚报大小以逃避品控门禁；
+   - **真实哈希与行数反作弊（SQLite Anti-Tampering）**：`endpoint_payload.chars` 必须与 `content` 字符长度 1:1 相等，`sha256(content)` 必须等于存储的 `sha256`，`raw_sha256` 必须等于 JSONL 原始字节哈希；严禁虚报大小或手搓内容以逃避门禁；
 3. **三不：数据绝不能放错（Anti-Misplacement & Strict Mapping Guardrail）**：
    - **做市商 ID 字典级刚性锁死（No Bookmaker Swapping）**：澳彩 (亚盘 1 / 欧指 80)、皇冠 (亚盘 3 / 欧指 545)、Bet365 (亚盘 8 / 欧指 281)、易胜博 (亚盘 12 / 欧指 90)、平博 (亚盘 47 / 欧指 177)、香港马会 (亚盘 48 / 欧指 432)、Marathon (欧指 800)；188Bet 只有亚盘 cid=42，没有可确认的 euro_cid，且 `42=18Bet`，严禁把 18Bet 数据冒充 188Bet。所有映射必须由 EvoOntology 语义罗盘与静态字典锁死，绝对严禁将平博的数据填到皇冠的行，绝对严禁将澳彩的水位错放进马会；
    - **盘口赔率三要素槽位强断言（Strict Column Orientation）**：
@@ -589,18 +591,18 @@ flowchart LR
    - **初即列与变盘时序绝不错位（No Initial vs Live Displacement）**：
      - 战区三·五初即全景大表中，初盘列严格对应最早开盘记录，即盘列严格对应最新时序，严禁把即盘填入初盘列；
      - 战区四 21 张变盘流水表中，100% 保持源网原生态镜像直出，绝对严禁手工调换行序或移花接木插拔初盘，严禁机械截断；推演分析时统一由时间戳升序排序律（`Sort by Timestamp ASC`）自适应梳理时钟因果！
-   - **跨比赛绝对隔离（Match-Level Isolation）**：简报 `{matchId}.md` 和底层 `raw/{matchId}.json` 必须经过 `matchId` 一致性核验，严禁比赛 A 的表格被粘贴到比赛 B！
+   - **跨比赛绝对隔离（Match-Level Isolation）**：简报 `{matchId}.md` 和底层 `data/{销售日}/{matchId}.db` 必须经过 `matchId` 一致性核验，严禁比赛 A 的表格被粘贴到比赛 B！
 
-#### 4.2.2 法定 28 端点与 23 家做市商底层存证质检标准（`raw/{matchId}.json` SSOT vs `.md`）
+#### 4.2.2 法定 27 个分析端点（Polymarket 仅交付）与 23 家做市商底层存证质检标准（`data/{销售日}/{matchId}.db` SSOT vs `.md`）
 
-机器推演的法定底层依据是 `data/{销售日}/raw/{matchId}.json`（经 EvoOntology 直连提取），`.md` 文件作为人类可视化复盘简报同步留存：
-- **存证与视图序贯优先级**：审视调阅数据必须严格遵循「最好先看源 `.json`（底层存证 SSOT），其次再看 `.md`（可视化视图校对），然后才是其他的（辅助资料）」刚性优先级！
-- **物理真实存证与 Receipt 反作弊双死锁（彻底废除固定字节数死尺子）**：
-  1. **禁止刻舟求剑与死尺子**：文件实际大小完全由当场比赛客观包含的做市商数量与变盘记录自然决定（热门赛事做市商与变盘多则报文较长，冷门赛事较少则相对紧凑），严禁以硬编码的固定 KB/MB 死尺子去衡量活数据！
-  2. `payloads['1x2d.js']`（移动端 CDN 核心）必须包含真实的百家欧指 `var game=Array(...)` 原生报文且法定 21 家欧指 cid 100% 存在，严禁人为截断为仅有几家机构的缩略模拟数据；
-  3. `payloads['asian_odds.json']`（或 `asian_odds.html`）与 `payloads['over_under.json']`（或 `over_under.html`）必须包含各主流做市商初盘与即盘结构化原始报文，真实反映全网初盘让球与大小球门槛；
-  4. `receipt.endpoints[i].size` 必须与 `payloads[name]` 的实际字符长度 1:1 精确匹配，凡检测到 size 虚报或手搓占位假数据，立即判定为作弊违规并物理阻断；
-  5. 质检门禁 100% 依据法定 28 端点 Schema 完整性、反序列化有效性与 23 家做市商布尔核销，守住第一性语义真相！
+机器推演的法定底层依据是 `data/{销售日}/{matchId}.db`（经 EvoOntology 直连提取），`.md` 文件仅作可选人类可视化复盘简报：
+- **存证与视图序贯优先级**：审视调阅数据必须严格遵循「先看 SQLite `.db`（底层存证 SSOT），其次再看 `.md`（可视化视图校对），然后才是其他的（辅助资料）」刚性优先级！
+- **SQLite 存证与哈希双死锁（彻底废除固定字节数死尺子）**：
+  1. **禁止刻舟求剑与死尺子**：数据库实际大小完全由当场比赛客观包含的做市商数量与变盘记录自然决定（热门赛事做市商与变盘多则报文较长，冷门赛事较少则相对紧凑），严禁以硬编码的固定 KB/MB 死尺子去衡量活数据！
+  2. `endpoint_payload` 的 `1x2d.js` 行（移动端 CDN 核心）必须包含真实的百家欧指 `var game=Array(...)` 原生报文且法定 21 家欧指 cid 100% 存在，严禁人为截断为仅有几家机构的缩略模拟数据；
+  3. `endpoint_payload` 的 `asian_odds.html` 与 `over_under.html` 行必须包含各主流做市商初盘与即盘结构化原始报文，真实反映全网初盘让球与大小球门槛；
+  4. `endpoint_payload.chars` 必须与 `content` 字符长度 1:1 精确匹配，`sha256(content)` 必须等于 `sha256`，凡检测到哈希不符或手搓占位假数据，立即判定为作弊违规并物理阻断；
+  5. 质检门禁 100% 依据 27 个 `endpoint_payload` 键、SQLite 视图反序列化有效性与 23 家做市商布尔核销，守住第一性语义真相！Polymarket 只作交付链接，不进入分析库；
 - **法定 23 家权威做市商白名单核销**：
   澳彩、皇冠、Bet365、易胜博、平博、香港马会、188Bet、威廉希尔、立博、伟德、Interwetten、Bwin、SNAI、必发、利记、沙巴、Marathon、Betway、Unibet、Paddy Power、10Bet、中国体彩，共 22 家博彩做市商；Polymarket 是第 23 个预测市场参考槽位，不是博彩公司。完整 cid 与别名见 `skills/match-scraper/references/bookmaker-roster.md`；逐项布尔校验杜绝遗漏！
 - **人类可视化简报六重品控防错门禁（Poka-Yoke Markdown Gates）**：
@@ -614,6 +616,7 @@ flowchart LR
 ### 4.3 全语种零临时脚本硬铁律（Zero-Script Invariant: All Languages）
 
 - **全语种零临时脚本**：足球主仓库（当前工程根目录）内部严禁编写或残留任何临时脚本（无论语言是 `.py`、`.ps1`、`.js`、`.bat`、`.sh`），违规次数严格锁定为 0；
+- **唯一可执行代码边界**：仅 `skills/match-scraper/scripts/ingest_spider.py` 与 `skills/match-scraper/tests/test_*.py` 允许作为仓库内 Python 存在；不得新增任何其他生产脚本、SQLite writer 或包装器；ETLX 与 Scrapling 是外部官方工具，不属于仓库代码；
 - **零磁盘中转垃圾**：严禁在磁盘上建立 `tmp_*` 暂存目录或倾倒 `.txt` 中转文本，所有数据搬运在内存中流式直出；
 - **四层工具架构全闭环（Scrapling Spider + 三 MCP）**：
   ① 数据搬运进货 100% 归属 `scrapling` 官方 Spider 主路径（HTML 变盘流水表传入 `css_selector="#odds2 table"` 与 `extraction_type="markdown"` 原生流式直出；亚盘初即总表走 `AsianOdds_n.aspx`，大小球初即总表走 `OverDown_n.aspx` 且下推 `css_selector="#table_odds"`；MCP 仅作单端点诊断降级）；
@@ -627,15 +630,15 @@ flowchart LR
 - **工具定位专属于 Agent**：系统中的工具与 MCP 是 100% 专属于 AI Agents 蜂群的武器库与机械臂，绝非给主人当手工操作员用的；
 - **MCP 原生标准契约与严禁伪命令行（Zero Pseudo-CLI Invariant）**：大模型与 Agents 在思维链和工作流中，调用工具必须严格遵循宿主标准 MCP 契约（如 `call_mcp_tool` 或原生协议接口：`query_graph`, `get_node`, `god_nodes`, `shortest_path`, `resolve_semantics` 等），**绝对严禁在思考过程或输出中裸写伪 CLI 指令**（如擅自打出 `graphify query "..."` 或手写伪终端命令假装执行），杜绝伪指令乱象；
 - **严禁向主人抛命令行（Zero Terminal Burden on Master）**：AI 绝不可在回复、汇报或行动建议中要求主人去敲终端命令。主人是指挥官与终审裁决者，只给指令并验收高密度战报；
-- **蜂群自主全闭环**：从赛程发现、赔率搬运、Polymarket 链上自动解析、格式组装到推演，全部由 Agents 在后台自驱调度与自愈完成，绝不把排错、拼参数或验证成本转嫁给主人。
+- **蜂群自主全闭环**：从赛程发现、赔率搬运、交付阶段 Polymarket 链上链接核验、格式组装到推演，全部由 Agents 在后台自驱调度与自愈完成，绝不把排错、拼参数或验证成本转嫁给主人。
 
 ### 4.5 分层校验与真相对账宪法（Layered Grounding & Anti-False-Positive Invariant）
 
 - **分层核验（Layer Separation）**：
   ① **第一层：业务数字层**（赔率点位是否符合真实盘面，如竞彩 1.42/4.10/5.50 是否与球探现场一致）；
-  ② **第二层：物理存证层**（`raw/{matchId}.json` 是否装载全量 28 端点真实 raw 报文字符串 Schema，各键反序列化是否有效）。业务数字吻合绝不等于存证合格，严禁混为一谈！
+  ② **第二层：物理存证层**（`data/{销售日}/{matchId}.db` 是否装载 27 个 `endpoint_payload` 行与有效哈希，SQLite 视图反序列化是否有效）。业务数字吻合绝不等于存证合格，严禁混为一谈！
 - **真相对账与严禁假阳性自检（Zero-False-Positive Inspection）**：
-  主会话或 Agent 在自检或回答主人核对数据时，**绝对禁止单凭肉眼打开人类可视化 `.md` 文本看一眼数字就声称“核验全部正确”**！必须强制调用 EvoOntology MCP（`validate_semantics` 与 `resolve_semantics`）对底层 JSON 存证执行机器级对质。若底层 28 端点键缺失或 `resolve_semantics` 返回非合法 `gap` / `block`，立即判定为抽稀损坏！
+  主会话或 Agent 在自检或回答主人核对数据时，**绝对禁止单凭肉眼打开人类可视化 `.md` 文本看一眼数字就声称“核验全部正确”**！必须强制调用 EvoOntology MCP（`validate_semantics` 与 `resolve_semantics`）对底层 SQLite 存证执行机器级对质。若 27 个 `endpoint_payload` 键缺失、哈希不符或 `resolve_semantics` 返回非合法 `gap` / `block`，立即判定为抽稀损坏！Polymarket 不参与该门禁。
 
 ### 4.6 Git 提交最高立宪红线、工程军规与反逃避铁律
 
@@ -681,7 +684,7 @@ flowchart LR
 - **双轨刷新与视网膜看数（纠偏立宪）**：
   - 检查是否有正式首发出炉或终盘剧烈异动的推演场次；
   - 启动临盘复核流水线：独家调度官方 Scrapling Spider/原生流水线礼貌排队直取（单域名单并发）最新微观首发与终盘流水；
-  - **严禁只写单一 .md**：必须首先原子覆盖更新底层无损物理存证 `data/{销售日}/raw/{matchId}.json`（满配 28 端点 SSOT），再同步重新渲染人类可视化简报 `data/{销售日}/{matchId}.md`；
+  - **严禁只写单一 .md**：必须首先原子覆盖更新底层无损物理存证 `data/{销售日}/{matchId}.db`（27 个分析端点；Polymarket 只交付），再同步重新渲染可选人类可视化简报 `data/{销售日}/{matchId}.md`；
   - **看数必经 EvoOntology 视网膜**：大模型严禁直接使用 `read_file` 裸视海量原始长文本，必须且只能依托 EvoOntology 官方 MCP 工具（`browse_semantics` ➔ `resolve_semantics`）核销 23 家并按 mapping 路径全量提取微观活水数据；
   - 输入原「认知契约卡」与新批次，由大模型通盘复核，驱动状态机输出【维持原判】、【微调修正】或【物理熔断】；
   - 若出现网络抓取失败、字段缺失或时点冲突，置顶报警并记录待办，绝不伪造复核记录。

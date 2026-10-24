@@ -1,0 +1,548 @@
+[
+  {
+    "id": "mapping_pinnacle_odds",
+    "term_id": "term_pinnacle_anchor",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "pinnacle_euro_odds",
+    "aggregation_semantics": "latest_value_vs_initial_value",
+    "timeline_orientation": "1x2d_js_array_initial_index3_5_vs_latest_index10_12",
+    "grain": "match",
+    "validation": "delta_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_handicap_timeline",
+    "term_id": "term_headfake_surge",
+    "database_source": "sqlite_view",
+    "table": "v_ah_history",
+    "column": "endpoint_key",
+    "semantic_filter": "asian_handicap_full_timeline",
+    "aggregation_semantics": "pulse_rebound_state_machine_bottom_t0_to_top_tfinal",
+    "timeline_orientation": "timestamp_ascending",
+    "grain": "match",
+    "validation": "surge_and_retreat",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_draw_odds",
+    "term_id": "term_draw_vacuum",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "draw_odds_gte_4_00",
+    "aggregation_semantics": "average_and_max",
+    "grain": "match",
+    "validation": "range_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_poisson_scores",
+    "term_id": "term_poisson_floor",
+    "database_source": "sqlite_view",
+    "table": "v_team_stats",
+    "column": "section",
+    "semantic_filter": "dixon_coles_correlation",
+    "aggregation_semantics": "top_scores",
+    "grain": "match",
+    "validation": "draw_score_check",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_crossmarket_odds",
+    "term_id": "term_constantinou_crossmarket",
+    "database_source": "sqlite_view",
+    "table": "v_asian_odds",
+    "column": "bookmaker",
+    "semantic_filter": "crossmarket_discrepancy",
+    "aggregation_semantics": "crossmarket_delta",
+    "grain": "match",
+    "validation": "handicap_alignment_check",
+    "evidence_refs": [
+      "evidence_case_santos_flamengo"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_favorite_odds",
+    "term_id": "term_levitt_favorite_melt",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "odds_between_1_20_and_1_35",
+    "aggregation_semantics": "min_odds_and_volume",
+    "grain": "match",
+    "validation": "favorite_overheat_check",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_score_matrix",
+    "term_id": "term_egidi_score_snapping",
+    "database_source": "sqlite_view",
+    "table": "v_team_stats",
+    "column": "section",
+    "semantic_filter": "score_matrix_absent",
+    "aggregation_semantics": "score_clustering",
+    "grain": "match",
+    "validation": "explicit_empty",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_had_status",
+    "term_id": "term_sporttery_had_squeeze",
+    "database_source": "sqlite_view",
+    "table": "v_bookmaker_slots",
+    "column": "bookmaker",
+    "semantic_filter": "had_is_none_hhad_open",
+    "aggregation_semantics": "sporttery_risk_squeeze",
+    "grain": "match",
+    "validation": "xg_simulation_check",
+    "evidence_refs": [
+      "evidence_case_dortmund_bologna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_sentinel_odds",
+    "term_id": "term_sentinel_defense",
+    "database_source": "sqlite_view",
+    "table": "v_bookmaker_slots",
+    "column": "bookmaker",
+    "semantic_filter": "sentinel_drop_and_low_water",
+    "aggregation_semantics": "delta_and_low_water",
+    "grain": "match",
+    "validation": "post_review_audit",
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_macau_odds",
+    "term_id": "term_macau_slot",
+    "database_source": "sqlite_view",
+    "table": "v_bookmaker_slots",
+    "column": "bookmaker",
+    "semantic_filter": "macau_asian_handicap_and_odds",
+    "aggregation_semantics": "initial_vs_latest_line",
+    "grain": "match",
+    "validation": "line_movement_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_crown_matrix_odds",
+    "term_id": "term_crown_matrix",
+    "database_source": "sqlite_view",
+    "table": "v_bookmaker_slots",
+    "column": "bookmaker",
+    "semantic_filter": "crown_commercial_liquidity_flow",
+    "aggregation_semantics": "line_and_water_fluctuation",
+    "grain": "match",
+    "validation": "retail_balance_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_bet365_retail_odds",
+    "term_id": "term_bet365_retail",
+    "database_source": "sqlite_view",
+    "table": "v_bookmaker_slots",
+    "column": "bookmaker",
+    "semantic_filter": "bet365_retail_crowd_bias",
+    "aggregation_semantics": "crowd_momentum_tracking",
+    "grain": "match",
+    "validation": "crowd_tilt_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_easybet_odds",
+    "term_id": "term_easybet",
+    "database_source": "sqlite_view",
+    "table": "v_bookmaker_slots",
+    "column": "bookmaker",
+    "semantic_filter": "easybet_baseline_calibration",
+    "aggregation_semantics": "stable_opening_line",
+    "grain": "match",
+    "validation": "opening_spread_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_188bet_odds",
+    "term_id": "term_188bet",
+    "database_source": "sqlite_view",
+    "table": "v_bookmaker_slots",
+    "column": "bookmaker",
+    "semantic_filter": "188bet_high_roller_hedging",
+    "aggregation_semantics": "sharp_water_movement",
+    "grain": "match",
+    "validation": "hedging_flow_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_hkjc_sentinel_odds",
+    "term_id": "term_hkjc_sentinel",
+    "database_source": "sqlite_view",
+    "table": "v_bookmaker_slots",
+    "column": "bookmaker",
+    "semantic_filter": "hkjc_exclusive_risk_limit",
+    "aggregation_semantics": "drop_and_low_water",
+    "grain": "match",
+    "validation": "closed_market_audit",
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_william_hill_odds",
+    "term_id": "term_william_hill",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "william_hill_euro_benchmark",
+    "aggregation_semantics": "anchor_draw_stability",
+    "grain": "match",
+    "validation": "euro_mother_board_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_ladbrokes_odds",
+    "term_id": "term_ladbrokes",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "ladbrokes_defensive_spread",
+    "aggregation_semantics": "underdog_defense_delta",
+    "grain": "match",
+    "validation": "british_spread_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_betvictor_odds",
+    "term_id": "term_betvictor",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "betvictor_independent_pricing",
+    "aggregation_semantics": "bookmaker_opinion_delta",
+    "grain": "match",
+    "validation": "independent_risk_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_interwetten_odds",
+    "term_id": "term_interwetten",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "interwetten_conservative_filter",
+    "aggregation_semantics": "conservative_draw_away_defense",
+    "grain": "match",
+    "validation": "continental_upset_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_bwin_odds",
+    "term_id": "term_bwin",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "bwin_retail_sentiment",
+    "aggregation_semantics": "mass_market_bias",
+    "grain": "match",
+    "validation": "retail_sentiment_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_snai_odds",
+    "term_id": "term_snai",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "snai_italian_insider_defense",
+    "aggregation_semantics": "exclusive_monopoly_delta",
+    "grain": "match",
+    "validation": "domestic_monopoly_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_betfair_exchange_odds",
+    "term_id": "term_betfair_exchange",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "betfair_peer_to_peer_volume",
+    "aggregation_semantics": "matched_volume_and_index",
+    "grain": "match",
+    "validation": "exchange_clearing_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_sbo_odds",
+    "term_id": "term_sbo_sbobet",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "sbo_asian_proprietary_flow",
+    "aggregation_semantics": "deep_liquidity_delta",
+    "grain": "match",
+    "validation": "high_volume_asian_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_ibc_shaba_odds",
+    "term_id": "term_ibc_shaba",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "ibc_credit_pool_liquidity",
+    "aggregation_semantics": "continuous_water_stream",
+    "grain": "match",
+    "validation": "credit_pool_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_marathon_odds",
+    "term_id": "term_marathon_bet",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "marathon_unbiased_payout",
+    "aggregation_semantics": "low_margin_fair_odds",
+    "grain": "match",
+    "validation": "paper_unbiased_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_betway_odds",
+    "term_id": "term_betway",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "betway_academic_consensus",
+    "aggregation_semantics": "standard_commercial_consensus",
+    "grain": "match",
+    "validation": "consensus_pool_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_unibet_odds",
+    "term_id": "term_unibet",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "unibet_nordic_sample",
+    "aggregation_semantics": "regional_market_efficiency",
+    "grain": "match",
+    "validation": "nordic_efficiency_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_paddypower_odds",
+    "term_id": "term_paddypower",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "paddypower_asymmetric_bias",
+    "aggregation_semantics": "aggressive_retail_tilt",
+    "grain": "match",
+    "validation": "sentiment_harvest_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_10bet_odds",
+    "term_id": "term_10bet",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "10bet_tier2_consensus",
+    "aggregation_semantics": "secondary_market_depth",
+    "grain": "match",
+    "validation": "tier2_market_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_sporttery_terminal_odds",
+    "term_id": "term_sporttery_terminal",
+    "database_source": "sqlite_view",
+    "table": "v_bookmaker_slots",
+    "column": "bookmaker",
+    "semantic_filter": "sporttery_terminal_settlement",
+    "aggregation_semantics": "had_hhad_final_payout",
+    "grain": "match",
+    "validation": "official_lottery_settlement_audit",
+    "evidence_refs": [
+      "evidence_match_3013728_osasuna"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_polymarket_terminal_odds",
+    "term_id": "term_polymarket_terminal",
+    "database_source": "sqlite_view",
+    "table": "v_payload_coverage",
+    "column": "endpoint_keys",
+    "semantic_filter": "delivery_only",
+    "aggregation_semantics": "on_chain_implied_probability",
+    "grain": "match",
+    "validation": "delivery_link_only",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_12bet_odds",
+    "term_id": "term_12bet",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "twelvebet_secondary_asia",
+    "aggregation_semantics": "asian_consensus_delta",
+    "grain": "match",
+    "validation": "asian_tier2_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_mansion88_odds",
+    "term_id": "term_mansion88",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "mansion88_asian_flow",
+    "aggregation_semantics": "regional_liquidity_delta",
+    "grain": "match",
+    "validation": "mansion88_market_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  },
+  {
+    "id": "mapping_18bet_odds",
+    "term_id": "term_18bet",
+    "database_source": "sqlite_view",
+    "table": "v_euro_snapshot",
+    "column": "bookmaker",
+    "semantic_filter": "eighteenbet_tier2_odds",
+    "aggregation_semantics": "international_odds_delta",
+    "grain": "match",
+    "validation": "eighteenbet_audit",
+    "evidence_refs": [
+      "evidence_match_3019156"
+    ],
+    "lifecycle_state": "active",
+    "confidence_level": "high"
+  }
+]

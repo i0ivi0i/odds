@@ -10,15 +10,15 @@ RAW_3019164 = ROOT / "data" / "2026-10-23" / "raw" / "3019164.json"
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from ingest_contract import (  # noqa: E402
+from ingest_spider import (  # noqa: E402
     EURO_CIDS,
+    EndpointAssessment,
     assess_payload,
-    build_bundle,
+    content_type_for,
     decode_body,
     extract_euro_cids,
     load_contract,
     parse_euro_history,
-    validate_bundle,
 )
 
 JS_HEADER = 'var game=Array({entries});{game_detail}ScheduleID={match_id};hometeam_cn="主队";guestteam_cn="客队";'
@@ -220,168 +220,35 @@ class IngestContractTest(unittest.TestCase):
         )
         return payloads
 
-    def test_bundle_polymarket_empty_is_not_offered(self):
-        payloads = self._full_payloads()
-        results = {key: assess_payload(self.contract, key, text) for key, text in payloads.items()}
-        bundle = build_bundle(
-            match={"match_id": "3073801", "sales_date": "2026-10-22", "home": "主队", "away": "客队"},
-            results=results,
-            contract=self.contract,
+    def test_item_content_types_and_empty_state(self):
+        js_item = EndpointAssessment("1x2d.js", "", 200, "var game=Array();", "utf-8", "ok").item(
+            "3073801", "text"
         )
-        self.assertTrue(bundle["gates"]["ok"], bundle["gates"]["errors"])
-        self.assertEqual(bundle["gates"]["slots"]["Polymarket"], "not_offered")
-
-    def test_bundle_188bet_identity_conflict_is_not_supported(self):
-        payloads = self._full_payloads()
-        payloads["ah_42.html"] = table_payload("18Bet | 时间 | 水位")
-        results = {key: assess_payload(self.contract, key, text) for key, text in payloads.items()}
-        results["ah_42.html"] = assess_payload(
-            self.contract, "ah_42.html", payloads["ah_42.html"], enforce_bookmaker_title=True
+        markdown_item = EndpointAssessment("ah_1.html", "", 200, "| 0.9 | -0.5 | 1.0 |", "utf-8", "ok").item(
+            "3073801", "markdown"
         )
-        bundle = build_bundle(
-            match={"match_id": "3073801", "sales_date": "2026-10-22", "home": "主队", "away": "客队"},
-            results=results,
-            contract=self.contract,
+        empty_item = EndpointAssessment("eu_42.html", "", 200, "", "utf-8", "not_offered").item(
+            "3073801", "markdown"
         )
-        self.assertFalse(bundle["gates"]["ok"])
-        self.assertEqual(bundle["gates"]["slots"]["188Bet"], "identity_conflict")
+        self.assertEqual(js_item["content_type"], "javascript")
+        self.assertEqual(markdown_item["content_type"], "markdown")
+        self.assertEqual(empty_item["content_type"], "empty")
+        self.assertEqual(empty_item["empty_state"], "not_offered")
 
-    def test_bundle_188bet_empty_evidence_is_not_offered_without_extra_error(self):
-        payloads = self._full_payloads()
-        payloads["ah_42.html"] = ""
-        payloads["ou_42.html"] = ""
-        results = {key: assess_payload(self.contract, key, text) for key, text in payloads.items()}
-        bundle = build_bundle(
-            match={"match_id": "3073801", "sales_date": "2026-10-22", "home": "主队", "away": "客队"},
-            results=results,
-            contract=self.contract,
-        )
-        self.assertTrue(bundle["gates"]["ok"], bundle["gates"]["errors"])
-        self.assertEqual(bundle["gates"]["slots"]["188Bet"], "not_offered")
+    def test_failed_waf_item_remains_an_explicit_failed_item(self):
+        result = assess_payload(self.contract, "analysis.html", "Just a moment...")
+        item = result.item("3073801", "html")
+        self.assertEqual(item["state"], "failed")
+        self.assertIn("waf_blocked", result.errors)
+        self.assertNotEqual(item["content"], "")
 
-    def test_change_tables_only_counts_data_bearing_tables(self):
-        payloads = self._full_payloads()
-        payloads["eu_1.html"] = ""
-        results = {key: assess_payload(self.contract, key, text) for key, text in payloads.items()}
-        bundle = build_bundle(
-            match={"match_id": "3073801", "sales_date": "2026-10-22", "home": "主队", "away": "客队"},
-            results=results,
-            contract=self.contract,
-        )
-        self.assertEqual(bundle["gates"]["counts"]["change_tables"], 20)
+    def test_legacy_gate_symbols_are_not_exposed(self):
+        import ingest_spider
 
-    def test_slots_have_a_status_for_all_23_bookmakers(self):
-        payloads = self._full_payloads()
-        results = {key: assess_payload(self.contract, key, text) for key, text in payloads.items()}
-        bundle = build_bundle(
-            match={"match_id": "3073801", "sales_date": "2026-10-22", "home": "主队", "away": "客队"},
-            results=results,
-            contract=self.contract,
-        )
-        self.assertEqual(len(bundle["gates"]["slots"]), 23)
-        self.assertTrue(all(bundle["gates"]["slots"].values()))
-
-    def test_build_and_validate_bundle(self):
-        payloads = {
-            "1x2d.js": js_payload(),
-            "analysis.html": '<div id="porlet_8">阵容</div>',
-            "odds.html": '<div id="analy_sbAllOdds">波胆</div>',
-            "analy.json": '{"had": null}',
-            "polymarket.json": "[]",
-            "asian_odds.html": table_payload(),
-            "over_under.html": table_payload(),
-        }
-        for key in self.contract.endpoint_keys:
-            if key not in payloads:
-                payloads[key] = table_payload()
-        results = {
-            key: assess_payload(self.contract, key, text)
-            for key, text in payloads.items()
-        }
-        bundle = build_bundle(
-            match={"match_id": "3073801", "sales_date": "2026-10-22", "home": "主队", "away": "客队"},
-            results=results,
-            contract=self.contract,
-        )
-        report = validate_bundle(bundle, self.contract)
-        self.assertTrue(report.ok, report.errors)
-        self.assertEqual(report.counts["payload_keys"], 28)
-        self.assertEqual(report.counts["bookmaker_slots"], 23)
-
-    def test_validate_bundle_rejects_missing_key_and_bad_receipt(self):
-        payloads = {key: table_payload() for key in self.contract.endpoint_keys}
-        payloads["1x2d.js"] = js_payload()
-        results = {key: assess_payload(self.contract, key, text) for key, text in payloads.items()}
-        bundle = build_bundle(
-            match={"match_id": "3073801", "sales_date": "2026-10-22", "home": "主队", "away": "客队"},
-            results=results,
-            contract=self.contract,
-        )
-        del bundle["payloads"]["over_under.html"]
-        report = validate_bundle(bundle, self.contract)
-        self.assertFalse(report.ok)
-        self.assertIn("missing_payload:over_under.html", report.errors)
-
-        payloads = {key: table_payload() for key in self.contract.endpoint_keys}
-        payloads["1x2d.js"] = js_payload()
-        results = {key: assess_payload(self.contract, key, text) for key, text in payloads.items()}
-        bundle = build_bundle(
-            match={"match_id": "3073801", "sales_date": "2026-10-22", "home": "主队", "away": "客队"},
-            results=results,
-            contract=self.contract,
-        )
-        bundle["receipt"]["endpoints"]["analysis.html"]["chars"] += 1
-        report = validate_bundle(bundle, self.contract)
-        self.assertFalse(report.ok)
-        self.assertIn("receipt_chars_mismatch:analysis.html", report.errors)
-
-    def test_validate_bundle_rejects_failed_endpoint(self):
-        payloads = {key: table_payload() for key in self.contract.endpoint_keys}
-        payloads["1x2d.js"] = js_payload()
-        payloads["ah_1.html"] = ""
-        results = {key: assess_payload(self.contract, key, text) for key, text in payloads.items()}
-        bundle = build_bundle(
-            match={"match_id": "3073801", "sales_date": "2026-10-22", "home": "主队", "away": "客队"},
-            results=results,
-            contract=self.contract,
-        )
-        report = validate_bundle(bundle, self.contract)
-        self.assertFalse(report.ok)
-        self.assertTrue(any(error.startswith("endpoint_failed:ah_1.html") for error in report.errors))
-
-
-    @unittest.skipUnless(RAW_3073801.exists(), "saved 3073801 raw is not available")
-    def test_saved_3073801_raw_is_not_green_under_the_new_gate(self):
-        raw = json.loads(RAW_3073801.read_text(encoding="utf-8"))
-        payloads = raw["payloads"]
-        histories = parse_euro_history(payloads["1x2d.js"])
-        self.assertTrue(set(EURO_CIDS).issubset(histories))
-        self.assertTrue(all(len(histories[cid]) >= 1 for cid in EURO_CIDS))
-        self.assertEqual(assess_payload(self.contract, "1x2d.js", payloads["1x2d.js"]).state, "ok")
-
-        self.assertEqual(
-            assess_payload(self.contract, "polymarket.json", payloads["polymarket.json"]).state,
-            "not_offered",
-        )
-        for key in ("eu_1.html", "eu_3.html", "eu_8.html", "eu_12.html", "eu_42.html", "eu_47.html", "eu_48.html"):
-            self.assertNotEqual(
-                assess_payload(self.contract, key, payloads[key]).state,
-                "ok",
-                f"{key} must not pass on a header-only table",
-            )
-
-
-    @unittest.skipUnless(RAW_3019164.exists(), "saved 3019164 raw is not available")
-    def test_saved_3019164_bundle_is_complete(self):
-        raw = json.loads(RAW_3019164.read_text(encoding="utf-8"))
-        self.assertTrue(raw["gates"]["ok"], raw["gates"]["errors"])
-        self.assertEqual(len(raw["payloads"]), 28)
-        self.assertEqual(len(raw["receipt"]["endpoints"]), 28)
-        self.assertEqual(len(raw["gates"]["slots"]), 23)
-        self.assertEqual(raw["gates"]["slots"]["Polymarket"], "not_offered")
-        self.assertEqual(raw["receipt"]["endpoints"]["eu_42.html"]["state"], "not_offered")
-        self.assertEqual(raw["gates"]["counts"]["euro_cids"], 21)
+        self.assertFalse(hasattr(ingest_spider, "build_bundle"))
+        self.assertFalse(hasattr(ingest_spider, "validate_bundle"))
 
 
 if __name__ == "__main__":
     unittest.main()
+

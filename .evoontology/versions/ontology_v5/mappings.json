@@ -1,0 +1,580 @@
+[
+ {
+  "id": "mapping_pinnacle_odds",
+  "term_id": "term_pinnacle_anchor",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 177",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the Pinnacle row; compare latest against initial",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest",
+  "grain": "match",
+  "validation": "delta_check",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high"
+ },
+ {
+  "id": "mapping_handicap_timeline",
+  "term_id": "term_headfake_surge",
+  "database_source": "sqlite_view",
+  "table": "v_ah_history",
+  "column": "home",
+  "semantic_filter": "endpoint_key LIKE 'ah_%'",
+  "aggregation_semantics": "home, line_text, away ordered by ts_iso; initial=min(ts_iso), latest=max(ts_iso)",
+  "timeline_orientation": "ts_iso ascending",
+  "grain": "match",
+  "validation": "surge_and_retreat",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high"
+ },
+ {
+  "id": "mapping_draw_odds",
+  "term_id": "term_draw_vacuum",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_draw",
+  "semantic_filter": "latest_draw >= 4.00",
+  "aggregation_semantics": "latest_draw and initial_draw from the same bookmaker row; retain bookmaker/cid",
+  "grain": "match",
+  "validation": "range_check",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "initial_draw is the earliest record; latest_draw is the newest"
+ },
+ {
+  "id": "mapping_poisson_scores",
+  "term_id": "term_poisson_floor",
+  "database_source": "sqlite_view",
+  "table": "v_team_stats",
+  "column": "value",
+  "semantic_filter": "section = 'xg' OR section = 'matchFeature'",
+  "aggregation_semantics": "xG presence and matchFeature counts; Poisson score distribution is computed by the sports-math MCP, not stored in SQLite",
+  "grain": "match",
+  "validation": "draw_score_check",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "current match snapshot"
+ },
+ {
+  "id": "mapping_crossmarket_odds",
+  "term_id": "term_constantinou_crossmarket",
+  "database_source": "sqlite_view",
+  "table": "v_asian_odds",
+  "column": "line",
+  "semantic_filter": "company_id IN (1,3,8,12,47,48)",
+  "aggregation_semantics": "first_line, line, first_home, home, first_away, away by company_id; compare with Euro implied goal line",
+  "grain": "match",
+  "validation": "handicap_alignment_check",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "modify_ts ascending"
+ },
+ {
+  "id": "mapping_favorite_odds",
+  "term_id": "term_levitt_favorite_melt",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "latest_home BETWEEN 1.20 AND 1.35",
+  "aggregation_semantics": "latest_home and initial_home from the same bookmaker row; retain latest_draw and latest_away for the full 1X2 quote",
+  "grain": "match",
+  "validation": "favorite_overheat_check",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "initial_home is the earliest record; latest_home is the newest"
+ },
+ {
+  "id": "mapping_score_matrix",
+  "term_id": "term_egidi_score_snapping",
+  "database_source": "sqlite_view",
+  "table": "v_team_stats",
+  "column": "value",
+  "semantic_filter": "section = 'matchFeature'",
+  "aggregation_semantics": "matchFeature win/draw/loss counts; score matrix is not present in the source payload, so the external Poisson/Dixon-Coles model must be used",
+  "grain": "match",
+  "validation": "explicit_empty",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "current match snapshot"
+ },
+ {
+  "id": "mapping_had_status",
+  "term_id": "term_sporttery_had_squeeze",
+  "database_source": "sqlite_view",
+  "table": "v_bookmaker_slots",
+  "column": "eu_status",
+  "semantic_filter": "bookmaker = '中国体彩'",
+  "aggregation_semantics": "supported or not_offered; the source payload records the Sporttery HAD/HHAD state",
+  "grain": "match",
+  "validation": "xg_simulation_check",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "current match snapshot"
+ },
+ {
+  "id": "mapping_sentinel_odds",
+  "term_id": "term_sentinel_defense",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid IN (432, 1129, 80, 82)",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* for HKJC, Sporttery, Macau and Ladbrokes",
+  "grain": "match",
+  "validation": "post_review_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "initial_* is the earliest record; latest_* is the newest"
+ },
+ {
+  "id": "mapping_macau_odds",
+  "term_id": "term_macau_slot",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 80",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "line_movement_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_crown_matrix_odds",
+  "term_id": "term_crown_matrix",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 545",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "retail_balance_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_bet365_retail_odds",
+  "term_id": "term_bet365_retail",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 281",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "crowd_tilt_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_easybet_odds",
+  "term_id": "term_easybet",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 90",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "opening_spread_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_188bet_odds",
+  "term_id": "term_188bet",
+  "database_source": "sqlite_view",
+  "table": "v_bookmaker_slots",
+  "column": "ah_status",
+  "semantic_filter": "bookmaker = '188Bet' AND euro_cid IS NULL",
+  "aggregation_semantics": "188Bet has AH/OU cid 42 but no confirmed euro cid; use ah_status and ou_status only",
+  "grain": "match",
+  "validation": "hedging_flow_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "current match snapshot"
+ },
+ {
+  "id": "mapping_hkjc_sentinel_odds",
+  "term_id": "term_hkjc_sentinel",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 432",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "closed_market_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_william_hill_odds",
+  "term_id": "term_william_hill",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 115",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "euro_mother_board_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_ladbrokes_odds",
+  "term_id": "term_ladbrokes",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 82",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "british_spread_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_betvictor_odds",
+  "term_id": "term_betvictor",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 81",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "independent_risk_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_interwetten_odds",
+  "term_id": "term_interwetten",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 104",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "continental_upset_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_bwin_odds",
+  "term_id": "term_bwin",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 255",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "retail_sentiment_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_snai_odds",
+  "term_id": "term_snai",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 110",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "domestic_monopoly_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_betfair_exchange_odds",
+  "term_id": "term_betfair_exchange",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 2",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "exchange_clearing_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_sbo_odds",
+  "term_id": "term_sbo_sbobet",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 474",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "high_volume_asian_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_ibc_shaba_odds",
+  "term_id": "term_ibc_shaba",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 649",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "credit_pool_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_marathon_odds",
+  "term_id": "term_marathon_bet",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 800",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "paper_unbiased_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_betway_odds",
+  "term_id": "term_betway",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 482",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "consensus_pool_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_unibet_odds",
+  "term_id": "term_unibet",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 386",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "nordic_efficiency_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_paddypower_odds",
+  "term_id": "term_paddypower",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 826",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "sentiment_harvest_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_10bet_odds",
+  "term_id": "term_10bet",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 16",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "tier2_market_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_sporttery_terminal_odds",
+  "term_id": "term_sporttery_terminal",
+  "database_source": "sqlite_view",
+  "table": "v_euro_snapshot",
+  "column": "latest_home",
+  "semantic_filter": "cid = 1129",
+  "aggregation_semantics": "latest_home, latest_draw, latest_away and initial_* from the same bookmaker row; compare latest against initial",
+  "grain": "match",
+  "validation": "official_lottery_settlement_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "source_index/time ascending; initial_* is the earliest record, latest_* the newest"
+ },
+ {
+  "id": "mapping_polymarket_terminal_odds",
+  "term_id": "term_polymarket_terminal",
+  "database_source": "sqlite_view",
+  "table": "v_payload_coverage",
+  "column": "endpoint_keys",
+  "semantic_filter": "Polymarket is delivery_only and never enters the 27 endpoint analysis payload",
+  "aggregation_semantics": "delivery link only; no odds and no analysis input",
+  "grain": "match",
+  "validation": "delivery_link_only",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "delivery time"
+ },
+ {
+  "id": "mapping_12bet_odds",
+  "term_id": "term_12bet",
+  "database_source": "sqlite_view",
+  "table": "v_bookmaker_slots",
+  "column": "ah_status",
+  "semantic_filter": "not part of the official 23-slot roster; retained only as a historical term",
+  "aggregation_semantics": "not_offered; do not use for the official 23-bookmaker coverage gate",
+  "grain": "match",
+  "validation": "asian_tier2_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "current match snapshot"
+ },
+ {
+  "id": "mapping_mansion88_odds",
+  "term_id": "term_mansion88",
+  "database_source": "sqlite_view",
+  "table": "v_bookmaker_slots",
+  "column": "ah_status",
+  "semantic_filter": "not part of the official 23-slot roster; retained only as a historical term",
+  "aggregation_semantics": "not_offered; do not use for the official 23-bookmaker coverage gate",
+  "grain": "match",
+  "validation": "mansion88_market_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "current match snapshot"
+ },
+ {
+  "id": "mapping_18bet_odds",
+  "term_id": "term_18bet",
+  "database_source": "sqlite_view",
+  "table": "v_bookmaker_slots",
+  "column": "ah_status",
+  "semantic_filter": "not part of the official 23-slot roster; retained only as a historical term",
+  "aggregation_semantics": "not_offered; do not use for the official 23-bookmaker coverage gate",
+  "grain": "match",
+  "validation": "eighteenbet_audit",
+  "evidence_refs": [
+   "evidence_match_3003920_live"
+  ],
+  "lifecycle_state": "active",
+  "confidence_level": "high",
+  "timeline_orientation": "current match snapshot"
+ }
+]

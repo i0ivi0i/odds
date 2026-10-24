@@ -1,0 +1,99 @@
+{
+  "task_id": "task_f8ea0ffbe68d44b7ab1dcb34317f7343",
+  "question_id": "q_3019164_sqlite_final_read_path",
+  "question": "对最终库 3019164.db 执行只读验收：核对 v_payload_coverage 27 个数据端点、v_bookmaker_slots 23 个槽位（22 数据库 + 1 Polymarket delivery_only）、21 家欧指、367 条欧指历史、21 条亚盘、23 条大小球。",
+  "data_source": "D:/100-工作/200-交易/倍率分析推演/data/2026-10-23/3019164.db",
+  "origin": "user",
+  "topics": [],
+  "ontology_version": "ontology_v4",
+  "batch_id": "",
+  "split": "construction",
+  "task_status": "completed",
+  "started_at": "2026-10-23T18:01:03.340114+00:00",
+  "events": [
+    {
+      "event_id": "ev_3019164_final_q1",
+      "tool": "sqlite_query",
+      "input": {
+        "query": "SELECT (SELECT payload_rows FROM v_payload_coverage) AS payload_rows, (SELECT endpoint_keys FROM v_payload_coverage) AS endpoint_keys, (SELECT COUNT(*) FROM v_bookmaker_slots) AS slots, (SELECT COUNT(*) FROM v_euro_snapshot) AS euro_snapshots, (SELECT COUNT(*) FROM v_euro_history) AS euro_history, (SELECT COUNT(*) FROM v_asian_odds) AS asian_rows, (SELECT COUNT(*) FROM v_over_under) AS ou_rows;"
+      },
+      "result": {
+        "columns": [
+          "payload_rows",
+          "endpoint_keys",
+          "slots",
+          "euro_snapshots",
+          "euro_history",
+          "asian_rows",
+          "ou_rows"
+        ],
+        "rows": [
+          [
+            27,
+            27,
+            23,
+            21,
+            367,
+            21,
+            23
+          ]
+        ],
+        "truncated": false
+      },
+      "result_truncated": false,
+      "result_summary": "{'columns': ['payload_rows', 'endpoint_keys', 'slots', 'euro_snapshots', 'euro_history', 'asian_rows', 'ou_rows'], 'rows': [[27, 27, 23, 21, 367, 21, 23]], 'truncated': False}",
+      "error": false
+    }
+  ],
+  "semantic_calls": [],
+  "native_tool_calls": [
+    {
+      "event_id": "ev_3019164_final_q1",
+      "tool": "sqlite_query",
+      "input": {
+        "query": "SELECT (SELECT payload_rows FROM v_payload_coverage) AS payload_rows, (SELECT endpoint_keys FROM v_payload_coverage) AS endpoint_keys, (SELECT COUNT(*) FROM v_bookmaker_slots) AS slots, (SELECT COUNT(*) FROM v_euro_snapshot) AS euro_snapshots, (SELECT COUNT(*) FROM v_euro_history) AS euro_history, (SELECT COUNT(*) FROM v_asian_odds) AS asian_rows, (SELECT COUNT(*) FROM v_over_under) AS ou_rows;"
+      },
+      "result": {
+        "columns": [
+          "payload_rows",
+          "endpoint_keys",
+          "slots",
+          "euro_snapshots",
+          "euro_history",
+          "asian_rows",
+          "ou_rows"
+        ],
+        "rows": [
+          [
+            27,
+            27,
+            23,
+            21,
+            367,
+            21,
+            23
+          ]
+        ],
+        "truncated": false
+      },
+      "result_truncated": false,
+      "result_summary": "{'columns': ['payload_rows', 'endpoint_keys', 'slots', 'euro_snapshots', 'euro_history', 'asian_rows', 'ou_rows'], 'rows': [[27, 27, 23, 21, 367, 21, 23]], 'truncated': False}",
+      "error": false
+    }
+  ],
+  "errors": [],
+  "final_answer": {
+    "database": "data/2026-10-23/3019164.db",
+    "status": "completed",
+    "verification": {
+      "asian_rows": 21,
+      "bookmaker_slots": 23,
+      "euro_history": 367,
+      "euro_snapshots": 21,
+      "over_under_rows": 23,
+      "payload_rows": 27,
+      "payload_endpoint_keys": 27
+    }
+  },
+  "recorded_at": "2026-10-23T18:01:07.573249+00:00"
+}

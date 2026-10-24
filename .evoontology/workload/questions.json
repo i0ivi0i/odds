@@ -1,0 +1,25 @@
+{
+  "questions": [
+    {
+      "id": "q_3003920_v5_live_read_path",
+      "question": "对 v5 活跃本体执行 3003920 实盘只读验收：平博 cid=177、皇冠 545、Bet365 281、澳彩 80、香港马会 432 的 latest_home 是否可从 v_euro_snapshot 读取，并核对 27 个分析端点与 23 个机构槽位。",
+      "origin": "user",
+      "data_source": "D:/100-工作/200-交易/倍率分析推演/data/2026-10-24/3003920.db",
+      "provenance": [
+        {
+          "origin": "user",
+          "source_ref": "current request",
+          "evidence_refs": []
+        }
+      ],
+      "topics": [
+        "sqlite",
+        "v5",
+        "live-read"
+      ],
+      "recorded_at": "2026-10-24T05:15:53.912758+00:00",
+      "purpose": "construction"
+    }
+  ],
+  "updated_at": "2026-10-24T05:15:53.912822+00:00"
+}

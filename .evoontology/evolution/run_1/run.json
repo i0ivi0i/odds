@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "run_id": "run_1",
+  "status": "incomplete",
+  "parent_version": "ontology_v4",
+  "adapter": "",
+  "acceptance": {},
+  "budget": {
+    "max_rounds": 2
+  },
+  "min_rejects_before_incomplete": 2,
+  "round": 0,
+  "current_hypothesis": "",
+  "current_candidate": "",
+  "accepted_version": "",
+  "end_reason": "user_interrupted",
+  "created_at": "2026-10-24T05:01:40.030766+00:00",
+  "updated_at": "2026-10-24T05:14:08.153689+00:00"
+}

@@ -1,0 +1,55 @@
+{
+  "task_id": "task_d8e900afe9e54aac987483315d0d334c",
+  "question_id": "q_3019164_sqlite_final_read_path",
+  "question": "对最终库 3019164.db 执行只读验收：核对 v_payload_coverage 27 个数据端点、v_bookmaker_slots 23 个槽位（22 数据库 + 1 Polymarket delivery_only）、21 家欧指、367 条欧指历史、21 条亚盘、23 条大小球。",
+  "data_source": "D:/100-工作/200-交易/倍率分析推演/data/2026-10-23/3019164.db",
+  "origin": "user",
+  "topics": [],
+  "ontology_version": "ontology_v4",
+  "batch_id": "",
+  "split": "construction",
+  "task_status": "running",
+  "started_at": "2026-10-24T05:11:42.223143+00:00",
+  "events": [
+    {
+      "event_id": "semantic_21203fed4fab457b98184ea5612484b5",
+      "tool": "resolve_semantics",
+      "input": {
+        "mentions": [
+          "平博",
+          "皇冠",
+          "Bet365",
+          "澳彩",
+          "香港马会"
+        ],
+        "context": "验证 v4 SQLite 语义映射是否能指向真实赔率字段"
+      },
+      "result": "{'status': 'ok', 'results': [{'query': '平博', 'query_type': 'mention', 'status': 'resolved', 'match_rationale': \"exact alias match: term 'Pinnacle_Anchor'\", 'term': {'id': 'term_pinnacle_anchor', 'type': 'metric', 'name': 'Pinnacle_Anchor', 'aliases': ['平博', '平博标杆', '做市锚点', '测谎仪', 'pinnacle'], 'definition': '[Graphify 溯源: graphify://paper/Constantinou_2022_Sharp_Benchmark] 平博作为全球唯一大资金真金白银做市标杆。其赔率反映庄家真实风控底线与客观物理期望，而非散户情绪引流工具。', 'scope': 'global', 'evidence_refs': []}, 'mappings': [{'id': 'mapping_pinnacle_odds', 'term_id': 'term_pinnacle_anchor', 'table': 'v_euro_snapshot', 'column': 'bookmaker', 'semantic_filter': 'pinnacle_euro_odds', 'aggregation_semantics': 'latest_value_vs_initial_value', 'grain': 'match', 'evidence_refs': ['evidence_match_3019156']}], 'relations': [{'id': 'rel_benchmark_vs_retail', 'relation_type': 'association', 'source': 'term_pinnacle_anchor', 'target': 'term_headfake_surge', 'connection_condition': 'pinnacle_flat_and_retail_dropped', 'evidence_refs': []}, {'id': 'rel_crossmarket_vs_pinnacle', 'relation_type': 'association', 'source': 'term_constantinou_crossmarket', 'target': 'term_pinnacle_anchor', 'connection_condition': 'crossmarket_gap_exceeds_threshold', 'evidence_refs': []}, {'id': 'rel_british_vs_pinnacle', 'relation_type': 'association', 'source': 'term_william_hill', 'target': 'term_pinnacle_anchor', 'connection_condition': 'william_hill_draw_anchor_vs_pinnacle_sharp', 'evidence_refs': []}], 'constraints': [{'id': 'constraint_pinnacle_stability', 'severity': 'block', 'description': '【标杆定海神针警报】商业庄与体彩单边剧烈降赔（>=0.15），但风控标杆平博变动绝对值<=0.03（几乎纹丝不动）。此为典型商业庄顺应散户偏见出货引流形态，强制禁止将商业庄降赔直接等同于机构防守，大模型必须在认知契约卡中显式对质平博未动原因！', 'evidence_refs': []}, {'id': 'constraint_payload_integrity', 'severity': 'block', 'description': '【底层物理存证 Schema 完整性警报】v_payload_coverage 必须覆盖 27 个数据端点（28 个采集端点中排除 Polymarket 交付链接），payload_rows 必须为 27，endpoint_keys 必须为 27，且允许 eu_42.html 的 not_offered 空态。所有键内容必须为有效字符串；若缺少任一端点或载荷损坏，强制判定底层数据失效，严禁大模型定性胜负，立即触发阻断！', 'evidence_refs': []}],",
+      "result_truncated": true,
+      "result_summary": "1 lines, 7653 chars; preview shows first 20 lines / 2000 chars.",
+      "error": false
+    }
+  ],
+  "semantic_calls": [
+    {
+      "event_id": "semantic_21203fed4fab457b98184ea5612484b5",
+      "tool": "resolve_semantics",
+      "input": {
+        "mentions": [
+          "平博",
+          "皇冠",
+          "Bet365",
+          "澳彩",
+          "香港马会"
+        ],
+        "context": "验证 v4 SQLite 语义映射是否能指向真实赔率字段"
+      },
+      "result": "{'status': 'ok', 'results': [{'query': '平博', 'query_type': 'mention', 'status': 'resolved', 'match_rationale': \"exact alias match: term 'Pinnacle_Anchor'\", 'term': {'id': 'term_pinnacle_anchor', 'type': 'metric', 'name': 'Pinnacle_Anchor', 'aliases': ['平博', '平博标杆', '做市锚点', '测谎仪', 'pinnacle'], 'definition': '[Graphify 溯源: graphify://paper/Constantinou_2022_Sharp_Benchmark] 平博作为全球唯一大资金真金白银做市标杆。其赔率反映庄家真实风控底线与客观物理期望，而非散户情绪引流工具。', 'scope': 'global', 'evidence_refs': []}, 'mappings': [{'id': 'mapping_pinnacle_odds', 'term_id': 'term_pinnacle_anchor', 'table': 'v_euro_snapshot', 'column': 'bookmaker', 'semantic_filter': 'pinnacle_euro_odds', 'aggregation_semantics': 'latest_value_vs_initial_value', 'grain': 'match', 'evidence_refs': ['evidence_match_3019156']}], 'relations': [{'id': 'rel_benchmark_vs_retail', 'relation_type': 'association', 'source': 'term_pinnacle_anchor', 'target': 'term_headfake_surge', 'connection_condition': 'pinnacle_flat_and_retail_dropped', 'evidence_refs': []}, {'id': 'rel_crossmarket_vs_pinnacle', 'relation_type': 'association', 'source': 'term_constantinou_crossmarket', 'target': 'term_pinnacle_anchor', 'connection_condition': 'crossmarket_gap_exceeds_threshold', 'evidence_refs': []}, {'id': 'rel_british_vs_pinnacle', 'relation_type': 'association', 'source': 'term_william_hill', 'target': 'term_pinnacle_anchor', 'connection_condition': 'william_hill_draw_anchor_vs_pinnacle_sharp', 'evidence_refs': []}], 'constraints': [{'id': 'constraint_pinnacle_stability', 'severity': 'block', 'description': '【标杆定海神针警报】商业庄与体彩单边剧烈降赔（>=0.15），但风控标杆平博变动绝对值<=0.03（几乎纹丝不动）。此为典型商业庄顺应散户偏见出货引流形态，强制禁止将商业庄降赔直接等同于机构防守，大模型必须在认知契约卡中显式对质平博未动原因！', 'evidence_refs': []}, {'id': 'constraint_payload_integrity', 'severity': 'block', 'description': '【底层物理存证 Schema 完整性警报】v_payload_coverage 必须覆盖 27 个数据端点（28 个采集端点中排除 Polymarket 交付链接），payload_rows 必须为 27，endpoint_keys 必须为 27，且允许 eu_42.html 的 not_offered 空态。所有键内容必须为有效字符串；若缺少任一端点或载荷损坏，强制判定底层数据失效，严禁大模型定性胜负，立即触发阻断！', 'evidence_refs': []}],",
+      "result_truncated": true,
+      "result_summary": "1 lines, 7653 chars; preview shows first 20 lines / 2000 chars.",
+      "error": false
+    }
+  ],
+  "native_tool_calls": [],
+  "errors": []
+}

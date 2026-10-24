@@ -1,18 +1,17 @@
 {
-  "version": 1,
-  "schema_version": 1,
-  "mode": "rolling_trajectory",
-  "data_source": "data",
-  "workload_source": "match_odds_deduction",
+  "boundary": {
+    "min_days": 7,
+    "min_new_trajectories": 30,
+    "strategy": "rolling_trajectory"
+  },
+  "data_source": "D:/100-工作/200-交易/倍率分析推演/data/2026-10-24/3003920.db",
   "description": "Football match odds deduction perception layer (eyes & camera) workspace.",
   "evaluation": {
     "type": "llm_judge",
     "validation_reserve_ratio": 0.3,
     "zero_regression_required": true
   },
-  "boundary": {
-    "strategy": "rolling_trajectory",
-    "min_new_trajectories": 30,
-    "min_days": 7
-  }
+  "mode": "rolling_trajectory",
+  "schema_version": 1,
+  "workload_source": "match_odds_deduction"
 }

@@ -1,0 +1,14 @@
+{
+  "summary": "SQLite data-path adaptation for the official ingest pipeline: 27 analysis endpoints, 21 euro cids, 22 database bookmaker slots and 23 view slots. Mappings resolve against v_euro_snapshot, v_ah_history, v_ou_history, v_team_stats, v_bookmaker_slots, v_asian_odds and v_payload_coverage. Live fixture: data/2026-10-24/3003920.db.",
+  "limitations": [
+    "This v5 is a migration snapshot from v4, not an officially evaluated evolution candidate.",
+    "Only 8 new trajectories and 6.861 days existed at build time; the official 30-trajectory / 7-day evolution gate was not reached.",
+    "188Bet has AH/OU cid 42 but no confirmed euro cid; it is marked not_offered for euro.",
+    "Poisson/Dixon-Coles score distributions are computed by the sports-math MCP; they are not stored in SQLite.",
+    "v_lineup is empty for the live fixture; lineup/formation coverage remains a data gap."
+  ],
+  "links": [],
+  "questions": [],
+  "recorded_at": "2026-10-24T05:13:53.847197+00:00",
+  "version": "ontology_v5"
+}

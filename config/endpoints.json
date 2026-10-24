@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "description": "单场 28 端点唯一机器契约（移动端高防 CDN 与 API 架构）；人类镜像见 skills/match-scraper/references/endpoint-manifest.md",
+  "description": "单场 28 个采集端点唯一机器契约（27 个分析端点 + 1 个 Polymarket 交付端点；Polymarket 不入分析库）；人类镜像见 skills/match-scraper/references/endpoint-manifest.md",
   "endpoints": [
     {
       "key": "1x2d.js",

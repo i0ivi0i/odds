@@ -1,9 +1,9 @@
-# 单场 28 端点唯一契约（人类镜像）
+# 单场 28 个采集端点唯一契约（27 个分析端点 + 1 个 Polymarket 交付端点）
 
 - **机器唯一源**：`config/endpoints.json`
 - **本文件角色**：人类可读镜像；代码只读 JSON，不解析本表。
 - **计数恒等式**：`28 = 4 core + 7 AH + 7 OU + 7 EU + 1 Polymarket + 2 panorama`
-- **高防 CDN 铁律**：全部 28 端点已迁移至移动端云高防 CDN 集群（`txt.titan007.com` 与 `m.titan007.com`），彻底废弃被封禁的 PC 端 IIS 老旧节点。
+- **高防 CDN 铁律**：全部 28 个采集端点已迁移至移动端云高防 CDN 集群（`txt.titan007.com` 与 `m.titan007.com`），彻底废弃被封禁的 PC 端 IIS 老旧节点。`polymarket.json` 只是第 28 个交付端点，不参与分析与入库。
 - **统一编码铁律**：全部 28 端点原生统一为 UTF-8 编码，消除 GB18030 字符替换损坏风险。
 - **纯结构化 JSON 升级**：亚盘与大小球全景总表升级为移动端原生 JSON 接口（`HandicapDataInterface.ashx`），单次请求聚合全网做市商初即盘与走地多盘口；`odds.html` 接入 `Lineup` 阵容微观数据，`analy.json` 接入 `shijian` 即时事件与 xG 技统。
 
