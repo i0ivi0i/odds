@@ -1200,8 +1200,8 @@ ORDER BY CASE e.cid
 END, e.cid;
 
 -- Full euro time series: one row per source change. Never dedupe timestamps.
--- Sort globally by time first so the whole table has one arrow of time;
--- source_index keeps the original order and is latest-first.
+-- Source array order is arbitrary, so use the same fixed bookmaker priority
+-- as 欧指; inside each bookmaker, time always moves forward.
 CREATE OR REPLACE TABLE "欧指变盘" AS
 SELECT
   h.match_id AS "比赛ID",
@@ -1239,7 +1239,30 @@ SELECT
   h.kelly_draw AS "凯利平局",
   h.kelly_away AS "凯利客胜"
 FROM euro_history h
-ORDER BY h.ts_iso ASC, h.cid, h.source_index DESC;
+ORDER BY CASE h.cid
+  WHEN 80 THEN 1
+  WHEN 545 THEN 2
+  WHEN 281 THEN 3
+  WHEN 90 THEN 4
+  WHEN 177 THEN 5
+  WHEN 432 THEN 6
+  WHEN 115 THEN 7
+  WHEN 82 THEN 8
+  WHEN 81 THEN 9
+  WHEN 104 THEN 10
+  WHEN 255 THEN 11
+  WHEN 110 THEN 12
+  WHEN 2 THEN 13
+  WHEN 474 THEN 14
+  WHEN 649 THEN 15
+  WHEN 800 THEN 16
+  WHEN 482 THEN 17
+  WHEN 386 THEN 18
+  WHEN 826 THEN 19
+  WHEN 16 THEN 20
+  WHEN 1129 THEN 21
+  ELSE 99
+END, h.ts_iso ASC, h.source_index DESC;
 
 CREATE OR REPLACE TABLE "亚盘" AS
 SELECT

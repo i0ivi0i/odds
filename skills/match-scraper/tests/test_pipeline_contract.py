@@ -85,7 +85,9 @@ class PipelineContractTest(unittest.TestCase):
         block = self.text.split('CREATE OR REPLACE TABLE "欧指变盘"', 1)[1].split(";", 1)[0]
         for column in ("主胜赔率", "平局赔率", "客胜赔率"):
             self.assertIn(column, block)
-        self.assertIn("ORDER BY h.ts_iso ASC, h.cid, h.source_index DESC", block)
+        self.assertIn("WHEN 80 THEN 1", block)
+        self.assertIn("WHEN 1129 THEN 21", block)
+        self.assertIn("END, h.ts_iso ASC, h.source_index DESC", block)
 
     def test_gate_checks_match_meta_identity(self):
         gate = self.text.split("name: GATE_LIVE", 1)[1]
