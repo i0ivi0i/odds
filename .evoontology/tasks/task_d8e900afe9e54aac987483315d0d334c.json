@@ -8,7 +8,7 @@
   "ontology_version": "ontology_v4",
   "batch_id": "",
   "split": "construction",
-  "task_status": "running",
+  "task_status": "interrupted",
   "started_at": "2026-10-24T05:11:42.223143+00:00",
   "events": [
     {
@@ -51,5 +51,7 @@
     }
   ],
   "native_tool_calls": [],
-  "errors": []
+  "errors": [],
+  "final_answer": "v4 上的只读验收任务已被 v5 迁移任务取代；按 interrupted 归档，不再保留为运行中。",
+  "recorded_at": "2026-10-24T05:31:36.769009+00:00"
 }
