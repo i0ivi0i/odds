@@ -43,6 +43,7 @@ etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 
 ## 4. 派生表
 
+- `match_meta`：队名、联赛、竞彩编号、开球时间；来自 `meta.md`，不是新的网络端点。
 - `euro_snapshot`：21 家欧指初即盘。
 - `euro_history`：欧指变盘时序。
 - `asian_odds` / `over_under`：亚盘与大小球初即全景。
@@ -53,9 +54,46 @@ etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 
 ## 5. 只读视图
 
-`v_euro_snapshot`、`v_euro_history`、`v_asian_odds`、`v_over_under`、`v_ah_history`、`v_ou_history`、`v_eu_detail_history`、`v_injury`、`v_lineup`、`v_team_stats`、`v_bookmaker_slots`、`v_payload_coverage`、`v_analysis_status`。
+### 5.1 四个业务入口（人、机器、AI 共用）
 
-EvoOntology 的 `sqlite_view` 映射指向这些视图；分析必须经官方 MCP 视网膜先取 Mapping，再做受限查询。
+第一屏只看四张视图。它们只放事实，不放预测、推荐、信心、评分或胜负判断。
+
+| 入口视图 | 一行代表 | 主要列 |
+| :--- | :--- | :--- |
+| `球队基本情况` | 比赛信息一行、首发/替补、伤停 | `数据类型`、`联赛`、`主队`、`客队`、`开球时间`、`竞彩编号`、`销售日`、`队伍`、`身份`、`姓名`、`伤停原因` |
+| `欧指` | 一家机构的欧指当前盘 | 初盘主平客、最新主平客、返还率、历史行数、首末时间 |
+| `亚盘` | 一家机构的亚盘当前盘 | 初盘主水/盘口/客水、最新主水/盘口/客水、历史行数 |
+| `大小球` | 一家机构的大小球当前盘 | 初盘大球/盘口/小球、最新大球/盘口/小球、历史行数 |
+
+`球队基本情况` 不是一行摘要；它用 1 条比赛信息、40 条阵容、9 条伤停按“数据类型”展开，共 50 行。每行只代表一个实体：比赛、球员或伤员。位置、阵型、胜率、胜平负、联赛积分、预期进球等统计不进入这个抽屉。
+
+### 5.2 下钻与原始层
+
+需要逐笔流水时，从四入口下钻：
+
+- 欧指：`v_euro_history`、`v_eu_detail_history`
+- 亚盘：`v_ah_history`
+- 大小球：`v_ou_history`
+- 阵容/伤停/技统：`v_lineup`、`v_injury`、`v_team_stats`
+
+历史视图按 `ts_iso` 升序：初盘最早，变盘在中间，最新盘是最后一笔。不要用 `source_index` 代替时间。
+
+原始证据层（`endpoint_payload`、`endpoint_parse_status`、`build_manifest`）只给审计和排错；四入口视图和 EvoOntology 都不读原始层。
+
+### 5.3 EvoOntology 的边界
+
+EvoOntology 的 `sqlite_view` 映射应从四入口或其明确列出的下钻视图开始。它只做只读看数：概念定位、字段定位、取事实数据。它不负责思考、分析、推演、评分、推荐或结论；这些由外部 AI 大脑完成。现有 active `v5` 的映射若仍落在明细视图，按“四入口下钻”阅读，不伪造新映射，也不改 active 版本。
+
+机器查询示例（不碰原始层）：
+
+```sql
+SELECT "数据类型", "联赛", "主队", "客队", "队伍", "身份", "姓名", "伤停原因" FROM "球队基本情况"
+ORDER BY "数据类型", "队伍";
+SELECT "机构编号", "机构", "最新主胜", "最新平局", "最新客胜" FROM "欧指" ORDER BY "机构编号";
+SELECT "机构编号", "机构", "最新盘口", "最新主水", "最新客水" FROM "亚盘" ORDER BY "机构编号";
+SELECT "机构编号", "机构", "最新盘口", "最新大球", "最新小球" FROM "大小球" ORDER BY "机构编号";
+SELECT ts_iso, home, draw, away FROM v_euro_history WHERE cid = 80 ORDER BY ts_iso;
+```
 
 ## 6. 最终门禁
 
@@ -68,6 +106,15 @@ FROM endpoint_payload;
 SELECT COUNT(*) FROM endpoint_payload
 WHERE endpoint_key = 'polymarket.json';
 -- 期望 0
+
+SELECT COUNT(*) FROM match_meta;
+-- 期望 1
+
+SELECT '球队基本情况' AS 视图, COUNT(*) FROM "球队基本情况"
+UNION ALL SELECT '欧指', COUNT(*) FROM "欧指"
+UNION ALL SELECT '亚盘', COUNT(*) FROM "亚盘"
+UNION ALL SELECT '大小球', COUNT(*) FROM "大小球";
+-- 本场期望 50 | 21 | 22 | 24（球队明细为 1 条比赛信息 + 40 条阵容 + 9 条伤停）
 ```
 
 再检查 `endpoint_parse_status` 无 `failed`、`v_bookmaker_slots` 23 家均有合法状态、`PRAGMA integrity_check` 返回 `ok`。

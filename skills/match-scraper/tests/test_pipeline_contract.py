@@ -47,6 +47,20 @@ class PipelineContractTest(unittest.TestCase):
         self.assertIn("THEN 'xg_parse_failed'", status)
         self.assertIn("THEN 'xg_not_present'", status)
 
+    def test_match_meta_reads_schedule_index_without_new_payload_endpoint(self):
+        match_meta = self.text.split("name: MATCH_META", 1)[1].split("name: EURO_SNAPSHOT", 1)[0]
+        self.assertIn("read_text('data/{YYYY-MM-DD}/meta.md')", match_meta)
+        self.assertIn("DELETE FROM DB.match_meta", match_meta)
+        self.assertIn("trim(f[2]) = (SELECT match_id FROM DB.endpoint_payload LIMIT 1)", match_meta)
+        endpoint_payload = self.text.split("name: ENDPOINT_PAYLOAD", 1)[1].split("name: MATCH_META", 1)[0]
+        self.assertNotIn("match_meta", endpoint_payload)
+
+    def test_gate_checks_match_meta_identity(self):
+        gate = self.text.split("name: GATE_LIVE", 1)[1]
+        self.assertIn("match_meta_rows", gate)
+        self.assertIn("match_meta_identity", gate)
+        self.assertIn("length(trim(home_team))", gate)
+
     def test_gate_blocks_synthetic_presence_rows(self):
         gate = self.text.split("name: GATE_LIVE", 1)[1]
         self.assertIn("presence_rows", gate)

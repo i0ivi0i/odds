@@ -48,6 +48,47 @@ FROM read_json_auto('{file}')
 WHERE endpoint_key <> 'polymarket.json';
 ```
 
+## MATCH_META
+
+```yaml
+name: MATCH_META
+table: match_meta
+load_conn: "duckdb:"
+load_before_sql:
+  - INSTALL sqlite
+  - "ATTACH 'data/.staging/build.db' AS DB (TYPE SQLITE)"
+  - "DELETE FROM DB.match_meta"
+load_sql: land_match_meta
+load_after_sql: DETACH DB
+rows_sql: SELECT COUNT(*) AS nrows FROM DB.match_meta
+active: true
+```
+
+```sql
+-- land_match_meta
+INSERT INTO DB.match_meta (
+  match_id, sales_date, match_no, league, home_team, away_team, kickoff_at, source
+)
+SELECT
+  trim(f[2]) AS match_id,
+  '{YYYY-MM-DD}' AS sales_date,
+  trim(f[1]) AS match_no,
+  trim(f[3]) AS league,
+  trim(f[4]) AS home_team,
+  trim(f[5]) AS away_team,
+  trim(f[6]) AS kickoff_at,
+  'data/{YYYY-MM-DD}/meta.md' AS source
+FROM (
+  SELECT string_split(trim(line, '|'), '|') AS f
+  FROM (
+    SELECT unnest(string_split(content, chr(10))) AS line
+    FROM read_text('data/{YYYY-MM-DD}/meta.md')
+  ) lines
+  WHERE trim(line) LIKE '|%'
+) cells
+WHERE trim(f[2]) = (SELECT match_id FROM DB.endpoint_payload LIMIT 1);
+```
+
 ## EURO_SNAPSHOT
 
 ```yaml
@@ -1205,6 +1246,19 @@ WITH checks(gate, observed, expected) AS (
       THEN 1 ELSE 0
     END,
     1
+  UNION ALL SELECT 'match_meta_rows', (SELECT COUNT(*) FROM DB.match_meta), 1
+  UNION ALL SELECT 'match_meta_identity',
+    CASE
+      WHEN (SELECT COUNT(*) FROM DB.match_meta
+             WHERE match_id = (SELECT MIN(match_id) FROM DB.endpoint_payload)
+               AND length(trim(match_no)) > 0
+               AND length(trim(league)) > 0
+               AND length(trim(home_team)) > 0
+               AND length(trim(away_team)) > 0
+               AND length(trim(kickoff_at)) >= 16) = 1
+      THEN 1 ELSE 0
+    END,
+    1
   UNION ALL SELECT 'failed_payload_rows', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE state = 'failed'), 0
   UNION ALL SELECT 'content_hash_mismatches', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE lower(sha256) <> lower(sha256(content))), 0
   UNION ALL SELECT 'payload_chars_mismatches', (SELECT COUNT(*) FROM DB.endpoint_payload WHERE coalesce(chars, -1) <> length(content)), 0
@@ -1229,7 +1283,8 @@ WITH checks(gate, observed, expected) AS (
     1
   UNION ALL SELECT 'core_tables_present',
     CASE
-      WHEN (SELECT COUNT(*) FROM DB.euro_snapshot) > 0
+      WHEN (SELECT COUNT(*) FROM DB.match_meta) > 0
+       AND (SELECT COUNT(*) FROM DB.euro_snapshot) > 0
        AND (SELECT COUNT(*) FROM DB.euro_history) > 0
        AND (SELECT COUNT(*) FROM DB.asian_odds) > 0
        AND (SELECT COUNT(*) FROM DB.over_under) > 0

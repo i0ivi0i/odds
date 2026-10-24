@@ -631,7 +631,7 @@ etlx -config data/pipeline.md -date {销售日} -file <临时.jsonl> -only ENDPO
 etlx -config data/pipeline.md -date {销售日} -skip ENDPOINT_PAYLOAD
 ```
 
-`data/pipeline.md` 的全部 `ATTACH` 固定指向 `data/.staging/build.db`，换场不改 SQL；每次构建前必须重建空库。门禁 `violations=0` 后，才可把 staging 改名为最终 `data/{销售日}/{matchId}.db`：
+`data/pipeline.md` 的全部 `ATTACH` 固定指向 `data/.staging/build.db`，换场不改 SQL；每次构建前必须重建空库。`MATCH_META` 只读 `data/{销售日}/meta.md`，把队名、联赛、竞彩编号、开球时间写入 `match_meta`；它不增加网络端点，也不改变 27 个分析端点的数量。构建完成后，人、机器和 AI 先看同一组四个中文事实入口：`球队基本情况`、`欧指`、`亚盘`、`大小球`；逐笔流水再下钻 `v_*_history`，不直接读原始 payload。门禁 `violations=0` 后，才可把 staging 改名为最终 `data/{销售日}/{matchId}.db`：
 
 ```bash
 mv data/.staging/build.db data/{销售日}/{matchId}.db
